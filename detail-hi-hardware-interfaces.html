@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HI HARDWARE INTERFACES - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>HI HARDWARE INTERFACES</h1>
+        <p class="subtitle">Interfacce hardware HI</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🔌 INTERFACCE HI</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Le HI Hardware Interfaces (High-Level Hardware Interfaces) sono il livello più elevato del sottosistema di gestione dispositivi nel kernel Linux. Questo layer fornisce interfacce astratte e di alto livello per l'interazione con dispositivi hardware, nascondendo completamente i dettagli implementativi specifici e fornendo API uniformi per diverse categorie di dispositivi.</strong></p>
+        
+        <h2>CONFRONTO:</h2>
+        <p>Immagina le HI Hardware Interfaces come un ristorante stellato: i clienti (programmi) ordinano da un menu elegante senza sapere nulla della cucina (hardware specifico). Il maître (HI layer) coordina tutto, i camerieri (driver di medio livello) preparano i piatti, e i cuochi (driver low-level) cucinano, ma l'esperienza finale è sempre raffinata e uniforme.</p>
+        
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Le HI Hardware Interfaces implementano un'architettura a strati che separa completamente l'applicazione dal dispositivo fisico. Utilizza pattern di design orientati agli oggetti, callback asincroni, e meccanismi di notifica per fornire un'interfaccia elegante e potente per l'accesso hardware.</strong></p>
+        <p>• <strong>Object-Oriented Design</strong> - Interfacce basate su oggetti con ereditarietà e polimorfismo</p>
+        <p>• <strong>Asynchronous Operations</strong> - Operazioni non bloccanti con callback e completion handlers</p>
+        <p>• <strong>Event-Driven Architecture</strong> - Sistema di eventi e notifiche per cambiamenti di stato</p>
+        <p><em>• Interfaccia principale tra applicazioni userspace e dispositivi hardware attraverso driver</em></p>
+
+<h2>⚙️ Operazioni Principali delle HI Hardware Interfaces</h2>
+<p><strong>Le HI Hardware Interfaces gestiscono operazioni di alto livello che astraggono completamente l'hardware sottostante:</strong></p>
+
+<h3>⚙️ Device Management</h3>
+<p>• <strong>device_open()</strong> - Apre un dispositivo per l'uso esclusivo</p>
+<p>• <strong>device_close()</strong> - Chiude il dispositivo e rilascia risorse</p>
+
+<h3>⚙️ Asynchronous I/O</h3>
+<p>• <strong>device_async_read()</strong> - Lettura asincrona con callback</p>
+<p>• <strong>device_async_write()</strong> - Scrittura asincrona con completion handler</p>
+
+<h3>⚙️ Event Handling</h3>
+<p>• <strong>device_register_event()</strong> - Registra handler per eventi dispositivo</p>
+<p>• <strong>device_unregister_event()</strong> - Rimuove handler eventi</p>
+
+<h2>📋 Esempi Pratici delle HI Hardware Interfaces</h2>
+<p><strong>Le HI Hardware Interfaces rendono l'accesso ai dispositivi semplice e uniforme attraverso API di alto livello:</strong></p>
+
+<h3>🔍 Accesso a Dispositivo Audio</h3>
+<p>1. Applicazione chiama device_open("/dev/snd/pcmC0D0")</p>
+<p>2. HI layer valida permessi e configura parametri audio</p>
+<p>3. Operazioni di lettura/scrittura usano buffer di alto livello</p>
+<p>4. Sistema gestisce automaticamente DMA e interrupt</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>device_interface</strong> - Interfaccia astratta per dispositivi generici</li>
+<li><strong>async_operation</strong> - Struttura per operazioni I/O asincrone</li>
+<li><strong>event_handler</strong> - Callback per gestione eventi dispositivo</li>
+<li><strong>device_context</strong> - Contesto di stato per istanza dispositivo</li>
+</ul>
+
+<h3>💻 Comandi Linux Essenziali</h3>
+<ul>
+<li><code>$ ls /dev/</code> - Mostra tutti i device nodes disponibili</li>
+<li><code>$ udevadm info /dev/sda</code> - Info dettagliate su dispositivo</li>
+<li><code>$ lsof /dev/snd/*</code> - Processi che usano dispositivi audio</li>
+<li><code>$ cat /proc/devices</code> - Lista dispositivi a caratteri e blocchi</li>
+</ul>
+
+<h3>🎯 Caso Reale: Riproduzione Audio</h3>
+<p>Quando fai <code>$ aplay sample.wav</code>:</p>
+<ol>
+<li>ALSA HI interface apre dispositivo audio</li>
+<li>Configura parametri (frequenza, canali, formato)</li>
+<li>Trasferisce dati attraverso buffer circolari</li>
+<li>Gestisce automaticamente underrun/overflow</li>
+</ol>
+
+<h2>💾 Supporto e Compatibilità HI Hardware Interfaces</h2>
+        <ul>
+            <li><strong>ALSA</strong> - Advanced Linux Sound Architecture per audio</li>
+            <li><strong>V4L2</strong> - Video for Linux 2 per dispositivi video</li>
+            <li><strong>DVB</strong> - Digital Video Broadcasting per TV digitale</li>
+            <li><strong>Input</strong> - Sottosistema input per tastiere/mouse</li>
+            <li><strong>DRM</strong> - Direct Rendering Manager per grafica</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+<ul>
+<li><strong>Abstraction</strong> - Completa astrazione dell'hardware sottostante</li>
+<li><strong>Asynchronous</strong> - Supporto nativo per operazioni non bloccanti</li>
+<li><strong>Events</strong> - Sistema di eventi e notifiche avanzato</li>
+<li><strong>Hotplug</strong> - Supporto per dispositivi plug-and-play</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave delle HI Hardware Interfaces</h2>
+<p><strong>Le HI Hardware Interfaces sono il punto di contatto finale tra applicazioni e dispositivi hardware:</strong></p>
+
+<h3>💾 Device Drivers</h3>
+<p>• <strong>Driver Registration</strong> - Registra interfacce di alto livello per dispositivi</p>
+<p>• <strong>Capability Exposure</strong> - Espone capacità dispositivo attraverso API uniformi</p>
+
+<h3>🌐 Userspace Applications</h3>
+<p>• <strong>Library Integration</strong> - Fornisce API per librerie userspace (ALSA, SDL)</p>
+<p>• <strong>System Calls</strong> - Interfaccia diretta con system calls del kernel</p>
+
+<h3>🧠 Kernel Subsystems</h3>
+<p>• <strong>Memory Management</strong> - Coordina allocazione memoria per buffer I/O</p>
+<p>• <strong>Scheduler</strong> - Gestisce priorità processi per operazioni real-time</p>
+
+<h2>🛠️ API delle HI Hardware Interfaces</h2>
+        <p><strong>Queste sono le API di alto livello che le applicazioni usano per interagire con dispositivi hardware:</strong></p>
+
+        <h3>📂 Device Operations</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre un device node per l'accesso. Le HI interfaces gestiscono permessi e configurazione iniziale.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge dati dal dispositivo. HI layer gestisce buffering e sincronizzazione.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive dati al dispositivo. HI interfaces ottimizzano trasferimenti e gestiscono errori.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int ioctl(int fd, unsigned long request, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Controllo dispositivo specifico. HI layer traduce comandi generici in operazioni hardware.</span>
+        </div>
+
+        <h3>📊 Asynchronous I/O</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int aio_read(struct aiocb *aiocbp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Lettura asincrona. HI interfaces gestiscono completion callbacks.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int aio_write(struct aiocb *aiocbp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrittura asincrona. HI layer ottimizza performance I/O.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int aio_suspend(const struct aiocb *const cblist[], int n, const struct timespec *timeout);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attesa completion operazioni asincrone. HI interfaces coordinano eventi.</span>
+        </div>
+
+        <h3>💽 Memory Mapping</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mappa dispositivo in memoria. HI interfaces gestiscono cache e coerenza.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int munmap(void *addr, size_t length);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove mapping memoria. HI layer pulisce risorse e cache.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Come utilizzare le HI Hardware Interfaces nelle applicazioni:</strong></p>
+<ol>
+<li><code>fd = open("/dev/snd/pcmC0D0", O_RDWR)</code> - Apri dispositivo audio</li>
+<li><code>ioctl(fd, SNDCTL_DSP_SETFMT, &format)</code> - Configura formato audio</li>
+<li><code>write(fd, buffer, size)</code> - Invia dati audio al dispositivo</li>
+<li><code>close(fd)</code> - Chiudi dispositivo e rilascia risorse</li>
+</ol>
+<p><em>Queste API forniscono un'interfaccia uniforme e sicura per tutti i tipi di dispositivi hardware.</em></p>
+
+<h2>🗺️ Architettura delle HI Hardware Interfaces</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle High-Level Hardware Interfaces</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi (VLC, GIMP, Firefox)<br>
+                    • Librerie (ALSA, SDL, OpenGL)<br>
+                    • System Calls & Device Nodes
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- HI Hardware Interfaces Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🎯 HI HARDWARE INTERFACES</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🎵</div>
+                        <div style="font-size: 0.8em;">ALSA</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📹</div>
+                        <div style="font-size: 0.8em;">V4L2</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🖱️</div>
+                        <div style="font-size: 0.8em;">Input</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🎮</div>
+                        <div style="font-size: 0.8em;">DRM</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • API di Alto Livello<br>
+                    • Astrazione Completa<br>
+                    • Eventi & Callbacks
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Generic Hardware Access Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">Generic HW Access</div>
+                    <div style="font-size: 0.8em; color: #666;">ioremap, inb/outb</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">Driver Model</div>
+                    <div style="font-size: 0.8em; color: #666;">device/driver binding</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">Device Control</div>
+                    <div style="font-size: 0.8em; color: #666;">power management</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Physical Hardware Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔧 HARDWARE FISICO</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Schede Audio/Video/Network<br>
+                    • Dispositivi USB/PCI/Thunderbolt<br>
+                    • Sensori e Periferiche
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Il flusso va dalle applicazioni all'hardware fisico<br>
+                • HI Interfaces forniscono API eleganti e astratte<br>
+                • Ogni layer sottostante gestisce dettagli implementativi<br>
+                • Garantisce portabilità e manutenibilità del codice
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento delle HI Hardware Interfaces</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funzionano le interfacce hardware di alto livello</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Application Request</div>
+        <div style="font-family: monospace; font-size: 0.9em;">Applicazione richiede accesso a dispositivo (audio/video/network)</div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ HI Interface Processing</div>
+        <div style="font-family: monospace; font-size: 0.9em;">HI layer traduce richiesta in operazioni specifiche del dispositivo</div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> Le HI Hardware Interfaces ricevono richieste di alto livello dalle applicazioni, le traducono in operazioni specifiche del dispositivo utilizzando API uniformi, gestiscono eventi asincroni e forniscono astrazione completa dell'hardware sottostante.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Ciclo di vita di una richiesta hardware:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Device Discovery</strong> - HI layer individua dispositivi disponibili</li>
+        <li><strong>2. Resource Allocation</strong> - Allocazione buffer e risorse necessarie</li>
+        <li><strong>3. Parameter Setup</strong> - Configurazione parametri dispositivo (formato, velocità)</li>
+        <li><strong>4. Data Transfer</strong> - Trasferimento dati con ottimizzazioni automatiche</li>
+        <li><strong>5. Event Handling</strong> - Gestione eventi e completion callbacks</li>
+        <li><strong>6. Cleanup</strong> - Rilascio risorse e reset stato dispositivo</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> Le applicazioni possono utilizzare dispositivi complessi attraverso API semplici e intuitive, senza conoscere i dettagli implementativi specifici dell'hardware.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico delle HI Hardware Interfaces</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🎵 Test ALSA Audio Interface</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ aplay -l<br>
+                        **** List of PLAYBACK Hardware Devices ****<br>
+                        card 0: PCH [HDA Intel PCH], device 0<br>
+                        card 1: NVidia [HDA NVidia], device 3<br><br>
+                        $ speaker-test -c 2 -t sine
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Test delle interfacce audio ALSA e riproduzione di suoni</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📹 Video Device Interfaces</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ v4l2-ctl --list-devices<br>
+                        UVC Camera (046d:0825): /dev/video0<br>
+                        HD Webcam C525: /dev/video1<br><br>
+                        $ v4l2-ctl -d /dev/video0 --list-formats
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esplora dispositivi video V4L2 e formati supportati</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🖱️ Input Device Events</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/bus/input/devices<br>
+                        I: Bus=0011 Vendor=0001 Product=0001<br>
+                        N: Name="AT Translated Set 2 keyboard"<br><br>
+                        $ evtest /dev/input/event0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monitora eventi da dispositivi input (tastiera, mouse)</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Device Hotplug Events</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ udevadm monitor<br>
+                        KERNEL[123.456] add /devices/... (usb)<br>
+                        UDEV [123.567] add /devices/... (usb)<br><br>
+                        $ ls /dev | grep -E "(sd|hd|sr)"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva eventi di connessione/disconnessione dispositivi</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave delle HI Hardware Interfaces</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎵</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">ALSA Subsystem</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Advanced Linux Sound Architecture fornisce interfacce uniformi per dispositivi audio, gestendo mixing, routing e effetti.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📹</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">V4L2 Framework</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">Video for Linux 2 offre API standard per webcam, TV tuner e dispositivi di cattura video con supporto streaming.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Hotplug Support</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">Sistema di rilevamento automatico dispositivi plug-and-play con configurazione dinamica e gestione eventi.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Asynchronous I/O</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Operazioni I/O non bloccanti con callback e completion handlers per prestazioni ottimali in applicazioni real-time.</p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sulle HI Hardware Interfaces
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="margin-top: 30px; color: #0288d1; border-bottom: 3px solid #0288d1; padding-bottom: 8px;">📚 Letture Consigliate</h2>
+<ul style="margin-left: 20px; margin-bottom: 30px;">
+<li style="margin-bottom: 10px;"><a href="https://www.kernel.org/doc/html/latest/" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">📖 Linux Kernel Documentation</a> - Documentazione ufficiale completa</li>
+<li><a href="https://en.wikipedia.org/wiki/Linux_kernel" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">🌐 Wikipedia: Linux Kernel</a> - Panoramica generale dell'architettura</li>
+</ul>
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa significa ALSA?",
+            options: ["Advanced Linux Sound Architecture", "Automatic Linux System Audio", "Application Layer Sound API", "Audio Linux Standard Access"],
+            correct: 0,
+            explanation: "ALSA è Advanced Linux Sound Architecture, il sottosistema audio di alto livello che fornisce interfacce uniformi per dispositivi audio."
+        },
+        {
+            question: "Quale comando elenca dispositivi audio ALSA?",
+            options: ["lsaudio", "aplay -l", "alsamixer", "pulseaudio"],
+            correct: 1,
+            explanation: "aplay -l elenca tutti i dispositivi audio di playback disponibili nel sistema ALSA."
+        },
+        {
+            question: "Cosa gestisce V4L2?",
+            options: ["Dispositivi di rete", "Dispositivi video", "Dispositivi audio", "Dispositivi di storage"],
+            correct: 1,
+            explanation: "V4L2 (Video for Linux 2) gestisce dispositivi video come webcam, TV tuner e dispositivi di cattura video."
+        },
+        {
+            question: "Quale comando monitora eventi dispositivi?",
+            options: ["lsusb", "udevadm monitor", "lspci", "dmesg"],
+            correct: 1,
+            explanation: "udevadm monitor mostra in tempo reale gli eventi di connessione/disconnessione dispositivi nel sistema."
+        },
+        {
+            question: "Cosa permette l'I/O asincrono?",
+            options: ["Solo operazioni sincrone", "Operazioni non bloccanti con callback", "Solo dispositivi locali", "Solo file di testo"],
+            correct: 1,
+            explanation: "L'I/O asincrono permette operazioni non bloccanti dove l'applicazione continua l'esecuzione mentre l'I/O avviene in background."
+        },
+        {
+            question: "Quale comando testa dispositivi input?",
+            options: ["input-test", "evtest", "device-test", "input-monitor"],
+            correct: 1,
+            explanation: "evtest permette di monitorare e testare eventi da dispositivi input come tastiere e mouse."
+        },
+        {
+            question: "Cosa significa hotplug?",
+            options: ["Dispositivi sempre connessi", "Connessione/disconnessione a caldo", "Solo dispositivi USB", "Dispositivi wireless"],
+            correct: 1,
+            explanation: "Hotplug si riferisce alla capacità di connettere/disconnettere dispositivi mentre il sistema è in esecuzione."
+        },
+        {
+            question: "Quale comando elenca dispositivi video?",
+            options: ["lsvideo", "v4l2-ctl --list-devices", "cameratest", "videoctl"],
+            correct: 1,
+            explanation: "v4l2-ctl --list-devices elenca tutti i dispositivi video V4L2 disponibili nel sistema."
+        },
+        {
+            question: "Cosa gestisce il sottosistema Input?",
+            options: ["Solo tastiere", "Tastiere, mouse, touchscreen, joystick", "Solo dispositivi USB", "Solo dispositivi wireless"],
+            correct: 1,
+            explanation: "Il sottosistema Input gestisce tutti i dispositivi di input: tastiere, mouse, touchscreen, joystick, ecc."
+        },
+        {
+            question: "Quale comando mostra dispositivi PCI?",
+            options: ["lspci", "lsusb", "lsdev", "pcitest"],
+            correct: 0,
+            explanation: "lspci mostra informazioni dettagliate su tutti i dispositivi PCI connessi al sistema."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

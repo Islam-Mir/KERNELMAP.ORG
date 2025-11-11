@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU SPECIFIC - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>CPU SPECIFIC</h1>
+        <p class="subtitle">Funzionalità specifiche del processore</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">⚙️ CPU SPECIFICO</span>
+        <h2>DESCRIZIONE:</h2>
+<p><strong>Il sottosistema CPU Specific gestisce le funzionalità e ottimizzazioni specifiche per diverse architetture di processore nel kernel Linux.</strong></p>
+
+<h2>CONFRONTO:</h2>
+<p>Come un autista che conosce le caratteristiche specifiche di diversi modelli di auto: il kernel deve adattarsi alle peculiarità di ogni CPU (Intel, AMD, ARM, RISC-V) per sfruttarne al meglio le capacità.</p>
+
+<h2>🔍 Descrizione Tecnica</h2>
+<p><strong>Il codice CPU-specific del kernel Linux gestisce le differenze tra architetture di processore attraverso layer di astrazione e ottimizzazioni specifiche.</strong> Include gestione interruzioni, context switching, supporto istruzioni speciali e ottimizzazioni per cache.</p>
+
+<p>• <strong>Architettura-specific code</strong> - Codice assembly e C ottimizzato per ogni famiglia di CPU</p>
+<p>• <strong>Interrupt handling</strong> - Gestione interruzioni adattata all'architettura specifica</p>
+<p>• <strong>Context switching</strong> - Salvataggio e ripristino del contesto ottimizzato per la CPU</p>
+<p>• <strong>Cache management</strong> - Utilizzo intelligente delle cache L1/L2/L3 specifiche del processore</p>
+<p>• <strong>Instruction set extensions</strong> - Supporto per istruzioni speciali (SSE, AVX, NEON)</p>
+<p>• <strong>Power management</strong> - Gestione energetica specifica per l'architettura</p>
+<p><em>• Interazione: Fornisce un'interfaccia uniforme al resto del kernel nascondendo le differenze hardware</em></p>
+
+<h2>⚙️ Operazioni Principali</h2>
+<p><strong>Il codice CPU-specific gestisce diverse categorie di operazioni critiche per le prestazioni del sistema:</strong></p>
+
+<h3>🔄 Context Switching</h3>
+<p>• <strong>__switch_to()</strong> - Cambia il contesto tra processi/thread ottimizzato per l'architettura</p>
+<p>• <strong>switch_mm()</strong> - Cambia lo spazio di memoria virtuale</p>
+<p>• <strong>flush_tlb()</strong> - Invalida le Translation Lookaside Buffer</p>
+<p>• <strong>load_cr3()</strong> - Carica il registro del page table root (x86)</p>
+
+<h3>⚡ Interrupt Handling</h3>
+<p>• <strong>do_IRQ()</strong> - Gestore principale delle interruzioni</p>
+<p>• <strong>handle_IRQ()</strong> - Elaborazione specifica dell'interruzione</p>
+<p>• <strong>irq_enter()/irq_exit()</strong> - Ingresso/uscita dal contesto interrupt</p>
+<p>• <strong>local_irq_save()/restore()</strong> - Salvataggio/ripristino dello stato interrupt</p>
+
+<h3>🚀 Performance Optimization</h3>
+<p>• <strong>prefetch()</strong> - Istruzioni di prefetch dei dati in cache</p>
+<p>• <strong>cpu_relax()</strong> - Pausa ottimizzata per busy waiting</p>
+<p>• <strong>barrier()</strong> - Barriere di memoria per ordinamento istruzioni</p>
+<p>• <strong>cpu_has_feature()</strong> - Controllo supporto istruzioni specifiche</p>
+
+<h3>🔋 Power Management</h3>
+<p>• <strong>cpu_idle()</strong> - Gestione stati di idle della CPU</p>
+<p>• <strong>cpu_freq_change()</strong> - Cambiamento frequenza di clock</p>
+<p>• <strong>cpu_hotplug()</strong> - Attivazione/disattivazione CPU in sistemi multi-core</p>
+<p>• <strong>acpi_processor_idle()</strong> - Idle states ACPI-specifici</p>
+
+<h2>📋 Esempi Pratici</h2>
+<p><strong>Il codice CPU-specific si attiva continuamente durante l'esecuzione del sistema per ottimizzare le prestazioni:</strong></p>
+
+<h3>🔄 Context Switch su x86</h3>
+<p>Quando il kernel cambia da un processo all'altro su architettura x86:</p>
+<p>1. Salva i registri generali (EAX, EBX, ECX, EDX) nello stack del kernel</p>
+<p>2. Salva ESP (stack pointer) e EIP (instruction pointer) nella struttura task</p>
+<p>3. Carica CR3 (page table base) del nuovo processo</p>
+<p>4. Invalida TLB con flush del nuovo address space</p>
+<p>5. Ripristina i registri del nuovo processo e riprende l'esecuzione</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>thread_struct</strong> - Contiene lo stato specifico del thread per l'architettura (registri, stack)</li>
+<li><strong>cpuinfo_x86</strong> - Informazioni dettagliate sulla CPU x86 (famiglia, modello, feature flags)</li>
+<li><strong>pt_regs</strong> - Struttura per salvare i registri durante system call e interrupts</li>
+<li><strong>mm_context_t</strong> - Contesto di memoria specifico per l'architettura</li>
+</ul>
+
+<h3>💻 Comandi per Esplorare l'Architettura</h3>
+<ul>
+<li><code>$ cat /proc/cpuinfo</code> - Mostra informazioni dettagliate su ogni CPU del sistema</li>
+<li><code>$ lscpu</code> - Riassume le caratteristiche dell'architettura CPU</li>
+<li><code>$ cpuid</code> - Mostra i feature flags della CPU (richiede pacchetto cpuid)</li>
+<li><code>$ dmesg | grep -i cpu</code> - Log del kernel relativi all'inizializzazione CPU</li>
+</ul>
+
+<h3>🎯 Caso Reale: Interrupt Handling</h3>
+<p>Quando arriva un interrupt hardware (es. da scheda di rete):</p>
+<ol>
+<li>L'hardware salva automaticamente alcuni registri critici</li>
+<li>Il kernel chiama do_IRQ() specifico per l'architettura</li>
+<li>Si determina il numero dell'interrupt e si chiama l'handler appropriato</li>
+<li>Si eseguono le operazioni richieste (es. elaborazione pacchetto di rete)</li>
+<li>Si ripristina lo stato precedente e si torna all'esecuzione normale</li>
+</ol>
+
+<h2>💾 Architetture Supportate</h2>
+<ul>
+<li><strong>x86 (32-bit)</strong> - Architettura Intel/AMD tradizionale</li>
+<li><strong>x86_64 (64-bit)</strong> - Estensione a 64-bit di x86</li>
+<li><strong>ARM (32-bit)</strong> - Architettura per dispositivi mobili</li>
+<li><strong>ARM64 (64-bit)</strong> - Versione a 64-bit di ARM</li>
+<li><strong>RISC-V</strong> - Architettura open-source</li>
+<li><strong>PowerPC</strong> - Architettura IBM per server</li>
+<li><strong>MIPS</strong> - Architettura per dispositivi embedded</li>
+<li><strong>s390</strong> - Architettura IBM mainframe</li>
+</ul>
+
+<h2>✨ Caratteristiche</h2>
+<ul>
+<li><strong>Portabilità</strong> - Stesso kernel funziona su architetture diverse</li>
+<li><strong>Ottimizzazioni specifiche</strong> - Codice assembly ottimizzato per ogni CPU</li>
+<li><strong>Feature detection</strong> - Rilevamento automatico delle capacità hardware</li>
+<li><strong>Backward compatibility</strong> - Supporto per vecchie generazioni di CPU</li>
+<li><strong>Scalabilità</strong> - Ottimizzazioni per sistemi multi-core e NUMA</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave</h2>
+<p><strong>Il codice CPU-specific è il fondamento su cui si basano tutti gli altri sottosistemi del kernel:</strong></p>
+
+<h3>⚡ Scheduler</h3>
+<p>• <strong>Context switching ottimizzato</strong> - Salvataggio/ripristino registri specifico per architettura</p>
+<p>• <strong>Load balancing</strong> - Distribuzione processi ottimizzata per topologia NUMA</p>
+<p>• <strong>Preemption</strong> - Interrupt del kernel adattato all'architettura</p>
+
+<h3>💾 Memory Management</h3>
+<p>• <strong>Page table management</strong> - Gestione tabelle delle pagine specifiche per MMU</p>
+<p>• <strong>TLB handling</strong> - Gestione Translation Lookaside Buffer ottimizzata</p>
+<p>• <strong>Cache coherence</strong> - Protocolli di coerenza cache per multi-core</p>
+
+<h3>🔌 Device Drivers</h3>
+<p>• <strong>Interrupt routing</strong> - Instradamento interruzioni specifico per chipset</p>
+<p>• <strong>DMA operations</strong> - Direct Memory Access ottimizzato per controller</p>
+<p>• <strong>Power management</strong> - Stati di risparmio energetico specifici</p>
+
+<h3>🌐 Network Stack</h3>
+<p>• <strong>Checksum offloading</strong> - Calcolo checksum hardware-assisted</p>
+<p>• <strong>Packet processing</strong> - Elaborazione pacchetti ottimizzata per istruzioni SIMD</p>
+<p>• <strong>Interrupt coalescing</strong> - Riduzione interrupt di rete per migliorare prestazioni</p>
+
+<h2>🛠️ API e Funzioni Architettura-Specifiche</h2>
+<p><strong>Queste sono le funzioni chiave che ogni architettura deve implementare per supportare il kernel Linux:</strong></p>
+
+<h3>🔄 Context Management</h3>
+<div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+<code style="color: #d32f2f; font-weight: bold;">struct task_struct * __switch_to(struct task_struct *prev, struct task_struct *next);</code><br>
+<span style="color: #666; font-size: 0.9em;">Cambia il contesto di esecuzione da un task all'altro, salvando e ripristinando i registri.</span><br><br>
+
+<code style="color: #2e7d32; font-weight: bold;">void switch_mm(struct mm_struct *prev, struct mm_struct *next, struct task_struct *tsk);</code><br>
+<span style="color: #666; font-size: 0.9em;">Cambia lo spazio di indirizzamento virtuale caricando una nuova page table.</span><br><br>
+
+<code style="color: #f57c00; font-weight: bold;">void flush_tlb_all(void);</code><br>
+<span style="color: #666; font-size: 0.9em;">Invalida tutte le Translation Lookaside Buffer per coerenza degli indirizzi.</span>
+</div>
+
+<h3>⚡ Interrupt Handling</h3>
+<div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+<code style="color: #0288d1; font-weight: bold;">void do_IRQ(struct pt_regs *regs);</code><br>
+<span style="color: #666; font-size: 0.9em;">Gestore principale delle interruzioni che identifica e instrada l'interrupt appropriato.</span><br><br>
+
+<code style="color: #d32f2f; font-weight: bold;">void local_irq_disable(void);</code><br>
+<span style="color: #666; font-size: 0.9em;">Disabilita gli interrupt locali su questa CPU.</span><br><br>
+
+<code style="color: #2e7d32; font-weight: bold;">void local_irq_enable(void);</code><br>
+<span style="color: #666; font-size: 0.9em;">Riabilita gli interrupt locali su questa CPU.</span>
+</div>
+
+<h3>🚀 Performance e Ottimizzazioni</h3>
+<div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+<code style="color: #f57c00; font-weight: bold;">void cpu_relax(void);</code><br>
+<span style="color: #666; font-size: 0.9em;">Istruzione di pausa ottimizzata per busy waiting che riduce consumo energetico.</span><br><br>
+
+<code style="color: #9c27b0; font-weight: bold;">void prefetch(const void *x);</code><br>
+<span style="color: #666; font-size: 0.9em;">Richiede alla CPU di precaricare dati in cache per migliorare prestazioni.</span><br><br>
+
+<code style="color: #d32f2f; font-weight: bold;">void smp_mb(void);</code><br>
+<span style="color: #666; font-size: 0.9em;">Barriera di memoria per garantire ordinamento istruzioni in sistemi multi-processore.</span>
+</div>
+
+<h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Il codice CPU-specific viene utilizzato automaticamente dal kernel, ma può essere esplorato:</strong></p>
+<ol>
+<li><code>$ grep -r "__switch_to" /usr/src/linux/arch/</code> - Trova implementazioni specifiche per ogni architettura</li>
+<li><code>$ objdump -d vmlinux | grep -A 10 "switch_to"</code> - Esamina il codice assembly generato</li>
+<li><code>$ perf record -e cycles -a -- sleep 1</code> - Monitora l'efficienza del context switching</li>
+<li><code>$ cat /sys/kernel/debug/tracing/available_events | grep sched</code> - Eventi di tracing disponibili per lo scheduler</li>
+</ol>
+<p><em>Queste funzioni forniscono l'astrazione necessaria perché il resto del kernel funzioni su qualsiasi architettura supportata.</em></p>
+
+<h2>🗺️ Architettura del Codice CPU-Specific</h2>
+<div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+    <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Organizzazione del Codice Architettura-Specifico</h3>
+
+    <!-- Generic Kernel Layer -->
+    <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ KERNEL GENERICO</div>
+        <div style="font-size: 0.9em; color: #666;">
+            • Scheduler • Memory Manager<br>
+            • VFS • Network Stack<br>
+            • Device Drivers
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Architecture Abstraction Layer -->
+    <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 ARCHITECTURE ABSTRACTION</div>
+        <div style="font-size: 0.9em; color: #666;">
+            • include/asm-generic/ • <asm/...><br>
+            • Funzioni comuni • Header generici<br>
+            • Interfacce standardizzate
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Architecture-Specific Implementations -->
+    <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+        <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">⚙️ IMPLEMENTAZIONI SPECIFICHE</div>
+        <div style="display: flex; justify-content: space-around; color: white;">
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">💻</div>
+                <div style="font-size: 0.8em;">x86</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">📱</div>
+                <div style="font-size: 0.8em;">ARM</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">🔧</div>
+                <div style="font-size: 0.8em;">RISC-V</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">🖥️</div>
+                <div style="font-size: 0.8em;">PowerPC</div>
+            </div>
+        </div>
+        <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+            • Codice assembly ottimizzato<br>
+            • Gestione hardware specifica<br>
+            • Interrupt e context switching
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Hardware Layer -->
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🧠 CPU CORES</div>
+            <div style="font-size: 0.8em; color: #666;">Registri & ALU</div>
+        </div>
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾 MEMORY</div>
+            <div style="font-size: 0.8em; color: #666;">RAM & Cache</div>
+        </div>
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔌 DEVICES</div>
+            <div style="font-size: 0.8em; color: #666;">I/O Controllers</div>
+        </div>
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">⚡ POWER</div>
+            <div style="font-size: 0.8em; color: #666;">Management Unit</div>
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Physical Hardware -->
+    <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔩 HARDWARE FISICO</div>
+        <div style="font-size: 0.9em; color: #666;">
+            • Silicon • Circuiti integrati<br>
+            • Chipset • Motherboard<br>
+            • Firmware & microcode
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+        <strong>💡 Come leggere la mappa:</strong><br>
+        • Il kernel generico usa interfacce standardizzate per ogni architettura<br>
+        • Ogni architettura implementa le stesse funzioni con codice specifico<br>
+        • L'astrazione permette portabilità mantenendo prestazioni ottimali<br>
+        • Il codice assembly è usato solo dove necessario per prestazioni critiche
+    </div>
+</div>
+
+        <h2>🎬 Funzionamento del Context Switching</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come Funziona il Context Switch su x86</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Interrupt/Timer Event</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        Timer interrupt scatta<br>
+        Kernel salva stato corrente<br>
+        Scheduler seleziona nuovo task<br>
+        Context switch inizia
+        </div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Context Switch Assembly</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        pushl %ebp<br>
+        movl %esp, %ebp<br>
+        pushl %esi<br>
+        pushl %edi<br>
+        // Salva tutti i registri<br>
+        // Carica CR3 nuovo<br>
+        // Ripristina registri<br>
+        ret
+        </div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> Il context switching salva lo stato del processo corrente e ripristina quello del nuovo processo, permettendo la multiprogrammazione efficiente.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Fasi del Context Switch:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Salvataggio stato</strong> - Tutti i registri del processo corrente vengono salvati nella sua task_struct</li>
+        <li><strong>2. Aggiornamento strutture</strong> - Si aggiornano i puntatori al processo corrente e si salva l'ESP</li>
+        <li><strong>3. Caricamento nuovo contesto</strong> - Si carica la page table del nuovo processo (CR3 su x86)</li>
+        <li><strong>4. Ripristino registri</strong> - Si ripristinano tutti i registri dal nuovo task_struct</li>
+        <li><strong>5. Ritorno all'esecuzione</strong> - Il nuovo processo riprende l'esecuzione dal punto in cui era stato interrotto</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> Cambio trasparente tra processi che permette al sistema operativo di eseguire multiple applicazioni contemporaneamente, ciascuna credendo di avere la CPU tutta per sé.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico</h2>
+<div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+    <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+            <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora le caratteristiche CPU</h4>
+            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                $ cat /proc/cpuinfo | head -20<br>
+                processor : 0<br>
+                vendor_id : GenuineIntel<br>
+                cpu family : 6<br>
+                model : 158<br>
+                flags : fpu vme de pse tsc
+            </div>
+            <p style="font-size: 0.9em; color: #666;"><em>Vedi le caratteristiche specifiche della tua CPU</em></p>
+        </div>
+
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+            <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Monitora i context switch</h4>
+            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                $ vmstat 1<br>
+                procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----<br>
+                r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st<br>
+                1  0      0 2048576  123456  678901    0    0     5     8  150  250  5  2 92  1  0
+            </div>
+            <p style="font-size: 0.9em; color: #666;"><em>Osserva la colonna 'cs' per i context switch al secondo</em></p>
+        </div>
+
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+            <h4 style="color: #9c27b0; margin-bottom: 10px;">🔄 Analizza le interruzioni</h4>
+            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                $ cat /proc/interrupts<br>
+                CPU0       CPU1<br>
+                0:         45          0   IO-APIC   2-edge      timer<br>
+                1:        789        123   IO-APIC   1-edge      i8042<br>
+                8:          1          0   IO-APIC   8-edge      rtc0
+            </div>
+            <p style="font-size: 0.9em; color: #666;"><em>Vedi quante interruzioni ha gestito ogni CPU</em></p>
+        </div>
+
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+            <h4 style="color: #9c27b0; margin-bottom: 10px;">🚀 Test prestazioni CPU</h4>
+            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                $ sysbench cpu --cpu-max-prime=10000 run<br>
+                CPU speed:<br>
+                events per second:  1234.56<br>
+                <br>
+                General statistics:<br>
+                total time: 10.0000s
+            </div>
+            <p style="font-size: 0.9em; color: #666;"><em>Misura le prestazioni di calcolo della CPU</em></p>
+        </div>
+    </div>
+</div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Context Switching</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+        Il meccanismo che permette al kernel di passare da un processo all'altro, salvando e ripristinando lo stato della CPU. È fondamentale per la multiprogrammazione.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Interrupt Handling</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+        Come la CPU risponde agli eventi hardware. Gli interrupt permettono al sistema di reagire immediatamente a eventi esterni senza polling costante.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏗️</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Architettura Abstraction</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+        Il livello di astrazione che permette al kernel generico di funzionare su architetture diverse, nascondendo le differenze hardware dietro interfacce uniformi.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Ottimizzazioni Specifiche</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+        Ogni architettura ha codice ottimizzato per sfruttare al meglio le caratteristiche specifiche del processore, dai registri alla cache fino alle istruzioni speciali.
+        </p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sul CPU SPECIFIC
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Quale funzione gestisce il cambio di contesto tra processi?",
+            options: ["do_IRQ()", "__switch_to()", "schedule()", "cpu_idle()"],
+            correct: 1,
+            explanation: "__switch_to() è la funzione architettura-specifica che salva e ripristina i registri durante il context switching."
+        },
+        {
+            question: "Cosa contiene la struttura cpuinfo_x86?",
+            options: ["Codice assembly del kernel", "Informazioni dettagliate sulla CPU x86", "Configurazione della memoria", "Lista dei processi attivi"],
+            correct: 1,
+            explanation: "cpuinfo_x86 contiene informazioni dettagliate sulla CPU come famiglia, modello, stepping e feature flags."
+        },
+        {
+            question: "Quale architettura è tipicamente usata nei dispositivi mobili?",
+            options: ["x86", "ARM", "PowerPC", "s390"],
+            correct: 1,
+            explanation: "ARM è l'architettura più comune nei dispositivi mobili grazie alla sua efficienza energetica."
+        },
+        {
+            question: "Cosa fa la funzione flush_tlb_all()?",
+            options: ["Svuota la cache L1", "Invalida la Translation Lookaside Buffer", "Ricarica i registri della CPU", "Cambia la frequenza di clock"],
+            correct: 1,
+            explanation: "flush_tlb_all() invalida tutte le Translation Lookaside Buffer per garantire coerenza degli indirizzi virtuali."
+        },
+        {
+            question: "Quale registro contiene il puntatore alla page table corrente su x86?",
+            options: ["CR0", "CR2", "CR3", "CR4"],
+            correct: 2,
+            explanation: "CR3 contiene l'indirizzo fisico della page table corrente su architetture x86."
+        },
+        {
+            question: "Cosa permette il codice CPU-specific?",
+            options: ["Solo esecuzione su una singola architettura", "Portabilità del kernel su architetture diverse", "Limitazione delle prestazioni", "Aumento del consumo energetico"],
+            correct: 1,
+            explanation: "Il codice CPU-specific permette al kernel Linux di funzionare su architetture diverse mantenendo prestazioni ottimali."
+        },
+        {
+            question: "Quale funzione viene chiamata per gestire un interrupt hardware?",
+            options: ["schedule()", "do_IRQ()", "cpu_relax()", "prefetch()"],
+            correct: 1,
+            explanation: "do_IRQ() è la funzione principale che gestisce gli interrupt hardware identificando e instradando l'interrupt appropriato."
+        },
+        {
+            question: "Cosa rappresenta la struttura pt_regs?",
+            options: ["Configurazione dei timer", "Stato dei registri durante system call", "Lista delle interruzioni attive", "Informazioni sui dispositivi PCI"],
+            correct: 1,
+            explanation: "pt_regs contiene lo stato di tutti i registri della CPU al momento di una system call o interrupt."
+        },
+        {
+            question: "Quale architettura è completamente open-source?",
+            options: ["x86", "ARM", "RISC-V", "PowerPC"],
+            correct: 2,
+            explanation: "RISC-V è un'architettura completamente open-source, progettata per essere libera da brevetti."
+        },
+        {
+            question: "Cosa ottimizza la funzione cpu_relax()?",
+            options: ["Accesso al disco", "Busy waiting in spinlock", "Allocazione di memoria", "Context switching"],
+            correct: 1,
+            explanation: "cpu_relax() fornisce un'istruzione di pausa ottimizzata per ridurre il consumo energetico durante busy waiting in spinlock."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

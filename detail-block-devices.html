@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOCK DEVICES - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>BLOCK DEVICES</h1>
+        <p class="subtitle">Dispositivi a blocchi e storage</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">💾 DISPOSITIVI BLOCCHI</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>I dispositivi a blocchi (Block Devices) sono componenti fondamentali del kernel Linux che gestiscono l'accesso allo storage persistente come dischi rigidi, SSD, chiavette USB e dispositivi di storage di rete. A differenza dei dispositivi a caratteri che trasferiscono dati byte per byte, i dispositivi a blocchi lavorano con blocchi di dati di dimensione fissa (tipicamente 512 byte o multipli), permettendo operazioni di I/O random più efficienti.</strong></p>
+        
+        <h2>CONFRONTO:</h2>
+        <p>Immagina i dispositivi a blocchi come un libro: puoi aprire il libro a qualsiasi pagina (accesso random) e leggere interi paragrafi alla volta, mentre i dispositivi a caratteri sono come un flusso d'acqua dal rubinetto - arrivano byte per byte in sequenza senza possibilità di tornare indietro facilmente.</p>
+        
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>I dispositivi a blocchi rappresentano l'interfaccia del kernel verso dispositivi di storage che supportano l'accesso random ai dati attraverso operazioni di lettura/scrittura su blocchi di dimensione fissa. Il sottosistema block I/O gestisce code di richieste, scheduling, caching e ottimizzazioni delle prestazioni.</strong></p>
+        <p>• <strong>Accesso Random</strong> - Permette di leggere/scrivere qualsiasi blocco senza sequenzialità</p>
+        <p>• <strong>Buffering Intelligente</strong> - Utilizza page cache e buffer cache per ottimizzare le prestazioni</p>
+        <p>• <strong>I/O Scheduling</strong> - Riordina le richieste per minimizzare i seek del disco</p>
+        <p><em>• Interfaccia principale con il Virtual File System per l'accesso ai file</em></p>
+
+<h2>⚙️ Operazioni Principali</h2>
+<p><strong>Il sottosistema block I/O gestisce diverse categorie di operazioni per ottimizzare l'accesso allo storage:</strong></p>
+
+<h3>⚙️ Gestione Richieste I/O</h3>
+<p>• <strong>submit_bio()</strong> - Invia una richiesta bio (block I/O) al dispositivo</p>
+<p>• <strong>blk_queue_bio()</strong> - Accoda richieste nella coda del dispositivo</p>
+
+<h3>⚙️ I/O Scheduling</h3>
+<p>• <strong>elevator_add_req()</strong> - Aggiunge richieste alla coda dell'elevator</p>
+<p>• <strong>blk_start_request()</strong> - Inizia l'elaborazione di una richiesta</p>
+
+<h3>⚙️ Caching e Buffer</h3>
+<p>• <strong>__bread()</strong> - Legge un blocco con caching automatico</p>
+<p>• <strong>submit_bh()</strong> - Invia buffer head per operazioni su blocchi</p>
+
+<h2>📋 Esempi Pratici</h2>
+<p><strong>I dispositivi a blocchi sono essenziali per il funzionamento del sistema operativo, gestendo tutto lo storage persistente:</strong></p>
+
+<h3>🔍 Lettura di un File dal Disco</h3>
+<p>1. L'applicazione chiama read() sul file descriptor</p>
+<p>2. Il VFS converte l'offset del file in numeri di blocco</p>
+<p>3. Il block layer crea una richiesta bio e la accoda</p>
+<p>4. L'I/O scheduler ottimizza l'ordine delle richieste</p>
+<p>5. Il driver del dispositivo esegue l'I/O fisico</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>struct bio</strong> - Rappresenta una richiesta I/O con buffer, device e metadati</li>
+<li><strong>struct request</strong> - Richiesta elaborata dall'I/O scheduler</li>
+<li><strong>struct gendisk</strong> - Rappresenta un disco generico nel sistema</li>
+<li><strong>struct request_queue</strong> - Coda delle richieste per un dispositivo</li>
+</ul>
+
+<h3>💻 Comandi Linux Essenziali</h3>
+<ul>
+<li><code>$ lsblk</code> - Mostra tutti i dispositivi a blocchi</li>
+<li><code>$ blkid</code> - Mostra UUID e filesystem dei dispositivi</li>
+<li><code>$ iostat -x 1</code> - Monitora statistiche I/O in tempo reale</li>
+<li><code>$ hdparm -t /dev/sda</code> - Test prestazioni lettura disco</li>
+</ul>
+
+<h3>🎯 Caso Reale: Avvio del Sistema</h3>
+<p>Quando fai <code>$ systemctl start apache2</code>:</p>
+<ol>
+<li>systemd legge il file di configurazione da /etc/systemd/system/</li>
+<li>Il VFS richiede blocchi dal filesystem ext4</li>
+<li>I blocchi vengono letti dal page cache o dal disco</li>
+<li>Il servizio Apache viene configurato e avviato</li>
+</ol>
+
+<h2>💾 Supporto e Compatibilità</h2>
+        <ul>
+            <li><strong>SATA/AHCI</strong> - Controller SATA moderni</li>
+            <li><strong>NVMe</strong> - Storage ad alta velocità PCIe</li>
+            <li><strong>SCSI/SAS</strong> - Storage enterprise</li>
+            <li><strong>USB Mass Storage</strong> - Chiavette e dischi esterni</li>
+            <li><strong>Virtual Block Devices</strong> - QEMU, loopback, device mapper</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+<ul>
+<li><strong>I/O Scheduling</strong> - Algoritmi CFQ, Deadline, Noop per ottimizzare l'accesso</li>
+<li><strong>Block Layer Caching</strong> - Page cache e buffer cache per prestazioni</li>
+<li><strong>RAID e LVM</strong> - Supporto per storage virtuale avanzato</li>
+<li><strong>Hotplug</strong> - Rilevamento dispositivi rimovibili a caldo</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave</h2>
+<p><strong>I dispositivi a blocchi sono il ponte tra il mondo virtuale del kernel e lo storage fisico:</strong></p>
+
+<h3>💾 Virtual File System (VFS)</h3>
+<p>• <strong>Mapping File-Blocchi</strong> - Converte offset dei file in numeri di blocco del disco</p>
+<p>• <strong>Page Cache</strong> - Coordina il caching intelligente con il block layer</p>
+
+<h3>🌐 Device Mapper</h3>
+<p>• <strong>LVM Integration</strong> - Gestisce volumi logici sopra dispositivi fisici</p>
+<p>• <strong>RAID Support</strong> - Fornisce astrazione per configurazioni RAID</p>
+
+<h3>🧠 Memory Management</h3>
+<p>• <strong>Buffer Cache</strong> - Gestisce cache di buffer per operazioni I/O</p>
+<p>• <strong>Page Cache</strong> - Coordina caching di pagine con block I/O</p>
+
+<h2>🛠️ API del Block Layer</h2>
+        <p><strong>Queste sono le funzioni principali del sottosistema block I/O che gestiscono l'accesso allo storage:</strong></p>
+
+        <h3>📂 Richieste I/O Base</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">struct bio *bio_alloc(gfp_t gfp_mask, unsigned int nr_iovecs);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca una struttura bio per una richiesta I/O.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void submit_bio(int rw, struct bio *bio);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia una richiesta bio al dispositivo sottostante.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int blkdev_issue_flush(struct block_device *bdev, gfp_t gfp_mask, sector_t *error_sector);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Forza la scrittura di tutti i dati cached sul dispositivo.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">struct block_device *blkdev_get_by_path(const char *path, fmode_t mode, void *holder);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene un riferimento a un dispositivo a blocchi per path.</span>
+        </div>
+
+        <h3>📊 Gestione Code e Scheduling</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">struct request_queue *blk_alloc_queue(gfp_t gfp_mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca una coda di richieste per un dispositivo.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void blk_queue_make_request(struct request_queue *q, make_request_fn *mfn);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta la funzione di elaborazione richieste per la coda.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int elevator_change(struct request_queue *q, const char *elevator_name);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia l'algoritmo di I/O scheduling per la coda.</span>
+        </div>
+
+        <h3>💽 Device Mapper e Virtualizzazione</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int dm_create(int minor, struct mapped_device **md);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un dispositivo mappato per LVM o RAID.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int dm_table_add_target(struct dm_table *t, const char *type, sector_t start, sector_t len, char *params);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Aggiunge un target alla tabella di mapping del device mapper.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Come utilizzare i dispositivi a blocchi nella programmazione:</strong></p>
+<ol>
+<li><code>fd = open("/dev/sda", O_RDONLY);</code> - Apre un dispositivo a blocchi</li>
+<li><code>ioctl(fd, BLKGETSIZE64, &size);</code> - Ottiene la dimensione del dispositivo</li>
+<li><code>pread(fd, buffer, 4096, offset);</code> - Legge blocchi specifici</li>
+<li><code>ioctl(fd, BLKFLSBUF, NULL);</code> - Svuota i buffer del dispositivo</li>
+</ol>
+<p><em>Queste operazioni permettono di accedere direttamente allo storage senza passare attraverso il filesystem.</em></p>
+
+<h2>🗺️ Architettura del Block Layer</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Sottosistema Block I/O</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI & FILESYSTEM</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • EXT4, BTRFS, XFS<br>
+                    • System Calls (read/write)<br>
+                    • Librerie I/O
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Block Layer Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 BLOCK LAYER CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📦</div>
+                        <div style="font-size: 0.8em;">bio</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">request</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">queue</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">elevator</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • I/O Scheduling intelligente<br>
+                    • Request merging & sorting<br>
+                    • Caching e buffering
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Device Drivers -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">💽 SATA/AHCI</div>
+                    <div style="font-size: 0.8em; color: #666;">Dischi tradizionali</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🚀 NVMe</div>
+                    <div style="font-size: 0.8em; color: #666;">SSD ad alta velocità</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔧 SCSI/SAS</div>
+                    <div style="font-size: 0.8em; color: #666;">Storage enterprise</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">💿 USB Storage</div>
+                    <div style="font-size: 0.8em; color: #666;">Dispositivi esterni</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔧 HARDWARE FISICO</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • HDD meccanici (seek time)<br>
+                    • SSD flash (accesso diretto)<br>
+                    • Storage di rete (SAN, NAS)<br>
+                    • Virtual storage (RAID, LVM)
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le bio rappresentano richieste I/O dal filesystem<br>
+                • L'elevator scheduler ottimizza l'ordine di esecuzione<br>
+                • I driver hardware traducono in protocolli specifici<br>
+                • Tutto è progettato per massimizzare le prestazioni I/O
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento del Block Layer</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona l'accesso ai dispositivi a blocchi</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Richiesta I/O</div>
+        <div style="font-family: monospace; font-size: 0.9em;">read(fd, buffer, 4096)</div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Elaborazione Block Layer</div>
+        <div style="font-family: monospace; font-size: 0.9em;">VFS → bio_alloc → submit_bio</div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> Il filesystem converte l'offset logico del file in numeri di blocco fisici, crea una struttura bio con i dati da leggere/scrivere, e la accoda nella request queue del dispositivo.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Fasi dell'I/O Block:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Creazione BIO</strong> - Il filesystem crea una struttura bio con indirizzo, dimensione e direzione I/O</li>
+        <li><strong>2. I/O Scheduling</strong> - L'elevator scheduler riordina le richieste per ottimizzare l'accesso al disco</li>
+        <li><strong>3. Request Merging</strong> - Richieste adiacenti vengono unite per ridurre gli accessi fisici</li>
+        <li><strong>4. Driver Execution</strong> - Il driver del dispositivo esegue l'I/O fisico sul controller hardware</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> I dati vengono trasferiti dal dispositivo fisico alla memoria dell'applicazione, con ottimizzazioni automatiche per massimizzare le prestazioni e ridurre la latenza.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico dei Block Devices</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Lista dispositivi a blocchi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lsblk<br>
+                        NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT<br>
+                        sda      8:0    0 465.8G  0 disk<br>
+                        ├─sda1   8:1    0   512M  0 part /boot/efi<br>
+                        └─sda2   8:2    0 465.3G  0 part /<br>
+                        sdb      8:16   1   7.5G  0 disk /media/usb
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i dispositivi a blocchi e le loro partizioni</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Statistiche I/O dispositivi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ iostat -x 1<br>
+                        Device r/s w/s rkB/s wkB/s rrqm/s wrqm/s %util<br>
+                        sda   15.0 25.0 120.0 200.0 2.0 8.0 45.0<br>
+                        sdb    2.0 8.0 16.0 64.0 0.0 1.0 12.0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monitora letture/scritture e utilizzo dispositivi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Test prestazioni disco</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ hdparm -t /dev/sda<br>
+                        /dev/sda:<br>
+                        Timing buffered disk reads: 382 MB in 3.00 seconds = 127.33 MB/sec
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Misura velocità di lettura sequenziale del disco</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Informazioni dispositivo</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ blkid /dev/sda1<br>
+                        /dev/sda1: UUID="1234-ABCD" TYPE="ext4" PARTUUID="5678-EFGH"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Scopri UUID, tipo filesystem e altre proprietà</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave dei Block Devices</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📦</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">BIO (Block I/O)</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Struttura dati che rappresenta una richiesta I/O singola o multi-segmento, contenente buffer, indirizzo disco e flags operativi.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">I/O Scheduling</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">Algoritmi che riordinano le richieste I/O per minimizzare i movimenti del disco e ottimizzare le prestazioni complessive.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">💾</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Block Size</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">Unità minima di trasferimento dati (tipicamente 512 byte o 4KB), che influenza prestazioni e frammentazione del disco.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Direct I/O</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Bypass del page cache per trasferimenti diretti memoria-disco, utile per database e applicazioni ad alte prestazioni.</p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Block Devices
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa caratterizza i dispositivi a blocchi rispetto a quelli a caratteri?",
+            options: ["Trasferimento byte per byte", "Accesso random ai dati", "Solo operazioni sequenziali", "Nessuna cache"],
+            correct: 1,
+            explanation: "I dispositivi a blocchi supportano l'accesso random ai dati attraverso blocchi di dimensione fissa, a differenza dei dispositivi a caratteri che lavorano sequenzialmente."
+        },
+        {
+            question: "Quale struttura rappresenta una richiesta I/O nel block layer?",
+            options: ["inode", "dentry", "bio", "superblock"],
+            correct: 2,
+            explanation: "La struttura bio (block I/O) rappresenta una richiesta I/O singola o multi-segmento nel block layer del kernel."
+        },
+        {
+            question: "Cosa fa l'I/O scheduler nel kernel?",
+            options: ["Crea i filesystem", "Riordina le richieste I/O", "Gestisce la memoria", "Controlla i processi"],
+            correct: 1,
+            explanation: "L'I/O scheduler riordina e ottimizza le richieste I/O per ridurre i seek del disco e migliorare le prestazioni complessive."
+        },
+        {
+            question: "Quale comando mostra tutti i dispositivi a blocchi?",
+            options: ["ps aux", "lsblk", "df -h", "free -h"],
+            correct: 1,
+            explanation: "Il comando lsblk mostra tutti i dispositivi a blocchi presenti nel sistema con le loro partizioni e punti di mount."
+        },
+        {
+            question: "Cosa permette il Direct I/O?",
+            options: ["Accesso solo sequenziale", "Bypass del page cache", "Solo lettura", "Solo scrittura"],
+            correct: 1,
+            explanation: "Il Direct I/O permette di bypassare il page cache per trasferimenti diretti tra memoria applicativa e dispositivo, utile per alte prestazioni."
+        },
+        {
+            question: "Qual è la dimensione tipica di un blocco nei dispositivi a blocchi?",
+            options: ["1 byte", "512 byte", "1 KB", "4 KB"],
+            correct: 1,
+            explanation: "La dimensione tradizionale di un blocco è 512 byte, anche se moderni filesystem usano blocchi più grandi come 4KB per prestazioni migliori."
+        },
+        {
+            question: "Cosa rappresenta una request queue?",
+            options: ["Una coda di processi", "Coda delle richieste I/O per un dispositivo", "Lista di file aperti", "Cache di pagine"],
+            correct: 1,
+            explanation: "La request queue è la coda dove vengono accodate le richieste I/O per un dispositivo a blocchi prima dell'elaborazione."
+        },
+        {
+            question: "Quale algoritmo I/O scheduler è ottimizzato per SSD?",
+            options: ["CFQ", "Deadline", "Noop", "Anticipatory"],
+            correct: 2,
+            explanation: "L'algoritmo Noop è ottimizzato per dispositivi che gestiscono internamente l'ottimizzazione I/O, come gli SSD."
+        },
+        {
+            question: "Cosa fa il comando iostat?",
+            options: ["Mostra processi attivi", "Monitora statistiche I/O dispositivi", "Lista file system", "Controlla memoria"],
+            correct: 1,
+            explanation: "iostat monitora e riporta statistiche di input/output per dispositivi e partizioni, mostrando letture, scritture e utilizzo."
+        },
+        {
+            question: "Quale componente permette la virtualizzazione dello storage?",
+            options: ["VFS", "Device Mapper", "Block Layer", "I/O Scheduler"],
+            correct: 1,
+            explanation: "Il Device Mapper permette di creare dispositivi virtuali sopra dispositivi fisici, abilitando LVM, RAID e altri tipi di virtualizzazione storage."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

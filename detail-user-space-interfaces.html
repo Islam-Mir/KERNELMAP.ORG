@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USER SPACE INTERFACES - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .content code {
+            background: #f0f8ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #0288d1;
+        }
+
+        .code-block {
+            background: #f0f8ff;
+            border-left: 4px solid #0288d1;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            overflow-x: auto;
+            border-radius: 4px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            font-size: 0.7em;
+            color: #999;
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>USER SPACE INTERFACES</h1>
+        <p class="subtitle">Interfacce di Comunicazione con il Kernel</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🌉 INTERFACCE USER SPACE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Le User Space Interfaces sono il ponte di comunicazione tra i programmi applicativi e il kernel Linux.</strong> Attraverso system calls, procfs, sysfs e altre interfacce, le applicazioni possono richiedere servizi dal kernel in modo sicuro e controllato.</p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un ristorante con un menu fisso: i clienti (programmi) ordinano dai piatti disponibili (system calls), il maître (kernel) coordina tutto, e i cuochi (sottosistemi) preparano i piatti richiesti.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Le User Space Interfaces rappresentano il confine controllato tra mondo utente e mondo kernel.</strong> Immagina una banca con gli sportelli: i clienti possono depositare, prelevare, o chiedere informazioni, ma non possono accedere direttamente alla camera blindata (kernel space).</p>
+
+        <p>• <strong>System Call Interface</strong> - Il meccanismo principale per richiedere servizi dal kernel</p>
+        <p>• <strong>Virtual Filesystems</strong> - procfs, sysfs, devfs per accedere a informazioni kernel</p>
+        <p>• <strong>Shared Memory</strong> - Meccanismi per comunicazione efficiente tra processi</p>
+        <p>• <strong>Signals</strong> - Sistema di comunicazione asincrona tra kernel e processi</p>
+        <p>• <strong>Context Switching</strong> - Transizione controllata tra user mode e kernel mode</p>
+        <p>• <strong>Parameter Validation</strong> - Controllo rigoroso di tutti i dati passati dal user space</p>
+        <p><em>• Interazione: Ogni richiesta dal user space viene validata e instradata al sottosistema appropriato</em></p>
+
+        <h2>⚙️ Meccanismi di Interfaccia</h2>
+        <p><strong>Il kernel Linux fornisce diversi livelli di interfaccia per soddisfare varie esigenze:</strong></p>
+
+        <h3>🔧 System Call Interface</h3>
+        <p>• <strong>Software Interrupt</strong> - int 0x80 o syscall instruction per entrare in kernel mode</p>
+        <p>• <strong>Fast System Calls</strong> - sysenter/sysexit per performance ottimali</p>
+        <p>• <strong>Virtual Dynamic Shared Object (vDSO)</strong> - System calls in user space per velocità</p>
+        <p>• <strong>Parameter Passing</strong> - Registri CPU e stack per passare argomenti</p>
+
+        <h3>📁 Virtual Filesystems</h3>
+        <p>• <strong>procfs (/proc)</strong> - Informazioni sui processi e configurazione kernel</p>
+        <p>• <strong>sysfs (/sys)</strong> - Gerarchia dispositivi e driver del kernel</p>
+        <p>• <strong>devfs (/dev)</strong> - Nodi dispositivo per hardware e dispositivi virtuali</p>
+        <p>• <strong>tmpfs</strong> - Filesystem in memoria per file temporanei</p>
+
+        <h3>📡 Segnali e IPC</h3>
+        <p>• <strong>Signals</strong> - Notifiche asincrone (SIGKILL, SIGTERM, etc.)</p>
+        <p>• <strong>Pipes</strong> - Comunicazione unidirezionale tra processi</p>
+        <p>• <strong>Shared Memory</strong> - Memoria condivisa per comunicazione veloce</p>
+        <p>• <strong>Message Queues</strong> - Code di messaggi per IPC strutturato</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Ogni azione quotidiana su Linux coinvolge le user space interfaces:</strong></p>
+
+        <h3>🔍 Lettura di un File</h3>
+        <p>Quando fai <code>cat /etc/passwd</code>:</p>
+        <ol>
+            <li><code>open()</code> - Richiede al kernel di aprire il file</li>
+            <li><code>read()</code> - Legge dati dal file aperto</li>
+            <li><code>write()</code> - Scrive i dati su stdout</li>
+            <li><code>close()</code> - Chiude il file descriptor</li>
+        </ol>
+
+        <h3>⚙️ Configurazione di Rete</h3>
+        <ul>
+            <li><strong>socket()</strong> - Crea un socket di rete</li>
+            <li><strong>bind()</strong> - Associa indirizzo IP e porta</li>
+            <li><strong>listen()</strong> - Mette in ascolto il socket</li>
+            <li><strong>accept()</strong> - Accetta connessioni in entrata</li>
+        </ul>
+
+        <h3>📊 Monitoraggio Sistema</h3>
+        <ul>
+            <li><code>cat /proc/cpuinfo</code> - Legge informazioni CPU</li>
+            <li><code>ls /sys/block/</code> - Elenca dispositivi a blocchi</li>
+            <li><code>ps aux</code> - Lista processi attraverso /proc</li>
+            <li><code>free -h</code> - Informazioni memoria da /proc/meminfo</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Funzionano?</h3>
+        <p><strong>Comandi Linux per esplorare le interfacce:</strong></p>
+        <ul>
+            <li><code>strace ls</code> - Mostra tutte le system call eseguite da ls</li>
+            <li><code>ls /proc/</code> - Esplora il virtual filesystem dei processi</li>
+            <li><code>find /sys/ -name "*cpu*"</code> - Naviga la gerarchia sysfs</li>
+            <li><code>lsof</code> - Lista file aperti (usa system calls)</li>
+            <li><code>time command</code> - Misura tempo di esecuzione (context switches)</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Web Server</h3>
+        <p>Un server Apache in esecuzione usa costantemente:</p>
+        <ol>
+            <li><strong>socket()</strong> - Crea socket per connessioni HTTP</li>
+            <li><strong>epoll()</strong> - Monitora multiple connessioni efficientemente</li>
+            <li><strong>read()/write()</strong> - Trasferisce dati di richiesta/risposta</li>
+            <li><strong>fork()</strong> - Crea processi figli per gestire richieste</li>
+            <li><strong>mmap()</strong> - Mappa file statici in memoria</li>
+        </ol>
+
+        <h2>💾 Architetture Supportate</h2>
+        <ul>
+            <li><strong>x86 System Calls</strong> - int 0x80, sysenter, syscall</li>
+            <li><strong>ARM System Calls</strong> - svc instruction</li>
+            <li><strong>RISC-V System Calls</strong> - ecall instruction</li>
+            <li><strong>Virtual Filesystems</strong> - procfs, sysfs, devfs</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Sicurezza</strong> - Validazione rigorosa di tutti i parametri</li>
+            <li><strong>Performance</strong> - Ottimizzazioni per ridurre context switches</li>
+            <li><strong>Compatibilità</strong> - API stabili attraverso versioni kernel</li>
+            <li><strong>Estensibilità</strong> - Nuove system calls aggiunte quando necessario</li>
+            <li><strong>Debugging</strong> - Strumenti come strace per tracciare chiamate</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Le User Space Interfaces sono il "collante" che tiene insieme tutto il sistema Linux:</strong></p>
+
+        <h3>💾 Virtual File System (VFS)</h3>
+        <p>• <strong>File Operations</strong> - open, read, write, close sono richieste VFS</p>
+        <p>• <strong>Filesystem Mounting</strong> - mount() coordina con VFS</p>
+        <p>• <strong>Directory Navigation</strong> - chdir, getcwd lavorano con VFS</p>
+
+        <h3>⚙️ Process Scheduler</h3>
+        <p>• <strong>Process Creation</strong> - fork, exec, wait sono gestiti dallo scheduler</p>
+        <p>• <strong>Signal Delivery</strong> - kill, sigaction coordinano con scheduler</p>
+        <p>• <strong>Resource Limits</strong> - setrlimit, getrlimit controllano risorse</p>
+
+        <h3>🌐 Network Stack</h3>
+        <p>• <strong>Socket Operations</strong> - socket, bind, listen, accept</p>
+        <p>• <strong>Data Transfer</strong> - send, recv, sendto, recvfrom</p>
+        <p>• <strong>Network Configuration</strong> - ioctl per configurazione interfacce</p>
+
+        <h3>🧠 Memory Manager</h3>
+        <p>• <strong>Memory Mapping</strong> - mmap, munmap per file in memoria</p>
+        <p>• <strong>Shared Memory</strong> - shmget, shmat per IPC</p>
+        <p>• <strong>Memory Protection</strong> - mprotect per cambiare permessi</p>
+
+        <h3>🔐 Security Framework</h3>
+        <p>• <strong>Permission Checks</strong> - Ogni chiamata valida UID/GID</p>
+        <p>• <strong>Capability System</strong> - Controlli granulari oltre root</p>
+        <p>• <strong>Audit System</strong> - Logging di chiamate sensibili</p>
+
+        <h2>🛠️ System Calls Principali</h2>
+        <p><strong>Queste sono le chiamate di sistema più usate in Linux:</strong></p>
+
+        <h3>📂 Gestione File</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre un file e restituisce un file descriptor per successive operazioni.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge fino a 'count' byte dal file descriptor nel buffer.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive fino a 'count' byte dal buffer nel file descriptor.</span>
+        </div>
+
+        <h3>⚙️ Gestione Processi</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">pid_t fork(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un nuovo processo duplicando quello corrente.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int execve(const char *pathname, char *const argv[], char *const envp[]);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Sostituisce l'immagine del processo corrente con un nuovo programma.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">pid_t waitpid(pid_t pid, int *wstatus, int options);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attende la terminazione di un processo figlio.</span>
+        </div>
+
+        <h3>🌐 Networking</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #2e7d32; font-weight: bold;">int socket(int domain, int type, int protocol);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un endpoint per comunicazione e restituisce un file descriptor.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Associa un indirizzo locale al socket.</span>
+        </div>
+
+        <h3>🎯 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando lanci un comando nella shell:</strong></p>
+        <ol>
+            <li><code>fork()</code> - La shell crea un processo figlio</li>
+            <li><code>execve()</code> - Il figlio carica il programma del comando</li>
+            <li><code>dup2()</code> - Reindirizza stdin/stdout se necessario</li>
+            <li><code>waitpid()</code> - La shell attende che il comando finisca</li>
+        </ol>
+        <p><em>Ogni comando che esegui coinvolge multiple system calls coordinate dal kernel!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale delle User Space Interfaces</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🌉 Architettura delle Interfacce User Space</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi (bash, apache, firefox)<br>
+                    • Librerie (glibc, musl)<br>
+                    • Interpreti (python, java)
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Interface -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📞</div>
+                        <div style="font-size: 0.8em;">Syscall</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📁</div>
+                        <div style="font-size: 0.8em;">VFS</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📡</div>
+                        <div style="font-size: 0.8em;">Signals</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
+                        <div style="font-size: 0.8em;">Memory</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Context switching<br>
+                    • Parameter validation<br>
+                    • Service routing
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Kernel Subsystems -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">💾 VFS</div>
+                    <div style="font-size: 0.8em; color: #666;">File Systems</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">⚙️ SCHEDULER</div>
+                    <div style="font-size: 0.8em; color: #666;">Processi</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🌐 NETWORK</div>
+                    <div style="font-size: 0.8em; color: #666;">Stack TCP/IP</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🧠 MEMORY</div>
+                    <div style="font-size: 0.8em; color: #666;">Gestione RAM</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste dal user space al kernel<br>
+                • Ogni system call viene instradata al sottosistema appropriato<br>
+                • Il kernel valida e esegue le richieste in modo sicuro<br>
+                • I risultati vengono restituiti al programma chiamante
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: System Call in Azione</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Tracciamento di System Calls</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔍 Comando Semplice</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        echo "ciao mondo"<br>
+                        <span style="color: #666;">(scrive su stdout)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📊 System Calls</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        write(1, "ciao mondo\n", 12)<br>
+                        <span style="color: #666;">(kernel scrive su stdout)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comando per vedere le system calls:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">strace -c echo "ciao mondo"</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Context Switch</strong> - La CPU passa da user mode a kernel mode</li>
+                    <li><strong>2. Parameter Validation</strong> - Il kernel controlla fd=1, buffer, e count</li>
+                    <li><strong>3. Service Execution</strong> - Il kernel scrive i dati nel file descriptor stdout</li>
+                    <li><strong>4. Return to User</strong> - La CPU torna in user mode con il risultato</li>
+                    <li><strong>5. Program Continuation</strong> - echo continua l'esecuzione normalmente</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Anche il comando più semplice richiede multiple transizioni user/kernel. Le system calls sono il ponte invisibile che rende possibile ogni operazione sul sistema!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora le Interfacce</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📞 Traccia System Calls</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ strace ls<br>
+                        $ strace -c find /etc -name "*.conf"<br>
+                        $ strace -e trace=open,read,write cat /etc/passwd
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quali system calls vengono eseguite dai tuoi comandi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📁 Esplora /proc</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/cpuinfo<br>
+                        $ ls /proc/$$/fd<br>
+                        $ cat /proc/meminfo<br>
+                        $ cat /proc/$$/maps
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Accedi alle informazioni del kernel attraverso procfs</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Monitora Processi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ps aux<br>
+                        $ top -p $$<br>
+                        $ lsof -p $$<br>
+                        $ pmap $$
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva processi e loro risorse attraverso le interfacce</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Network Interfaces</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ss -tuln<br>
+                        $ ip link show<br>
+                        $ cat /proc/net/dev<br>
+                        $ netstat -i
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esplora interfacce di rete attraverso sysfs e procfs</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Confine Sicuro</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Le user space interfaces sono il checkpoint di sicurezza: ogni richiesta viene validata prima di raggiungere il kernel. È il primo livello di difesa contro malware e errori.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Overhead Controllato</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Ogni system call richiede un context switch costoso, quindi il kernel ottimizza con vDSO e altre tecniche per ridurre l'overhead quando possibile.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">API Stabile</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Le system calls mantengono compatibilità binaria attraverso versioni del kernel. Programmi compilati anni fa funzionano ancora oggi.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📊</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Debugging Potente</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Strumenti come strace e perf permettono di vedere esattamente cosa fanno i programmi a livello di system calls, essenziale per debugging e ottimizzazione.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sulle User Space Interfaces
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa sono le User Space Interfaces nel kernel Linux?",
+            options: ["Driver per dispositivi hardware", "Meccanismi per la comunicazione tra programmi e kernel", "Parte del sistema di avvio", "Gestori di memoria"],
+            correct: 1,
+            explanation: "Le User Space Interfaces sono i meccanismi che permettono ai programmi applicativi di richiedere servizi dal kernel in modo sicuro e controllato."
+        },
+        {
+            question: "Quale comando permette di tracciare le system calls eseguite da un programma?",
+            options: ["ps", "top", "strace", "lsof"],
+            correct: 2,
+            explanation: "strace traccia e mostra tutte le system calls eseguite da un programma, utile per debugging e comprensione del comportamento del sistema."
+        },
+        {
+            question: "Cosa rappresenta /proc nel filesystem Linux?",
+            options: ["Directory fisica", "Virtual filesystem per informazioni kernel", "Backup del sistema", "File di configurazione"],
+            correct: 1,
+            explanation: "/proc è un virtual filesystem (procfs) che permette l'accesso alle informazioni sui processi e alla configurazione del kernel."
+        },
+        {
+            question: "Quale system call viene usata per aprire un file?",
+            options: ["read", "write", "open", "close"],
+            correct: 2,
+            explanation: "La system call open() apre un file e restituisce un file descriptor che può essere usato per successive operazioni di lettura/scrittura."
+        },
+        {
+            question: "Cosa succede durante un context switch?",
+            options: ["Il programma termina", "La CPU passa da user mode a kernel mode", "La memoria viene cancellata", "Il disco viene formattato"],
+            correct: 1,
+            explanation: "Un context switch avviene quando la CPU cambia dal modo utente (user mode) al modo kernel (kernel mode) per eseguire una system call."
+        },
+        {
+            question: "Quale filesystem virtuale contiene informazioni sui dispositivi hardware?",
+            options: ["/proc", "/sys", "/dev", "/tmp"],
+            correct: 1,
+            explanation: "/sys (sysfs) è il virtual filesystem che espone la gerarchia dei dispositivi hardware e dei loro driver nel kernel."
+        },
+        {
+            question: "Cosa permette di fare la system call fork()?",
+            options: ["Creare un nuovo file", "Creare un nuovo processo", "Leggere da un file", "Scrivere su un file"],
+            correct: 1,
+            explanation: "fork() crea un nuovo processo duplicando quello corrente, permettendo la creazione di processi figli."
+        },
+        {
+            question: "Quale meccanismo permette system calls più veloci evitando alcuni context switch?",
+            options: ["strace", "vDSO", "procfs", "sysfs"],
+            correct: 1,
+            explanation: "vDSO (Virtual Dynamic Shared Object) permette di eseguire alcune system calls direttamente in user space senza context switch completi."
+        },
+        {
+            question: "Cosa rappresenta un file descriptor?",
+            options: ["Un file sul disco", "Un numero intero che identifica un file aperto", "Un tipo di permesso", "Un indirizzo di memoria"],
+            correct: 1,
+            explanation: "Un file descriptor è un numero intero restituito da open() che identifica univocamente un file o socket aperto nel processo."
+        },
+        {
+            question: "Quale comando mostra i file aperti da un processo?",
+            options: ["ps", "top", "lsof", "free"],
+            correct: 2,
+            explanation: "lsof (list open files) mostra tutti i file e socket aperti da processi, utilizzando le informazioni delle user space interfaces."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione delle User Space Interfaces! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare le interfacce di sistema! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Le system calls sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

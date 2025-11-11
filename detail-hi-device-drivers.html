@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi Device Drivers - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Hi Device Drivers</h1>
+        <p class="subtitle">Driver di Dispositivo Avanzati</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🚗 DRIVER AVANZATI HARDWARE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Hi Device Drivers gestisce driver di dispositivo complessi che richiedono gestione avanzata di risorse, protocolli di comunicazione e ottimizzazioni prestazionali.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un pilota di Formula 1 professionista: non solo guida l'auto ma ottimizza setup, gestisce elettronica avanzata, monitora telemetria in tempo reale, e risponde istantaneamente alle condizioni di gara.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Hi Device Drivers è il sottosistema che gestisce i driver più complessi e ad alte prestazioni nel kernel Linux, fornendo astrazioni avanzate per dispositivi che richiedono gestione sofisticata.</strong> Immagina un'orchestra sinfonica dove ogni musicista è un virtuoso specializzato: violini per GPU, ottoni per storage, legni per networking, percussioni per dispositivi embedded.</p>
+
+        <p>• <strong>Gestione risorse avanzata</strong> - DMA, interrupt coalescing, memory mapping complesso</p>
+        <p>• <strong>Protocolli di comunicazione</strong> - USB 3.0/4.0, PCIe, Thunderbolt, protocolli industriali</p>
+        <p>• <strong>Ottimizzazioni prestazionali</strong> - Zero-copy, kernel bypass, hardware acceleration</p>
+        <p>• <strong>Power management avanzato</strong> - ASPM, runtime PM, device-specific power states</p>
+        <p>• <strong>Hotplug e enumeration</strong> - PCI hotplug, USB hotplug, device discovery dinamico</p>
+        <p>• <strong>Virtualization support</strong> - SR-IOV, device passthrough, mediated devices</p>
+        <p><em>• Interazione: Coordina dispositivi high-end con requisiti di prestazioni e funzionalità avanzate</em></p>
+
+        <h2>⚙️ Categorie di Driver Avanzati</h2>
+        <p><strong>Il sottosistema gestisce quattro categorie principali di driver high-end:</strong></p>
+
+        <h3>🎮 Graphics & Display</h3>
+        <p>• <strong>GPU drivers</strong> - NVIDIA, AMD, Intel con Vulkan/OpenGL/DirectX</p>
+        <p>• <strong>Display controllers</strong> - HDMI, DisplayPort, multiple monitors</p>
+        <p>• <strong>VR/AR hardware</strong> - Headset tracking, motion controllers</p>
+
+        <h3>💾 High-Performance Storage</h3>
+        <p>• <strong>NVMe SSD</strong> - PCIe 4.0/5.0 con queue depths elevati</p>
+        <p>• <strong>RAID controllers</strong> - Hardware RAID con cache avanzata</p>
+        <p>• <strong>Enterprise storage</strong> - SAN, NAS, distributed storage</p>
+
+        <h3>🌐 Advanced Networking</h3>
+        <p>• <strong>10GbE/100GbE NICs</strong> - High-speed Ethernet con RDMA</p>
+        <p>• <strong>InfiniBand</strong> - Interconnect ad alta velocità per HPC</p>
+        <p>• <strong>SmartNICs</strong> - NIC programmabili con offload avanzato</p>
+
+        <h3>🔬 Scientific & Industrial</h3>
+        <p>• <strong>FPGA interfaces</strong> - Configurazione e comunicazione FPGA</p>
+        <p>• <strong>DAQ systems</strong> - Data acquisition ad alta velocità</p>
+        <p>• <strong>Motion control</strong> - Servo motori, encoder, CNC</p>
+
+        <h2>📋 Architettura Avanzata</h2>
+        <p><strong>Hi Device Drivers organizza la gestione attraverso layer sofisticati:</strong></p>
+
+        <h3>🏗️ Framework Architetturali</h3>
+        <ul>
+            <li><strong>Device Model</strong> - Rappresentazione unificata di dispositivi nel kernel</li>
+            <li><strong>Bus subsystems</strong> - PCI, USB, Thunderbolt con enumeration</li>
+            <li><strong>Resource management</strong> - IRQ, DMA, memory regions</li>
+            <li><strong>Power management</strong> - Runtime PM, wake-on-LAN</li>
+        </ul>
+
+        <h3>⚡ Ottimizzazioni Prestazionali</h3>
+        <ul>
+            <li><strong>DMA engines</strong> - Direct Memory Access per trasferimenti efficienti</li>
+            <li><strong>Interrupt coalescing</strong> - Riduzione overhead interrupt</li>
+            <li><strong>Hardware queues</strong> - Command queues per operazioni asincrone</li>
+            <li><strong>Memory mapping</strong> - MMIO per accesso diretto registri</li>
+        </ul>
+
+        <h3>🔧 Funzionalità Enterprise</h3>
+        <ul>
+            <li><strong>Hotplug support</strong> - Aggiunta/rimozione dispositivi a runtime</li>
+            <li><strong>Firmware updates</strong> - Aggiornamento firmware dispositivi</li>
+            <li><strong>Diagnostics</strong> - Self-test e monitoraggio salute dispositivi</li>
+            <li><strong>Failover</strong> - Ridondanza e recovery automatico</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare driver avanzati:</strong></p>
+        <ul>
+            <li><code>lspci -vv</code> - Dettagli dispositivi PCI con driver</li>
+            <li><code>lsusb -v</code> - Informazioni dispositivi USB</li>
+            <li><code>nvidia-smi</code> - Stato GPU NVIDIA</li>
+            <li><code>ethtool eth0</code> - Configurazione NIC avanzata</li>
+            <li><code>nvme list</code> - Dispositivi NVMe storage</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: GPU Gaming</h3>
+        <p>Quando giochi un videogioco moderno:</p>
+        <ol>
+            <li>Driver GPU configura pipeline grafica Vulkan/DirectX</li>
+            <li>Kernel alloca VRAM e configura DMA per textures</li>
+            <li>Interrupt coalescing ottimizza comunicazione GPU-CPU</li>
+            <li>Power management regola clock dinamicamente</li>
+        </ol>
+
+        <h2>🔧 Tecnologie Avanzate</h2>
+        <ul>
+            <li><strong>SR-IOV</strong> - Single Root I/O Virtualization per VM</li>
+            <li><strong>RDMA</strong> - Remote Direct Memory Access per networking</li>
+            <li><strong>Hardware acceleration</strong> - Offload CPU per crittografia, compressione</li>
+            <li><strong>Device passthrough</strong> - Assegnazione diretta dispositivi a VM</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Prestazionali</h2>
+        <ul>
+            <li><strong>Low latency</strong> - Risposta sub-millisecondo per dispositivi real-time</li>
+            <li><strong>High throughput</strong> - Trasferimenti dati multi-gigabit</li>
+            <li><strong>Scalability</strong> - Supporto migliaia di dispositivi simultanei</li>
+            <li><strong>Reliability</strong> - Error recovery e fault tolerance</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Hi Device Drivers collabora con sottosistemi avanzati del kernel:</strong></p>
+
+        <h3>🚀 Performance Subsystems</h3>
+        <p>• <strong>I/O scheduler</strong> - Ottimizzazione richieste I/O per storage</p>
+        <p>• <strong>Network stack</strong> - Protocolli avanzati per high-speed networking</p>
+
+        <h3>🧠 Memory Management</h3>
+        <p>• <strong>Huge pages</strong> - Pagine grandi per DMA efficiente</p>
+        <p>• <strong>NUMA awareness</strong> - Ottimizzazione per architetture multi-socket</p>
+
+        <h3>⚡ Real-Time Systems</h3>
+        <p>• <strong>RT patches</strong> - Supporto real-time per dispositivi critici</p>
+        <p>• <strong>Priority scheduling</strong> - Interrupt threads ad alta priorità</p>
+
+        <h3>☁️ Virtualization</h3>
+        <p>• <strong>KVM integration</strong> - Supporto virtualizzazione hardware</p>
+        <p>• <strong>Container support</strong> - Device access in ambienti containerizzati</p>
+
+        <h2>🛠️ API e Strutture Avanzate</h2>
+        <p><strong>Le principali strutture dati per driver high-end:</strong></p>
+
+        <h3>📂 Strutture Core Avanzate</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">struct pci_driver</code><br>
+            <span style="color: #666; font-size: 0.9em;">Driver PCI con probe/remove callbacks e ID table per device matching.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">struct usb_driver</code><br>
+            <span style="color: #666; font-size: 0.9em;">Driver USB con supporto hotplug, probe/disconnect, e device ID matching.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">struct net_device</code><br>
+            <span style="color: #666; font-size: 0.9em;">Struttura dispositivo di rete con metodi trasmissione/ricezione e configurazione.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">struct drm_driver</code><br>
+            <span style="color: #666; font-size: 0.9em;">Driver DRM per GPU con supporto KMS, GEM, e API grafiche moderne.</span>
+        </div>
+
+        <h3>⚡ DMA e Interrupt Management</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">dma_alloc_coherent()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca memoria coerente per DMA con dispositivi che non supportano cache snooping.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">request_threaded_irq()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra interrupt handler threaded per ridurre latenza e migliorare concorrenza.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">pci_enable_msi()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Abilita Message Signaled Interrupts per ridurre overhead interrupt su PCI.</span>
+        </div>
+
+        <h3>🔄 Power Management Avanzato</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">pm_runtime_get_sync()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene riferimento runtime PM, riattiva dispositivo se necessario.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">device_set_wakeup_capable()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Abilita dispositivo a wake-up sistema da sleep states.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">pci_save_state()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Salva stato PCI per suspend/resume affidabile.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Enterprise</h3>
+        <p><strong>Quando si configura un server enterprise con GPU:</strong></p>
+        <ol>
+            <li><code>modprobe nvidia</code> - Carica driver NVIDIA enterprise</li>
+            <li>Driver configura PCIe ASPM e power management</li>
+            <li>Imposta CUDA runtime e GPU memory mapping</li>
+            <li>Configura NVLink per multi-GPU communication</li>
+        </ol>
+        <p><em>Il kernel astrae completamente la complessità hardware sottostante</em></p>
+
+
+        <h2>🗺️ Mappa Architetturale Hi Device Drivers</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei Driver Avanzati</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI HIGH-END</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Gaming engines<br>
+                    • CAD software<br>
+                    • HPC applications<br>
+                    • Enterprise databases
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Kernel Subsystems -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SOTTOSISTEMI KERNEL AVANZATI</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • DRM/KMS • NVMe • RDMA<br>
+                    • SR-IOV • VFIO • Power Mgmt<br>
+                    • Real-time scheduling
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hi Device Drivers Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🚗 HI DEVICE DRIVERS CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🎮</div>
+                        <div style="font-size: 0.8em;">GPU/Graphics</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
+                        <div style="font-size: 0.8em;">NVMe/Storage</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌐</div>
+                        <div style="font-size: 0.8em;">10GbE/RDMA</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔬</div>
+                        <div style="font-size: 0.8em;">FPGA/DAQ</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • DMA avanzato<br>
+                    • Interrupt coalescing<br>
+                    • Power management<br>
+                    • Virtualization
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- High-End Hardware -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">RTX 4090</div>
+                    <div style="font-size: 0.8em; color: #666;">Gaming GPU</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">Samsung 980 Pro</div>
+                    <div style="font-size: 0.8em; color: #666;">NVMe SSD</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">Mellanox CX6</div>
+                    <div style="font-size: 0.8em; color: #666;">100GbE NIC</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">Xilinx VU9P</div>
+                    <div style="font-size: 0.8em; color: #666;">FPGA</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Enterprise Infrastructure -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🏢 INFRASTRUTTURA ENTERPRISE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Data Center Servers<br>
+                    • High-Performance Computing<br>
+                    • Gaming Platforms<br>
+                    • Industrial Automation
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste high-performance<br>
+                • Ogni layer ottimizza per prestazioni massime<br>
+                • I driver astraggono complessità hardware enterprise<br>
+                • Gli stessi principi si applicano a tutti i dispositivi high-end
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: GPU Acceleration</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Rendering 3D con GPU acceleration</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🎮 Applicazione Gaming</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Richiede rendering:<br>
+                        <span style="color: #666;">• 4K resolution</span><br>
+                        <span style="color: #666;">• Ray tracing</span><br>
+                        <span style="color: #666;">• 120 FPS</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🎨 Driver GPU NVIDIA</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Configura:<br>
+                        <span style="color: #666;">• Vulkan pipeline</span><br>
+                        <span style="color: #666;">• VRAM allocation</span><br>
+                        <span style="color: #666;">• DMA transfers</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comando di avvio:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">vulkaninfo | grep GPU</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza di GPU acceleration:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Device enumeration:</strong> Driver identifica GPU e capabilities (Vulkan, CUDA, OpenCL)</li>
+                    <li><strong>2. Memory mapping:</strong> Kernel mappa VRAM e configura DMA per efficient data transfer</li>
+                    <li><strong>3. Pipeline setup:</strong> Driver configura graphics pipeline con shaders, textures, framebuffers</li>
+                    <li><strong>4. Command submission:</strong> Applicazione sottomette command buffers via Vulkan/DirectX API</li>
+                    <li><strong>5. Interrupt handling:</strong> GPU signals completion via interrupts ottimizzati</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Rendering fotorealistico a 4K 120FPS diventa possibile grazie all'orchestrazione perfetta tra driver avanzato, kernel ottimizzato, e hardware high-end.
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora Hi Device Drivers</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti con driver dispositivi high-end</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🎮 GPU Monitoring</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ nvidia-smi<br>
+                        +----------------+<br>
+                        | GPU 0: RTX 3080|<br>
+                        | Memory: 10GB   |<br>
+                        | Temp: 65C      |<br>
+                        +----------------+
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monitora stato e prestazioni GPU</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💾 NVMe Performance</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ nvme smart-log /dev/nvme0<br>
+                        temperature: 45C<br>
+                        available_spare: 100%<br>
+                        media_errors: 0<br>
+                        $ hdparm -t /dev/nvme0n1
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Analizza prestazioni storage NVMe</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 10GbE Tuning</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ethtool -S eth0<br>
+                        rx_packets: 1500000<br>
+                        tx_packets: 1200000<br>
+                        $ ethtool -c eth0<br>
+                        rx-usecs: 50<br>
+                        tx-usecs: 100
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Ottimizza configurazione rete high-speed</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔬 PCIe Analysis</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lspci -vv -s 01:00.0<br>
+                        LnkSta: Speed 16GT/s, Width x16<br>
+                        LnkCap: Speed 16GT/s, Width x16<br>
+                        $ setpci -s 01:00.0 0x88.L
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Analizza configurazione PCIe dispositivi</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">DMA Avanzato</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Direct Memory Access permette trasferimenti dati ad alta velocità senza intervento CPU. Cruciale per dispositivi high-performance che devono saturare bus PCIe.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Interrupt Coalescing</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Raggruppa multiple interrupt in una singola notifica per ridurre overhead CPU. Essenziale per dispositivi che generano migliaia di interrupt al secondo.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">☁️</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">SR-IOV</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Single Root I/O Virtualization permette condivisione efficiente di dispositivi high-end tra multiple VM, riducendo overhead e migliorando prestazioni.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔋</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Runtime PM</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Power management dinamico regola stati energetici dispositivi in base all'uso. Cruciale per dispositivi high-end che consumano centinaia di watt.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Hi Device Drivers
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa permette SR-IOV nei driver avanzati?",
+            options: ["Condivisione dispositivi tra VM", "Riduzione consumo energetico", "Aumento velocità clock", "Supporto USB 4.0"],
+            correct: 0,
+            explanation: "SR-IOV (Single Root I/O Virtualization) permette condivisione efficiente di dispositivi high-end tra multiple virtual machines."
+        },
+        {
+            question: "Cosa ottimizza l'interrupt coalescing?",
+            options: ["Velocità memoria", "Overhead interrupt CPU", "Consumo energetico", "Velocità rete"],
+            correct: 1,
+            explanation: "Interrupt coalescing raggruppa multiple interrupt in una singola notifica per ridurre l'overhead di processamento CPU."
+        },
+        {
+            question: "Quale tecnologia permette DMA sicuro?",
+            options: ["IOMMU", "Cache snooping", "Memory interleaving", "Bank switching"],
+            correct: 0,
+            explanation: "IOMMU (I/O Memory Management Unit) permette DMA sicuro isolando spazi di memoria tra dispositivi e proteggendo dal DMA rogue."
+        },
+        {
+            question: "Cosa misura nvidia-smi?",
+            options: ["Temperatura CPU", "Stato GPU NVIDIA", "Velocità rete", "Utilizzo disco"],
+            correct: 1,
+            explanation: "nvidia-smi è uno strumento per monitorare stato, prestazioni e configurazione delle GPU NVIDIA."
+        },
+        {
+            question: "Quale comando analizza dispositivi NVMe?",
+            options: ["lspci", "nvme list", "lsusb", "ethtool"],
+            correct: 1,
+            explanation: "nvme list mostra tutti i dispositivi NVMe connessi al sistema con informazioni dettagliate."
+        },
+        {
+            question: "Cosa configura ethtool per NIC high-speed?",
+            options: ["Velocità clock CPU", "Parametri rete avanzati", "Impostazioni GPU", "Configurazione USB"],
+            correct: 1,
+            explanation: "ethtool permette configurazione avanzata di schede di rete, inclusi parametri offload, coalescing, e flow control."
+        },
+        {
+            question: "Quale tecnologia permette device passthrough?",
+            options: ["SR-IOV", "VFIO", "KVM", "QEMU"],
+            correct: 1,
+            explanation: "VFIO (Virtual Function I/O) permette assegnazione diretta di dispositivi hardware a virtual machines."
+        },
+        {
+            question: "Cosa ottimizza PCIe ASPM?",
+            options: ["Velocità trasferimento", "Consumo energetico PCIe", "Latenza interrupt", "Dimensione cache"],
+            correct: 1,
+            explanation: "ASPM (Active State Power Management) ottimizza consumo energetico dei link PCIe mettendo in sleep stati inattivi."
+        },
+        {
+            question: "Quale comando mostra dettagli PCIe?",
+            options: ["lspci -vv", "lsusb -v", "lscpu", "free -h"],
+            correct: 0,
+            explanation: "lspci -vv mostra informazioni molto dettagliate sui dispositivi PCI, inclusi link speed, width, e capabilities."
+        },
+        {
+            question: "Cosa permette RDMA?",
+            options: ["Remote Direct Memory Access", "Riduzione latenza rete", "Entrambi sopra", "Nessuno sopra"],
+            correct: 2,
+            explanation: "RDMA permette accesso diretto alla memoria remota senza intervento CPU, riducendo drasticamente latenza e overhead per comunicazioni high-speed."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione degli Hi Device Drivers! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare gli Hi Device Drivers! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Gli Hi Device Drivers sono molto avanzati! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

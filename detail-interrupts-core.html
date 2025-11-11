@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interrupts Core - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Interrupts Core</h1>
+        <p class="subtitle">Sistema di Interrupt</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">⚡ GESTORE INTERRUPT HARDWARE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il sistema di interrupt permette ai dispositivi hardware di notificare eventi al processore in modo asincrono, interrompendo l'esecuzione normale per gestire situazioni urgenti.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un campanello di emergenza in un edificio: quando suona, tutti si fermano e prestano attenzione immediata, indipendentemente da cosa stavano facendo.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Gli interrupt sono il meccanismo fondamentale che permette al kernel Linux di rispondere tempestivamente agli eventi hardware, garantendo che dispositivi critici possano ottenere attenzione immediata dalla CPU.</strong> Immagina un ristorante affollato dove i camerieri lavorano normalmente, ma quando arriva un ordine urgente dal tavolo VIP, tutto si ferma per servire prima quello.</p>
+
+        <p>• <strong>Gestione asincrona eventi</strong> - Risposta immediata a eventi hardware senza polling</p>
+        <p>• <strong>Prioritizzazione</strong> - Livelli di priorità per gestire eventi critici</p>
+        <p>• <strong>Interrupt sharing</strong> - Multiple dispositivi possono condividere linee interrupt</p>
+        <p>• <strong>Top-half/Bottom-half</strong> - Separazione lavoro urgente da elaborazione differita</p>
+        <p>• <strong>Interrupt controller</strong> - Gestione routing e masking interrupt</p>
+        <p>• <strong>Real-time constraints</strong> - Latenza minima per sistemi tempo-reale</p>
+        <p><em>• Interazione: Riceve segnali hardware e coordina risposta appropriata del kernel</em></p>
+
+        <h2>⚙️ Tipi di Interrupt</h2>
+        <p><strong>Il sistema Linux gestisce diversi tipi di interrupt, ciascuno con caratteristiche specifiche:</strong></p>
+
+        <h3>🔌 Hardware Interrupts (IRQs)</h3>
+        <p>• <strong>External interrupts</strong> - Generati da dispositivi esterni (schede di rete, dischi)</p>
+        <p>• <strong>Internal interrupts</strong> - Generati da CPU stessa (page faults, system calls)</p>
+        <p>• <strong>Maskable interrupts</strong> - Possono essere temporaneamente disabilitati</p>
+
+        <h3>🧠 Software Interrupts</h3>
+        <p>• <strong>SoftIRQs</strong> - Interrupt software per operazioni critiche ma non urgenti</p>
+        <p>• <strong>Tasklets</strong> - Meccanismo bottom-half per elaborazione differita</p>
+        <p>• <strong>Workqueues</strong> - Thread kernel per lavoro non-urgente</p>
+
+        <h3>⚡ Advanced Interrupt Features</h3>
+        <p>• <strong>MSI (Message Signaled Interrupts)</strong> - Interrupt via memoria invece di pin</p>
+        <p>• <strong>MSI-X</strong> - Versione estesa con più vettori per dispositivo</p>
+        <p>• <strong>Interrupt coalescing</strong> - Raggruppamento interrupt per ridurre overhead</p>
+
+        <h2>📋 Architettura del Sistema</h2>
+        <p><strong>Il sistema di interrupt Linux è organizzato in layer gerarchici per ottimizzare prestazioni e affidabilità:</strong></p>
+
+        <h3>🏗️ Interrupt Flow</h3>
+        <ul>
+            <li><strong>Hardware</strong> - Dispositivo genera segnale interrupt</li>
+            <li><strong>Interrupt Controller</strong> - APIC/IO-APIC instrada segnale</li>
+            <li><strong>CPU</strong> - Riceve interrupt e salva contesto</li>
+            <li><strong>ISR (Top-half)</strong> - Handler immediato minimo</li>
+            <li><strong>Bottom-half</strong> - Elaborazione differita dettagliata</li>
+        </ul>
+
+        <h3>⚙️ Interrupt Controller</h3>
+        <ul>
+            <li><strong>PIC (8259A)</strong> - Programmable Interrupt Controller legacy</li>
+            <li><strong>APIC</strong> - Advanced Programmable Interrupt Controller</li>
+            <li><strong>IO-APIC</strong> - I/O Advanced Programmable Interrupt Controller</li>
+            <li><strong>MSI Controller</strong> - Message Signaled Interrupt controller</li>
+        </ul>
+
+        <h3>🔄 Context Switching</h3>
+        <ul>
+            <li><strong>Stack switching</strong> - Cambio a stack kernel</li>
+            <li><strong>Register saving</strong> - Salvataggio contesto processo</li>
+            <li><strong>Priority elevation</strong> - Esecuzione con privilegi kernel</li>
+            <li><strong>Nested interrupts</strong> - Interrupt durante interrupt</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare gli interrupt:</strong></p>
+        <ul>
+            <li><code>cat /proc/interrupts</code> - Mostra contatori interrupt per CPU</li>
+            <li><code>cat /proc/irq/IRQ_NUMBER</code> - Dettagli specifici interrupt</li>
+            <li><code>ls /proc/irq/</code> - Lista tutte le linee interrupt</li>
+            <li><code>dmesg | grep -i irq</code> - Log configurazione interrupt</li>
+            <li><code>vmstat -i</code> - Statistiche interrupt sistema</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Interrupt da Disco</h3>
+        <p>Quando un'operazione disco completa:</p>
+        <ol>
+            <li>Controller disco genera interrupt hardware</li>
+            <li>IO-APIC instrada segnale alla CPU corretta</li>
+            <li>CPU interrompe esecuzione corrente e salva contesto</li>
+            <li>ISR riconosce completamento I/O e schedula bottom-half</li>
+            <li>Processo che attende I/O viene svegliato</li>
+        </ol>
+
+        <h2>🔧 Gestione Avanzata</h2>
+        <ul>
+            <li><strong>Interrupt affinity</strong> - Assegnazione interrupt a CPU specifiche</li>
+            <li><strong>Interrupt balancing</strong> - Distribuzione load tra CPU</li>
+            <li><strong>Real-time interrupts</strong> - Priorità per sistemi tempo-reale</li>
+            <li><strong>Interrupt threading</strong> - Thread separati per handler complessi</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Prestazionali</h2>
+        <ul>
+            <li><strong>Low latency</strong> - Risposta rapida a eventi critici</li>
+            <li><strong>Scalability</strong> - Supporto sistemi multi-core/multi-socket</li>
+            <li><strong>Reliability</strong> - Gestione robusta di interrupt persi/duplicati</li>
+            <li><strong>Debugging</strong> - Tracing e profiling interrupt</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Il sistema di interrupt collabora con molti sottosistemi del kernel:</strong></p>
+
+        <h3>🚗 Device Drivers</h3>
+        <p>• <strong>ISR registration</strong> - Registrazione handler interrupt</p>
+        <p>• <strong>Interrupt sharing</strong> - Multiple driver su stessa linea</p>
+
+        <h3>⚙️ Scheduler</h3>
+        <p>• <strong>Preemption</strong> - Interruzione processi per servire interrupt</p>
+        <p>• <strong>Priority inheritance</strong> - Ereditarietà priorità interrupt</p>
+
+        <h3>🧠 Memory Manager</h3>
+        <p>• <strong>Stack allocation</strong> - Stack separati per interrupt</p>
+        <p>• <strong>DMA coordination</strong> - Coordinamento con trasferimenti DMA</p>
+
+        <h3>🔐 Security Framework</h3>
+        <p>• <strong>Interrupt isolation</strong> - Separazione tra interrupt sicuri/non sicuri</p>
+        <p>• <strong>DoS protection</strong> - Protezione da interrupt flooding</p>
+
+        <h2>🛠️ API e Strutture Dati</h2>
+        <p><strong>Le principali strutture per gestire interrupt nel kernel:</strong></p>
+
+        <h3>📂 Strutture Core</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">struct irq_desc</code><br>
+            <span style="color: #666; font-size: 0.9em;">Struttura che descrive una linea interrupt, contenente handler, flags, e statistiche.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">irqreturn_t (*irq_handler_t)(int, void*)</code><br>
+            <span style="color: #666; font-size: 0.9em;">Prototipo funzione handler interrupt, restituisce se interrupt è stato gestito.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">struct tasklet_struct</code><br>
+            <span style="color: #666; font-size: 0.9em;">Struttura per tasklet, meccanismo bottom-half per elaborazione differita.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">struct softirq_action</code><br>
+            <span style="color: #666; font-size: 0.9em;">Struttura per softIRQ, interrupt software per operazioni critiche.</span>
+        </div>
+
+        <h3>⚡ Interrupt Registration</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags, const char *name, void *dev)</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra handler per linea interrupt specifica con flags e dati dispositivo.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void free_irq(unsigned int irq, void *dev)</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rilascia registrazione interrupt precedentemente allocata.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int request_threaded_irq(unsigned int irq, irq_handler_t handler, irq_handler_t thread_fn, unsigned long flags, const char *name, void *dev)</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra interrupt con handler principale e thread separato per elaborazione.</span>
+        </div>
+
+        <h3>🔄 Bottom-Half Mechanisms</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">DECLARE_TASKLET(name, func, data)</code><br>
+            <span style="color: #666; font-size: 0.9em;">Dichiara tasklet statico con funzione e dati da eseguire.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">tasklet_schedule(&my_tasklet)</code><br>
+            <span style="color: #666; font-size: 0.9em;">Schedula esecuzione tasklet nella bottom-half.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">open_softirq(enum, void (*action)(struct softirq_action *))</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra softIRQ action per tipo specifico di interrupt software.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando premi un tasto sulla tastiera:</strong></p>
+        <ol>
+            <li>Controller tastiera genera interrupt hardware</li>
+            <li>APIC instrada interrupt alla CPU</li>
+            <li>ISR legge scancode dalla porta I/O</li>
+            <li>Tasklet elabora scancode in keycode</li>
+            <li>Evento tastiera inviato a Xorg/Window Manager</li>
+        </ol>
+        <p><em>Il sistema garantisce risposta tempestiva senza polling continuo</em></p>
+
+
+        <h2>🗺️ Mappa Architetturale degli Interrupt</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Sistema di Interrupt</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ PROCESSI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Applicazioni normali<br>
+                    • I/O bloccante<br>
+                    • Signal handling<br>
+                    • Sleep/wake
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Kernel Subsystems -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SOTTOSISTEMI KERNEL</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Scheduler • VFS<br>
+                    • Network Stack<br>
+                    • Device Drivers<br>
+                    • Memory Manager
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Interrupt Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">⚡ INTERRUPT CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔥</div>
+                        <div style="font-size: 0.8em;">Top-Half</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Bottom-Half</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🎯</div>
+                        <div style="font-size: 0.8em;">ISR</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">Controller</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Gestione asincrona<br>
+                    • Prioritizzazione eventi<br>
+                    • Context switching<br>
+                    • Latenza minima
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">💽</div>
+                    <div style="font-size: 0.8em; color: #666;">Storage Devices</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🌐</div>
+                    <div style="font-size: 0.8em; color: #666;">Network Cards</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🖱️</div>
+                    <div style="font-size: 0.8em; color: #666;">Input Devices</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🎮</div>
+                    <div style="font-size: 0.8em; color: #666;">GPU/Graphics</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Interrupt Hardware -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 INTERRUPT HARDWARE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • IO-APIC Controller<br>
+                    • Interrupt Lines (IRQs)<br>
+                    • MSI/MSI-X Support<br>
+                    • Interrupt Routing
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso degli interrupt dal hardware al software<br>
+                • Ogni layer ottimizza per ridurre latenza e migliorare responsiveness<br>
+                • Top-half gestisce lavoro urgente, bottom-half elabora dettagli<br>
+                • Il sistema garantisce risposta tempestiva a eventi critici
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Interrupt da Rete</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Arrivo pacchetto di rete con interrupt</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📦 Pacchetto in Arrivo</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Pacchetto TCP da:<br>
+                        <span style="color: #666;">192.168.1.100:80 → 192.168.1.1:443</span><br>
+                        <span style="color: #666;">Payload: 1500 bytes</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 Scheda di Rete</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Intel I210 Gigabit<br>
+                        <span style="color: #666;">IRQ: 16, MSI abilitato</span><br>
+                        <span style="color: #666;">Driver: igb</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Sequenza temporale:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">Tempo: T=0ms - Pacchetto ricevuto</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">⚡ Flusso dell'interrupt di rete:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>T=0.001ms: Hardware interrupt</strong> - NIC genera MSI interrupt sulla linea assegnata</li>
+                    <li><strong>T=0.002ms: CPU context save</strong> - Processore salva stato corrente e passa a kernel mode</li>
+                    <li><strong>T=0.003ms: Top-half ISR</strong> - Handler riconosce interrupt rete, disabilita ulteriori interrupt</li>
+                    <li><strong>T=0.005ms: Packet processing</strong> - Driver copia pacchetto da buffer NIC a memoria kernel</li>
+                    <li><strong>T=0.008ms: Bottom-half scheduling</strong> - Schedula softIRQ per elaborazione protocollo</li>
+                    <li><strong>T=0.010ms: Return to user space</strong> - CPU torna al processo interrotto</li>
+                    <li><strong>T=0.050ms: Protocol processing</strong> - SoftIRQ elabora TCP/IP stack e consegna dati all'applicazione</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Latenza totale ~50μs per pacchetto di rete. Il sistema mantiene responsiveness apparente mentre gestisce migliaia di pacchetti al secondo in background.
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora gli Interrupt</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti con il sistema di interrupt</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora Interrupt</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ watch -n 1 "cat /proc/interrupts | head -10"<br>
+                        CPU0 CPU1<br>
+                        0: 125000 0 IO-APIC 2-edge timer<br>
+                        1: 10000 0 IO-APIC 1-edge i8042<br>
+                        16: 5000 2000 IO-APIC 16-fasteoi ehci_hcd
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva contatori interrupt in tempo reale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza IRQ specifico</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/irq/16/smp_affinity<br>
+                        f<br>
+                        $ cat /proc/irq/16/node<br>
+                        0<br>
+                        $ ls /proc/irq/16/
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina configurazione di una linea interrupt</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Test Interrupt Load</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ dd if=/dev/zero of=/dev/null bs=1M count=1000<br>
+                        $ cat /proc/interrupts | grep -E "(timer|i8042)"<br>
+                        $ vmstat 1 5<br>
+                        procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----<br>
+                        r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Genera load e osserva impatto sugli interrupt</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🎛️ Configura Affinity</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ echo 2 > /proc/irq/16/smp_affinity<br>
+                        $ cat /proc/irq/16/smp_affinity<br>
+                        2<br>
+                        $ cat /proc/interrupts | grep "16:"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Cambia CPU affinity per una linea interrupt</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Asincronicità</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Gli interrupt permettono risposta immediata a eventi hardware senza polling. Il sistema può servire dispositivi critici in microsecondi invece di millisecondi.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Top-Half/Bottom-Half</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Separazione tra lavoro urgente (ISR minima) e elaborazione dettagliata (tasklet/softIRQ). Riduce latenza e migliora concorrenza del sistema.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Prioritizzazione</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Interrupt hanno priorità rispetto al normale scheduling processi. Eventi critici (timer, hardware faults) vengono serviti prima di tutto il resto.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Context Switching</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Gli interrupt causano cambio di contesto: da user mode a kernel mode, con salvataggio registri. Questo overhead deve essere minimizzato per prestazioni ottimali.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sugli Interrupt
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa sono gli interrupt nel sistema operativo?",
+            options: ["Segnali di errore del sistema", "Notifiche asincrone da dispositivi hardware", "Messaggi tra processi", "Chiamate di sistema"],
+            correct: 1,
+            explanation: "Gli interrupt sono notifiche asincrone che i dispositivi hardware inviano alla CPU per richiedere attenzione immediata."
+        },
+        {
+            question: "Qual è la differenza tra top-half e bottom-half?",
+            options: ["Top-half è più lento", "Top-half gestisce lavoro urgente, bottom-half elabora dettagli", "Bottom-half viene eseguito prima", "Non c'è differenza"],
+            correct: 1,
+            explanation: "Top-half (ISR) gestisce lavoro urgente e critico, mentre bottom-half (tasklet/softIRQ) elabora dettagli in modo differito."
+        },
+        {
+            question: "Cosa mostra il comando 'cat /proc/interrupts'?",
+            options: ["Lista processi attivi", "Contatori interrupt per ogni linea", "Configurazione di rete", "Stato memoria"],
+            correct: 1,
+            explanation: "cat /proc/interrupts mostra i contatori di quanti interrupt sono stati ricevuti su ogni linea per ogni CPU."
+        },
+        {
+            question: "Cosa sono i tasklet?",
+            options: ["Programmi utente", "Meccanismo bottom-half per elaborazione differita", "Driver dispositivi", "File di sistema"],
+            correct: 1,
+            explanation: "I tasklet sono un meccanismo bottom-half che permette elaborazione differita di lavoro non urgente dopo un interrupt."
+        },
+        {
+            question: "Quale componente hardware gestisce il routing degli interrupt?",
+            options: ["CPU Cache", "Interrupt Controller (APIC/IO-APIC)", "Hard Disk", "RAM"],
+            correct: 1,
+            explanation: "L'Interrupt Controller (APIC su sistemi moderni) gestisce il routing degli interrupt dalle periferiche alla CPU appropriata."
+        },
+        {
+            question: "Cosa permette MSI (Message Signaled Interrupts)?",
+            options: ["Interrupt più veloci", "Interrupt via memoria invece di pin dedicati", "Interrupt solo per USB", "Interrupt wireless"],
+            correct: 1,
+            explanation: "MSI permette ai dispositivi di generare interrupt scrivendo in memoria invece di usare pin dedicati, riducendo complessità hardware."
+        },
+        {
+            question: "Cosa succede durante un interrupt context switch?",
+            options: ["Il processo viene terminato", "Si salva il contesto e si passa a kernel mode", "Si cambia programma utente", "Si riavvia il sistema"],
+            correct: 1,
+            explanation: "Durante un interrupt, la CPU salva il contesto corrente (registri, stack) e passa dall'user mode al kernel mode per servire l'interrupt."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione degli Interrupt! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare gli Interrupt! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Gli Interrupt sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

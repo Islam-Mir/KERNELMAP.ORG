@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURITY - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>SECURITY</h1>
+        <p class="subtitle">Sicurezza del sistema</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🔒 SICUREZZA</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il Security subsystem rappresenta l'insieme dei meccanismi di sicurezza implementati nel kernel Linux per proteggere il sistema da minacce interne ed esterne. Include LSM (Linux Security Modules), SELinux/AppArmor, controlli di accesso, crittografia e meccanismi di isolamento come namespaces e cgroups.</strong></p>
+        
+        <h2>CONFRONTO:</h2>
+        <p>Immagina il Security subsystem come il sistema immunitario di un organismo: identifica minacce (virus, accessi non autorizzati), attiva difese (controlli di accesso, isolamento), e mantiene l'integrità del sistema attraverso meccanismi di monitoraggio e risposta automatica.</p>
+        
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il Security subsystem implementa un'architettura modulare per la sicurezza del kernel attraverso LSM (Linux Security Modules), che permette di caricare moduli di sicurezza come SELinux, AppArmor, Smack. Gestisce DAC (Discretionary Access Control), MAC (Mandatory Access Control), e fornisce API per crittografia e gestione chiavi.</strong></p>
+        <p>• <strong>LSM Framework</strong> - Architettura modulare per moduli di sicurezza caricabili</p>
+        <p>• <strong>Access Control</strong> - Controlli DAC/MAC per autorizzazioni file/processi</p>
+        <p>• <strong>Cryptography</strong> - API kernel per crittografia simmetrica/asimmetrica</p>
+        <p><em>• Interfaccia principale per enforcement sicurezza a livello kernel</em></p>
+
+<h2>⚙️ Operazioni Principali del Security Subsystem</h2>
+<p><strong>Il Security subsystem esegue operazioni critiche per la sicurezza del sistema:</strong></p>
+
+<h3>⚙️ Access Control Operations</h3>
+<p>• <strong>security_file_permission()</strong> - Controlla permessi di accesso ai file</p>
+<p>• <strong>security_inode_permission()</strong> - Valida operazioni su inode</p>
+<p>• <strong>security_task_create()</strong> - Controlla creazione nuovi processi</p>
+
+<h3>⚙️ Cryptography Operations</h3>
+<p>• <strong>crypto_alloc_cipher()</strong> - Alloca cipher per crittografia</p>
+<p>• <strong>crypto_skcipher_encrypt()</strong> - Esegue crittografia simmetrica</p>
+<p>• <strong>keyctl_instantiate()</strong> - Istanzia chiavi crittografiche</p>
+
+<h3>⚙️ LSM Operations</h3>
+<p>• <strong>security_bprm_check()</strong> - Controlla esecuzione programmi</p>
+<p>• <strong>security_socket_connect()</strong> - Valida connessioni socket</p>
+<p>• <strong>security_netlink_send()</strong> - Controlla invio netlink</p>
+
+<h3>⚙️ Audit Operations</h3>
+<p>• <strong>audit_log_start()</strong> - Inizia registrazione evento audit</p>
+<p>• <strong>audit_log_end()</strong> - Completa registrazione evento</p>
+<p>• <strong>audit_log_format()</strong> - Formatta messaggio audit</p>
+
+<h2>📋 Esempi Pratici del Security Subsystem</h2>
+<p><strong>Il Security subsystem opera silenziosamente per proteggere il sistema:</strong></p>
+
+<h3>🔍 Accesso File con SELinux</h3>
+<p>1. Utente prova ad aprire file riservato</p>
+<p>2. LSM hook intercetta chiamata open()</p>
+<p>3. SELinux consulta policy e nega accesso</p>
+<p>4. Sistema restituisce EPERM (Permission denied)</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>security_operations</strong> - Tabella funzioni LSM per controlli sicurezza</li>
+<li><strong>task_security_struct</strong> - Contesto sicurezza processo (SELinux/AppArmor)</li>
+<li><strong>inode_security_struct</strong> - Etichette sicurezza file/directory</li>
+<li><strong>crypto_tfm</strong> - Trasformazione crittografica (cipher/hash)</li>
+<li><strong>key</strong> - Struttura chiave crittografica kernel</li>
+</ul>
+
+<h3>💻 Comandi Linux Essenziali</h3>
+<ul>
+<li><code>$ sestatus</code> - Mostra stato SELinux (enabled/disabled)</li>
+<li><code>$ getenforce</code> - Visualizza modalità corrente SELinux</li>
+<li><code>$ ls -Z /etc/passwd</code> - Mostra etichette sicurezza SELinux</li>
+<li><code>$ auditctl -l</code> - Lista regole audit attive</li>
+<li><code>$ keyctl show</code> - Mostra chiavi crittografiche kernel</li>
+</ul>
+
+<h3>🎯 Caso Reale: Connessione SSH</h3>
+<p>Quando fai <code>$ ssh user@server</code>:</p>
+<ol>
+<li>SSH verifica permessi file chiave privata</li>
+<li>SELinux controlla contesto sicurezza processo</li>
+<li>Crypto API valida firma digitale</li>
+<li>Audit subsystem registra accesso riuscito</li>
+</ol>
+
+<h2>💾 Supporto e Compatibilità Security Subsystem</h2>
+        <ul>
+            <li><strong>SELinux</strong> - Security Enhanced Linux (MAC obbligatorio)</li>
+            <li><strong>AppArmor</strong> - Application Armor (profilazione applicativa)</li>
+            <li><strong>Smack</strong> - Simplified Mandatory Access Control</li>
+            <li><strong>Tomoyo</strong> - Access control basato su pathname</li>
+            <li><strong>Yama</strong> - LSM per ptrace e debug restrictions</li>
+            <li><strong>Capabilities</strong> - Privilegi granulari per processi</li>
+            <li><strong>Namespaces</strong> - Isolamento processi (PID, network, mount)</li>
+            <li><strong>cgroups</strong> - Control Groups per resource limiting</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+<ul>
+<li><strong>Defense in Depth</strong> - Multiple livelli di sicurezza sovrapposti</li>
+<li><strong>Zero Trust</strong> - Verifica ogni accesso anche interno</li>
+<li><strong>Least Privilege</strong> - Minimi privilegi necessari per funzionamento</li>
+<li><strong>Audit Trail</strong> - Registrazione completa attività sicurezza</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave del Security Subsystem</h2>
+<p><strong>Il Security subsystem collabora con tutti i componenti del kernel per garantire sicurezza end-to-end:</strong></p>
+
+<h3>💾 Memory Management</h3>
+<p>• <strong>Address Space Protection</strong> - Previene buffer overflows e code injection</p>
+<p>• <strong>Executable Protection</strong> - Implementa W^X (Write XOR Execute)</p>
+
+<h3>🌐 Network Stack</h3>
+<p>• <strong>Socket Security</strong> - Controlla connessioni in entrata/uscita</p>
+<p>• <strong>Firewall Integration</strong> - Interfaccia con netfilter per packet filtering</p>
+
+<h3>🧠 Process Management</h3>
+<p>• <strong>Process Isolation</strong> - Namespaces e cgroups per container security</p>
+<p>• <strong>Privilege Control</strong> - Capabilities per controllo privilegi granulare</p>
+
+<h2>🛠️ API del Security Subsystem</h2>
+        <p><strong>Le API del Security subsystem forniscono controllo granulare sulla sicurezza del sistema:</strong></p>
+
+        <h3>📂 LSM Security Hooks</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int security_file_permission(struct file *file, int mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Controlla permessi di accesso al file. Chiamato da VFS prima di operazioni I/O.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int security_inode_permission(struct inode *inode, int mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Valida permessi su inode. Implementa controlli MAC aggiuntivi.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int security_task_create(unsigned long clone_flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Controlla creazione nuovi processi. Valida flags clone().</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int security_socket_connect(struct socket *sock, struct sockaddr *address, int addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Valida connessioni socket in uscita. Previene accessi non autorizzati.</span>
+        </div>
+
+        <h3>📊 Cryptography API</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">struct crypto_cipher *crypto_alloc_cipher(const char *alg_name, u32 type, u32 mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca cipher crittografico. Supporta AES, DES, etc.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int crypto_cipher_encrypt_one(struct crypto_cipher *tfm, u8 *dst, const u8 *src);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Esegue crittografia blocco singolo. Usato per dati sensibili.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int crypto_shash_digest(struct shash_desc *desc, const u8 *data, unsigned int len, u8 *out);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Calcola hash crittografico (SHA256, SHA3). Per integrità dati.</span>
+        </div>
+
+        <h3>💽 Key Management API</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">key_serial_t add_key(const char *type, const char *description, const void *payload, size_t plen, key_serial_t ringid);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Aggiunge chiave crittografica al keyring. Per gestione chiavi kernel.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">long keyctl_instantiate(key_serial_t id, const void *payload, size_t plen, key_serial_t ringid);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Istanzia chiave con payload. Usato per chiavi asimmetriche.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">long keyctl_revoke(key_serial_t id);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Revoca chiave crittografica. Previene uso futuro.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Come utilizzare le API del Security subsystem nelle applicazioni:</strong></p>
+<ol>
+<li><code>crypto_alloc_cipher("aes", 0, 0)</code> - Alloca cipher AES per crittografia</li>
+<li><code>add_key("user", "mykey", key_data, key_len, KEY_SPEC_USER_KEYRING)</code> - Aggiunge chiave utente</li>
+<li><code>keyctl_revoke(key_id)</code> - Revoca chiave compromessa</li>
+<li><code>crypto_shash_digest(&desc, data, len, hash)</code> - Calcola hash per verifica integrità</li>
+</ol>
+<p><em>Queste API forniscono primitive crittografiche e controlli sicurezza essenziali per applicazioni sicure.</em></p>
+
+<h2>🗺️ Architettura del Security Subsystem</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Security Subsystem</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi sicuri (ssh, sudo)<br>
+                    • Librerie crittografiche (openssl)<br>
+                    • System Calls sicure
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • open() • execve() • socket()<br>
+                    • ioctl() • keyctl() • crypto_*()<br>
+                    • Hook points LSM
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Security Subsystems -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🔒 SECURITY SUBSYSTEMS</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🛡️</div>
+                        <div style="font-size: 0.8em;">LSM</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔐</div>
+                        <div style="font-size: 0.8em;">Crypto</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔑</div>
+                        <div style="font-size: 0.8em;">Keys</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">Audit</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • LSM Framework modulare<br>
+                    • Crypto API unificata<br>
+                    • Key management sicuro<br>
+                    • Audit trail completo
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Security Modules -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">SELinux</div>
+                    <div style="font-size: 0.8em; color: #666;">MAC obbligatorio</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">AppArmor</div>
+                    <div style="font-size: 0.8em; color: #666;">Profilazione applicativa</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">Capabilities</div>
+                    <div style="font-size: 0.8em; color: #666;">Privilegi granulari</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">Namespaces</div>
+                    <div style="font-size: 0.8em; color: #666;">Isolamento processi</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Security Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔐 HARDWARE SECURITY</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • TPM (Trusted Platform Module)<br>
+                    • CPU Security Extensions (SGX, TEE)<br>
+                    • Hardware RNG e acceleratori crypto<br>
+                    • Secure Boot e firmware sicuro
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Il flusso va dalle applicazioni ai moduli di sicurezza<br>
+                • Ogni layer aggiunge controlli sicurezza sovrapposti<br>
+                • LSM fornisce framework modulare per policy personalizzate<br>
+                • Hardware security garantisce root of trust
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento del Security Subsystem</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona il sistema di sicurezza del kernel</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Richiesta Sistema</div>
+        <div style="font-family: monospace; font-size: 0.9em;">Processo richiede accesso a risorsa (file, socket, memoria)</div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Controlli Sicurezza</div>
+        <div style="font-family: monospace; font-size: 0.9em;">LSM hooks valutano richiesta contro policy sicurezza</div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> Il Security subsystem opera come gatekeeper invisibile che intercetta ogni chiamata di sistema, applicando controlli di sicurezza multi-livello attraverso LSM hooks, audit logging e meccanismi crittografici per garantire che solo operazioni autorizzate vengano eseguite.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Ciclo di controllo sicurezza:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. System Call Interception</strong> - Hook LSM cattura chiamata di sistema</li>
+        <li><strong>2. DAC Check</strong> - Controllo Discretionary Access Control (permessi UNIX tradizionali)</li>
+        <li><strong>3. LSM Policy Evaluation</strong> - Valutazione policy MAC (SELinux/AppArmor)</li>
+        <li><strong>4. Capability Check</strong> - Verifica capabilities processo per operazioni privilegiate</li>
+        <li><strong>5. Audit Logging</strong> - Registrazione evento per compliance e debugging</li>
+        <li><strong>6. Access Grant/Deny</strong> - Permesso o rifiuto accesso con codice errore appropriato</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> Sistema protetto con defense-in-depth dove ogni accesso viene validato attraverso controlli sovrapposti, garantendo sicurezza anche se un livello viene compromesso.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico del Security Subsystem</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔒 Controlla stato SELinux</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ sestatus<br>
+                        SELinux status: enabled<br>
+                        SELinuxfs mount: /sys/fs/selinux<br>
+                        Current mode: enforcing<br><br>
+                        $ getenforce<br>
+                        Enforcing
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Verifica se SELinux è attivo e in modalità enforcing</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔑 Gestisci chiavi crittografiche</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ keyctl show<br>
+                        Session Keyring<br>
+                        12345678 --alswrv 0 0 keyring: _ses<br><br>
+                        $ keyctl add user mykey "secret" @u<br>
+                        87654321
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza keyring e aggiungi chiavi utente</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📋 Monitora audit trail</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ auditctl -l<br>
+                        LIST_RULES: exit,always watch=/etc/passwd<br><br>
+                        $ ausearch -m avc -ts recent<br>
+                        ----<br>
+                        time->Mon Nov 9 02:54:00 2025
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla regole audit e cerca eventi di sicurezza recenti</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔐 Test crittografia kernel</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/crypto | grep aes<br>
+                        name : aes<br>
+                        driver : aes-aesni<br>
+                        module : aesni_intel<br><br>
+                        $ grep -r "crypto" /proc/sys/
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Verifica algoritmi crittografici disponibili nel kernel</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave del Security Subsystem</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Defense in Depth</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Strategia di sicurezza multilivello dove ogni layer fornisce protezione indipendente, garantendo che la compromissione di un livello non esponga l'intero sistema.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔐</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Zero Trust</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">Modello di sicurezza che non assume fiducia implicita, richiedendo verifica esplicita per ogni accesso, anche per componenti interni del sistema.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Least Privilege</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">Principio che garantisce a processi e utenti solo i privilegi minimi necessari per funzionare, riducendo la superficie di attacco e impatto di compromissioni.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Audit Trail</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Registrazione completa e immutabile di tutte le operazioni di sicurezza, essenziale per compliance, forensics e rilevamento intrusioni.</p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sulla Sicurezza
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="margin-top: 30px; color: #0288d1; border-bottom: 3px solid #0288d1; padding-bottom: 8px;">📚 Letture Consigliate</h2>
+<ul style="margin-left: 20px; margin-bottom: 30px;">
+<li style="margin-bottom: 10px;"><a href="https://www.kernel.org/doc/html/latest/" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">📖 Linux Kernel Documentation</a> - Documentazione ufficiale completa</li>
+<li><a href="https://en.wikipedia.org/wiki/Linux_kernel" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">🌐 Wikipedia: Linux Kernel</a> - Panoramica generale dell'architettura</li>
+</ul>
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa significa LSM in Linux?",
+            options: ["Linux Security Module", "Local System Monitor", "Linux System Manager", "Loadable Security Module"],
+            correct: 0,
+            explanation: "LSM significa Linux Security Modules, il framework che permette di caricare moduli di sicurezza come SELinux e AppArmor."
+        },
+        {
+            question: "Quale comando verifica lo stato di SELinux?",
+            options: ["selinux-status", "sestatus", "check-selinux", "selinux-check"],
+            correct: 1,
+            explanation: "Il comando sestatus mostra lo stato completo di SELinux, inclusa la modalità (enforcing/permissive) e il mount point."
+        },
+        {
+            question: "Cosa controlla DAC?",
+            options: ["Solo permessi root", "Discretionary Access Control (permessi UNIX tradizionali)", "Solo accessi di rete", "Solo crittografia"],
+            correct: 1,
+            explanation: "DAC significa Discretionary Access Control, il sistema tradizionale di permessi UNIX basato su proprietario/gruppo/altri."
+        },
+        {
+            question: "Quale API gestisce le chiavi crittografiche del kernel?",
+            options: ["crypto_*()", "keyctl_*()", "security_*()", "audit_*()"],
+            correct: 1,
+            explanation: "Le funzioni keyctl_*() gestiscono il keyring del kernel, permettendo di aggiungere, revocare e utilizzare chiavi crittografiche."
+        },
+        {
+            question: "Cosa garantisce il principio del 'least privilege'?",
+            options: ["Accesso a tutto per tutti", "Privilegi minimi necessari", "Solo accesso root", "Nessun controllo di accesso"],
+            correct: 1,
+            explanation: "Il least privilege garantisce che processi e utenti abbiano solo i privilegi minimi necessari per funzionare, riducendo rischi di sicurezza."
+        },
+        {
+            question: "Quale comando mostra gli eventi di audit recenti?",
+            options: ["audit-show", "ausearch -ts recent", "audit-log", "security-events"],
+            correct: 1,
+            explanation: "ausearch -ts recent mostra gli eventi di audit più recenti, utili per monitorare attività di sicurezza."
+        },
+        {
+            question: "Cosa significa MAC in sicurezza?",
+            options: ["Media Access Control", "Mandatory Access Control", "Memory Access Control", "Multi Access Control"],
+            correct: 1,
+            explanation: "MAC significa Mandatory Access Control, controlli di accesso obbligatori imposti dal sistema (come in SELinux)."
+        },
+        {
+            question: "Quale modulo LSM è basato su profili applicativi?",
+            options: ["SELinux", "AppArmor", "Smack", "Tomoyo"],
+            correct: 1,
+            explanation: "AppArmor usa profili per applicazioni per definire quali risorse possono accedere, diverso dall'approccio basato su etichette di SELinux."
+        },
+        {
+            question: "Cosa fornisce il framework crypto del kernel?",
+            options: ["Solo crittografia", "API unificata per tutti algoritmi crittografici", "Solo hash", "Solo chiavi"],
+            correct: 1,
+            explanation: "Il crypto framework fornisce API uniformi per utilizzare qualsiasi algoritmo crittografico supportato dal kernel (AES, SHA, RSA, etc.)."
+        },
+        {
+            question: "Quale comando aggiunge una chiave al keyring utente?",
+            options: ["key-add", "keyctl add user", "add-key", "keyring-add"],
+            correct: 1,
+            explanation: "keyctl add user nome_chiave \"valore\" @u aggiunge una chiave al keyring dell'utente corrente."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

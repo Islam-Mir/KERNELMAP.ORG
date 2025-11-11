@@ -1,0 +1,830 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Drivers - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Device Drivers</h1>
+        <p class="subtitle">Driver dei Dispositivi</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🔧 GESTIONE DISPOSITIVI HARDWARE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>I device driver sono moduli software che permettono al kernel Linux di comunicare con l'hardware, fornendo un'interfaccia standardizzata per controllare dispositivi fisici e virtuali.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un traduttore simultaneo in una conferenza ONU: ogni dispositivo "parla" una lingua diversa (protocolli hardware), ma il driver traduce tutto in un linguaggio comune comprensibile dal kernel.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>I device driver sono il ponte tra il kernel Linux e l'hardware sottostante.</strong> Immagina di avere una sala di controllo con centinaia di dispositivi diversi: termometri, valvole, sensori, attuatori. Ogni dispositivo ha il suo "dialetto" hardware, ma i driver parlano tutti la stessa lingua del kernel.</p>
+
+        <p>• <strong>Astrazione hardware</strong> - Nasconde le differenze tra dispositivi simili dietro interfacce uniformi</p>
+        <p>• <strong>Gestione risorse</strong> - Coordina l'accesso concorrente alle risorse hardware condivise</p>
+        <p>• <strong>Gestione interrupt</strong> - Risponde agli eventi hardware in tempo reale</p>
+        <p>• <strong>Power management</strong> - Controlla stati di risparmio energetico dei dispositivi</p>
+        <p>• <strong>Hotplug support</strong> - Gestisce dispositivi collegati/rimossi a runtime</p>
+        <p>• <strong>Device model</strong> - Organizza dispositivi in una gerarchia strutturata</p>
+        <p><em>• Interazione: Riceve richieste dal kernel e le traduce in comandi specifici del dispositivo hardware</em></p>
+
+        <h2>⚙️ Tipi di Device Driver</h2>
+        <p><strong>Linux classifica i driver in base al tipo di dispositivo e al modello di comunicazione:</strong></p>
+
+        <h3>💽 Block Device Drivers</h3>
+        <p>• <strong>Dischi rigidi (HDD/SSD)</strong> - Gestiscono storage a blocchi con accesso casuale</p>
+        <p>• <strong>CD/DVD/Blu-ray</strong> - Lettori ottici con supporto multi-formato</p>
+        <p>• <strong>Dischi RAM</strong> - Storage temporaneo in memoria</p>
+        <p>• <strong>Dispositivi di rete</strong> - Alcuni usano interfaccia a blocchi (es. NBD)</p>
+
+        <h3>🌊 Character Device Drivers</h3>
+        <p>• <strong>Terminali e console</strong> - Gestiscono input/output testuale</p>
+        <p>• <strong>Porte seriali</strong> - Comunicazione RS-232/USB serial</p>
+        <p>• <strong>Dispositivi audio</strong> - Schede sonore e microfoni</p>
+        <p>• <strong>Dispositivi di input</strong> - Mouse, tastiere, touchscreen</p>
+
+        <h3>🌐 Network Device Drivers</h3>
+        <p>• <strong>Schede Ethernet</strong> - Connessioni wired (RJ45)</p>
+        <p>• <strong>Schede Wi-Fi</strong> - Connessioni wireless IEEE 802.11</p>
+        <p>• <strong>Dispositivi Bluetooth</strong> - Comunicazione wireless personale</p>
+        <p>• <strong>Dispositivi mobili</strong> - Modem 3G/4G/5G</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando inserisci una chiavetta USB, ecco cosa succede nei device driver:</strong></p>
+
+        <h3>🔍 Rilevamento del Dispositivo</h3>
+        <p>1. L'hardware USB genera un interrupt quando rileva il dispositivo</p>
+        <p>2. Il driver USB host controller risponde all'interrupt</p>
+        <p>3. Viene letto il device descriptor per identificare il tipo di dispositivo</p>
+        <p>4. Il kernel carica il driver appropriato (storage, input, etc.)</p>
+        <p>5. Il dispositivo viene registrato nel device model e diventa accessibile</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>struct device</strong> - Rappresenta un dispositivo nel device model</li>
+            <li><strong>struct device_driver</strong> - Contiene le operazioni del driver</li>
+            <li><strong>struct file_operations</strong> - Definisce le operazioni sui file device</li>
+            <li><strong>struct cdev</strong> - Gestisce dispositivi a caratteri</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare i device driver:</strong></p>
+        <ul>
+            <li><code>lsmod</code> - Lista tutti i moduli kernel caricati</li>
+            <li><code>ls /dev/</code> - Mostra i file device nel filesystem</li>
+            <li><code>dmesg | grep driver</code> - Log del kernel sui driver</li>
+            <li><code>lspci -v</code> - Informazioni sui dispositivi PCI</li>
+            <li><code>lsusb -v</code> - Informazioni sui dispositivi USB</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Accesso a Disco</h3>
+        <p>Quando fai <code>dd if=/dev/sda of=disk.img</code>:</p>
+        <ol>
+            <li>Il comando dd apre /dev/sda (file device)</li>
+            <li>Il kernel chiama il driver del disco (es. sd driver)</li>
+            <li>Il driver traduce la richiesta in comandi ATA/SCSI</li>
+            <li>L'hardware del disco esegue la lettura fisica</li>
+            <li>I dati vengono trasferiti attraverso il DMA</li>
+        </ol>
+
+        <h2>🔧 Architetture Hardware Supportate</h2>
+        <ul>
+            <li><strong>PCI/PCIe</strong> - Bus standard per schede interne</li>
+            <li><strong>USB</strong> - Universal Serial Bus per dispositivi esterni</li>
+            <li><strong>I2C/SPI</strong> - Bus per dispositivi embedded</li>
+            <li><strong>ISA</strong> - Legacy bus (ancora supportato)</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Modularità</strong> - Driver caricabili dinamicamente</li>
+            <li><strong>Hotplug</strong> - Supporto dispositivi plug-and-play</li>
+            <li><strong>Power Management</strong> - Controllo consumo energetico</li>
+            <li><strong>Security</strong> - Isolamento processi da hardware</li>
+            <li><strong>Performance</strong> - Ottimizzazioni DMA e interrupt</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>I device driver interagiscono con molteplici sottosistemi del kernel:</strong></p>
+
+        <h3>⚡ Interrupt Handler</h3>
+        <p>• <strong>Top-half</strong> - Gestione immediata dell'interrupt</p>
+        <p>• <strong>Bottom-half</strong> - Elaborazione differita (tasklet, workqueue)</p>
+
+        <h3>💾 Memory Manager</h3>
+        <p>• <strong>DMA</strong> - Direct Memory Access per trasferimenti efficienti</p>
+        <p>• <strong>I/O Memory</strong> - Mapping memoria dispositivi</p>
+
+        <h3>🔄 Scheduler</h3>
+        <p>• <strong>Blocking I/O</strong> - Processi in attesa di completamento I/O</p>
+        <p>• <strong>Async I/O</strong> - Operazioni non bloccanti</p>
+
+        <h3>🔐 Security Framework</h3>
+        <p>• <strong>Capabilities</strong> - Permessi speciali per accesso hardware</p>
+        <p>• <strong>SELinux</strong> - Controllo accessi dispositivi</p>
+
+        <h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le interfacce che ogni driver deve implementare:</strong></p>
+
+        <h3>📂 Gestione Device Base</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int probe(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Inizializza il dispositivo quando viene rilevato dal bus.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void remove(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rilascia risorse quando il dispositivo viene rimosso.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int open(struct inode *inode, struct file *filp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre il file device per l'accesso dal userspace.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int release(struct inode *inode, struct file *filp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiude il file device e rilascia risorse.</span>
+        </div>
+
+        <h3>🔄 Operazioni I/O</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">ssize_t read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge dati dal dispositivo nel buffer userspace.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">ssize_t write(struct file *filp, const char __user *buf, size_t count, loff_t *f_pos);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive dati dal buffer userspace nel dispositivo.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">long ioctl(struct file *filp, unsigned int cmd, unsigned long arg);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Comandi speciali specifici del dispositivo.</span>
+        </div>
+
+        <h3>⚡ Gestione Interrupt</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">irqreturn_t handler(int irq, void *dev_id);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Gestisce interrupt dal dispositivo hardware.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags, const char *name, void *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra un handler per un numero di interrupt.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando ascolti musica dal tuo PC:</strong></p>
+        <ol>
+            <li>L'applicazione audio apre /dev/dsp o /dev/snd/pcmC0D0</li>
+            <li>Il driver audio configura il codec hardware (es. AC'97, HDA)</li>
+            <li>Imposta parametri: frequenza, canali, profondità bit</li>
+            <li>Trasferisce dati audio via DMA circolare</li>
+            <li>Gestisce interrupt per buffer underrun/underrun</li>
+        </ol>
+        <p><em>Tutto questo è trasparente all'utente, ma richiede driver complessi per gestire l'hardware specifico!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale dei Device Driver</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei Device Driver</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi (mpv, firefox)<br>
+                    • Librerie (ALSA, X11)<br>
+                    • System Calls
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 VIRTUAL FILESYSTEM</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • /dev/* • /sys/* • /proc/*<br>
+                    • Device Nodes<br>
+                    • Sysfs Interface
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Device Driver Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 DEVICE DRIVER CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔌</div>
+                        <div style="font-size: 0.8em;">Bus</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📡</div>
+                        <div style="font-size: 0.8em;">IRQ</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
+                        <div style="font-size: 0.8em;">DMA</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">I/O</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Device Model<br>
+                    • Power Management<br>
+                    • Hotplug Support
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Devices -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">💽 STORAGE</div>
+                    <div style="font-size: 0.8em; color: #666;">HDD, SSD, USB</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🌐 NETWORK</div>
+                    <div style="font-size: 0.8em; color: #666;">Ethernet, Wi-Fi</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🎵 AUDIO</div>
+                    <div style="font-size: 0.8em; color: #666;">Sound Cards</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🖱️ INPUT</div>
+                    <div style="font-size: 0.8em; color: #666;">Keyboard, Mouse</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE LAYER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • PCI/PCIe Bus<br>
+                    • USB Controllers<br>
+                    • Interrupt Lines<br>
+                    • I/O Ports & Memory
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste hardware<br>
+                • Ogni layer aggiunge astrazione e funzionalità<br>
+                • I driver sono il "traduttore" tra software e hardware<br>
+                • Lo stesso codice funziona su hardware diverso
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Caricamento di un Device Driver</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Inserimento di una chiavetta USB</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔌 Dispositivo USB</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Chiavetta USB 32GB<br>
+                        <span style="color: #666;">(Vendor: 0781, Product: 5581)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">💻 Sistema Linux</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Kernel 5.15<br>
+                        <span style="color: #666;">(Driver: usb-storage)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comando osservato:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">dmesg | tail -10</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Interrupt USB:</strong> L'hardware genera interrupt quando rileva il dispositivo</li>
+                    <li><strong>2. Device Discovery:</strong> Il driver USB host legge i descriptor del dispositivo</li>
+                    <li><strong>3. Driver Matching:</strong> Il kernel cerca il driver appropriato (usb-storage)</li>
+                    <li><strong>4. Device Registration:</strong> Il dispositivo viene registrato nel device model</li>
+                    <li><strong>5. Filesystem Mount:</strong> Viene creato /dev/sdb e il filesystem viene montato</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> La chiavetta appare come /dev/sdb e viene montata automaticamente. L'utente può accedere ai file senza sapere nulla dei protocolli USB sottostanti!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora i Device Driver</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📋 Lista moduli caricati</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lsmod<br>
+                        Module Size Used by<br>
+                        usb_storage 73728 1<br>
+                        uas 24576 0<br>
+                        usbcore 286720 4 usb_storage,uas
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i moduli kernel attivi e le loro dipendenze</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esplora dispositivi PCI</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lspci -v<br>
+                        00:1f.2 SATA controller: Intel Corporation<br>
+                        Kernel driver in use: ahci<br>
+                        Kernel modules: ahci
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi dispositivi PCI e i driver che li gestiscono</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Monitora dispositivi USB</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lsusb -v<br>
+                        Bus 001 Device 002: ID 0781:5581 SanDisk<br>
+                        bDeviceClass: 0 (Defined at Interface level)<br>
+                        bDeviceProtocol: 0<br>
+                        iManufacturer: 1 SanDisk
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esplora la gerarchia dei dispositivi USB connessi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza interrupt</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/interrupts<br>
+                        16: 3248 0 IO-APIC 16-fasteoi ehci_hcd:usb1<br>
+                        23: 0 0 IO-APIC 23-fasteoi ehci_hcd:usb2
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quali interrupt sono usati dai driver e la loro frequenza</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Hotplug Architecture</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    I driver Linux supportano dispositivi collegati/rimossi a runtime. Il kernel rileva automaticamente nuovi dispositivi e carica i driver appropriati senza riavvio.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Interrupt Handling</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    I driver gestiscono eventi hardware asincroni attraverso interrupt. La gestione è divisa in top-half (immediata) e bottom-half (differita) per prestazioni ottimali.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏗️</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Device Model</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Linux organizza tutti i dispositivi in una gerarchia strutturata (device model) che permette gestione unificata di power management, hotplug, e configurazione.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">DMA e I/O</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    I driver moderni usano DMA (Direct Memory Access) per trasferimenti efficienti senza coinvolgere la CPU. Questo permette I/O ad alta velocità con minimo overhead.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Device Driver
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa sono i device driver?",
+            options: ["Programmi per giocare", "Software che gestisce dispositivi hardware", "File di configurazione", "Parte del filesystem"],
+            correct: 1,
+            explanation: "I device driver sono moduli software che permettono al kernel di comunicare con l'hardware, fornendo un'interfaccia standardizzata."
+        },
+        {
+            question: "Quale comando mostra i moduli kernel caricati?",
+            options: ["lsmod", "lspci", "dmesg", "top"],
+            correct: 0,
+            explanation: "lsmod mostra tutti i moduli del kernel attualmente caricati, inclusi i device driver."
+        },
+        {
+            question: "Cosa significa hotplug?",
+            options: ["Dispositivi che si scaldano", "Dispositivi collegabili a runtime", "Driver veloci", "Interrupt hardware"],
+            correct: 1,
+            explanation: "Hotplug permette di collegare/rimuovere dispositivi mentre il sistema è in funzione, senza bisogno di riavvio."
+        },
+        {
+            question: "Quale struttura gestisce dispositivi a caratteri?",
+            options: ["struct block_device", "struct cdev", "struct net_device", "struct pci_dev"],
+            correct: 1,
+            explanation: "struct cdev è usata per gestire dispositivi a caratteri come terminali, porte seriali, dispositivi audio."
+        },
+        {
+            question: "Cosa fa la funzione probe() in un driver?",
+            options: ["Chiude il dispositivo", "Inizializza il dispositivo rilevato", "Legge dati", "Gestisce interrupt"],
+            correct: 1,
+            explanation: "probe() viene chiamata quando un dispositivo compatibile viene rilevato, e inizializza il driver per quel dispositivo."
+        },
+        {
+            question: "Quale comando esplora dispositivi PCI?",
+            options: ["lsusb", "lspci", "lsmod", "dmesg"],
+            correct: 1,
+            explanation: "lspci mostra informazioni sui dispositivi collegati al bus PCI, inclusi i driver che li gestiscono."
+        },
+        {
+            question: "Cosa significa DMA?",
+            options: ["Direct Memory Access", "Device Memory Allocation", "Driver Module API", "Dynamic Memory Array"],
+            correct: 0,
+            explanation: "DMA (Direct Memory Access) permette trasferimenti diretti tra dispositivi e memoria senza coinvolgere la CPU."
+        },
+        {
+            question: "Quale file contiene informazioni sugli interrupt?",
+            options: ["/proc/cpuinfo", "/proc/interrupts", "/proc/modules", "/proc/devices"],
+            correct: 1,
+            explanation: "/proc/interrupts mostra statistiche sugli interrupt hardware e quali driver li gestiscono."
+        },
+        {
+            question: "Cosa gestisce il device model?",
+            options: ["Solo dispositivi USB", "Gerarchia unificata di tutti i dispositivi", "Solo dispositivi di rete", "File di configurazione"],
+            correct: 1,
+            explanation: "Il device model organizza tutti i dispositivi in una gerarchia strutturata per gestione unificata."
+        },
+        {
+            question: "Quale comando monitora dispositivi USB?",
+            options: ["lspci", "lsmod", "lsusb", "dmesg"],
+            correct: 2,
+            explanation: "lsusb mostra la gerarchia dei dispositivi USB connessi al sistema."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione dei device driver! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare i device driver! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! I device driver sono complessi ma importanti! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

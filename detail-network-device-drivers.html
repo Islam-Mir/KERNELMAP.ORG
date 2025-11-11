@@ -1,0 +1,734 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Device Drivers - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Network Device Drivers</h1>
+        <p class="subtitle">Driver Dispositivi di Rete</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🌐 DRIVER DISPOSITIVI RETE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>I Network Device Drivers sono componenti software essenziali che gestiscono l'interfaccia tra il sistema operativo Linux e l'hardware di rete, abilitando la comunicazione attraverso protocolli standard e ottimizzazioni avanzate.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un'orchestra sinfonica dove ogni musicista suona uno strumento diverso (Ethernet, Wi-Fi, Bluetooth), ma il direttore (driver) coordina tutto per creare un'armonia perfetta che il pubblico (applicazioni) può apprezzare.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>I Network Device Drivers rappresentano il livello più basso dello stack di rete Linux, fungendo da traduttori bidirezionali tra pacchetti software e segnali hardware.</strong> Sono i "ponti levatoi" che permettono al castello del kernel di comunicare con il mondo esterno attraverso fili, onde radio, e segnali elettrici.</p>
+
+        <p>• <strong>Packet I/O orchestration</strong> - Coordinamento trasmissione/ricezione pacchetti con ottimizzazioni zero-copy</p>
+        <p>• <strong>Interrupt-driven architecture</strong> - Gestione eventi asincroni per notifiche RX/TX senza polling inefficiente</p>
+        <p>• <strong>DMA coordination</strong> - Gestione trasferimenti diretti memoria per bypassare CPU e massimizzare throughput</p>
+        <p>• <strong>Hardware acceleration</strong> - Utilizzo funzionalità offload per checksum, segmentazione, e crittografia</p>
+        <p>• <strong>Link state management</strong> - Monitoraggio e controllo stato fisico del collegamento (up/down, velocità, duplex)</p>
+        <p>• <strong>Performance analytics</strong> - Raccolta statistiche dettagliate per monitoraggio e troubleshooting</p>
+        <p><em>• Interazione: Agiscono come intermediari bidirezionali tra network stack (TCP/IP) e controller hardware (NIC, Wi-Fi)</em></p>
+
+        <h2>⚙️ Architetture Network Driver</h2>
+        <p><strong>I driver di rete si organizzano in categorie basate su tecnologia e scopo funzionale:</strong></p>
+        
+        <h3>🔌 Physical Layer Drivers</h3>
+        <p>• <strong>Ethernet controllers</strong> - Gestione PHY/MAC per connessioni wired (e1000e, ixgbe, r8169)</p>
+        <p>• <strong>Wireless adapters</strong> - Protocolli 802.11 con gestione associazione/roaming (ath9k, iwlwifi)</p>
+        <p>• <strong>Mobile modems</strong> - Gestione protocolli cellulari con SIM card integration</p>
+        <p>• <strong>Optical transceivers</strong> - Supporto fibra ottica e connessioni ad alta velocità</p>
+        
+        <h3>🌐 Protocol Stack Drivers</h3>
+        <p>• <strong>TCP offload engines</strong> - TOE per processamento TCP in hardware</p>
+        <p>• <strong>RDMA adapters</strong> - Remote Direct Memory Access per storage networking</p>
+        <p>• <strong>InfiniBand HCAs</strong> - Host Channel Adapters per computing ad alte prestazioni</p>
+        <p>• <strong>iSCSI initiators</strong> - Storage over IP con supporto multipath</p>
+        
+        <h3>🔧 Virtual Network Interfaces</h3>
+        <p>• <strong>TUN/TAP devices</strong> - Interfacce virtuali per VPN, container, e virtualizzazione</p>
+        <p>• <strong>Bridge devices</strong> - Forwarding layer 2 con learning e STP</p>
+        <p>• <strong>VLAN interfaces</strong> - 802.1Q tagging con trunking e access ports</p>
+        <p>• <strong>Bonding/Teaming</strong> - Link aggregation con failover e load balancing</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando fai una videochiamata, ecco l'orchestrazione complessa dei network driver:</strong></p>
+        
+        <h3>🔍 Pipeline Trasmissione Video</h3>
+        <p>1. Applicazione cattura frame video e comprime</p>
+        <p>2. Socket layer frammenta in segmenti TCP</p>
+        <p>3. IP layer aggiunge routing e header</p>
+        <p>4. Driver riceve sk_buff dalla qdisc</p>
+        <p>5. Hardware esegue TSO (TCP Segmentation Offload)</p>
+        <p>6. Pacchetti trasmessi via DMA senza CPU intervention</p>
+        
+        <h3>📄 Strutture Dati Principali</h3>
+        <ul>
+        <li><strong>net_device</strong> - Core structure rappresentante interfaccia rete con operations e private data</li>
+        <li><strong>sk_buff</strong> - Socket buffer contenente pacchetti con metadata per routing attraverso stack</li>
+        <li><strong>netdev_queue</strong> - Code trasmissione per QoS con priorità e shaping</li>
+        <li><strong>rtnl_link_stats64</strong> - Statistiche complete RX/TX con contatori errori e performance</li>
+        </ul>
+        
+        <h3>💻 Comandi di Analisi</h3>
+        <p><strong>Strumenti Linux per investigare network drivers:</strong></p>
+        <ul>
+        <li><code>ip link show</code> - Stato interfacce con driver information</li>
+        <li><code>ethtool -i eth0</code> - Dettagli driver, versione, e bus-info</li>
+        <li><code>lspci -vv | grep Ethernet</code> - Configurazione PCI completa</li>
+        <li><code>lsmod | grep 80211</code> - Moduli wireless caricati</li>
+        </ul>
+        
+        <h3>🎯 Scenario Streaming 4K</h3>
+        <p>Durante streaming video ad alta risoluzione:</p>
+        <ol>
+        <li>Driver configura multi-queue RSS per distribuire carico su CPU</li>
+        <li>Hardware esegue GRO (Generic Receive Offload) sui pacchetti</li>
+        <li>DMA trasferisce dati direttamente in GPU buffer</li>
+        <li>Interrupt coalescing riduce overhead CPU</li>
+        <li>Statistiche aggiornate per monitoraggio qualità</li>
+        </ol>
+
+        <h2>🔧 Funzionalità Avanzate</h2>
+        <ul>
+        <li><strong>Hardware acceleration</strong> - Offloading completo TCP/UDP/IP con checksum e segmentazione</li>
+        <li><strong>Multi-core optimization</strong> - RSS/XPS per distribuzione intelligente su CPU multiple</li>
+        <li><strong>Virtualization support</strong> - SR-IOV e VMDq per virtual machines</li>
+        <li><strong>Quality of Service</strong> - Traffic shaping e priority queuing</li>
+        </ul>
+        
+        <h2>✨ Caratteristiche Principali</h2>
+        <ul>
+        <li><strong>High-performance I/O</strong> - Architetture zero-copy con DMA diretto</li>
+        <li><strong>Fault tolerance</strong> - Link failover e error recovery automatico</li>
+        <li><strong>Runtime configuration</strong> - Tuning dinamico via ethtool e iproute2</li>
+        <li><strong>Comprehensive monitoring</strong> - Metriche dettagliate per troubleshooting</li>
+        <li><strong>Security integration</strong> - Supporto VLAN, firewalling hardware, e TLS offload</li>
+        </ul>
+
+        <h2>🔗 Interazioni Sistemiche</h2>
+        <p><strong>I network driver operano come hub centrale connettendo molteplici sottosistemi:</strong></p>
+        
+        <h3>🌐 Protocol Stack Integration</h3>
+        <p>• <strong>INET layer</strong> - Routing IPv4/IPv6 con forwarding e NAT</p>
+        <p>• <strong>Transport protocols</strong> - TCP congestion control e UDP multiplexing</p>
+        <p>• <strong>Socket abstraction</strong> - Berkeley sockets API con zero-copy optimizations</p>
+        
+        <h3>⚡ Hardware Ecosystem</h3>
+        <p>• <strong>PHY/MAC sublayers</strong> - Auto-negotiation e link training</p>
+        <p>• <strong>Interrupt subsystem</strong> - MSI/MSI-X per latenze ridotte</p>
+        <p>• <strong>DMA engine</strong> - Direct memory access con IOMMU support</p>
+        
+        <h3>🔄 System Management</h3>
+        <p>• <strong>Hotplug framework</strong> - Runtime device insertion/removal</p>
+        <p>• <strong>Power management</strong> - Runtime PM states e Wake-on-LAN</p>
+        <p>• <strong>Firmware interface</strong> - Microcode loading e device calibration</p>
+
+        <h2>🛠️ API e Interfacce</h2>
+        <p><strong>Queste sono le interfacce principali per network drivers:</strong></p>
+
+        <h3>📡 Device Operations</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">net_device_ops.ndo_start_xmit()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Trasmissione pacchetto attraverso hardware.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">netif_rx()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Passaggio pacchetto ricevuto allo stack rete.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">net_device_ops.ndo_open()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apertura interfaccia e avvio trasmissione.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">net_device_ops.ndo_stop()</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiusura interfaccia e stop trasmissione.</span>
+        </div>
+
+        <h3>⚙️ Configuration Interface</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">ethtool -s eth0 speed 1000 duplex full</code><br>
+            <span style="color: #666; font-size: 0.9em;">Configurazione velocità e duplex via ethtool.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">ip link set eth0 up</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attivazione interfaccia rete.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">iwconfig wlan0 essid "MyNetwork"</code><br>
+            <span style="color: #666; font-size: 0.9em;">Configurazione rete wireless.</span>
+        </div>
+
+        <h3>📊 Statistics e Monitoring</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">ip -s link show eth0</code><br>
+            <span style="color: #666; font-size: 0.9em;">Statistiche pacchetti RX/TX e errori.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">ethtool -S eth0</code><br>
+            <span style="color: #666; font-size: 0.9em;">Statistiche dettagliate driver specifiche.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">sar -n DEV 1</code><br>
+            <span style="color: #666; font-size: 0.9em;">Monitoraggio attività rete in tempo reale.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Avanzato</h3>
+        <p><strong>Durante una conferenza video enterprise:</strong></p>
+        <ol>
+        <li>Applicazione WebRTC richiede multi-streaming</li>
+        <li>Stack configura QoS con traffic shaping</li>
+        <li>Driver abilita RSS per distribuzione su 8 CPU</li>
+        <li>Pacchetti H.264 arrivano con timestamping hardware</li>
+        <li>DMA bypassa kernel space direttamente in GPU</li>
+        <li>Jitter buffer hardware garantisce sincronizzazione</li>
+        </ol>
+        <p><em>Il risultato è video 4K a 60fps con latenza sub-millisecond senza saturare CPU!</em></p>
+
+
+        <h2>🗺️ Architettura dei Network Device Drivers</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Stack Completo Network I/O</h3>
+
+            <!-- Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICATION LAYER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Web browsers, media players<br>
+                    • Database clients, APIs<br>
+                    • Cloud services, streaming<br>
+                    • Real-time communications
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Socket Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔌 SOCKET ABSTRACTION</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • BSD sockets API<br>
+                    • Zero-copy optimizations<br>
+                    • Socket buffers (sk_buff)<br>
+                    • Connection management
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Network Stack -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌐 NETWORK PROTOCOL STACK</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌍</div>
+                        <div style="font-size: 0.8em;">IP Layer</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📦</div>
+                        <div style="font-size: 0.8em;">Transport</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔀</div>
+                        <div style="font-size: 0.8em;">Routing</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🛡️</div>
+                        <div style="font-size: 0.8em;">Firewall</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Packet encapsulation<br>
+                    • QoS & traffic shaping<br>
+                    • NAT & forwarding<br>
+                    • Security filtering
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Network Driver -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #9c27b0; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #9c27b0; margin-bottom: 10px;">🌟 NETWORK DEVICE DRIVER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Hardware abstraction<br>
+                    • DMA coordination<br>
+                    • Interrupt handling<br>
+                    • Offload management
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #f57c00; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #f57c00; margin-bottom: 8px;">🔌 PHYSICAL LAYER</div>
+                    <div style="font-size: 0.8em; color: #666;">PHY/MAC Controllers</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #2196f3; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #2196f3; margin-bottom: 8px;">📡 WIRELESS</div>
+                    <div style="font-size: 0.8em; color: #666;">Wi-Fi, Bluetooth, 5G</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #4caf50; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #4caf50; margin-bottom: 8px;">🌐 VIRTUAL</div>
+                    <div style="font-size: 0.8em; color: #666;">TUN/TAP, Bridges</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">💽 STORAGE</div>
+                    <div style="font-size: 0.8em; color: #666;">iSCSI, FCoE</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il percorso end-to-end dei dati attraverso lo stack<br>
+                • Ogni layer ottimizza e aggiunge funzionalità specifiche<br>
+                • I driver fungono da ponte bidirezionale tra software e hardware<br>
+                • L'orchestrazione permette throughput elevati con latenza minima
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: High-Performance Networking</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Data Center Traffic 100Gbps</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🗄️ Database Server</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        PostgreSQL query<br>
+                        <span style="color: #666;">(10GB result set)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 100G NIC</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Mellanox CX-5<br>
+                        <span style="color: #666;">(RDMA & RoCE)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Pipeline ottimizzato:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">DB → zero-copy → RDMA → hardware bypass → remote memory</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Orchestrazione ad alta velocità:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Query execution:</strong> Database prepara 10GB di dati in memory</li>
+                    <li><strong>2. RDMA setup:</strong> Driver configura RoCEv2 per trasporto lossless</li>
+                    <li><strong>3. Hardware offload:</strong> NIC gestisce flow control e error recovery</li>
+                    <li><strong>4. Direct placement:</strong> Dati arrivano direttamente in buffer destinazione</li>
+                    <li><strong>5. Interrupt minimization:</strong> Solo completion events, no per-packet interrupts</li>
+                    <li><strong>6. CPU bypass:</strong> Zero CPU involvement per byte trasferito</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Trasferimento 10GB in ~80ms con <1% CPU utilization. I network driver moderni rendono possibile il cloud computing ad alta performance!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Network Driver Analysis</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Strumenti Avanzati per Network Troubleshooting</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Deep Driver Inspection</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ethtool -i eth0<br>
+                        driver: ixgbe<br>
+                        version: 5.1.0-k<br>
+                        bus-info: 0000:01:00.0<br>
+                        $ ethtool --show-priv-flags eth0<br>
+                        $ ethtool --show-channels eth0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Analizza configurazione driver e canali multi-queue</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Advanced Statistics</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ethtool -S eth0 | head -20<br>
+                        NIC statistics:<br>
+                        rx_packets: 1543672<br>
+                        tx_packets: 892415<br>
+                        rx_bytes: 245678901<br>
+                        tx_bytes: 123456789<br>
+                        $ ip -s link show eth0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Statistiche dettagliate driver-specific e protocol-level</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Performance Benchmarking</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ iperf3 -c 10.0.0.1 -t 30 -P 4<br>
+                        [SUM]   0.00-30.00  sec  8.41 GBytes  2.41 Gbits/sec<br>
+                        $ netperf -H 10.0.0.1 -t TCP_RR<br>
+                        $ qperf 10.0.0.1 tcp_lat<br>
+                        MIGRATED TCP CONNECTIONS: 8192
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Benchmark throughput, latency, e connection scaling</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Advanced Tuning</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ethtool -L eth0 combined 8<br>
+                        $ ethtool -X eth0 weight 0 1 2 3 4 5 6 7<br>
+                        $ sysctl -w net.core.rmem_max=16777216<br>
+                        $ sysctl -w net.core.wmem_max=16777216<br>
+                        $ tc qdisc add dev eth0 root fq
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>RSS tuning, buffer sizing, e QoS configuration</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌐</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Protocol Stack Integration</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    I driver non lavorano isolati ma sono integrati nel network stack completo. Dalla socket API al filo fisico, ogni layer ottimizza per performance e affidabilità.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Hardware Acceleration</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    I moderni NIC offloadano operazioni complesse: TCP segmentation, checksum, encryption. Questo permette di raggiungere velocità wire-speed con minima CPU utilization.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Multi-Queue Architecture</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    RSS e multi-queue permettono di distribuire il carico su più CPU cores. Ogni coda ha priorità e scheduling indipendenti per ottimizzare QoS e performance.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Runtime Configuration</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buffer sizing, offload features. Questo permette ottimizzazione dinamica del traffico.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Network Device Drivers
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa fa un network device driver?",
+            options: ["Gestisce memoria", "Controlla dispositivi rete hardware", "Compila programmi", "Gestisce processi"],
+            correct: 1,
+            explanation: "I network device driver gestiscono l'interfaccia tra kernel Linux e hardware di rete come schede Ethernet e Wi-Fi."
+        },
+        {
+            question: "Quale struttura rappresenta un dispositivo rete?",
+            options: ["task_struct", "inode", "net_device", "file_operations"],
+            correct: 2,
+            explanation: "net_device è la struttura principale che rappresenta un'interfaccia di rete nel kernel Linux."
+        },
+        {
+            question: "Cosa significa DMA nei network driver?",
+            options: ["Direct Memory Access", "Dynamic Memory Allocation", "Device Module API", "Data Management Array"],
+            correct: 0,
+            explanation: "DMA (Direct Memory Access) permette trasferimenti diretti tra dispositivi hardware e memoria senza coinvolgere la CPU."
+        },
+        {
+            question: "Quale comando mostra informazioni driver rete?",
+            options: ["lsmod", "lspci", "ethtool -i", "ps aux"],
+            correct: 2,
+            explanation: "ethtool -i interfaccia mostra informazioni dettagliate sul driver e firmware di un dispositivo rete."
+        },
+        {
+            question: "Cosa è TSO nel contesto network?",
+            options: ["TCP Socket Option", "TCP Segmentation Offload", "Time Stamp Option", "Transmission Speed Optimization"],
+            correct: 1,
+            explanation: "TSO (TCP Segmentation Offload) permette all'hardware di dividere pacchetti TCP grandi, scaricando lavoro dalla CPU."
+        },
+        {
+            question: "Quale struttura contiene pacchetti rete?",
+            options: ["page", "sk_buff", "vm_area_struct", "dentry"],
+            correct: 1,
+            explanation: "sk_buff (socket buffer) è la struttura che contiene pacchetti di rete mentre viaggiano attraverso lo stack."
+        },
+        {
+            question: "Cosa fa RSS nei network driver?",
+            options: ["Riduce spazio storage", "Distribuisce RX su CPU multiple", "Aumenta velocità rete", "Comprime pacchetti"],
+            correct: 1,
+            explanation: "RSS (Receive Side Scaling) distribuisce pacchetti ricevuti su più CPU per migliorare performance in sistemi multiprocessore."
+        },
+        {
+            question: "Quale comando monitora statistiche rete?",
+            options: ["free -h", "df -h", "ip -s link", "top"],
+            correct: 2,
+            explanation: "ip -s link show mostra statistiche dettagliate di pacchetti ricevuti/trasmessi e errori per interfacce rete."
+        },
+        {
+            question: "Cosa significa offloading hardware?",
+            options: ["Spegne dispositivo", "Scarica CPU su hardware", "Aumenta consumo energetico", "Rallenta trasmissione"],
+            correct: 1,
+            explanation: "Hardware offloading permette al dispositivo di rete di eseguire operazioni come checksum e segmentation, riducendo carico CPU."
+        },
+        {
+            question: "Quale funzione trasmette pacchetti?",
+            options: ["netif_rx()", "ndo_open()", "ndo_start_xmit()", "ndo_stop()"],
+            correct: 2,
+            explanation: "ndo_start_xmit() è la funzione chiamata per trasmettere un pacchetto attraverso l'hardware di rete."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+           
+

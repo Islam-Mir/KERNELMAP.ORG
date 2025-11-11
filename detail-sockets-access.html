@@ -1,0 +1,878 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sockets Access - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Sockets Access</h1>
+        <p class="subtitle">Accesso ai Socket</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🔌 ACCESSO SOCKET RETE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>L'accesso ai socket gestisce la comunicazione inter-processo e di rete attraverso interfacce standardizzate che permettono ai programmi di scambiare dati in modo affidabile e sicuro.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un sistema postale universale: ogni lettera (messaggio) può essere spedita da qualsiasi mittente a qualsiasi destinatario, indipendentemente dalla distanza o dal mezzo di trasporto utilizzato.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>L'accesso ai socket è il meccanismo fondamentale per la comunicazione nel sistema operativo Linux.</strong> Immagina di avere un sistema telefonico universale dove ogni dispositivo può chiamare qualsiasi altro dispositivo nel mondo, usando lo stesso tipo di telefono e le stesse regole di chiamata.</p>
+
+        <p>• <strong>Interfaccia unificata</strong> - Stessa API per comunicazione locale e remota</p>
+        <p>• <strong>Tipi di socket</strong> - Stream, datagram, raw, sequenced packet</p>
+        <p>• <strong>Protocolli multipli</strong> - TCP, UDP, Unix domain, Netlink</p>
+        <p>• <strong>Buffering intelligente</strong> - Gestione code trasmissione/ricezione</p>
+        <p>• <strong>Controllo flusso</strong> - Prevenzione sovraccarico e perdita dati</p>
+        <p>• <strong>Multiplexing</strong> - Gestione multiple connessioni simultanee</p>
+        <p><em>• Interazione: Fornisce primitive di comunicazione a tutti i programmi che necessitano di scambiare dati</em></p>
+
+        <h2>⚙️ Tipi di Socket</h2>
+        <p><strong>Linux supporta diversi tipi di socket per varie esigenze di comunicazione:</strong></p>
+
+        <h3>🌊 Stream Sockets (SOCK_STREAM)</h3>
+        <p>• <strong>TCP-based</strong> - Connessioni affidabili, ordered, bidirezionali</p>
+        <p>• <strong>Handshake three-way</strong> - Stabilisce connessione prima trasmissione</p>
+        <p>• <strong>Controllo flusso</strong> - Previene perdita dati e sovraccarico</p>
+        <p>• <strong>Byte stream</strong> - Dati come flusso continuo senza confini messaggi</p>
+
+        <h3>📮 Datagram Sockets (SOCK_DGRAM)</h3>
+        <p>• <strong>UDP-based</strong> - Messaggi indipendenti senza connessione</p>
+        <p>• <strong>Best effort</strong> - Nessuna garanzia consegna o ordine</p>
+        <p>• <strong>Message boundaries</strong> - Preserva confini tra messaggi</p>
+        <p>• <strong>Multicast support</strong> - Trasmissione a gruppi</p>
+
+        <h3>🔧 Raw Sockets (SOCK_RAW)</h3>
+        <p>• <strong>Accesso diretto</strong> - Pacchetti IP senza elaborazione trasporto</p>
+        <p>• <strong>Privileged</strong> - Richiede capabilities speciali</p>
+        <p>• <strong>Protocol customization</strong> - Implementazione protocolli custom</p>
+        <p>• <strong>Network tools</strong> - ping, traceroute, packet analyzers</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando navighi su un sito web, ecco cosa succede nell'accesso ai socket:</strong></p>
+
+        <h3>🔍 Connessione HTTP</h3>
+        <p>1. Browser risolve nome dominio in indirizzo IP</p>
+        <p>2. Crea socket TCP (socket(AF_INET, SOCK_STREAM, 0))</p>
+        <p>3. Connette al server (connect())</p>
+        <p>4. Invia richiesta HTTP (write()/send())</p>
+        <p>5. Riceve risposta (read()/recv())</p>
+        <p>6. Chiude connessione (close())</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>struct socket</strong> - Rappresenta socket nel kernel</li>
+            <li><strong>struct sock</strong> - Protocol-specific data</li>
+            <li><strong>struct sk_buff</strong> - Socket buffer per pacchetti</li>
+            <li><strong>socket address</strong> - Indirizzi locali/remoti</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare socket:</strong></p>
+        <ul>
+            <li><code>ss -tlnp</code> - Lista socket TCP in ascolto</li>
+            <li><code>netstat -tulpn</code> - Stato connessioni rete</li>
+            <li><code>lsof -i</code> - File descriptor socket aperti</li>
+            <li><code>ss -u</code> - Socket UDP attivi</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Chat Application</h3>
+        <p>Durante una videochiamata:</p>
+        <ol>
+            <li>App crea socket UDP per audio/video</li>
+            <li>Stabilisce connessione STUN/TURN per NAT</li>
+            <li>Invia pacchetti RTP con timestamp</li>
+            <li>Riceve stream e ricostruisce audio/video</li>
+            <li>Adatta bitrate basato latenza/jitter</li>
+        </ol>
+
+        <h2>🔧 Famiglie di Protocolli</h2>
+        <ul>
+            <li><strong>AF_INET/AF_INET6</strong> - IPv4/IPv6 internet protocols</li>
+            <li><strong>AF_UNIX</strong> - Comunicazione inter-processo locale</li>
+            <li><strong>AF_NETLINK</strong> - Comunicazione kernel-userspace</li>
+            <li><strong>AF_PACKET</strong> - Accesso diretto livello link</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Portabilità</strong> - Stessa API su tutti sistemi Unix-like</li>
+            <li><strong>Affidabilità</strong> - Garanzie consegna per stream sockets</li>
+            <li><strong>Performance</strong> - Zero-copy e buffering ottimizzato</li>
+            <li><strong>Sicurezza</strong> - Isolamento processi e controllo accessi</li>
+            <li><strong>Scalabilità</strong> - Supporto migliaia connessioni simultanee</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>I socket interagiscono con molteplici componenti del sistema:</strong></p>
+
+        <h3>🌐 Network Stack</h3>
+        <p>• <strong>TCP/IP</strong> - Protocolli trasporto e rete</p>
+        <p>• <strong>Routing</strong> - Selezione percorso pacchetti</p>
+        <p>• <strong>Firewall</strong> - Filtraggio Netfilter</p>
+
+        <h3>💾 Memory Manager</h3>
+        <p>• <strong>Socket buffers</strong> - Allocazione memoria pacchetti</p>
+        <p>• <strong>Zero-copy</strong> - Trasferimenti diretti memoria</p>
+        <p>• <strong>Buffering</strong> - Code trasmissione/ricezione</p>
+
+        <h3>⚙️ Scheduler</h3>
+        <p>• <strong>Blocking I/O</strong> - Processi in attesa dati</p>
+        <p>• <strong>Async I/O</strong> - Notifiche eventi senza bloccare</p>
+        <p>• <strong>Multiplexing</strong> - select/poll/epoll</p>
+
+        <h2>🛠️ API Socket Principali</h2>
+        <p><strong>Queste sono le funzioni base per lavorare con socket:</strong></p>
+
+        <h3>📞 Creazione e Configurazione</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int socket(int domain, int type, int protocol);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea nuovo socket del tipo e dominio specificato.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Associa socket a indirizzo locale specifico.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int listen(int sockfd, int backlog);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mette socket in modalità ascolto per connessioni in entrata.</span>
+        </div>
+
+        <h3>🔄 Connessione e Comunicazione</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Connette socket a indirizzo remoto (per client).</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Accetta connessione in entrata e crea nuovo socket.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">ssize_t send(int sockfd, const void *buf, size_t len, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia dati attraverso socket connesso.</span>
+        </div>
+
+        <h3>📨 Ricezione e Chiusura</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">ssize_t recv(int sockfd, void *buf, size_t len, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Riceve dati dal socket connesso.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int close(int sockfd);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiude socket e rilascia risorse associate.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int shutdown(int sockfd, int how);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiude parzialmente socket (lettura, scrittura, o entrambe).</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando scarichi un file da internet:</strong></p>
+        <ol>
+            <li>Browser risolve URL e ottiene indirizzo server</li>
+            <li>Crea socket TCP: <code>socket(AF_INET, SOCK_STREAM, 0)</code></li>
+            <li>Connette: <code>connect(sockfd, &server_addr, sizeof(server_addr))</code></li>
+            <li>Invia richiesta HTTP: <code>send(sockfd, request, strlen(request), 0)</code></li>
+            <li>Riceve dati: <code>recv(sockfd, buffer, sizeof(buffer), 0)</code></li>
+            <li>Salva su disco i dati ricevuti</li>
+            <li>Chiude: <code>close(sockfd)</code></li>
+        </ol>
+        <p><em>Tutto questo avviene attraverso l'accesso ai socket, che astrae la complessità del networking sottostante!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale dell'Accesso ai Socket</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dell'Accesso ai Socket</h3>
+
+            <!-- Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Browser, SSH, FTP<br>
+                    • Server web, database<br>
+                    • Socket API (POSIX)<br>
+                    • System calls
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Socket Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🔌 SOCKET ACCESS LAYER</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌊</div>
+                        <div style="font-size: 0.8em;">STREAM</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📮</div>
+                        <div style="font-size: 0.8em;">DGRAM</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔧</div>
+                        <div style="font-size: 0.8em;">RAW</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">SEQPACKET</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Interfaccia unificata<br>
+                    • Multiplexing I/O<br>
+                    • Buffer management<br>
+                    • Connection handling
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Protocol Stack Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🌐 TCP/IP</div>
+                    <div style="font-size: 0.8em; color: #666;">Connessioni affidabili</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">📡 UDP</div>
+                    <div style="font-size: 0.8em; color: #666;">Datagrammi veloci</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🏠 UNIX</div>
+                    <div style="font-size: 0.8em; color: #666;">IPC locale</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔗 NETLINK</div>
+                    <div style="font-size: 0.8em; color: #666;">Kernel-user</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dei dati dall'applicazione al protocollo sottostante<br>
+                • Ogni layer aggiunge funzionalità specifiche (affidabilità, velocità, sicurezza)<br>
+                • I socket forniscono un'interfaccia unificata indipendentemente dal protocollo<br>
+                • Lo stesso codice funziona per comunicazione locale e remota
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Creazione di una Connessione Socket</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Connessione TCP Client-Server</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🖥️ Client (Browser)</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        socket(AF_INET, SOCK_STREAM, 0)<br>
+                        <span style="color: #666;">(Richiesta connessione)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">🔄</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🖧 Server (Web)</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        listen(sockfd, backlog)<br>
+                        <span style="color: #666;">(In attesa connessioni)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Sequenza connessione TCP:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">SYN → SYN-ACK → ACK</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede nell'accesso ai socket durante la connessione:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Creazione socket:</strong> Client chiama socket() per creare endpoint comunicazione</li>
+                    <li><strong>2. Connessione attiva:</strong> Client chiama connect() per stabilire connessione</li>
+                    <li><strong>3. Three-way handshake:</strong> SYN → SYN-ACK → ACK tra client e server</li>
+                    <li><strong>4. Accettazione server:</strong> Server accetta connessione con accept()</li>
+                    <li><strong>5. Stabilimento connessione:</strong> Socket diventano utilizzabili per send()/recv()</li>
+                    <li><strong>6. Buffer allocation:</strong> Sistema alloca buffer per trasmissione/ricezione</li>
+                    <li><strong>7. Data transfer:</strong> Applicazioni possono ora scambiare dati bidirezionalmente</li>
+                    <li><strong>8. Connection teardown:</strong> Chiusura con FIN → ACK sequenza</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> I socket forniscono un canale di comunicazione affidabile tra processi, nascondendo la complessità del protocollo TCP/IP sottostante. La stessa API funziona per qualsiasi tipo di comunicazione di rete.
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora l'Accesso ai Socket</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora connessioni attive</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ss -t<br>
+                        State      Recv-Q Send-Q Local Address:Port               Peer Address:Port<br>
+                        ESTAB      0      0      192.168.1.100:ssh                 192.168.1.50:54321<br>
+                        LISTEN     0      128    127.0.0.1:mysql                  *:*<br>
+                        $ ss -u | head -5
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza tutte le connessioni TCP/UDP attive e in ascolto</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza socket processi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lsof -i :80<br>
+                        COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF NODE NAME<br>
+                        apache2 1234 www-data 4u  IPv4  12345      0t0  TCP *:http (LISTEN)<br>
+                        $ netstat -tulpn | grep :22
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quali processi utilizzano socket su porte specifiche</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Testa multiplexing I/O</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ strace -e socket,connect,send,recv nc -l 8080<br>
+                        socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) = 3<br>
+                        bind(3, {sa_family=AF_INET, sin_port=htons(8080), sin_addr=inet_addr("0.0.0.0")}, 16) = 0<br>
+                        listen(3, 1) = 0<br>
+                        accept(3, NULL, NULL) = 4
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Traccia le system call socket durante comunicazione</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Esplora socket Unix domain</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ss -x<br>
+                        Netid  State      Recv-Q Send-Q   Local Address:Port       Peer Address:Port<br>
+                        u_str  LISTEN     0      128    /var/run/mysqld/mysqld.sock<br>
+                        u_str  ESTAB      0      0      @/tmp/.X11-unix/X0         @/tmp/.X11-unix/X0<br>
+                        $ ls -la /tmp/.X11-unix/
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina socket di dominio Unix per IPC locale</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Interfaccia Unificata</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    I socket forniscono la stessa API per comunicazione locale (Unix domain) e remota (TCP/IP). Un programmatore può scrivere codice che funziona su qualsiasi mezzo di trasporto senza modifiche.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌊</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Stream vs Datagram</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Stream socket (TCP) garantiscono consegna ordinata e affidabile come un tubo, mentre datagram socket (UDP) inviano messaggi indipendenti come lettere, senza garanzie ma con meno overhead.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔀</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Multiplexing I/O</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    select(), poll(), ed epoll() permettono di gestire multiple connessioni socket simultaneamente senza thread dedicati per ciascuna, abilitando server scalabili che gestiscono migliaia di client.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza Socket</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    I socket rispettano i permessi del filesystem e le capabilities del processo. Socket Unix domain possono avere proprietari e permessi, mentre socket di rete sono protetti da firewall e SELinux.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sull'Accesso ai Socket
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa crea la funzione socket()?",
+            options: ["Un file", "Un endpoint di comunicazione", "Un processo", "Un thread"],
+            correct: 1,
+            explanation: "socket() crea un endpoint per la comunicazione, restituendo un file descriptor che rappresenta il socket."
+        },
+        {
+            question: "Quale tipo di socket garantisce consegna ordinata?",
+            options: ["SOCK_DGRAM", "SOCK_STREAM", "SOCK_RAW", "SOCK_SEQPACKET"],
+            correct: 1,
+            explanation: "SOCK_STREAM (tipicamente TCP) garantisce consegna ordinata e affidabile dei dati."
+        },
+        {
+            question: "Cosa fa la funzione bind()?",
+            options: ["Connette a server", "Ascolta connessioni", "Associa indirizzo locale", "Invia dati"],
+            correct: 2,
+            explanation: "bind() associa un socket a un indirizzo e porta locali specifici."
+        },
+        {
+            question: "Quale comando mostra socket TCP?",
+            options: ["ps aux", "ss -t", "df -h", "free -h"],
+            correct: 1,
+            explanation: "ss -t mostra tutti i socket TCP attivi nel sistema."
+        },
+        {
+            question: "Cosa significa AF_INET?",
+            options: ["Socket raw", "IPv4 Internet protocols", "Socket Unix", "Socket Netlink"],
+            correct: 1,
+            explanation: "AF_INET indica l'uso di protocolli Internet IPv4 per la comunicazione."
+        },
+        {
+            question: "Quale funzione accetta connessioni in entrata?",
+            options: ["connect()", "bind()", "listen()", "accept()"],
+            correct: 3,
+            explanation: "accept() accetta una connessione in entrata e crea un nuovo socket per gestirla."
+        },
+        {
+            question: "Cosa monitora lsof -i?",
+            options: ["File aperti", "Socket di rete", "Processi", "Memoria"],
+            correct: 1,
+            explanation: "lsof -i mostra tutti i file descriptor relativi a socket di rete aperti."
+        },
+        {
+            question: "Quale famiglia usa comunicazione locale?",
+            options: ["AF_INET", "AF_INET6", "AF_UNIX", "AF_NETLINK"],
+            correct: 2,
+            explanation: "AF_UNIX permette comunicazione inter-processo efficiente senza passare attraverso lo stack di rete."
+        },
+        {
+            question: "Cosa fa listen()?",
+            options: ["Chiude socket", "Mette in ascolto", "Connette", "Invia dati"],
+            correct: 1,
+            explanation: "listen() mette un socket in modalità ascolto per accettare connessioni in entrata."
+        },
+        {
+            question: "Quale comando traccia socket calls?",
+            options: ["top", "strace -e socket", "ps", "kill"],
+            correct: 1,
+            explanation: "strace -e socket traccia tutte le system call relative ai socket eseguite da un processo."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione dell'accesso ai socket! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare i socket! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! I socket sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

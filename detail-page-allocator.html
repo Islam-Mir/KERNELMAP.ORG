@@ -1,0 +1,876 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Allocator - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Page Allocator</h1>
+        <p class="subtitle">Allocatore di Pagine</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">📄 GESTIONE PAGINE FISICHE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il page allocator gestisce l'allocazione e deallocazione delle pagine fisiche di memoria RAM, fornendo l'interfaccia principale per richiedere memoria al sistema operativo.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un sistema di prenotazione alberghiera: gestisce stanze (pagine) libere, assegna camere agli ospiti (processi), tiene traccia delle prenotazioni (allocazioni), e recupera stanze quando gli ospiti partono (deallocazioni).</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il page allocator è il cuore del memory management nel kernel Linux.</strong> Immagina un magazzino automatizzato dove ogni pagina fisica è un pallet che deve essere prelevato, trasportato, e restituito con massima efficienza. Il sistema gestisce miliardi di operazioni giornaliere mantenendo ordine e ottimizzazione.</p>
+
+        <p>• <strong>Zone-based allocation</strong> - Allocazione basata su zone di memoria (DMA, NORMAL, HIGHMEM)</p>
+        <p>• <strong>Order-based requests</strong> - Richieste per potenze di 2 pagine (2^order)</p>
+        <p>• <strong>Watermark management</strong> - Soglie per controllo pressione memoria</p>
+        <p>• <strong>Fallback allocation</strong> - Allocazione zone alternative se necessario</p>
+        <p>• <strong>Per-CPU caching</strong> - Cache locali CPU per prestazioni</p>
+        <p>• <strong>Memory policies</strong> - Politiche NUMA-aware per sistemi multi-socket</p>
+        <p><em>• Interazione: Riceve richieste da tutti i sottosistemi kernel che necessitano memoria fisica e coordina con il buddy system per l'allocazione effettiva</em></p>
+
+        <h2>⚙️ Zone di Memoria</h2>
+        <p><strong>Il page allocator organizza la memoria in zone per riflettere limitazioni hardware:</strong></p>
+
+        <h3>🖥️ ZONE_DMA</h3>
+        <p>• <strong>Primi 16MB</strong> - Per dispositivi DMA legacy</p>
+        <p>• <strong>Dispositivi ISA</strong> - Controller che non possono indirizzare oltre 16MB</p>
+        <p>• <strong>Buffer I/O</strong> - Per trasferimenti diretti memoria</p>
+
+        <h3>💾 ZONE_NORMAL</h3>
+        <p>• <strong>16MB-896MB</strong> - Memoria normalmente accessibile dal kernel</p>
+        <p>• <strong>Kernel mappings</strong> - Dove risiede il kernel stesso</p>
+        <p>• <strong>User space</strong> - Pagine per processi userspace</p>
+
+        <h3>🌌 ZONE_HIGHMEM</h3>
+        <p>• <strong>896MB+</strong> - Memoria alta (solo su sistemi 32-bit)</p>
+        <p>• <strong>Permanent mapping</strong> - Mappatura permanente necessaria</p>
+        <p>• <strong>Dynamic allocation</strong> - Allocazione dinamica per accesso</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando lanci un programma che richiede memoria, ecco cosa succede nel page allocator:</strong></p>
+
+        <h3>🔍 Allocazione Pagina Singola</h3>
+        <p>1. Processo chiama malloc() per 4KB</p>
+        <p>2. Kernel richiede pagina fisica: alloc_pages(GFP_KERNEL, 0)</p>
+        <p>3. Page allocator controlla ZONE_NORMAL</p>
+        <p>4. Verifica watermarks min/free</p>
+        <p>5. Chiama buddy system per ordine 0</p>
+        <p>6. Restituisce struct page* al chiamante</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>struct page</strong> - Header per ogni pagina fisica (64 byte)</li>
+            <li><strong>struct zone</strong> - Gestisce una zona di memoria</li>
+            <li><strong>free_area</strong> - Liste buddy per ogni ordine</li>
+            <li><strong>per_cpu_pages</strong> - Cache per-CPU per hot pages</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare il page allocator:</strong></p>
+        <ul>
+            <li><code>cat /proc/buddyinfo</code> - Stato allocatore buddy</li>
+            <li><code>cat /proc/pagetypeinfo</code> - Distribuzione tipi pagina</li>
+            <li><code>cat /proc/zoneinfo</code> - Dettagli zone memoria</li>
+            <li><code>vmstat -s</code> - Statistiche memoria globali</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Out of Memory</h3>
+        <p>Quando il sistema esaurisce pagine libere:</p>
+        <ol>
+            <li>Page allocator non trova pagine in zona richiesta</li>
+            <li>Prova fallback in altre zone</li>
+            <li>Se ancora fallisce, attiva page reclaim</li>
+            <li>kswapd recupera pagine da cache/pagecache</li>
+            <li>Se memoria ancora insufficiente, OOM killer</li>
+        </ol>
+
+        <h2>🔧 Watermarks</h2>
+        <ul>
+            <li><strong>min</strong> - Soglia minima, sotto la quale allocazione riservata a kernel</li>
+            <li><strong>low</strong> - Soglia bassa, attiva kswapd per reclaim</li>
+            <li><strong>high</strong> - Soglia alta, kswapd smette di reclaimare</li>
+            <li><strong>free</strong> - Numero totale pagine libere nella zona</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Performance</strong> - Allocazione O(1) nella maggior parte casi</li>
+            <li><strong>Scalabilità</strong> - Supporto sistemi con TB di RAM</li>
+            <li><strong>NUMA awareness</strong> - Ottimizzazione per architetture multi-socket</li>
+            <li><strong>Memory policies</strong> - Controllo placement pagine</li>
+            <li><strong>Hotplug support</strong> - Aggiunta/rimozione memoria dinamica</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Il page allocator interagisce con molteplici componenti kernel:</strong></p>
+
+        <h3>🧠 Virtual Memory Manager</h3>
+        <p>• <strong>Page tables</strong> - Mappatura virtuale-fisico</p>
+        <p>• <strong>Page faults</strong> - Allocazione on-demand</p>
+        <p>• <strong>Swap</strong> - Paginazione su disco</p>
+
+        <h3>💾 I/O Subsystem</h3>
+        <p>• <strong>DMA</strong> - Buffer per trasferimenti diretti</p>
+        <p>• <strong>Block I/O</strong> - Cache per dati disco</p>
+        <p>• <strong>Network buffers</strong> - Socket buffers</p>
+
+        <h3>⚙️ Kernel Objects</h3>
+        <p>• <strong>Task structs</strong> - Strutture processo</p>
+        <p>• <strong>Inodes</strong> - Metadata filesystem</p>
+        <p>• <strong>Network sockets</strong> - Strutture connessione</p>
+
+        <h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le funzioni core per allocare pagine fisiche:</strong></p>
+
+        <h3>📄 Allocazione Pagine</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">struct page *alloc_pages(gfp_t gfp_mask, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca 2^order pagine contigue dalla zona appropriata.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">struct page *alloc_page(gfp_t gfp_mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca singola pagina (order = 0).</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca pagine e restituisce indirizzo virtuale kernel.</span>
+        </div>
+
+        <h3>🔄 Deallocazione Pagine</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">void __free_pages(struct page *page, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Libera 2^order pagine a partire dalla pagina specificata.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void free_page(unsigned long addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Libera singola pagina dall'indirizzo virtuale kernel.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void free_pages(unsigned long addr, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Libera 2^order pagine dall'indirizzo virtuale kernel.</span>
+        </div>
+
+        <h3>🔍 Query e Controllo</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">unsigned long get_zeroed_page(gfp_t gfp_mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca pagina azzerata per sicurezza.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">bool page_is_pfmemalloc(struct page *page);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica se pagina allocata in condizioni di emergenza.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int page_ref_count(struct page *page);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Restituisce reference count della pagina.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando apri un file di grandi dimensioni:</strong></p>
+        <ol>
+            <li>Filesystem richiede buffer per leggere dati</li>
+            <li>Chiama alloc_pages(GFP_NOFS, 2) per 16KB</li>
+            <li>Page allocator seleziona zona appropriata</li>
+            <li>Controlla watermarks per disponibilità</li>
+            <li>Buddy system fornisce pagine contigue</li>
+            <li>Dati file vengono letti nel buffer allocato</li>
+            <li>Dopo uso, free_pages() restituisce memoria</li>
+        </ol>
+        <p><em>Ogni allocazione/deallocazione passa attraverso il page allocator, che garantisce allocazione efficiente e sicura!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale del Page Allocator</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Page Allocator</h3>
+
+            <!-- Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ RICHIEDENTI MEMORIA</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Processi userspace<br>
+                    • Kernel subsystems<br>
+                    • Device drivers<br>
+                    • Network stack
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Page Allocator Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 PAGE ALLOCATOR</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🗂️</div>
+                        <div style="font-size: 0.8em;">Zone</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📏</div>
+                        <div style="font-size: 0.8em;">Order</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💧</div>
+                        <div style="font-size: 0.8em;">Watermarks</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Fallback</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Zone-based allocation<br>
+                    • Order-based requests<br>
+                    • Watermark management<br>
+                    • NUMA-aware policies
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Memory Zones Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🖥️ ZONE_DMA</div>
+                    <div style="font-size: 0.8em; color: #666;">0-16MB<br>Per dispositivi legacy</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾 ZONE_NORMAL</div>
+                    <div style="font-size: 0.8em; color: #666;">16MB-896MB<br>Memoria kernel</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🌌 ZONE_HIGHMEM</div>
+                    <div style="font-size: 0.8em; color: #666;">896MB+<br>Memoria alta</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔄 ZONE_MOVABLE</div>
+                    <div style="font-size: 0.8em; color: #666;">Pagine hot-removable</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste di allocazione<br>
+                • Ogni zona ha caratteristiche e limitazioni specifiche<br>
+                • Il page allocator seleziona la zona appropriata automaticamente<br>
+                • Fallback permette allocazione in zone alternative se necessario
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Allocazione Pagine</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Allocazione di 4 pagine contigue (16KB)</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔧 Kernel Subsystem</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Network Driver<br>
+                        <span style="color: #666;">(Richiesta 16KB contigui)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📄 Page Allocator</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        alloc_pages(GFP_KERNEL, 2)<br>
+                        <span style="color: #666;">(2^2 = 4 pagine da 4KB)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Sequenza allocazione:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">ZONE_NORMAL → Watermark check → Buddy system order 2 → Page struct return</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede nell'allocazione pagine:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Determinazione zona:</strong> GFP_KERNEL specifica ZONE_NORMAL come zona preferita</li>
+                    <li><strong>2. Controllo watermarks:</strong> Verifica che free > min per permettere allocazione</li>
+                    <li><strong>3. Per-CPU cache:</strong> Controlla cache locale CPU per pagine "hot"</li>
+                    <li><strong>4. Buddy allocation:</strong> Richiede blocco da 4 pagine (2^2) dal buddy system</li>
+                    <li><strong>5. Page initialization:</strong> Imposta flags (_refcount=1, PG_reserved se necessario)</li>
+                    <li><strong>6. Return struct page:</strong> Restituisce puntatore alla prima pagina del blocco</li>
+                    <li><strong>7. Virtual mapping:</strong> Se necessario, mappa pagine in spazio kernel</li>
+                    <li><strong>8. Success notification:</strong> Allocazione completata con successo</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Il driver ottiene 16KB di memoria fisica contigua, essenziale per DMA e buffer di rete. Il page allocator garantisce allocazione efficiente attraverso zone e buddy system.
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora il Page Allocator</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza stato zone</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/zoneinfo | head -20<br>
+                        Node 0, zone      DMA<br>
+                        pages free     3968<br>
+                        min      68<br>
+                        low      85<br>
+                        high     102<br>
+                        $ echo "Watermarks: min/low/high"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina watermarks e stato di ogni zona memoria</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Stato buddy allocator</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/buddyinfo<br>
+                        Node 0, zone      DMA      1      0      1      0      2      1      1      0      1      1      3<br>
+                        Node 0, zone   Normal    227    187    189    235    193    152    113     63     39     11      4<br>
+                        $ echo "Ordini da 0 (1 pagina) a 10 (1024 pagine)"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi blocchi liberi per ordine in ogni zona</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora allocazioni</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/vmstat | grep -E "pgalloc|pgfree|pgfault"<br>
+                        pgalloc_normal 1500000<br>
+                        pgalloc_dma 5000<br>
+                        pgfree 1450000<br>
+                        pgfault 50000<br>
+                        $ watch -n 1 'cat /proc/buddyinfo'
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva allocazioni/deallocazioni in tempo reale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Testa pressione memoria</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ stress --vm 2 --vm-bytes 256M --vm-keep<br>
+                        $ watch -n 1 'cat /proc/zoneinfo | grep free'<br>
+                        $ dmesg | tail -10<br>
+                        $ echo "Osserva comportamento sotto stress"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Carica sistema e monitora comportamento page allocator</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🗂️</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Zone-Based Allocation</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    La memoria è divisa in zone (DMA, NORMAL, HIGHMEM) che riflettono limitazioni hardware. Ogni zona ha il suo page allocator con watermarks e politiche specifiche per garantire compatibilità con dispositivi legacy e ottimizzazioni moderne.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📏</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Order-Based Requests</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Le richieste di allocazione specificano un "order" (2^order pagine). Questo permette al buddy system di fornire blocchi contigui efficienti, essenziali per DMA e strutture dati che richiedono continuità fisica.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">💧</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Watermark Management</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Min, low, e high watermarks controllano quando attivare meccanismi di reclaim. Sotto low si attiva kswapd, sotto min solo il kernel può allocare. Questo previene thrashing e garantisce prestazioni stabili.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Fallback Allocation</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Se una zona non ha pagine disponibili, il page allocator prova zone alternative (NORMAL→DMA, HIGHMEM→NORMAL). Questo aumenta flessibilità ma può causare problemi di performance su sistemi con memoria limitata.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sul Page Allocator
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa gestisce ZONE_DMA?",
+            options: ["Memoria kernel", "Primi 16MB per dispositivi legacy", "Memoria alta", "Pagine swappabili"],
+            correct: 1,
+            explanation: "ZONE_DMA contiene i primi 16MB di RAM, utilizzati per dispositivi che possono indirizzare solo questa regione."
+        },
+        {
+            question: "Quale funzione alloca pagine contigue?",
+            options: ["malloc()", "alloc_page()", "alloc_pages()", "kmalloc()"],
+            correct: 2,
+            explanation: "alloc_pages() alloca 2^order pagine contigue dalla zona appropriata."
+        },
+        {
+            question: "Cosa significa order in alloc_pages?",
+            options: ["Priorità allocazione", "2^order pagine da allocare", "Tipo zona", "Flags GFP"],
+            correct: 1,
+            explanation: "L'order specifica quante pagine allocare: 2^order pagine contigue."
+        },
+        {
+            question: "Quale watermark attiva kswapd?",
+            options: ["min", "low", "high", "free"],
+            correct: 1,
+            explanation: "Quando le pagine libere scendono sotto low watermark, si attiva kswapd per reclaim."
+        },
+        {
+            question: "Cosa mostra /proc/buddyinfo?",
+            options: ["Uso CPU", "Blocchi liberi per ordine", "Connessioni rete", "Processi attivi"],
+            correct: 1,
+            explanation: "/proc/buddyinfo mostra il numero di blocchi liberi per ogni ordine del buddy allocator."
+        },
+        {
+            question: "Quale zona è per kernel 32-bit?",
+            options: ["ZONE_DMA", "ZONE_NORMAL", "ZONE_HIGHMEM", "ZONE_MOVABLE"],
+            correct: 2,
+            explanation: "ZONE_HIGHMEM contiene memoria oltre 896MB, accessibile solo dinamicamente su sistemi 32-bit."
+        },
+        {
+            question: "Cosa fa __free_pages()?",
+            options: ["Alloca pagine", "Libera pagine fisiche", "Mappa pagine", "Blocca pagine"],
+            correct: 1,
+            explanation: "__free_pages() libera 2^order pagine fisiche, restituendole al buddy system."
+        },
+        {
+            question: "Quale GFP flag permette sleep?",
+            options: ["GFP_ATOMIC", "GFP_KERNEL", "GFP_NOFS", "GFP_USER"],
+            correct: 1,
+            explanation: "GFP_KERNEL permette all'allocazione di dormire se necessario, adatto per context non-atomic."
+        },
+        {
+            question: "Cosa controlla per_cpu_pages?",
+            options: ["Zone memoria", "Cache pagine per CPU", "Buddy allocator", "Virtual memory"],
+            correct: 1,
+            explanation: "per_cpu_pages mantiene cache locali per CPU di pagine recentemente liberate, per allocazioni veloci."
+        },
+        {
+            question: "Quando avviene fallback allocation?",
+            options: ["Sempre", "Mai", "Quando zona piena", "Solo per DMA"],
+            correct: 2,
+            explanation: "Fallback allocation avviene quando la zona preferita non ha pagine disponibili, provando zone alternative."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del page allocator! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il page allocator! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il page allocator è complesso! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

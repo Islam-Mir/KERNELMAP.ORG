@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files and Directories - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Files and Directories</h1>
+        <p class="subtitle">File e Directory</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">📁 GESTIONE FILE E DIRECTORY</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il sottosistema Files and Directories gestisce l'organizzazione, l'accesso e la manipolazione dei file e delle directory nel filesystem Linux.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un sistema di archiviazione e catalogazione in una biblioteca: organizza documenti (file) in scaffali (directory), mantiene indici per ricerca veloce, e gestisce prestiti (accessi) ai materiali.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il sottosistema Files and Directories è responsabile della gestione gerarchica dei dati nel filesystem Linux, fornendo astrazione e controllo per file e directory.</strong> Immagina un sistema di cassettiere dove ogni cassetto (directory) contiene documenti (file) organizzati logicamente, con etichette (nomi) e schede di catalogo (metadata).</p>
+
+        <p>• <strong>Organizzazione gerarchica</strong> - Struttura ad albero per file e directory</p>
+        <p>• <strong>Gestione metadata</strong> - Proprietà, permessi, timestamp dei file</p>
+        <p>• <strong>Navigazione efficiente</strong> - Ricerca e attraversamento della struttura</p>
+        <p>• <strong>Controllo accessi</strong> - Permessi e sicurezza per file/directory</p>
+        <p>• <strong>Operazioni CRUD</strong> - Creazione, lettura, modifica, cancellazione</p>
+        <p>• <strong>Link e collegamenti</strong> - Riferimenti multipli agli stessi dati</p>
+        <p><em>• Interazione: Fornisce interfaccia uniforme per tutte le operazioni sui file attraverso system calls</em></p>
+
+        <h2>⚙️ Operazioni Principali</h2>
+        <p><strong>Il sottosistema gestisce quattro categorie principali di operazioni sui file e directory:</strong></p>
+
+        <h3>📄 Gestione File</h3>
+        <p>• <strong>open()/close()</strong> - Apertura e chiusura file con file descriptors</p>
+        <p>• <strong>read()/write()</strong> - Trasferimento dati da/a file</p>
+        <p>• <strong>lseek()</strong> - Posizionamento nel file (offset)</p>
+        <p>• <strong>truncate()</strong> - Ridimensionamento file</p>
+
+        <h3>📁 Gestione Directory</h3>
+        <p>• <strong>mkdir()/rmdir()</strong> - Creazione e rimozione directory</p>
+        <p>• <strong>opendir()/readdir()</strong> - Navigazione contenuto directory</p>
+        <p>• <strong>chdir()</strong> - Cambio directory corrente</p>
+        <p>• <strong>getcwd()</strong> - Recupero path directory corrente</p>
+
+        <h3>🔗 Gestione Link</h3>
+        <p>• <strong>link()/symlink()</strong> - Creazione hard e soft link</p>
+        <p>• <strong>unlink()</strong> - Rimozione collegamenti</p>
+        <p>• <strong>readlink()</strong> - Lettura destinazione symlink</p>
+        <p>• <strong>rename()</strong> - Spostamento/rinominazione</p>
+
+        <h3>📊 Gestione Metadata</h3>
+        <p>• <strong>stat()/fstat()</strong> - Recupero informazioni complete sui file</p>
+        <p>• <strong>chmod()/chown()</strong> - Modifica permessi e ownership</p>
+        <p>• <strong>utime()</strong> - Aggiornamento timestamp</p>
+        <p>• <strong>access()</strong> - Verifica permessi di accesso</p>
+
+        <h2>📋 Struttura del Filesystem</h2>
+        <p><strong>Il filesystem Linux organizza file e directory in una struttura gerarchica:</strong></p>
+
+        <h3>🌳 Struttura Gerarchica</h3>
+        <ul>
+            <li><strong>Root directory (/)</strong> - Radice del filesystem</li>
+            <li><strong>Directory standard</strong> - /bin, /etc, /home, /usr, /var</li>
+            <li><strong>Directory utente</strong> - /home/username/</li>
+            <li><strong>Directory di sistema</strong> - /proc, /sys, /dev</li>
+        </ul>
+
+        <h3>📄 Tipi di File</h3>
+        <ul>
+            <li><strong>File regolari</strong> - Contengono dati (testo, binari, immagini)</li>
+            <li><strong>Directory</strong> - Contengono riferimenti ad altri file</li>
+            <li><strong>Device files</strong> - Rappresentano dispositivi hardware</li>
+            <li><strong>Named pipes</strong> - Canali di comunicazione tra processi</li>
+            <li><strong>Socket files</strong> - Endpoint di comunicazione di rete</li>
+            <li><strong>Symbolic links</strong> - Puntatori ad altri file</li>
+        </ul>
+
+        <h3>🔐 Permessi Unix</h3>
+        <ul>
+            <li><strong>Proprietario (user)</strong> - rwx (read, write, execute)</li>
+            <li><strong>Gruppo (group)</strong> - rwx</li>
+            <li><strong>Altri (others)</strong> - rwx</li>
+            <li><strong>Bit speciali</strong> - setuid, setgid, sticky bit</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare file e directory:</strong></p>
+        <ul>
+            <li><code>ls -la</code> - Lista dettagliata con permessi e proprietari</li>
+            <li><code>stat file.txt</code> - Mostra tutti i metadata del file</li>
+            <li><code>tree /home</code> - Visualizza struttura ad albero</li>
+            <li><code>find / -name "*.txt"</code> - Ricerca file per nome</li>
+            <li><code>du -sh *</code> - Mostra dimensione directory</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Creazione File</h3>
+        <p>Quando fai <code>touch nuovo.txt</code>:</p>
+        <ol>
+            <li>Kernel verifica permessi directory</li>
+            <li>Alloca inode per il nuovo file</li>
+            <li>Crea directory entry nella directory padre</li>
+            <li>Imposta metadata di default (permessi, timestamp)</li>
+            <li>Aggiorna cache del filesystem</li>
+        </ol>
+
+        <h2>🔧 Gestione Avanzata</h2>
+        <ul>
+            <li><strong>Hard links</strong> - Multiple directory entries per stesso inode</li>
+            <li><strong>Soft links</strong> - Puntatori simbolici ad altri file</li>
+            <li><strong>File descriptors</strong> - Handle numerici per file aperti</li>
+            <li><strong>Directory streams</strong> - Iteratori per contenuto directory</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Filesystem indipendente</strong> - Stessa API per tutti i filesystem</li>
+            <li><strong>Unicode support</strong> - Nomi file internazionali</li>
+            <li><strong>Atomic operations</strong> - Operazioni indivisibili</li>
+            <li><strong>Access control</strong> - Modello di sicurezza completo</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Il sottosistema Files and Directories collabora con molti componenti del kernel:</strong></p>
+
+        <h3>💽 Virtual File System</h3>
+        <p>• <strong>VFS layer</strong> - Astrazione uniforme sopra diversi filesystem</p>
+        <p>• <strong>Filesystem drivers</strong> - Implementazioni specifiche (ext4, btrfs, etc.)</p>
+
+        <h3>🧠 Memory Manager</h3>
+        <p>• <strong>Page cache</strong> - Bufferizzazione contenuti file in RAM</p>
+        <p>• <strong>Memory mapping</strong> - Mappatura file in memoria virtuale</p>
+
+        <h3>🔐 Security Framework</h3>
+        <p>• <strong>POSIX ACLs</strong> - Controllo accessi avanzato</p>
+        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control</p>
+
+        <h3>⚡ I/O Scheduler</h3>
+        <p>• <strong>Block I/O</strong> - Ottimizzazione accessi disco</p>
+        <p>• <strong>Read-ahead</strong> - Pre-caricamento dati anticipato</p>
+
+        <h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le funzioni fondamentali per lavorare con file e directory:</strong></p>
+
+        <h3>📂 Gestione File Base</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre o crea un file, restituendo un file descriptor per successive operazioni.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge fino a 'count' byte dal file descriptor nel buffer fornito.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive fino a 'count' byte dal buffer nel file descriptor.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiude il file descriptor, liberando risorse associate.</span>
+        </div>
+
+        <h3>📁 Gestione Directory</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">DIR *opendir(const char *name);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre una directory per la lettura del suo contenuto.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry dalla directory aperta.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int closedir(DIR *dirp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiude il directory stream aperto.</span>
+        </div>
+
+        <h3>📊 Metadata e Controllo</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni complete sul file (dimensione, permessi, date).</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int chmod(const char *pathname, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica i permessi di accesso al file.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int chown(const char *pathname, uid_t owner, gid_t group);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia proprietario e gruppo del file.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando copi un file con cp:</strong></p>
+        <ol>
+            <li><code>open("sorgente.txt", O_RDONLY)</code> - Apre file sorgente</li>
+            <li><code>open("destinazione.txt", O_WRONLY|O_CREAT)</code> - Crea/apre destinazione</li>
+            <li>Ciclo: <code>read()</code> da sorgente, <code>write()</code> su destinazione</li>
+            <li><code>close()</code> entrambi i file descriptors</li>
+        </ol>
+        <p><em>Il kernel gestisce automaticamente bufferizzazione, caching e ottimizzazioni I/O</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale del Filesystem</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Filesystem Linux</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Editor di testo<br>
+                    • Browser web<br>
+                    • Database<br>
+                    • System calls
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • open() • read() • write()<br>
+                    • stat() • mkdir() • unlink()<br>
+                    • Interfaccia uniforme
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- VFS Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 VIRTUAL FILE SYSTEM (VFS)</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
+                        <div style="font-size: 0.8em;">inode</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
+                        <div style="font-size: 0.8em;">dentry</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">file</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
+                        <div style="font-size: 0.8em;">superblock</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Astrazione uniforme<br>
+                    • Caching intelligente<br>
+                    • Gestione metadata
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Specific Filesystems -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
+                    <div style="font-size: 0.8em; color: #666;">Filesystem nativo</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
+                    <div style="font-size: 0.8em; color: #666;">Snapshot & checksum</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
+                    <div style="font-size: 0.8em; color: #666;">Network filesystem</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
+                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Storage Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Hard Disk (HDD)<br>
+                    • Solid State Drive (SSD)<br>
+                    • Network Storage (NAS)<br>
+                    • Block Device Layer
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste I/O<br>
+                • Ogni layer astrae i dettagli del layer sottostante<br>
+                • Il VFS rende uniforme l'accesso a qualsiasi storage<br>
+                • Gli stessi comandi funzionano su qualsiasi dispositivo
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Navigazione Directory</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Esplorazione struttura directory</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 Struttura Directory</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        /home/user/<br>
+                        ├── Documents/<br>
+                        │   ├── report.pdf<br>
+                        │   └── notes.txt<br>
+                        ├── Pictures/<br>
+                        │   ├── vacation.jpg<br>
+                        │   └── profile.png<br>
+                        └── Downloads/<br>
+                            └── archive.zip
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">🔍</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔧 Operazioni VFS</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        $ cd /home/user<br>
+                        $ ls -la Documents/<br>
+                        $ stat Documents/report.pdf<br>
+                        $ find . -name "*.txt"
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">ls -la /home/user/Documents/</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede nel kernel:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Risoluzione path:</strong> VFS traduce "/home/user/Documents/" in inode della directory</li>
+                    <li><strong>2. Controllo permessi:</strong> Verifica diritti di lettura sulla directory</li>
+                    <li><strong>3. Lettura directory:</strong> Carica contenuto directory dal disco (se non in cache)</li>
+                    <li><strong>4. Formattazione output:</strong> Converte metadata in formato leggibile per ls</li>
+                    <li><strong>5. Ordinamento:</strong> Ordina risultati alfabeticamente con file nascosti prima</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> L'utente vede una lista formattata di file e directory, ma il kernel ha orchestrato lettura disco, caching, controllo permessi e formattazione dati!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora File e Directory</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza permessi file</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -la /etc/passwd<br>
+                        -rw-r--r-- 1 root root 2455 Jan 1 10:00 /etc/passwd<br><br>
+                        $ stat /etc/passwd<br>
+                        File: /etc/passwd<br>
+                        Size: 2455 Blocks: 8 IO Block: 4096 regular file
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina permessi, proprietari e metadata completi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔗 Esplora collegamenti</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -la /bin/sh<br>
+                        lrwxrwxrwx 1 root root 4 Jan 1 10:00 /bin/sh -> bash<br><br>
+                        $ readlink -f /bin/sh<br>
+                        /bin/bash
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Comprendi hard link e symbolic link</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora attività file</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ strace -e trace=file ls /home<br>
+                        execve("/bin/ls", ["ls", "/home"], 0x...) = 0<br>
+                        openat(AT_FDCWD, "/home", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3<br>
+                        getdents64(3, /* 3 entries */, 32768) = 80
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le system call per operazioni sui file</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💾 Analizza inode</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -i /etc/passwd<br>
+                        12345678 /etc/passwd<br><br>
+                        $ find / -inum 12345678<br>
+                        /etc/passwd
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Comprendi come funzionano gli inode del filesystem</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📁</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Gerarchia Logica</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    La struttura ad albero permette organizzazione logica dei dati. Ogni directory può contenere file e altre directory, creando una gerarchia navigabile.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔐</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Controllo Accessi</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    I permessi Unix (rwx) controllano chi può leggere, scrivere o eseguire ogni file. Owner, group, others hanno livelli diversi di accesso.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔗</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Collegamenti Multipli</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Hard link e soft link permettono riferimenti multipli agli stessi dati. I soft link sono più flessibili ma i hard link condividono l'inode.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📊</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Metadata Ricchi</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Oltre ai dati, ogni file ha ricchi metadata: permessi, proprietari, timestamp, dimensione. Questi sono gestiti dal filesystem e cruciali per il funzionamento del sistema.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui File e Directory
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa rappresenta il filesystem root (/)?",
+            options: ["La directory home dell'utente", "La radice della gerarchia del filesystem", "La directory dei programmi di sistema", "La directory dei file temporanei"],
+            correct: 1,
+            explanation: "Il filesystem root (/) è la radice della struttura gerarchica del filesystem Linux, da cui partono tutte le altre directory."
+        },
+        {
+            question: "Cosa significa 'rwx' nei permessi Unix?",
+            options: ["Read, Write, Execute", "Root, Write, Execute", "Read, Write, Exit", "Run, Write, Execute"],
+            correct: 0,
+            explanation: "'rwx' sta per Read (lettura), Write (scrittura), e eXecute (esecuzione) - i tre permessi base sui file."
+        },
+        {
+            question: "Quale comando mostra i metadata completi di un file?",
+            options: ["ls -l", "cat", "stat", "file"],
+            correct: 2,
+            explanation: "Il comando stat mostra tutte le informazioni complete sui metadata del file, inclusi inode, permessi, timestamp, etc."
+        },
+        {
+            question: "Cosa sono gli inode?",
+            options: ["Nomi dei file", "Strutture dati che contengono metadata dei file", "Contenuto dei file", "Directory del filesystem"],
+            correct: 1,
+            explanation: "Gli inode sono strutture dati che contengono tutti i metadata di un file: permessi, proprietari, timestamp, puntatori ai blocchi dati."
+        },
+        {
+            question: "Qual è la differenza tra hard link e soft link?",
+            options: ["I soft link sono più veloci", "Gli hard link condividono l'inode, i soft link sono puntatori indipendenti", "Gli hard link funzionano solo su directory", "I soft link sono più sicuri"],
+            correct: 1,
+            explanation: "Gli hard link condividono lo stesso inode del file originale, mentre i soft link sono file separati che contengono il path del file target."
+        },
+        {
+            question: "Quale comando cambia i permessi di un file?",
+            options: ["chown", "chmod", "chgrp", "passwd"],
+            correct: 1,
+            explanation: "chmod (change mode) modifica i permessi di accesso ai file secondo il modello Unix rwx."
+        },
+        {
+            question: "Cosa fa il comando 'ls -i'?",
+            options: ["Mostra la dimensione dei file", "Mostra gli inode dei file", "Mostra i permessi dei file", "Mostra il contenuto dei file"],
+            correct: 1,
+            explanation: "ls -i mostra il numero inode di ogni file, che è l'identificatore univoco del file nel filesystem."
+        },
+        {
+            question: "Quale directory contiene i file di configurazione di sistema?",
+            options: ["/home", "/etc", "/var", "/usr"],
+            correct: 1,
+            explanation: "/etc contiene i file di configurazione di sistema, come passwd, fstab, e altri file di configurazione importanti."
+        },
+        {
+            question: "Cosa rappresenta il punto (.) in un path?",
+            options: ["Directory padre", "Directory corrente", "Directory root", "Directory home"],
+            correct: 1,
+            explanation: "Il punto (.) rappresenta la directory corrente nel filesystem."
+        },
+        {
+            question: "Quale comando crea un collegamento simbolico?",
+            options: ["cp", "mv", "ln -s", "touch"],
+            correct: 2,
+            explanation: "ln -s crea un collegamento simbolico (soft link) che punta a un altro file o directory."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione dei File e Directory! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare i File e Directory! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! I File e Directory sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

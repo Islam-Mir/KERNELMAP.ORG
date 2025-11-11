@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETWORK STORAGE - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>NETWORK STORAGE</h1>
+        <p class="subtitle">Storage di rete</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">💾 STORAGE RETE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il Network Storage subsystem gestisce l'accesso allo storage di rete nel kernel Linux, implementando protocolli come NFS, CIFS/SMB, iSCSI e altri sistemi di storage distribuito. Coordina la comunicazione tra client e server di storage attraverso la rete.</strong></p>
+        
+        <h2>CONFRONTO:</h2>
+        <p>Immagina il Network Storage come un magazzino remoto: invece di avere gli scatoloni (dati) nel tuo garage, li tieni in un deposito esterno accessibile via strada (rete). Puoi andare a prendere quello che ti serve quando vuoi, ma devi considerare il traffico e i tempi di consegna.</p>
+        
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il Network Storage subsystem è responsabile dell'implementazione dei protocolli di rete per l'accesso ai dispositivi di storage remoti. Include client e server per filesystem distribuiti, block storage over IP, e meccanismi di caching per ottimizzare le prestazioni.</strong></p>
+        <p>• <strong>Protocol Implementation</strong> - Implementazione protocolli NFS, CIFS, iSCSI</p>
+        <p>• <strong>Remote File Access</strong> - Accesso trasparente a file su server remoti</p>
+        <p>• <strong>Block Storage over IP</strong> - Trasmissione blocchi dati via rete</p>
+        <p><em>• Interfaccia principale per storage distribuito</em></p>
+
+<h2>⚙️ Operazioni Principali del Network Storage</h2>
+<p><strong>Il Network Storage esegue operazioni critiche per l'accesso allo storage remoto:</strong></p>
+
+<h3>⚙️ NFS Operations</h3>
+<p>• <strong>nfs_getattr()</strong> - Ottiene attributi file dal server NFS</p>
+<p>• <strong>nfs_lookup()</strong> - Risolve pathname su server remoto</p>
+<p>• <strong>nfs_readpage()</strong> - Legge pagine da file NFS</p>
+<p>• <strong>nfs_writepage()</strong> - Scrive pagine su file NFS</p>
+
+<h3>⚙️ CIFS/SMB Operations</h3>
+<p>• <strong>cifs_reconnect()</strong> - Riconnette sessioni SMB interrotte</p>
+<p>• <strong>cifs_readv()</strong> - Lettura vettoriale da share SMB</p>
+<p>• <strong>cifs_writev()</strong> - Scrittura vettoriale su share SMB</p>
+<p>• <strong>cifs_mkdir()</strong> - Crea directory su share remoto</p>
+
+<h3>⚙️ iSCSI Operations</h3>
+<p>• <strong>iscsi_queuecommand()</strong> - Invia comandi SCSI via rete</p>
+<p>• <strong>iscsi_session_recovery()</strong> - Recupero sessioni iSCSI</p>
+<p>• <strong>iscsi_host_alloc()</strong> - Alloca host iSCSI</p>
+<p>• <strong>iscsi_conn_bind()</strong> - Associa connessioni iSCSI</p>
+
+<h3>⚙️ Caching e Performance</h3>
+<p>• <strong>nfs_fscache_enable()</strong> - Abilita cache FSC per NFS</p>
+<p>• <strong>cifs_readdata_to_iov()</strong> - Ottimizza lettura dati SMB</p>
+<p>• <strong>iscsi_tcp_segment_done()</strong> - Gestisce segmentazione TCP</p>
+<p>• <strong>nfs_pageio_init()</strong> - Inizializza I/O pagine asincrono</p>
+
+<h2>📋 Esempi Pratici del Network Storage</h2>
+<p><strong>Il Network Storage opera in ogni accesso a file remoti:</strong></p>
+
+<h3>🔍 Montaggio NFS</h3>
+<p>1. Client invia richiesta MOUNT al server NFS</p>
+<p>2. Server risponde con handle del filesystem</p>
+<p>3. Client crea superblock NFS e dentry cache</p>
+<p>4. File remoti diventano accessibili localmente</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>struct nfs_server</strong> - Gestisce connessione a server NFS, include indirizzo, versione protocollo, mount options</li>
+<li><strong>struct cifs_sb_info</strong> - Informazioni superblock per share CIFS, contiene credenziali e opzioni mount</li>
+<li><strong>struct iscsi_session</strong> - Sessione iSCSI con parametri connessione, autenticazione, timeout</li>
+<li><strong>struct nfs_inode</strong> - Estende inode standard con attributi NFS (filehandle, cache timeout)</li>
+<li><strong>struct cifsFileInfo</strong> - Informazioni file CIFS aperto, include handle server e lock status</li>
+</ul>
+
+<h3>💻 Comandi Linux Essenziali</h3>
+<ul>
+<li><code>$ mount -t nfs server:/share /mnt/nfs</code> - Monta share NFS</li>
+<li><code>$ mount -t cifs //server/share /mnt/smb -o username=user</code> - Monta share SMB/CIFS</li>
+<li><code>$ showmount -e server</code> - Mostra export NFS disponibili</li>
+<li><code>$ smbclient -L server</code> - Lista share SMB disponibili</li>
+<li><code>$ iscsiadm -m discovery -t sendtargets -p server</code> - Scopre target iSCSI</li>
+</ul>
+
+<h3>🎯 Caso Reale: Accesso File Remoto</h3>
+<p>Quando fai <code>$ cat /mnt/nfs/remotefile.txt</code>:</p>
+<ol>
+<li>VFS inoltra richiesta a NFS client</li>
+<li>NFS client invia RPC GETATTR al server</li>
+<li>Server risponde con attributi file</li>
+<li>NFS client richiede READ con offset</li>
+<li>Dati trasferiti via rete e cachati localmente</li>
+</ol>
+
+<h2>💾 Supporto e Compatibilità Network Storage</h2>
+        <ul>
+            <li><strong>NFSv4.2</strong> - Network File System con supporto avanzato</li>
+            <li><strong>CIFS/SMB3</strong> - Protocollo Microsoft con sicurezza avanzata</li>
+            <li><strong>iSCSI</strong> - Block storage over IP con estensioni</li>
+            <li><strong>Ceph/RADOS</strong> - Storage distribuito scalabile</li>
+            <li><strong>GlusterFS</strong> - Filesystem distribuito</li>
+            <li><strong>pNFS</strong> - NFS parallelo per cluster</li>
+            <li><strong>FSCache</strong> - Framework caching per storage remoto</li>
+            <li><strong>9P</strong> - Protocollo Plan 9 per virtualizzazione</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+<ul>
+<li><strong>Transparent Caching</strong> - Cache locale trasparente per prestazioni</li>
+<li><strong>Failover automatico</strong> - Ricovero trasparente su failure</li>
+<li><strong>Load Balancing</strong> - Distribuzione carico su multiple connessioni</li>
+<li><strong>Security Integration</strong> - Integrazione con Kerberos e autenticazione</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave del Network Storage</h2>
+<p><strong>Il Network Storage collabora con molti componenti del kernel:</strong></p>
+
+<h3>💾 Virtual File System</h3>
+<p>• <strong>VFS Integration</strong> - Registra filesystem di rete come NFS, CIFS</p>
+<p>• <strong>Dentry Cache</strong> - Cache nomi file remoti per prestazioni</p>
+
+<h3>🌐 Network Stack</h3>
+<p>• <strong>RPC Layer</strong> - Remote Procedure Calls per NFS</p>
+<p>• <strong>TCP/UDP</strong> - Trasporto dati affidabile/non-affidabile</p>
+
+<h3>🧠 Memory Management</h3>
+<p>• <strong>Page Cache</strong> - Cache pagine per file remoti</p>
+<p>• <strong>FSCache</strong> - Framework caching avanzato</p>
+
+<h3>🔒 Security Framework</h3>
+<p>• <strong>Kerberos</strong> - Autenticazione sicura per NFS/CIFS</p>
+<p>• <strong>Access Control</strong> - Controllo permessi su file remoti</p>
+
+<h2>🛠️ API del Network Storage</h2>
+        <p><strong>Le principali funzioni per lavorare con lo storage di rete:</strong></p>
+
+        <h3>🔗 NFS Client API</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">struct nfs_server *nfs_create_server(struct nfs_mount_info *mount_info);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea connessione a server NFS con parametri di mount.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int nfs_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene attributi file dal server NFS remoto.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int nfs_open(struct inode *inode, struct file *filp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre file NFS remoto e stabilisce connessione dati.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">ssize_t nfs_file_read(struct file *filp, char __user *buf, size_t count, loff_t *pos);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge dati da file NFS con caching intelligente.</span>
+        </div>
+
+        <h3>💼 CIFS/SMB API</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">struct cifs_sb_info *cifs_get_sb_info(struct super_block *sb);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni superblock per share CIFS.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int cifs_mount(struct cifs_sb_info *cifs_sb, struct smb_vol *vol);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Monta share SMB con autenticazione e opzioni.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int cifs_reconnect(struct TCP_Server_Info *server);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Riconnette sessioni SMB interrotte automaticamente.</span>
+        </div>
+
+        <h3>💽 iSCSI API</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">struct iscsi_session *iscsi_create_session(struct Scsi_Host *shost, struct iscsi_transport *transport, int initial_cmdsn);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea sessione iSCSI per accesso block storage remoto.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int iscsi_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmd);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia comandi SCSI incapsulati via rete iSCSI.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int iscsi_conn_bind(struct iscsi_session *session, struct iscsi_conn *conn, int is_leading);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Associa connessione TCP a sessione iSCSI.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Come utilizzare le API dello storage di rete:</strong></p>
+<ol>
+<li><code>mount -t nfs server:/share /mnt</code> - Monta filesystem NFS</li>
+<li><code>mount -t cifs //server/share /mnt</code> - Monta share SMB</li>
+<li><code>iscsiadm -m node -l</code> - Connette target iSCSI</li>
+<li><code>showmount -e server</code> - Esplora export NFS</li>
+</ol>
+<p><em>Queste API forniscono accesso trasparente allo storage remoto</em></p>
+
+<h2>🗺️ Architettura del Network Storage</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dello Storage di Rete</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • File managers (Nautilus, Dolphin)<br>
+                    • Database engines (PostgreSQL, MySQL)<br>
+                    • Backup tools (rsync, tar)<br>
+                    • Mount commands
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- VFS Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🌟 VIRTUAL FILE SYSTEM</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • NFS filesystem<br>
+                    • CIFS filesystem<br>
+                    • 9P filesystem<br>
+                    • Interfaccia uniforme
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Network Storage Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌐 NETWORK STORAGE CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔗</div>
+                        <div style="font-size: 0.8em;">NFS Client</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💼</div>
+                        <div style="font-size: 0.8em;">CIFS/SMB</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💽</div>
+                        <div style="font-size: 0.8em;">iSCSI</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">RPC Layer</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Protocol Implementation<br>
+                    • Connection Management<br>
+                    • Caching & Performance<br>
+                    • Failover & Recovery
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Network Protocols -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">TCP/IP</div>
+                    <div style="font-size: 0.8em; color: #666;">Trasporto affidabile</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">RPC</div>
+                    <div style="font-size: 0.8em; color: #666;">Remote Procedure Calls</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">XDR</div>
+                    <div style="font-size: 0.8em; color: #666;">External Data Representation</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">Kerberos</div>
+                    <div style="font-size: 0.8em; color: #666;">Autenticazione sicura</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Remote Storage -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🖥️ SERVER REMOTI</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • NFS Server (Linux/Unix)<br>
+                    • Samba Server (Windows)<br>
+                    • iSCSI Targets<br>
+                    • Storage Arrays (SAN/NAS)
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste di storage remoto<br>
+                • Ogni layer astrae la complessità del protocollo sottostante<br>
+                • Il Network Storage rende trasparente l'accesso a file remoti<br>
+                • I protocolli diversi (NFS, CIFS, iSCSI) condividono l'architettura comune
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento</h2>
+<div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+<h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona il NETWORK STORAGE</h3>
+
+<div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+<div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+<div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Input</div>
+<div style="font-family: monospace; font-size: 0.9em;">[DESCRIZIONE INPUT]</div>
+</div>
+
+<div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+<div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+<div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Processing</div>
+<div style="font-family: monospace; font-size: 0.9em;">[DESCRIZIONE ELABORAZIONE]</div>
+</div>
+</div>
+
+<div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+<strong>Processo eseguito:</strong> [DESCRIZIONE PROCESSO]
+</div>
+
+<div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+<h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Fasi di elaborazione:</h4>
+<ol style="line-height: 1.8;">
+<li><strong>1. [Fase 1]</strong> - [descrizione]</li>
+<li><strong>2. [Fase 2]</strong> - [descrizione]</li>
+<li><strong>3. [Fase 3]</strong> - [descrizione]</li>
+<li><strong>4. [Fase 4]</strong> - [descrizione]</li>
+</ol>
+</div>
+
+<div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+<strong>🎯 Risultato:</strong> [DESCRIZIONE RISULTATO]
+</div>
+</div>
+
+<h2>🧪 Utilizzo Pratico</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -i /etc/passwd<br>
+                        12345678 /etc/passwd<br><br>
+                        $ stat /etc/passwd<br>
+                        File: /etc/passwd<br>
+                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
+                        Inode: 12345678 Links: 1
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ mount<br>
+                        /dev/sda1 on / type ext4<br>
+                        /dev/sdb1 on /home type ext4<br>
+                        server:/share on /mnt/nfs type nfs
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ iostat -x 1<br>
+                        Device r/s w/s rkB/s wkB/s<br>
+                        sda 15.0 25.0 120.0 200.0<br>
+                        nfs 2.0 8.0 16.0 64.0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/slabinfo | grep dentry<br>
+                        $ cat /proc/slabinfo | grep inode
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+<div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
+<h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">[CONCETTO 1]</h4>
+<p style="font-size: 0.9em; text-align: center; color: #1b5e20;">[DESCRIZIONE CONCETTO 1]</p>
+</div>
+
+<div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
+<h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">[CONCETTO 2]</h4>
+<p style="font-size: 0.9em; text-align: center; color: #bf360c;">[DESCRIZIONE CONCETTO 2]</p>
+</div>
+
+<div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
+<h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">[CONCETTO 3]</h4>
+<p style="font-size: 0.9em; text-align: center; color: #4a148c;">[DESCRIZIONE CONCETTO 3]</p>
+</div>
+
+<div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
+<h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">[CONCETTO 4]</h4>
+<p style="font-size: 0.9em; text-align: center; color: #004d40;">[DESCRIZIONE CONCETTO 4]</p>
+</div>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sul NETWORK STORAGE
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="margin-top: 30px; color: #0288d1; border-bottom: 3px solid #0288d1; padding-bottom: 8px;">📚 Letture Consigliate</h2>
+<ul style="margin-left: 20px; margin-bottom: 30px;">
+<li style="margin-bottom: 10px;"><a href="https://www.kernel.org/doc/html/latest/" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">📖 Linux Kernel Documentation</a> - Documentazione ufficiale completa</li>
+<li><a href="https://en.wikipedia.org/wiki/Linux_kernel" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">🌐 Wikipedia: Linux Kernel</a> - Panoramica generale dell'architettura</li>
+</ul>
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa permette NFS?",
+            options: ["Accesso a file locali", "Condivisione file in rete", "Compressione dati", "Crittografia automatica"],
+            correct: 1,
+            explanation: "NFS (Network File System) permette di condividere e accedere a file attraverso la rete come se fossero locali."
+        },
+        {
+            question: "Quale protocollo usa CIFS?",
+            options: ["TCP diretto", "SMB (Server Message Block)", "HTTP", "FTP"],
+            correct: 1,
+            explanation: "CIFS implementa il protocollo SMB per l'accesso a risorse condivise in reti Windows."
+        },
+        {
+            question: "Cosa trasporta iSCSI?",
+            options: ["File system", "Comandi SCSI via IP", "Database", "Video streaming"],
+            correct: 1,
+            explanation: "iSCSI trasporta comandi SCSI incapsulati via protocollo IP per accesso remoto a storage a blocchi."
+        },
+        {
+            question: "Quale comando monta un filesystem NFS?",
+            options: ["nfs mount", "mount -t nfs", "iscsiadm", "smbclient"],
+            correct: 1,
+            explanation: "mount -t nfs server:/share /mnt monta un export NFS nel punto di mount specificato."
+        },
+        {
+            question: "Cosa significa RPC in NFS?",
+            options: ["Remote Procedure Call", "Rapid Packet Control", "Reliable Protocol Connection", "Resource Pool Cache"],
+            correct: 0,
+            explanation: "RPC (Remote Procedure Call) è il meccanismo che permette a NFS di eseguire procedure remote attraverso la rete."
+        },
+        {
+            question: "Quale tool esplora share SMB?",
+            options: ["showmount", "iscsiadm", "smbclient -L", "nfsstat"],
+            correct: 2,
+            explanation: "smbclient -L server elenca tutti gli share disponibili su un server SMB/CIFS."
+        },
+        {
+            question: "Cosa fa iscsiadm?",
+            options: ["Monta NFS", "Gestisce connessioni iSCSI", "Configura Samba", "Monitora rete"],
+            correct: 1,
+            explanation: "iscsiadm è l'utility per scoprire, gestire e configurare connessioni iSCSI."
+        },
+        {
+            question: "Quale versione NFS supporta Kerberos?",
+            options: ["NFSv2", "NFSv3", "NFSv4", "Tutte"],
+            correct: 2,
+            explanation: "NFSv4 introduce supporto nativo per Kerberos e altre funzionalità di sicurezza avanzate."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

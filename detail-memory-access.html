@@ -1,0 +1,895 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Access - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Memory Access</h1>
+        <p class="subtitle">Accesso alla Memoria</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🧠 GESTIONE ACCESSO MEMORIA</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Gli accessi alla memoria sono i meccanismi che permettono ai processi di leggere e scrivere dati nella memoria RAM, gestendo la traduzione tra indirizzi virtuali e fisici attraverso la Memory Management Unit (MMU).</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un sistema di indirizzi postali: ogni casa (byte di memoria) ha un indirizzo fisico, ma i residenti (processi) usano indirizzi virtuali. L'MMU è l'ufficio postale che traduce gli indirizzi.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>L'accesso alla memoria è uno dei meccanismi più critici del sistema operativo.</strong> Immagina un'enorme biblioteca dove migliaia di lettori devono accedere simultaneamente a libri diversi. Il sistema di accesso alla memoria coordina tutto questo, assicurando che ogni lettore ottenga il libro giusto al momento giusto, senza conflitti.</p>
+
+        <p>• <strong>Traduzione indirizzi</strong> - Conversione indirizzi virtuali in fisici via MMU</p>
+        <p>• <strong>Gestione TLB</strong> - Cache per traduzioni rapide degli indirizzi</p>
+        <p>• <strong>Page fault handling</strong> - Caricamento pagine da disco quando necessario</p>
+        <p>• <strong>Protezione memoria</strong> - Isolamento tra processi e dal kernel</p>
+        <p>• <strong>Copy-on-write</strong> - Ottimizzazione per fork() e condivisione memoria</p>
+        <p>• <strong>Memory mapping</strong> - Mappatura file e dispositivi in memoria</p>
+        <p><em>• Interazione: L'hardware MMU lavora con il kernel per fornire accesso sicuro ed efficiente alla memoria fisica</em></p>
+
+        <h2>⚙️ Componenti del Memory Access</h2>
+        <p><strong>Il sistema di accesso alla memoria Linux è composto da diversi livelli:</strong></p>
+
+        <h3>🔧 Memory Management Unit (MMU)</h3>
+        <p>• <strong>Traduzione indirizzi</strong> - Virtual → Physical address translation</p>
+        <p>• <strong>Page table walking</strong> - Attraversamento tabelle delle pagine</p>
+        <p>• <strong>Permission checking</strong> - Controllo permessi di accesso</p>
+        <p>• <strong>TLB management</strong> - Gestione Translation Lookaside Buffer</p>
+
+        <h3>📋 Page Tables</h3>
+        <p>• <strong>Multi-level tables</strong> - Tabelle gerarchiche per efficienza</p>
+        <p>• <strong>PTE entries</strong> - Page Table Entries con flags e indirizzi</p>
+        <p>• <strong>Huge pages</strong> - Pagine grandi per prestazioni</p>
+        <p>• <strong>Page attributes</strong> - Cacheability, global, dirty bits</p>
+
+        <h3>🚀 Translation Lookaside Buffer (TLB)</h3>
+        <p>• <strong>Address cache</strong> - Cache traduzioni recenti</p>
+        <p>• <strong>TLB miss handling</strong> - Gestione mancati nella cache</p>
+        <p>• <strong>TLB shootdown</strong> - Invalida entries in SMP</p>
+        <p>• <strong>ASID support</strong> - Address Space ID per isolamento</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando accedi a una variabile in un programma C, ecco cosa succede negli accessi memoria:</strong></p>
+
+        <h3>🔍 Accesso a una Variabile</h3>
+        <p>1. Il programma usa indirizzo virtuale (es. 0x7fff12345678)</p>
+        <p>2. La CPU invia indirizzo alla MMU</p>
+        <p>3. MMU controlla TLB per traduzione veloce</p>
+        <p>4. Se miss, attraversa page table gerarchica</p>
+        <p>5. Ottiene indirizzo fisico e verifica permessi</p>
+        <p>6. CPU accede alla memoria fisica</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>mm_struct</strong> - Struttura memoria per ogni processo</li>
+            <li><strong>vm_area_struct</strong> - Aree memoria virtuali mappate</li>
+            <li><strong>page</strong> - Struttura per ogni pagina fisica</li>
+            <li><strong>pte_t</strong> - Page table entry con metadati</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare l'accesso memoria:</strong></p>
+        <ul>
+            <li><code>cat /proc/pid/maps</code> - Mappature memoria di un processo</li>
+            <li><code>pmap pid</code> - Dettagli uso memoria processo</li>
+            <li><code>cat /proc/meminfo</code> - Statistiche memoria sistema</li>
+            <li><code>vmstat</code> - Statistiche virtual memory</li>
+            <li><code>perf stat -e dTLB-load-misses programma</code> - TLB misses</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Page Fault</h3>
+        <p>Quando accedi a memoria non residente:</p>
+        <ol>
+            <li>Processo accede indirizzo virtuale</li>
+            <li>MMU non trova traduzione valida</li>
+            <li>Genera page fault exception</li>
+            <li>Kernel handler cerca pagina su swap</li>
+            <li>Carica pagina in memoria fisica</li>
+            <li>Aggiorna page table</li>
+            <li>Riprende esecuzione processo</li>
+        </ol>
+
+        <h2>🔧 Meccanismi di Accesso</h2>
+        <ul>
+            <li><strong>Demand paging</strong> - Caricamento pagine su richiesta</li>
+            <li><strong>Copy-on-write</strong> - Condivisione efficiente fork</li>
+            <li><strong>Memory-mapped files</strong> - File come memoria</li>
+            <li><strong>Shared memory</strong> - Memoria condivisa processi</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Protezione</strong> - Isolamento processi</li>
+            <li><strong>Efficienza</strong> - TLB e caching</li>
+            <li><strong>Flessibilità</strong> - Mapping dinamico</li>
+            <li><strong>Ripristino</strong> - Page fault recovery</li>
+            <li><strong>Scalabilità</strong> - Supporto memoria grande</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>L'accesso memoria interagisce con molteplici sottosistemi:</strong></p>
+
+        <h3>💾 Virtual Memory Manager</h3>
+        <p>• <strong>Page allocation</strong> - Assegnazione pagine fisiche</p>
+        <p>• <strong>Page reclamation</strong> - Recupero memoria</p>
+        <p>• <strong>Swap management</strong> - Scambio con disco</p>
+
+        <h3>🚀 Scheduler</h3>
+        <p>• <strong>Memory pressure</strong> - Scheduling basato memoria</p>
+        <p>• <strong>NUMA awareness</strong> - Ottimizzazione NUMA</p>
+
+        <h3>🗂️ Filesystem</h3>
+        <p>• <strong>Page cache</strong> - Cache file in memoria</p>
+        <p>• <strong>Memory mapping</strong> - mmap() support</p>
+
+        <h3>🔐 Security</h3>
+        <p>• <strong>Address randomization</strong> - ASLR</p>
+        <p>• <strong>Memory protection</strong> - NX bit, SMEP</p>
+
+        <h2>🛠️ API e System Calls</h2>
+        <p><strong>Queste sono le interfacce principali per l'accesso memoria:</strong></p>
+
+        <h3>📂 Memory Mapping</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mappa file o dispositivo in memoria virtuale.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int munmap(void *addr, size_t length);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove mapping memoria creato con mmap.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int mprotect(void *addr, size_t len, int prot);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia protezione di area memoria.</span>
+        </div>
+
+        <h3>🔄 Memory Management</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">void *malloc(size_t size);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca memoria heap (userspace).</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void *kmalloc(size_t size, gfp_t flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca memoria kernel.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void kfree(void *ptr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Libera memoria allocata con kmalloc.</span>
+        </div>
+
+        <h3>🎯 Shared Memory</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int shmget(key_t key, size_t size, int shmflg);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea o accede segmento shared memory.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void *shmat(int shmid, const void *shmaddr, int shmflg);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attacca segmento shared memory allo spazio indirizzo.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int shmdt(const void *shmaddr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Stacca segmento shared memory.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando lanci un programma:</strong></p>
+        <ol>
+            <li><code>execve()</code> carica eseguibile</li>
+            <li>Setup spazio indirizzo virtuale</li>
+            <li>mmap() per librerie condivise</li>
+            <li>Page fault per caricamento codice</li>
+            <li>malloc() per heap dinamico</li>
+            <li>Programma inizia esecuzione</li>
+        </ol>
+        <p><em>Tutto questo avviene trasparentemente grazie al sistema di accesso memoria!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale dell'Accesso Memoria</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dell'Accesso alla Memoria</h3>
+
+            <!-- Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ PROCESSI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi C/C++<br>
+                    • malloc(), free()<br>
+                    • mmap(), munmap()<br>
+                    • Indirizzi virtuali
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 VIRTUAL MEMORY SUBSYSTEM</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • mm_struct per processo<br>
+                    • vm_area_struct<br>
+                    • Page fault handler<br>
+                    • Memory mapping
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- MMU/TLB Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 MMU & TLB</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Address</div>
+                        <div style="font-size: 0.8em;">Translation</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">Page Tables</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">TLB Cache</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🛡️</div>
+                        <div style="font-size: 0.8em;">Protection</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Virtual → Physical<br>
+                    • Permission checking<br>
+                    • TLB management<br>
+                    • Page fault generation
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Physical Memory Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">💾 RAM FISICA</div>
+                    <div style="font-size: 0.8em; color: #666;">DRAM, DDR4</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💽 SWAP</div>
+                    <div style="font-size: 0.8em; color: #666;">Disco/partizione</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">📄 PAGE CACHE</div>
+                    <div style="font-size: 0.8em; color: #666;">File mappati</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dalla richiesta memoria al dato fisico<br>
+                • Ogni layer aggiunge astrazione e protezione<br>
+                • L'MMU è il "traduttore universale" tra virtuale e fisico<br>
+                • Il sistema garantisce isolamento e prestazioni ottimali
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Accesso Memoria</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Traduzione Indirizzo Virtuale</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📝 Processo</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        int x = 42;<br>
+                        printf("%d", x);<br>
+                        <span style="color: #666;">(Virtual: 0x7fffdeadbeef)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🧠 MMU</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Virtual → Physical<br>
+                        <span style="color: #666;">(Physical: 0x12345678000)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Sequenza traduzione:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">Virtual 0x7fffdeadbeef → TLB check → Page table walk → Physical 0x12345678000</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede nei nanosecondi:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. CPU load:</strong> Istruzione carica valore da indirizzo virtuale</li>
+                    <li><strong>2. TLB lookup:</strong> MMU controlla cache traduzioni (hit ~1ns)</li>
+                    <li><strong>3. Page walk:</strong> Se miss, attraversa 4 livelli page table (~100ns)</li>
+                    <li><strong>4. Permission check:</strong> Verifica diritti lettura/scrittura</li>
+                    <li><strong>5. Physical access:</strong> CPU accede indirizzo fisico in RAM</li>
+                    <li><strong>6. Cache coherence:</strong> Sincronizzazione cache multiprocessore</li>
+                    <li><strong>7. Data return:</strong> Valore 42 restituito al processo</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Il processo accede alla variabile come se fosse memoria normale, ma il sistema ha tradotto l'indirizzo, verificato i permessi, e garantito isolamento da altri processi. Tutto in pochi nanosecondi!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora l'Accesso Memoria</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🗺️ Esplora mappature memoria</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/self/maps<br>
+                        00400000-0040c000 r-xp 00000000 08:01 1234567 /bin/cat<br>
+                        0060b000-0060d000 rw-p 0000b000 08:01 1234567 /bin/cat<br>
+                        7f8d4c000000-7f8d4c021000 rw-p 00000000 00:00 0<br>
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi come è organizzato lo spazio indirizzo del processo</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza uso memoria</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/meminfo<br>
+                        MemTotal:        8192000 kB<br>
+                        MemFree:         1024000 kB<br>
+                        Buffers:          256000 kB<br>
+                        Cached:          2048000 kB<br>
+                        SwapTotal:       2097152 kB
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla statistiche memoria del sistema</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Monitora page faults</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ps -o pid,ppid,cmd,min_flt,maj_flt -C bash<br>
+                        PID  PPID CMD         MINFL MAJFL<br>
+                        1234    1 bash           150     2<br>
+                        $ vmstat 1<br>
+                        procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----<br>
+                        r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva page faults minori/maggiori e attività sistema</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Testa TLB performance</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ perf stat -e dTLB-load-misses,dTLB-store-misses ls -la /<br>
+                        Performance counter stats for 'ls -la /':<br>
+                        1,234 dTLB-load-misses<br>
+                        567 dTLB-store-misses<br>
+                        0.001234567 seconds time elapsed
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Misura efficienza TLB durante esecuzione programmi</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Traduzione Indirizzi</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Ogni indirizzo virtuale viene tradotto in fisico attraverso MMU e page table. Questo permette isolamento processi e memoria virtuale più grande della RAM fisica.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">TLB Acceleration</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Il Translation Lookaside Buffer cache le traduzioni recenti, accelerando accessi memoria da ~100ns a ~1ns. È critico per prestazioni sistema.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Protezione Memoria</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Ogni accesso memoria viene controllato per permessi. Violazioni generano segfault, proteggendo processi da corruption e accessi non autorizzati.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📄</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Demand Paging</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Le pagine vengono caricate in memoria solo quando accedute (demand paging). Questo permette esecuzione programmi più grandi della RAM disponibile.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sull'Accesso Memoria
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa fa l'MMU?",
+            options: ["Gestisce processi", "Traduce indirizzi virtuali in fisici", "Controlla dispositivi", "Gestisce file"],
+            correct: 1,
+            explanation: "L'MMU (Memory Management Unit) traduce indirizzi virtuali usati dai programmi in indirizzi fisici della RAM."
+        },
+        {
+            question: "Cosa è un page fault?",
+            options: ["Errore grave", "Accesso a pagina non in memoria", "Problema hardware", "Fine programma"],
+            correct: 1,
+            explanation: "Un page fault avviene quando si accede a una pagina virtuale non presente in memoria fisica, causando caricamento da swap."
+        },
+        {
+            question: "Cosa accelera il TLB?",
+            options: ["CPU clock", "Cache traduzioni indirizzi", "RAM speed", "Disco velocità"],
+            correct: 1,
+            explanation: "Il TLB (Translation Lookaside Buffer) è una cache che memorizza traduzioni recenti di indirizzi, accelerando accessi memoria."
+        },
+        {
+            question: "Cosa permette copy-on-write?",
+            options: ["Scrittura veloce", "Condivisione efficiente memoria fork", "Backup automatico", "Compressione dati"],
+            correct: 1,
+            explanation: "Copy-on-write permette a processi fork di condividere memoria fino a quando non modificano dati, ottimizzando fork()."
+        },
+        {
+            question: "Quale comando mostra mappature memoria?",
+            options: ["ps aux", "top", "cat /proc/pid/maps", "free -h"],
+            correct: 2,
+            explanation: "cat /proc/pid/maps mostra tutte le regioni di memoria virtuale mappate per un processo specifico."
+        },
+        {
+            question: "Cosa fa mmap()?",
+            options: ["Chiude file", "Mappa file in memoria", "Crea processi", "Gestisce rete"],
+            correct: 1,
+            explanation: "mmap() mappa un file o dispositivo direttamente nello spazio di indirizzi virtuali del processo."
+        },
+        {
+            question: "Perché la memoria virtuale è utile?",
+            options: ["Solo per sicurezza", "Permette indirizzi più grandi della RAM", "Rallenta programmi", "Complica programmazione"],
+            correct: 1,
+            explanation: "La memoria virtuale permette programmi di usare indirizzi più grandi della RAM fisica disponibile."
+        },
+        {
+            question: "Cosa controlla mprotect()?",
+            options: ["File permessi", "Memoria protezione", "Processi", "Dispositivi"],
+            correct: 1,
+            explanation: "mprotect() cambia i permessi di protezione (lettura, scrittura, esecuzione) per regioni di memoria virtuale."
+        },
+        {
+            question: "Cosa è lo swap?",
+            options: ["RAM extra", "Estensione memoria su disco", "Cache CPU", "Memoria video"],
+            correct: 1,
+            explanation: "Lo swap è spazio su disco usato come estensione della RAM quando la memoria fisica è insufficiente."
+        },
+        {
+            question: "Perché ASLR è importante?",
+            options: ["Velocità", "Sicurezza contro buffer overflow", "Semplicità", "Compatibilità"],
+            correct: 1,
+            explanation: "ASLR (Address Space Layout Randomization) randomizza posizioni memoria per rendere più difficili gli exploit."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione dell'accesso memoria! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare l'accesso memoria! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! L'accesso memoria è fondamentale! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

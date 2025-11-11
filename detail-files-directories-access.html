@@ -1,0 +1,687 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files & Directories Access - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Files & Directories Access</h1>
+        <p class="subtitle">Accesso a File e Directory</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">📁 GESTIONE FILE E DIRECTORY</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>I meccanismi di accesso a file e directory gestiscono come il sistema operativo organizza, localizza e controlla l'accesso agli elementi del filesystem, fornendo un'interfaccia efficiente per navigazione e manipolazione.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un sistema di catalogazione in una biblioteca: organizza libri (file) in scaffali (directory), mantiene indici per ricerca veloce, e controlla chi può prendere quali libri.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>L'accesso a file e directory è il cuore della gestione del filesystem in Linux.</strong> Immagina un'enorme biblioteca digitale dove ogni libro (file) è catalogato con metadati precisi, organizzato in sezioni (directory), e accessibile attraverso molteplici percorsi di ricerca.</p>
+
+        <p>• <strong>Organizzazione gerarchica</strong> - Struttura ad albero delle directory per organizzare file logicamente</p>
+        <p>• <strong>Risoluzione percorsi</strong> - Traduzione di pathname in riferimenti fisici efficienti</p>
+        <p>• <strong>Gestione metadata</strong> - Informazioni complete su file e directory (permessi, date, proprietari)</p>
+        <p>• <strong>Navigazione efficiente</strong> - Algoritmi ottimizzati per attraversamento e ricerca</p>
+        <p>• <strong>Controllo accessi</strong> - Verifica permessi per ogni operazione sui file</p>
+        <p>• <strong>Caching intelligente</strong> - Memorizzazione delle informazioni più usate per prestazioni ottimali</p>
+        <p><em>• Interazione: Fornisce l'interfaccia tra applicazioni e il livello di storage sottostante</em></p>
+
+        <h2>⚙️ Operazioni Principali</h2>
+        <p><strong>Il sistema gestisce due categorie fondamentali di operazioni sui file e directory:</strong></p>
+
+        <h3>📂 Operazioni su Directory</h3>
+        <p>• <strong>opendir()/readdir()</strong> - Apertura directory e lettura contenuti</p>
+        <p>• <strong>mkdir()</strong> - Creazione nuove directory</p>
+        <p>• <strong>rmdir()</strong> - Rimozione directory vuote</p>
+        <p>• <strong>getcwd()/chdir()</strong> - Gestione directory corrente</p>
+        <p>• <strong>rename()</strong> - Spostamento/rinominazione directory</p>
+
+        <h3>📋 Operazioni su File</h3>
+        <p>• <strong>stat()/lstat()</strong> - Recupero metadata completi</p>
+        <p>• <strong>access()</strong> - Verifica permessi di accesso</p>
+        <p>• <strong>chmod()/chown()</strong> - Modifica permessi e proprietari</p>
+        <p>• <strong>link()/symlink()</strong> - Creazione collegamenti</p>
+        <p>• <strong>unlink()</strong> - Rimozione file o collegamenti</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando esplori una directory con ls -la, ecco cosa succede nei meccanismi di accesso:</strong></p>
+
+        <h3>🔍 Lettura Directory</h3>
+        <p>1. Il comando ls chiama opendir() sulla directory specificata</p>
+        <p>2. Per ogni entry, chiama lstat() per ottenere i metadata</p>
+        <p>3. Verifica i permessi di accesso per l'utente corrente</p>
+        <p>4. Formatta e visualizza le informazioni (nome, permessi, dimensione, date)</p>
+        <p>5. Chiude la directory con closedir()</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>Directory Entry (dirent)</strong> - Struttura che contiene nome file e numero inode</li>
+            <li><strong>stat structure</strong> - Contiene tutti i metadata di un file (permessi, date, dimensioni)</li>
+            <li><strong>DIR structure</strong> - Handle per lettura sequenziale di directory</li>
+            <li><strong>Pathname resolution</strong> - Processo di traduzione percorsi in riferimenti fisici</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare file e directory:</strong></p>
+        <ul>
+            <li><code>ls -l</code> - Mostra metadata dettagliati dei file</li>
+            <li><code>stat file.txt</code> - Visualizza tutte le informazioni stat</li>
+            <li><code>find /path -name "*.txt"</code> - Ricerca file per nome</li>
+            <li><code>tree -a</code> - Mostra struttura ad albero delle directory</li>
+            <li><code>du -sh *</code> - Mostra dimensioni directory</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Navigazione Directory</h3>
+        <p>Quando fai <code>cd /home/user/documents</code>:</p>
+        <ol>
+            <li>La shell verifica che la directory esista con access()</li>
+            <li>Controlla i permessi di esecuzione sulla directory</li>
+            <li>Aggiorna la variabile PWD (current working directory)</li>
+            <li>Il prossimo comando relativo partirà da questa directory</li>
+        </ol>
+
+        <h2>🔐 Modelli di Permessi</h2>
+        <ul>
+            <li><strong>Permessi Unix classici</strong> - rwx per owner/group/others</li>
+            <li><strong>ACL (Access Control Lists)</strong> - Controlli accessi avanzati</li>
+            <li><strong>Permessi speciali</strong> - setuid, setgid, sticky bit</li>
+            <li><strong>Attributi estesi</strong> - Proprietà aggiuntive (immutable, append-only)</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Navigazione efficiente</strong> - Algoritmi ottimizzati per grandi strutture</li>
+            <li><strong>Metadata ricchi</strong> - Informazioni complete su ogni elemento</li>
+            <li><strong>Controllo accessi granulare</strong> - Permessi precisi per ogni operazione</li>
+            <li><strong>Collegamenti flessibili</strong> - Hard link e symbolic link</li>
+            <li><strong>Ricerca potente</strong> - Strumenti avanzati per localizzazione file</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>L'accesso a file e directory interagisce con molteplici componenti del sistema:</strong></p>
+
+        <h3>💾 Virtual File System</h3>
+        <p>• <strong>Filesystem abstraction</strong> - Interfaccia uniforme per tutti i filesystem</p>
+        <p>• <strong>Inode management</strong> - Gestione metadati indipendentemente dal filesystem</p>
+
+        <h3>🔐 Security Framework</h3>
+        <p>• <strong>Permission checking</strong> - Verifica accessi basata su identità</p>
+        <p>• <strong>CAPABILITIES</strong> - Permessi speciali per processi privilegiati</p>
+
+        <h3>👥 User Management</h3>
+        <p>• <strong>UID/GID resolution</strong> - Traduzione nomi utenti/gruppi in ID numerici</p>
+        <p>• <strong>Ownership tracking</strong> - Tracciamento proprietari di file</p>
+
+        <h3>⚡ Performance Subsystems</h3>
+        <p>• <strong>Directory caching</strong> - Cache per lookup directory frequenti</p>
+        <p>• <strong>Name resolution</strong> - Traduzione nomi in inode ottimizzata</p>
+
+        <h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le funzioni che ogni programmatore usa quotidianamente per file e directory:</strong></p>
+
+        <h3>📂 Gestione Directory</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">DIR *opendir(const char *name);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre una directory per la lettura sequenziale dei contenuti.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry della directory aperta.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int closedir(DIR *dirp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiude il handle di directory e rilascia risorse.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int mkdir(const char *pathname, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea una nuova directory con i permessi specificati.</span>
+        </div>
+
+        <h3>📊 Metadata e Controlli</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene tutti i metadata di un file o directory.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int access(const char *pathname, int mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica se il processo può accedere al file nei modi specificati.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int chmod(const char *pathname, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica i permessi di un file o directory.</span>
+        </div>
+
+        <h3>🔗 Gestione Collegamenti</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int link(const char *oldpath, const char *newpath);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un hard link aggiuntivo al file esistente.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int symlink(const char *target, const char *linkpath);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un symbolic link che punta al target specificato.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando fai ls -la in una directory:</strong></p>
+        <ol>
+            <li><code>opendir(".")</code> - Apre la directory corrente</li>
+            <li>Ciclo: <code>readdir()</code> per ogni entry</li>
+            <li><code>lstat(entry->d_name, &statbuf)</code> - Ottiene metadata</li>
+            <li>Formatta e visualizza informazioni (permessi, proprietario, dimensione, data)</li>
+            <li><code>closedir()</code> alla fine</li>
+        </ol>
+        <p><em>Tutto questo sfrutta i meccanismi di accesso a file e directory per fornire informazioni complete e accurate!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale dell'Accesso a File e Directory</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dell'Accesso a File e Directory</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Shell (bash, zsh)<br>
+                    • Comandi (ls, find, chmod)<br>
+                    • File Managers<br>
+                    • System Calls
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • stat() • access() • chmod()<br>
+                    • opendir() • readdir() • mkdir()<br>
+                    • link() • unlink() • rename()
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- File Access Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 FILE & DIRECTORY ACCESS</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
+                        <div style="font-size: 0.8em;">Directory</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
+                        <div style="font-size: 0.8em;">File</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔗</div>
+                        <div style="font-size: 0.8em;">Links</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔐</div>
+                        <div style="font-size: 0.8em;">Permissions</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Path Resolution<br>
+                    • Metadata Management<br>
+                    • Access Control<br>
+                    • Directory Traversal
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Filesystem Implementations -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
+                    <div style="font-size: 0.8em; color: #666;">Filesystem nativo</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
+                    <div style="font-size: 0.8em; color: #666;">Con snapshot</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
+                    <div style="font-size: 0.8em; color: #666;">Network FS</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
+                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Storage Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Block Devices (HDD, SSD)<br>
+                    • Network Storage (SAN, NAS)<br>
+                    • Virtual Storage (RAID, LVM)
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste di accesso<br>
+                • Ogni layer aggiunge funzionalità di organizzazione e controllo<br>
+                • L'accesso a file e directory è il "catalogo intelligente" del filesystem<br>
+                • Gli stessi comandi funzionano su qualsiasi storage sottostante
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Esplorazione Directory</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Analisi di una struttura di directory</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 Struttura Directory</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        /home/user/projects/<br>
+                        ├── app.c (rw-r--r--)<br>
+                        ├── lib/ (drwxr-xr-x)<br>
+                        └── README.md (rw-r--r--)
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔍 Analisi Sistema</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Comandi eseguiti:<br>
+                        <span style="color: #666;">• stat() per metadata</span><br>
+                        <span style="color: #666;">• access() per permessi</span><br>
+                        <span style="color: #666;">• readdir() per contenuti</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comando osservato:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">ls -la /home/user/projects/</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Risoluzione percorso:</strong> Il sistema traduce "/home/user/projects/" in riferimenti fisici</li>
+                    <li><strong>2. Controllo accessi:</strong> Verifica permessi di lettura sulla directory per l'utente corrente</li>
+                    <li><strong>3. Lettura contenuti:</strong> Per ogni file/directory chiama stat() per ottenere metadata completi</li>
+                    <li><strong>4. Formattazione output:</strong> Converte permessi numerici in notazione rwx leggibile</li>
+                    <li><strong>5. Ordinamento:</strong> Ordina risultati alfabeticamente con file nascosti per primi</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> L'utente vede una lista dettagliata di tutti i file e directory con permessi, proprietari, dimensioni e date. Tutto questo è possibile grazie ai meccanismi di accesso a file e directory!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora File e Directory</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza metadata</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ stat /etc/passwd<br>
+                        File: /etc/passwd<br>
+                        Size: 2455 Blocks: 8<br>
+                        Access: (0644/-rw-r--r--)<br>
+                        Uid: (0/root) Gid: (0/root)
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i metadata di un file: permessi, proprietari, date, dimensioni</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esplora struttura directory</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -la /home/user/<br>
+                        drwxr-xr-x 15 user user 4096 gen 1 10:30 .<br>
+                        drwxr-xr-x 3 root root 4096 dic 15 2023 ..<br>
+                        -rw-r--r-- 1 user user 220 gen 1 10:30 .bash_logout
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza contenuti directory con permessi, proprietari e date</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔗 Studia collegamenti</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -la /bin/sh<br>
+                        lrwxrwxrwx 1 root root 4 mar 1 2023 /bin/sh -> dash<br><br>
+                        $ stat /bin/sh<br>
+                        File: '/bin/sh' -> 'dash'
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Analizza symbolic link e hard link nel sistema</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔐 Testa permessi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ access /etc/shadow<br>
+                        access: permission denied<br><br>
+                        $ sudo access /etc/shadow<br>
+                        access: OK
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Testa i controlli di accesso sui file sensibili</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📂</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Organizzazione Gerarchica</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Le directory organizzano file in una struttura ad albero navigabile. Ogni elemento ha un percorso unico che permette localizzazione precisa e gestione efficiente.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📊</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Metadata Ricchi</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Ogni file e directory contiene metadata completi: permessi, proprietari, date di creazione/modifica/accesso, dimensioni. Questi dati sono cruciali per gestione e sicurezza.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔗</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Collegamenti Flessibili</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Hard link e symbolic link permettono riferimenti multipli agli stessi dati. I hard link condividono l'inode, mentre i symbolic link sono puntatori indipendenti.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔍</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Ricerca Potente</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Strumenti come find, locate, e grep permettono ricerca avanzata per nome, contenuto, metadata. L'efficienza dipende da indici e algoritmi di attraversamento ottimizzati.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sull'Accesso a File e Directory
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa contiene la struttura stat?",
+            options: ["Solo il nome del file", "Tutti i metadata del file", "Solo i permessi", "Solo la dimensione"],
+            correct: 1,
+            explanation: "La struttura stat contiene tutti i metadata di un file: permessi, proprietari, date, dimensioni, inode number, ecc."
+        },
+        {
+            question: "Quale funzione verifica i permessi di accesso?",
+            options: ["stat()", "chmod()", "access()", "chown()"],
+            correct: 2,
+            explanation: "access() verifica se il processo corrente può accedere al file nei modi specificati (R_OK, W_OK, X_OK)."
+        },
+        {
+            question: "Cosa fa opendir()?",
+            options: ["Chiude una directory", "Apre una directory per lettura", "Crea una directory", "Rinomina una directory"],
+            correct: 1,
+            explanation: "opendir() apre una directory e restituisce un handle (DIR*) per leggere sequenzialmente i suoi contenuti."
+        },
+        {
+            question: "Qual è la differenza tra hard link e symbolic link?",
+            options: ["I hard link sono più veloci", "I hard link condividono l'inode, i symbolic link sono file separati", "I symbolic link sono più sicuri", "Non c'è differenza"],
+            correct: 1,
+            explanation: "I hard link condividono lo stesso inode del file originale, mentre i symbolic link sono file separati che contengono il percorso del target."
+        },
+        {
+            question: "Cosa significa rwx in notazione permessi?",
+            options: ["Read, Write, Execute", "Read, Write, eXecute", "Run, Write, eXecute", "Read, Wait, eXecute"],
+            correct: 0,
+            explanation: "rwx sta per Read, Write, eXecute - i tre permessi fondamentali sui file Unix."
+        },
+        {
+            question: "Quale comando mostra i metadata completi?",
+            options: ["ls -l", "stat", "ls", "cat"],
+            correct: 1,
+            explanation: "stat mostra tutti i metadata di un file, inclusi inode, blocchi, date di accesso/modifica/cambio, ecc."
+        },
+        {
+            question: "Cosa fa chmod?",
+            options: ["Cambia proprietario", "Cambia gruppo", "Cambia permessi", "Cambia nome"],
+            correct: 2,
+            explanation: "chmod modifica i permessi di accesso di un file o directory."
+        },
+        {
+            question: "Quale permesso permette di entrare in una directory?",
+            options: ["Read", "Write", "Execute", "Access"],
+            correct: 2,
+            explanation: "Il permesso Execute (x) su una directory permette di entrarci e attraversarla."
+        },
+        {
+            question: "Cosa restituisce readdir()?",
+            options: ["Un file descriptor", "Una struttura dirent", "Una stringa", "Un intero"],
+            correct: 1,
+            explanation: "readdir() restituisce un puntatore a una struttura dirent contenente nome file e numero inode."
+        },
+        {
+            question: "Qual è lo scopo del comando find?",
+            options: ["Creare file", "Cercare file per criteri", "Mod
+

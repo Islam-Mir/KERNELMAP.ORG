@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Kernel Map - Interactive</title>
+    <link rel="stylesheet" href="kernel-map-style.css">
+</head>
+<body>
+<!-- old slideshow commented out
+    <div id="slideshow" class="slideshow">
+        <div class="slide-title" id="slideTitle">Linux Kernel Map</div>
+        <div class="slide-counter" id="slideCounter">1 / 50</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+-->
+
+<!-- 🔹 INTRO KERNEL MATRIX (5s) -->
+<div id="introAnimation" class="intro-overlay">
+  <canvas id="matrixCanvas"></canvas>
+  <div class="intro-text">
+    <span class="word">Booting Linux Kernel...</span>
+    <div class="loading-bar">
+      <div class="loading-fill"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* --- INTRO OVERLAY --- */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #030b18 40%, #000 100%);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: fadeOut 0.5s ease-in-out 1.25s forwards; /* Dissolve after 2.5s total */
+}
+
+/* --- TEXT EFFECT --- */
+.intro-text {
+  position: absolute;
+  bottom: 10%;
+  color: #64d2ff;
+  font-family: 'Courier New', monospace;
+  font-size: 1.4rem;
+  text-shadow: 0 0 10px #64d2ff;
+  animation: flicker 0.5s infinite alternate;
+}
+
+/* --- LOADING BAR --- */
+.loading-bar {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 4px;
+  background: rgba(100, 210, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #64d2ff, #00bcd4);
+  border-radius: 2px;
+  animation: loadingProgress 5s ease-in-out;
+}
+
+@keyframes loadingProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Durata originale animazione barra di caricamento */
+.loading-fill {
+  animation: loadingProgress 2s ease-in-out !important;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.3; }
+}
+</style>
+
+<script>
+// --- CLASSIC MATRIX DIGITAL RAIN EFFECT ---
+// Authentic Matrix-style falling green characters
+
+// Canvas setup
+const c = document.getElementById("matrixCanvas");
+const ctx = c.getContext("2d");
+c.height = window.innerHeight;
+c.width = window.innerWidth;
+
+// Matrix-style parameters
+const chars = "01"; // Binary digits only
+const fontSize = 14;
+const columns = Math.floor(c.width / fontSize);
+const drops = Array(columns).fill(1);
+
+// Classic Matrix rain function
+function drawMatrixRain() {
+  // Black background with slight fade for trails
+  ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+  ctx.fillRect(0, 0, c.width, c.height);
+
+  // Bright green Matrix color
+  ctx.fillStyle = "#00ff00";
+  ctx.font = fontSize + "px 'Courier New', monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    // Random character from the Matrix charset
+    const text = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+    // Reset drop randomly to create continuous flow
+    if (drops[i] * fontSize > c.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
+}
+
+// Animation loop
+window.rainInterval = setInterval(drawMatrixRain, 35);
+
+// Remove intro overlay after 2.5 seconds
+setTimeout(() => {
+   const intro = document.getElementById("introAnimation");
+   if (intro) intro.remove();
+}, 1500);
+
+// Handle window resize
+window.addEventListener("resize", () => {
+  c.height = window.innerHeight;
+  c.width = window.innerWidth;
+});
+</script>
+
+    <div class="header">
+        <h1 style="font-size: 1.2em; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; letter-spacing: 1px;">Linux Kernel Map</h1>
+    </div>
+
+    <!-- OVERLAY PER PREVIEW HOVER (DEFAULT - CENTRO) -->
+    <div class="hover-preview-overlay" id="hoverPreviewOverlay">
+        <div class="hover-preview-box">
+            <div class="hover-preview-title" id="previewTitle"></div>
+            <div class="hover-preview-description" id="previewDescription"></div>
+            <div class="hover-preview-footer">Clicca per maggiori dettagli</div>
+        </div>
+    </div>
+
+    <!-- OVERLAY PER PREVIEW HOVER (SINISTRA - per THREADS, SYNCHRONIZATION, SCHEDULER) -->
+    <div class="hover-preview-overlay-left" id="hoverPreviewOverlayLeft">
+        <div class="hover-preview-box">
+            <div class="hover-preview-title" id="previewTitleLeft"></div>
+            <div class="hover-preview-description" id="previewDescriptionLeft"></div>
+            <div class="hover-preview-footer">Clicca per maggiori dettagli</div>
+        </div>
+    </div>
+
+    <div class="kernel-map-container">
+        <!-- ===== ROW 1 ===== -->
+        <!-- Column 1: Functionalities Layers -->
+        <div class="section col1-row1 functionalities-section" data-id="functionalities">
+            <div class="section-title">functionalities<br>layers</div>
+        </div>
+
+        <!-- Column 2: HUMAN INTERFACES Header -->
+        <div class="section col2-row1 hi-header-section" data-id="hi-header">
+            <div class="section-title">HUMAN<br>INTERFACES</div>
+        </div>
+
+        <!-- Column 3: SYSTEM Header -->
+        <div class="section col3-row1 system-header-section" data-id="system-header">
+            <div class="section-title">SYSTEM</div>
+        </div>
+
+        <!-- Column 4: PROCESSING Header -->
+        <div class="section col4-row1 processing-header-section" data-id="processing-header">
+            <div class="section-title">PROCESSING</div>
+        </div>
+
+        <!-- Column 5: MEMORY Header -->
+        <div class="section col5-row1 memory-header-section" data-id="memory-header">
+            <div class="section-title">MEMORY</div>
+        </div>
+
+        <!-- Column 6: STORAGE Header -->
+        <div class="section col6-row1 storage-header-section" data-id="storage-header">
+            <div class="section-title">STORAGE</div>
+        </div>
+
+        <!-- Column 7: NETWORKING Header -->
+        <div class="section col7-row1 network-header-section" data-id="network-header">
+            <div class="section-title">NETWORKING</div>
+        </div>
+
+        <!-- ===== ROW 2 ===== -->
+        <!-- Column 1: User Space Interfaces -->
+        <div class="section col1-row2 user-space-section" data-id="user-space-interfaces">
+            <div class="subsection">
+                <div class="subsection-title">user space<br>interfaces</div>
+                <div class="items">system calls • system libs</div>
+            </div>
+        </div>
+
+        <!-- Column 2: HI char devices -->
+        <div class="section col2-row2 hi-section-1" data-id="hi-char-devices">
+            <div class="subsection">
+                <div class="subsection-title">HI char<br>devices</div>
+                <div class="items">cdev_add • register_chrdev</div>
+            </div>
+        </div>
+
+        <!-- Column 3: INTERFACES CORE -->
+        <div class="section col3-row2 system-section-1" data-id="interfaces-core">
+            <div class="subsection">
+                <div class="subsection-title">interfaces<br>core</div>
+                <div class="items">sys_call_table • entry_SYSCALL</div>
+            </div>
+        </div>
+
+        <!-- Column 4: PROCESSES -->
+        <div class="section col4-row2 processing-section-1" data-id="processes">
+            <div class="subsection">
+                <div class="subsection-title">processes</div>
+                <div class="items">fork • exec • task_struct</div>
+            </div>
+        </div>
+
+        <!-- Column 5: MEMORY ACCESS -->
+        <div class="section col5-row2 memory-section-1" data-id="memory-access">
+            <div class="subsection">
+                <div class="subsection-title">memory<br>access</div>
+                <div class="items">sys_brk • sys_mmap • mprotect</div>
+            </div>
+        </div>
+
+        <!-- Column 6: FILES & DIRECTORIES ACCESS -->
+        <div class="section col6-row2 storage-section-1" data-id="files-directories-access">
+            <div class="subsection">
+                <div class="subsection-title">files &<br>directories<br>access</div>
+                <div class="items">zero-copy • Async I/O • fs/</div>
+            </div>
+        </div>
+
+        <!-- Column 7: SOCKET ACCESS -->
+        <div class="section col7-row2 network-section-1" data-id="sockets-access">
+            <div class="subsection">
+                <div class="subsection-title">socket<br>access</div>
+                <div class="items">socket • bind • listen • accept</div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 3 ===== -->
+        <!-- Column 1: VIRTUAL -->
+        <div class="section col1-row3 virtual-section" data-id="virtual">
+            <div class="section-title">VIRTUAL</div>
+        </div>
+
+        <!-- Column 2: SECURITY -->
+        <div class="section col2-row3 hi-section-2" data-id="security">
+            <div class="subsection">
+                <div class="subsection-title">security</div>
+                <div class="items">security_hooks • capability • selinux</div>
+            </div>
+        </div>
+
+        <!-- Column 3: DRIVER MODEL (spanning rows 3-4) -->
+        <div class="section col3-row3-4 system-section-2" data-id="driver-model">
+            <div class="subsection">
+                <div class="subsection-title">Driver<br>Model</div>
+                <div class="items">kobject • kset • device_create</div>
+            </div>
+        </div>
+
+        <!-- Column 4: THREADS -->
+        <div class="section col4-row3 processing-section-2" data-id="threads">
+            <div class="subsection">
+                <div class="subsection-title">threads</div>
+                <div class="items">kernel_thread • pthread • clone</div>
+            </div>
+        </div>
+
+        <!-- Column 5: VIRTUAL MEMORY -->
+        <div class="section col5-row3 memory-section-2" data-id="virtual-memory">
+            <div class="subsection">
+                <div class="subsection-title">virtual<br>memory</div>
+                <div class="items">vmmalloc • paging • page_table</div>
+            </div>
+        </div>
+
+        <!-- Column 6: VIRTUAL FILE SYSTEM -->
+        <div class="section col6-row3 storage-section-2" data-id="vfs">
+            <div class="subsection">
+                <div class="subsection-title">Virtual File<br>System</div>
+                <div class="items">inode • dentry • file_ops</div>
+            </div>
+        </div>
+
+        <!-- Column 7: ADDRESS FAMILIES -->
+        <div class="section col7-row3 network-section-2" data-id="address-families">
+            <div class="subsection">
+                <div class="subsection-title">address<br>families</div>
+                <div class="items">AF_INET • AF_INET6 • AF_UNIX</div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 4 - COMPLEX MERGE ===== -->
+        <!-- Column 1: BRIDGES -->
+        <div class="section col1-row4 bridges-section" data-id="bridges">
+            <div class="subsection">
+                <div class="subsection-title">cross-functional<br>modules</div>
+                <div class="items">ipc • notification</div>
+            </div>
+        </div>
+
+        <!-- Column 2: DEBUGGING -->
+        <div class="section col2-row4 hi-section-3" data-id="debugging">
+            <div class="subsection">
+                <div class="subsection-title">debugging</div>
+                <div class="items">sys_ptrace • kdb • kgdb</div>
+            </div>
+        </div>
+
+        <!-- Column 3 is occupied by DRIVER MODEL spanning rows 3-4 -->
+
+        <!-- Column 4: SYNCHRONIZATION -->
+        <div class="section col4-row4 processing-section-3" data-id="synchronization">
+            <div class="subsection">
+                <div class="subsection-title">synchronization</div>
+                <div class="items">spinlock • mutex • semaphore • RCU</div>
+            </div>
+        </div>
+
+        <!-- Column 5: MEMORY MAPPING -->
+        <div class="section col5-row4 memory-section-3" data-id="memory-mapping">
+            <div class="subsection">
+                <div class="subsection-title">memory<br>mapping</div>
+                <div class="items">mmap • page_mapping • faulting</div>
+            </div>
+        </div>
+
+        <!-- Column 6 Row 4: MERGED CONTAINER with PAGE CACHE (top) and SWAP (bottom) -->
+        <div class="section col6-row4 storage-section-merge">
+            <div class="subsection storage-cache-top" data-id="page-cache">
+                <div class="subsection-title">page cache</div>
+                <div class="items">page_tree • radix_tree • writeback</div>
+            </div>
+            <div class="subsection storage-cache-bottom" data-id="swap">
+                <div class="subsection-title">swap</div>
+                <div class="items">swap_info • do_swap_page</div>
+            </div>
+        </div>
+
+        <!-- Column 7 Row 4: MERGED CONTAINER with NETWORK STORAGE (left) and SOCKET SPLICE (right) -->
+        <div class="section col7-row4 network-section-merge">
+            <div class="subsection network-storage" data-id="network-storage">
+                <div class="subsection-title">network<br>storage</div>
+                <div class="items">NFS • iSCSI • CIFS</div>
+            </div>
+            <div class="subsection socket-splice" data-id="socket-splice">
+                <div class="subsection-title">socket<br>splice</div>
+                <div class="items">sock_sendpage • tcp_sendpage</div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 5 ===== -->
+        <!-- Column 1: LOGICAL -->
+        <div class="section col1-row5 logical-section" data-id="logical">
+            <div class="subsection">
+                <div class="subsection-title">functions<br>implementations</div>
+                <div class="items">syscall dispatch • vfs ops</div>
+            </div>
+        </div>
+
+        <!-- Column 2: HI SUBSYSTEMS -->
+        <div class="section col2-row5 hi-section-4" data-id="hi-subsystems">
+            <div class="subsection">
+                <div class="subsection-title">HI subsystems</div>
+                <div class="items">ALSA • V4L2 • DVB</div>
+            </div>
+        </div>
+
+        <!-- Column 3: SYSTEM RUN -->
+        <div class="section col3-row5 system-section-3" data-id="system-run">
+            <div class="subsection">
+                <div class="subsection-title">system run</div>
+                <div class="items">boot_init • sys_shutdown • power_mgmt</div>
+            </div>
+        </div>
+
+        <!-- Column 4: SCHEDULER -->
+        <div class="section col4-row5 processing-section-4" data-id="scheduler">
+            <div class="subsection">
+                <div class="subsection-title">Scheduler</div>
+                <div class="items">task_struct • schedule • context_switch</div>
+            </div>
+        </div>
+
+        <!-- Column 5: LOGICAL MEMORY -->
+        <div class="section col5-row5 memory-section-4" data-id="logical-memory">
+            <div class="subsection">
+                <div class="subsection-title">logical<br>memory</div>
+                <div class="items">kmalloc • vmalloc • slob/slab</div>
+            </div>
+        </div>
+
+        <!-- Column 6: LOGICAL FILE SYSTEMS -->
+        <div class="section col6-row5 storage-section-3" data-id="logical-filesystems">
+            <div class="subsection">
+                <div class="subsection-title">logical file systems</div>
+                <div class="items">ext4 • btrfs • xfs • f2fs</div>
+            </div>
+        </div>
+
+        <!-- Column 7: PROTOCOLS -->
+        <div class="section col7-row5 network-section-3" data-id="protocols">
+            <div class="subsection">
+                <div class="subsection-title">protocols</div>
+                <div class="items">tcp_prot • udp_prot • icmp</div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 6 ===== -->
+        <!-- Column 1: DEVICE CONTROL -->
+        <div class="section col1-row6 device-control-section" data-id="device-control">
+            <div class="subsection">
+                <div class="subsection-title">drivers</div>
+                <div class="items">device_register • device_add</div>
+            </div>
+        </div>
+
+        <!-- Column 2: ABSTRACT DEVICES AND HID CLASS DRIVERS -->
+        <div class="section col2-row6 hi-section-5" data-id="abstract-devices-drivers">
+            <div class="subsection">
+                <div class="subsection-title">abstract devices<br>and HID class<br>drivers</div>
+                <div class="items">kbd • input • console</div>
+            </div>
+        </div>
+
+        <!-- Column 3: GENERIC HW ACCESS -->
+        <div class="section col3-row6 system-section-4" data-id="generic-hw-access">
+            <div class="subsection">
+                <div class="subsection-title">generic HW access</div>
+                <div class="items">request_region • ioremap • outb/inb</div>
+            </div>
+        </div>
+
+        <!-- Column 4: INTERRUPTS CORE -->
+        <div class="section col4-row6 processing-section-5" data-id="interrupts-core">
+            <div class="subsection">
+                <div class="subsection-title">interrupts core</div>
+                <div class="items">IRQ handler • softirq • tasklet</div>
+            </div>
+        </div>
+
+        <!-- Column 5: PAGE ALLOCATOR -->
+        <div class="section col5-row6 memory-section-5" data-id="page-allocator">
+            <div class="subsection">
+                <div class="subsection-title">Page<br>Allocator</div>
+                <div class="items">get_page • free_page • buddy_system</div>
+            </div>
+        </div>
+
+        <!-- Column 6: BLOCK DEVICES -->
+        <div class="section col6-row6 storage-section-4" data-id="block-devices">
+            <div class="subsection">
+                <div class="subsection-title">block devices</div>
+                <div class="items">bio • blk_queue • scheduler</div>
+            </div>
+        </div>
+
+        <!-- Column 7: NETWORK INTERFACES -->
+        <div class="section col7-row6 network-section-4" data-id="network-interfaces">
+            <div class="subsection">
+                <div class="subsection-title">network<br>interfaces</div>
+                <div class="items">net_device • dev_queue_xmit • receive</div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 7 ===== -->
+        <!-- Column 1: HARDWARE INTERFACES -->
+        <div class="section col1-row7 hardware-interfaces-section" data-id="hardware-interfaces">
+            <div class="subsection">
+                <div class="subsection-title">drivers<br>registers &<br>interrupts</div>
+                <div class="items">I/O ops • IRQ</div>
+            </div>
+        </div>
+
+        <!-- Column 2: HI PERIPHERALS DEVICE DRIVERS -->
+        <div class="section col2-row7 hi-section-6" data-id="hi-hardware-interfaces">
+            <div class="subsection">
+                <div class="subsection-title">HI peripherals<br>device drivers</div>
+                <div class="items">psmouse • uvc_drivers • atkbd-drv</div>
+            </div>
+        </div>
+
+        <!-- Column 3: DEVICE ACCESS AND BUS DRIVERS -->
+        <div class="section col3-row7 system-section-5" data-id="device-access-bus-drivers">
+            <div class="subsection">
+                <div class="subsection-title">device access<br>and bus drivers</div>
+                <div class="items">readw • pci_read • writew</div>
+            </div>
+        </div>
+
+        <!-- Column 4: CPU SPECIFIC -->
+        <div class="section col4-row7 processing-section-6" data-id="cpu-specific">
+            <div class="subsection">
+                <div class="subsection-title">CPU specific</div>
+                <div class="items">entry_SYSCALL_64 • exception_handling • TSS</div>
+            </div>
+        </div>
+
+        <!-- Column 5: PHYSICAL MEMORY OPERATIONS -->
+        <div class="section col5-row7 memory-section-6" data-id="physical-memory-ops">
+            <div class="subsection">
+                <div class="subsection-title">physical memory<br>operations</div>
+                <div class="items">page_alloc • page_table_ops • pfn</div>
+            </div>
+        </div>
+
+        <!-- Column 6: STORAGE DRIVERS -->
+        <div class="section col6-row7 storage-section-5" data-id="storage-drivers">
+            <div class="subsection">
+                <div class="subsection-title">storage drivers</div>
+                <div class="items">NVMe • SCSI • SATA • SAS</div>
+            </div>
+        </div>
+
+        <!-- Column 7: NETWORK DEVICE DRIVERS -->
+        <div class="section col7-row7 network-section-5" data-id="network-device-drivers">
+            <div class="subsection">
+                <div class="subsection-title">network device drivers</div>
+                <div class="items">e1000 • bnx2 • ixgbe • igb</div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 8 ===== -->
+        <!-- Column 1: ELECTRONICS -->
+        <div class="section col1-row8 electronics-section" data-id="electronics">
+            <div class="section-title">ELECTRONICS</div>
+        </div>
+
+        <!-- Column 2: USER PERIPHERALS -->
+        <div class="section col2-row8 hi-section-7" data-id="user-peripherals">
+            <div class="subsection">
+                <div class="subsection-title">user peripherals</div>
+                <div class="items">keyboard • mouse • printer • audio</div>
+            </div>
+        </div>
+
+        <!-- Column 3: I/O -->
+        <div class="section col3-row8 system-section-6" data-id="io">
+            <div class="subsection">
+                <div class="subsection-title">I/O</div>
+                <div class="items">I/O ports • ACPI • USB controller</div>
+            </div>
+        </div>
+
+        <!-- Column 4: CPU -->
+        <div class="section col4-row8 processing-section-7" data-id="cpu">
+            <div class="subsection">
+                <div class="subsection-title">CPU</div>
+                <div class="items">registers • APIC • interrupt_ctrl</div>
+            </div>
+        </div>
+
+        <!-- Column 5: MEMORY -->
+        <div class="section col5-row8 memory-section-7" data-id="memory">
+            <div class="subsection">
+                <div class="subsection-title">memory</div>
+                <div class="items">RAM • DMA • MMU</div>
+            </div>
+        </div>
+
+        <!-- Column 6: STORAGE CONTROLLERS -->
+        <div class="section col6-row8 storage-section-6" data-id="storage-controllers">
+            <div class="subsection">
+                <div class="subsection-title">storage<br>controllers</div>
+                <div class="items">sd_driver • nvme_driver • ata</div>
+            </div>
+        </div>
+
+        <!-- Column 7: NETWORK CONTROLLERS -->
+        <div class="section col7-row8 network-section-6" data-id="network-controllers">
+            <div class="subsection">
+                <div class="subsection-title">network<br>controllers</div>
+                <div class="items">Ethernet • Wi-Fi • modem</div>
+            </div>
+        </div>
+    </div>
+
+<!-- old slideshow script commented out
+    <script>
+        // Check if user came directly or from another page
+        const referrer = document.referrer;
+        const isDirectAccess = !referrer || !referrer.includes(window.location.hostname);
+
+        // Slideshow functionality
+        const slideshow = document.getElementById('slideshow');
+        const slideTitle = document.getElementById('slideTitle');
+        const slideCounter = document.getElementById('slideCounter');
+        const progressFill = document.getElementById('progressFill');
+
+        // Surprise content for direct access
+        const surpriseTitles = [
+            '🎉 Welcome to the Linux Kernel Universe! 🌟',
+            '🚀 Prepare for an Epic Journey Through Code! 💻',
+            '🔬 Exploring the Heart of Open Source Magic ✨',
+            '⚡ Unleashing the Power of Kernel Architecture! 🔥',
+            '🎯 Your Adventure in System Programming Begins! 🏁',
+            '🌈 Discovering the Beauty of Low-Level Programming 🎨',
+            '💡 Illuminating the Secrets of Operating Systems 🔍',
+            '🎪 Welcome to the Greatest Show on Earth: Linux! 🎪',
+            '🌟 You\'re About to Witness Kernel Wizardry! 🧙‍♂️',
+            '🎊 Congratulations! You Found the Kernel Treasure! 💎'
+        ];
+
+        // Regular titles for returning visitors
+        const regularTitles = [
+            'Linux Kernel Map',
+            'functionalities layers',
+            'HUMAN INTERFACES',
+            'SYSTEM',
+            'PROCESSING',
+            'MEMORY',
+            'STORAGE',
+            'NETWORKING',
+            'user space interfaces',
+            'HI char devices',
+            'interfaces core',
+            'processes',
+            'memory access',
+            'files & directories access',
+            'socket access',
+            'VIRTUAL',
+            'security',
+            'Driver Model',
+            'threads',
+            'virtual memory',
+            'Virtual File System',
+            'address families',
+            'cross-functional modules',
+            'debugging',
+            'synchronization',
+            'memory mapping',
+            'page cache',
+            'swap',
+            'network storage',
+            'socket splice',
+            'functions implementations',
+            'HI subsystems',
+            'system run',
+            'Scheduler',
+            'logical memory',
+            'logical file systems',
+            'protocols',
+            'drivers',
+            'abstract devices and HID class drivers',
+            'generic HW access',
+            'interrupts core',
+            'Page Allocator',
+            'block devices',
+            'network interfaces',
+            'drivers registers & interrupts',
+            'HI peripherals device drivers',
+            'device access and bus drivers',
+            'CPU specific',
+            'physical memory operations',
+            'storage drivers',
+            'network device drivers',
+            'ELECTRONICS',
+            'user peripherals',
+            'I/O',
+            'CPU',
+            'memory',
+            'storage controllers',
+            'network controllers'
+        ];
+
+        // Choose titles based on access type
+        const titles = isDirectAccess ? surpriseTitles : regularTitles;
+
+        let currentSlide = 0;
+        const totalSlides = titles.length;
+        const slideDuration = 5000 / totalSlides; // 5 seconds total
+        let slideshowInterval;
+        let startTime;
+
+        function updateSlide() {
+            // Remove previous appear class
+            slideTitle.classList.remove('appear');
+
+            // Force reflow to restart animation
+            void slideTitle.offsetWidth;
+
+            slideTitle.textContent = titles[currentSlide];
+            slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+
+            // Add appear class for magical entrance
+            slideTitle.classList.add('appear');
+
+            // Update progress bar
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressFill.style.width = progress + '%';
+
+            currentSlide++;
+
+            if (currentSlide >= totalSlides) {
+                // End slideshow
+                clearInterval(slideshowInterval);
+                setTimeout(() => {
+                    slideshow.classList.add('hidden');
+                    setTimeout(() => {
+                        slideshow.style.display = 'none';
+                    }, 1000);
+                }, 500);
+            }
+        }
+
+        function startSlideshow() {
+            startTime = Date.now();
+            updateSlide(); // Show first slide immediately
+            slideshowInterval = setInterval(updateSlide, slideDuration);
+        }
+
+        // Start slideshow when page loads
+        window.addEventListener('load', () => {
+            setTimeout(startSlideshow, 500); // Small delay to ensure DOM is ready
+        });
+    </script>
+-->
+    <script src="kernel-map.js"></script>
+
+    <footer style="text-align: center; padding: 5px; border-top: 1px solid #ddd; font-size: 0.6em; color: #999; background: white; border-radius: 8px; margin-top: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        © 2025 <a href="https://mirislam.website/" style="color: #999; text-decoration: none;">@ISLAM MIR</a> & <a href="https://www.espositopeppe.com/" style="color: #999; text-decoration: none;">@GIUSEPPE ESPOSITO</a> - All rights reserved.
+    </footer>
+</body>
+</html>
+    </script>
+-->
+    <script src="kernel-map.js"></script>
+</body>
+</html>

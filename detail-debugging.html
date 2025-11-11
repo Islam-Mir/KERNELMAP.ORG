@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEBUGGING - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>DEBUGGING</h1>
+        <p class="subtitle">Strumenti di debug e tracing</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🐛 DEBUG</span>
+        <h2>DESCRIZIONE:</h2>
+<p><strong>Il sottosistema di debugging del kernel Linux fornisce strumenti avanzati per tracciare, analizzare e risolvere problemi nel codice del kernel in esecuzione.</strong></p>
+
+<h2>CONFRONTO:</h2>
+<p>Come un meccanico che usa scanner diagnostici per identificare problemi in un'auto: il debugging del kernel permette di "guardare dentro" il sistema operativo mentre funziona, identificando colli di bottiglia, race condition, memory leak e altri problemi critici.</p>
+
+<h2>🔍 Descrizione Tecnica</h2>
+<p><strong>Il debugging del kernel Linux è un insieme di strumenti e tecniche per analizzare il comportamento del kernel durante l'esecuzione.</strong> Include tracing dinamico, profiling delle prestazioni, analisi di crash e debugging interattivo.</p>
+
+<p>• <strong>Tracing dinamico</strong> - Cattura eventi del kernel in tempo reale senza modificare il codice sorgente</p>
+<p>• <strong>Profiling delle prestazioni</strong> - Identifica colli di bottiglia e funzioni che consumano più risorse</p>
+<p>• <strong>Debugging interattivo</strong> - Permette di ispezionare lo stato del kernel in esecuzione</p>
+<p>• <strong>Analisi di crash</strong> - Strumenti per investigare kernel panic e system hang</p>
+<p>• <strong>Tracing di system call</strong> - Monitora le chiamate di sistema per identificare comportamenti anomali</p>
+<p>• <strong>Memory debugging</strong> - Rileva memory leak, use-after-free e altri problemi di memoria</p>
+<p><em>• Interazione: Fornisce interfaccia agli sviluppatori e amministratori di sistema per diagnosticare problemi complessi del kernel</em></p>
+
+<h2>⚙️ Operazioni Principali</h2>
+<p><strong>Il debugging del kernel supporta diverse categorie di operazioni, ciascuna specializzata per tipi specifici di analisi:</strong></p>
+
+<h3>🔍 Tracing e Profiling</h3>
+<p>• <strong>ftrace()</strong> - Framework di tracing dinamico per catturare eventi del kernel</p>
+<p>• <strong>perf()</strong> - Strumento di profiling delle prestazioni con supporto hardware</p>
+<p>• <strong>trace-cmd()</strong> - Interfaccia a riga di comando per il tracing del kernel</p>
+<p>• <strong>LTTng()</strong> - Tracing a bassa latenza per analisi dettagliate</p>
+
+<h3>🐛 Debugging Interattivo</h3>
+<p>• <strong>kgdb()</strong> - Debugger del kernel via porta seriale o Ethernet</p>
+<p>• <strong>kdb()</strong> - Debugger integrato del kernel per ispezione interattiva</p>
+<p>• <strong>kprobes()</strong> - Probe dinamici per inserire breakpoint nel codice del kernel</p>
+<p>• <strong>systemtap()</strong> - Framework di scripting per analisi dinamica</p>
+
+<h3>📊 Analisi di Memoria</h3>
+<p>• <strong>kmemleak()</strong> - Rilevatore di memory leak nel kernel</p>
+<p>• <strong>KASAN()</strong> - Kernel Address Sanitizer per rilevamento di bug di memoria</p>
+<p>• <strong>kmemcheck()</strong> - Strumento per debug di accessi alla memoria</p>
+
+<h3>🔥 Analisi di Crash</h3>
+<p>• <strong>kdump()</strong> - Cattura dump della memoria in caso di kernel panic</p>
+<p>• <strong>kexec()</strong> - Esecuzione di un nuovo kernel senza riavvio del sistema</p>
+<p>• <strong>crash()</strong> - Analizzatore di dump della memoria del kernel</p>
+
+<h2>📋 Esempi Pratici</h2>
+<p><strong>Il debugging del kernel si usa quotidianamente per identificare e risolvere problemi di prestazioni e stabilità del sistema:</strong></p>
+
+<h3>🔍 Tracing di System Call</h3>
+<p>Quando un'applicazione ha prestazioni lente, puoi tracciare le system call per identificare il collo di bottiglia:</p>
+<p>1. Abilita il tracing: <code>echo 1 > /sys/kernel/debug/tracing/events/syscalls/enable</code></p>
+<p>2. Cattura gli eventi: <code>cat /sys/kernel/debug/tracing/trace_pipe</code></p>
+<p>3. Analizza i dati per identificare system call lente o frequenti</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>trace_event</strong> - Struttura che rappresenta un singolo evento di tracing catturato</li>
+<li><strong>ftrace_ops</strong> - Operazioni per il framework di function tracing</li>
+<li><strong>kprobe</strong> - Struttura per i dynamic probe che possono essere inseriti nel codice</li>
+<li><strong>perf_event</strong> - Descrittore di evento per il profiling delle prestazioni</li>
+</ul>
+
+<h3>💻 Comandi Linux per Debugging</h3>
+<ul>
+<li><code>perf record -a -g -- sleep 10</code> - Registra il profilo delle prestazioni per 10 secondi</li>
+<li><code>trace-cmd record -e sched_switch ls</code> - Traccia il context switching durante l'esecuzione di ls</li>
+<li><code>stap -e 'probe kernel.function("schedule") { println("Context switch") }'</code> - Monitora i context switch</li>
+<li><code>crash /var/crash/vmcore /usr/lib/debug/lib/modules/$(uname -r)/vmlinux</code> - Analizza un kernel dump</li>
+</ul>
+
+<h3>🎯 Caso Reale: Debug di Memory Leak</h3>
+<p>Quando il sistema esaurisce la memoria gradualmente:</p>
+<ol>
+<li>Abilita kmemleak: <code>echo scan > /sys/kernel/debug/kmemleak</code></li>
+<li>Scansiona la memoria: <code>cat /sys/kernel/debug/kmemleak</code></li>
+<li>Identifica gli oggetti non liberati e il codice che li ha allocati</li>
+<li>Correggi il bug nel driver o modulo problematico</li>
+</ol>
+
+<h2>💾 Strumenti di Debug Disponibili</h2>
+<ul>
+<li><strong>ftrace</strong> - Framework di tracing integrato nel kernel</li>
+<li><strong>perf</strong> - Strumento di profiling delle prestazioni</li>
+<li><strong>SystemTap</strong> - Framework di scripting per analisi dinamica</li>
+<li><strong>LTTng</strong> - Tracing a bassa latenza</li>
+<li><strong>kgdb</strong> - Debugger remoto del kernel</li>
+<li><strong>kdump/kexec</strong> - Cattura e analisi di crash dump</li>
+</ul>
+
+<h2>✨ Caratteristiche</h2>
+<ul>
+<li><strong>Tracing dinamico</strong> - Cattura eventi senza modificare il codice sorgente</li>
+<li><strong>Bassa overhead</strong> - Gli strumenti sono progettati per minimizzare l'impatto sulle prestazioni</li>
+<li><strong>Estensibilità</strong> - Framework modulari che possono essere estesi con nuovi probe</li>
+<li><strong>Integrazione hardware</strong> - Supporto per contatori hardware e PMU</li>
+<li><strong>Analisi in tempo reale</strong> - Possibilità di analizzare sistemi in produzione</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave</h2>
+<p><strong>Il debugging del kernel interagisce con tutti i sottosistemi principali per fornire una visione completa del sistema:</strong></p>
+
+<h3>⚡ Scheduler e Processi</h3>
+<p>• <strong>Tracing del context switching</strong> - Monitora quando i processi vengono sospesi e ripresi</p>
+<p>• <strong>Analisi delle priorità</strong> - Verifica che i processi abbiano le priorità corrette</p>
+<p>• <strong>Debug di race condition</strong> - Identifica problemi di sincronizzazione tra thread</p>
+
+<h3>💾 Memory Management</h3>
+<p>• <strong>Rilevamento memory leak</strong> - Identifica allocazioni di memoria non liberate</p>
+<p>• <strong>Analisi della frammentazione</strong> - Monitora l'efficienza dell'allocatore di memoria</p>
+<p>• <strong>Debug di page fault</strong> - Traccia gli accessi alla memoria che causano page fault</p>
+
+<h3>🔌 Device Drivers</h3>
+<p>• <strong>Tracing delle interruzioni</strong> - Monitora la frequenza e latenza delle interruzioni hardware</p>
+<p>• <strong>Analisi delle prestazioni I/O</strong> - Identifica colli di bottiglia negli accessi ai dispositivi</p>
+<p>• <strong>Debug di deadlock</strong> - Rileva situazioni di stallo nei driver</p>
+
+<h3>🌐 Network Stack</h3>
+<p>• <strong>Tracing dei pacchetti</strong> - Monitora il flusso dei pacchetti attraverso lo stack di rete</p>
+<p>• <strong>Analisi delle latenze</strong> - Misura i tempi di risposta delle operazioni di rete</p>
+<p>• <strong>Debug di connessioni</strong> - Traccia problemi nelle connessioni TCP/UDP</p>
+
+<h2>🛠️ API e Interfacce</h2>
+<p><strong>Il debugging del kernel espone diverse interfacce per l'analisi del sistema, sia programmatiche che a riga di comando:</strong></p>
+
+<h3>🔧 Interfacce di Tracing</h3>
+<div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+<code style="color: #d32f2f; font-weight: bold;">int register_ftrace_function(struct ftrace_ops *ops);</code><br>
+<span style="color: #666; font-size: 0.9em;">Registra una funzione di callback per il tracing dinamico di altre funzioni del kernel.</span><br><br>
+
+<code style="color: #2e7d32; font-weight: bold;">int perf_event_open(struct perf_event_attr *attr, pid_t pid, int cpu, int group_fd, unsigned long flags);</code><br>
+<span style="color: #666; font-size: 0.9em;">Apre un evento di performance monitoring per profiling e tracing.</span><br><br>
+
+<code style="color: #f57c00; font-weight: bold;">int register_kprobe(struct kprobe *kp);</code><br>
+<span style="color: #666; font-size: 0.9em;">Registra un dynamic probe che può essere inserito in qualsiasi punto del codice del kernel.</span>
+</div>
+
+<h3>📊 Interfacce di Debug</h3>
+<div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+<code style="color: #0288d1; font-weight: bold;">void kgdb_breakpoint(void);</code><br>
+<span style="color: #666; font-size: 0.9em;">Inserisce un breakpoint per il debugger remoto del kernel.</span><br><br>
+
+<code style="color: #d32f2f; font-weight: bold;">void panic(const char *fmt, ...);</code><br>
+<span style="color: #666; font-size: 0.9em;">Provoca un kernel panic con un messaggio di debug specifico.</span><br><br>
+
+<code style="color: #2e7d32; font-weight: bold;">void dump_stack(void);</code><br>
+<span style="color: #666; font-size: 0.9em;">Stampa il backtrace dello stack corrente per analisi di debug.</span>
+</div>
+
+<h3>💻 Strumenti a Riga di Comando</h3>
+<p><strong>Esempi di utilizzo pratico degli strumenti di debugging:</strong></p>
+<ol>
+<li><code>$ perf top</code> - Mostra in tempo reale le funzioni che consumano più CPU</li>
+<li><code>$ trace-cmd record -e sched_switch -o trace.dat sleep 5</code> - Registra il context switching per 5 secondi</li>
+<li><code>$ stap -e 'probe kernel.function("schedule") { printf("PID %d -> PID %d\n", prev_pid, next_pid) }'</code> - Monitora i cambi di contesto</li>
+<li><code>$ crash vmlinux vmcore</code> - Analizza un dump della memoria dopo un crash</li>
+</ol>
+<p><em>Questi strumenti permettono di diagnosticare problemi complessi senza modificare il codice sorgente del kernel.</em></p>
+
+<h2>🗺️ Architettura del Debugging</h2>
+<div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+    <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Sistema di Debugging del Kernel</h3>
+
+    <!-- User Space Tools Layer -->
+    <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ STRUMENTI USER SPACE</div>
+        <div style="font-size: 0.9em; color: #666;">
+            • perf • SystemTap • LTTng<br>
+            • trace-cmd • crash • gdb<br>
+            • Interfacce di controllo
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Kernel Debug Interfaces -->
+    <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 KERNEL DEBUG INTERFACES</div>
+        <div style="font-size: 0.9em; color: #666;">
+            • /sys/kernel/debug • /proc<br>
+            • debugfs • tracefs<br>
+            • Interfacce di configurazione
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Debug Subsystems -->
+    <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+        <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🐛 DEBUG SUBSYSTEMS</div>
+        <div style="display: flex; justify-content: space-around; color: white;">
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">🔍</div>
+                <div style="font-size: 0.8em;">ftrace</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">📊</div>
+                <div style="font-size: 0.8em;">perf</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">🎯</div>
+                <div style="font-size: 0.8em;">kprobes</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5em; margin-bottom: 5px;">💥</div>
+                <div style="font-size: 0.8em;">kgdb</div>
+            </div>
+        </div>
+        <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+            • Tracing dinamico<br>
+            • Profiling prestazioni<br>
+            • Debug interattivo
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Kernel Subsystems -->
+    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚡ SCHEDULER</div>
+            <div style="font-size: 0.8em; color: #666;">Context switching</div>
+        </div>
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾 MEMORY</div>
+            <div style="font-size: 0.8em; color: #666;">Allocazioni & leak</div>
+        </div>
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔌 DRIVERS</div>
+            <div style="font-size: 0.8em; color: #666;">I/O & interrupts</div>
+        </div>
+        <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🌐 NETWORK</div>
+            <div style="font-size: 0.8em; color: #666;">Pacchetti & latenze</div>
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+    <!-- Hardware Layer -->
+    <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔧 HARDWARE SUPPORT</div>
+        <div style="font-size: 0.9em; color: #666;">
+            • Performance Monitoring Unit (PMU)<br>
+            • Hardware breakpoints<br>
+            • JTAG/Debug ports
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+        <strong>💡 Come leggere la mappa:</strong><br>
+        • Gli strumenti user space controllano il debugging attraverso interfacce del kernel<br>
+        • I subsystem di debug operano su tutti i componenti del kernel<br>
+        • Il supporto hardware fornisce contatori e breakpoint avanzati<br>
+        • Tutto integrato per analisi completa senza impatto sulle prestazioni
+    </div>
+</div>
+
+        <h2>🎬 Funzionamento del Debugging</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come Funziona il Profiling con perf</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Configurazione Evento</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        struct perf_event_attr attr = {<br>
+        &nbsp;&nbsp;.type = PERF_TYPE_HARDWARE,<br>
+        &nbsp;&nbsp;.config = PERF_COUNT_HW_CPU_CYCLES,<br>
+        &nbsp;&nbsp;.disabled = 1,<br>
+        &nbsp;&nbsp;.exclude_kernel = 0,<br>
+        };
+        </div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Cattura Dati</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        int fd = perf_event_open(&attr, 0, -1, -1, 0);<br>
+        ioctl(fd, PERF_EVENT_IOC_ENABLE, 0);<br>
+        // Esecuzione codice da profilare<br>
+        ioctl(fd, PERF_EVENT_IOC_DISABLE, 0);
+        </div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> perf monitora i contatori hardware della CPU per catturare eventi di performance in tempo reale, permettendo di identificare colli di bottiglia e funzioni che consumano più risorse.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Fasi del Profiling:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Configurazione</strong> - Si specifica quale evento hardware monitorare (cicli CPU, cache miss, branch misprediction)</li>
+        <li><strong>2. Abilitazione</strong> - Il kernel configura i contatori PMU e inizia la cattura dei dati</li>
+        <li><strong>3. Campionamento</strong> - Ad ogni evento, il kernel registra il Program Counter e lo stack trace</li>
+        <li><strong>4. Analisi</strong> - I dati vengono elaborati per produrre report di profiling utilizzabili</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> Un profilo dettagliato che mostra esattamente dove il sistema spende più tempo, permettendo ottimizzazioni targeted delle prestazioni.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -i /etc/passwd<br>
+                        12345678 /etc/passwd<br><br>
+                        $ stat /etc/passwd<br>
+                        File: /etc/passwd<br>
+                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
+                        Inode: 12345678 Links: 1
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ mount<br>
+                        /dev/sda1 on / type ext4<br>
+                        /dev/sdb1 on /home type ext4<br>
+                        server:/share on /mnt/nfs type nfs
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ iostat -x 1<br>
+                        Device r/s w/s rkB/s wkB/s<br>
+                        sda 15.0 25.0 120.0 200.0<br>
+                        nfs 2.0 8.0 16.0 64.0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/slabinfo | grep dentry<br>
+                        $ cat /proc/slabinfo | grep inode
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔍</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Tracing Dinamico</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+        Il tracing permette di osservare il comportamento del kernel in esecuzione senza modificare il codice. È come avere una telecamera nel sistema operativo!
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📊</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Profiling delle Prestazioni</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+        Il profiling identifica i colli di bottiglia misurando dove il sistema spende più tempo. È essenziale per ottimizzare le prestazioni del kernel.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🐛</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Debug Non Intrusivo</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+        I moderni strumenti di debug permettono analisi approfondite senza fermare il sistema. È possibile debuggare sistemi in produzione!
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Integrazione Hardware</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+        Il debugging sfrutta i contatori hardware (PMU) per misurazioni precise. La collaborazione tra software e hardware è essenziale per analisi accurate.
+        </p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sul DEBUGGING
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Quale strumento permette il tracing dinamico del kernel?",
+            options: ["gdb", "ftrace", "strace", "ltrace"],
+            correct: 1,
+            explanation: "ftrace è il framework di tracing dinamico integrato nel kernel Linux che permette di catturare eventi in tempo reale."
+        },
+        {
+            question: "Cosa misura principalmente il comando 'perf'?",
+            options: ["Utilizzo disco", "Prestazioni CPU e memoria", "Traffico di rete", "Consumo energetico"],
+            correct: 1,
+            explanation: "perf è uno strumento di profiling che misura le prestazioni del sistema, inclusi cicli CPU, cache miss e altri eventi hardware."
+        },
+        {
+            question: "Quale strumento rileva memory leak nel kernel?",
+            options: ["kmemcheck", "kmemleak", "kasan", "kprobes"],
+            correct: 1,
+            explanation: "kmemleak è uno strumento specifico per il rilevamento di memory leak nel kernel Linux."
+        },
+        {
+            question: "Cosa permette di fare kgdb?",
+            options: ["Debug solo user space", "Debug remoto del kernel", "Analisi di crash dump", "Tracing di system call"],
+            correct: 1,
+            explanation: "kgdb permette il debugging remoto del kernel attraverso una connessione seriale o di rete."
+        },
+        {
+            question: "Quale comando cattura un dump della memoria in caso di kernel panic?",
+            options: ["kexec", "kdump", "crash", "kdb"],
+            correct: 1,
+            explanation: "kdump cattura un dump completo della memoria del sistema quando si verifica un kernel panic."
+        },
+        {
+            question: "Cosa sono i kprobes?",
+            options: ["Kernel probes dinamici", "Kernel performance counters", "Kernel debug symbols", "Kernel trace buffers"],
+            correct: 0,
+            explanation: "I kprobes sono probe dinamici che possono essere inseriti in qualsiasi punto del codice del kernel per debugging."
+        },
+        {
+            question: "Quale strumento permette scripting per analisi dinamica del kernel?",
+            options: ["ftrace", "SystemTap", "perf", "kgdb"],
+            correct: 1,
+            explanation: "SystemTap permette di scrivere script per analisi dinamica del comportamento del kernel in esecuzione."
+        },
+        {
+            question: "Cosa analizza il comando 'crash'?",
+            options: ["File di log del sistema", "Dump della memoria del kernel", "Prestazioni di rete", "Utilizzo delle risorse"],
+            correct: 1,
+            explanation: "Il comando crash analizza i dump della memoria catturati con kdump per investigare kernel panic."
+        },
+        {
+            question: "Quale strumento fornisce tracing a bassa latenza?",
+            options: ["ftrace", "LTTng", "perf", "strace"],
+            correct: 1,
+            explanation: "LTTng (Linux Trace Toolkit Next Generation) fornisce tracing a bassa latenza per analisi dettagliate."
+        },
+        {
+            question: "Cosa permette KASAN?",
+            options: ["Kernel Address Sanitizer", "Kernel Analysis System", "Kernel Audit Subsystem", "Kernel Access Security"],
+            correct: 0,
+            explanation: "KASAN (Kernel Address Sanitizer) rileva bug di accesso alla memoria nel kernel, come use-after-free e out-of-bounds."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

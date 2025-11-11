@@ -1,0 +1,887 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logical Volumes - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Logical Volumes</h1>
+        <p class="subtitle">Volumi Logici</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">💾 GESTIONE VOLUMI LOGICI</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>I volumi logici sono astrazioni software che permettono di gestire lo storage fisico in modo flessibile, indipendentemente dalla disposizione fisica dei dischi sottostanti.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un puzzle dove puoi ricomporre i pezzi in modi diversi: i volumi logici ti permettono di raggruppare, ridimensionare e spostare spazio disco senza toccare i dischi fisici.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>I volumi logici sono il ponte tra dispositivi fisici e filesystem.</strong> Immagina di avere una scatola di LEGO dove puoi costruire strutture diverse combinando gli stessi mattoncini. I volumi logici ti permettono di creare "contenitori" virtuali di storage che possono essere più grandi, più piccoli, o distribuiti su più dischi fisici.</p>
+
+        <p>• <strong>Astrazione fisica</strong> - Separa layout logico da disposizione fisica</p>
+        <p>• <strong>Ridimensionamento dinamico</strong> - Cambia dimensione volumi senza downtime</p>
+        <p>• <strong>RAID software</strong> - Implementa ridondanza e prestazioni via software</p>
+        <p>• <strong>Snapshot</strong> - Crea copie istantanee per backup e recovery</p>
+        <p>• <strong>Migrazione dati</strong> - Sposta dati tra dischi senza interruzioni</p>
+        <p>• <strong>Thin provisioning</strong> - Alloca spazio su richiesta per ottimizzare uso</p>
+        <p><em>• Interazione: Il kernel Device Mapper traduce indirizzi logici in indirizzi fisici attraverso tabelle di mapping</em></p>
+
+        <h2>⚙️ Componenti LVM</h2>
+        <p><strong>LVM (Logical Volume Manager) è l'implementazione Linux di volumi logici:</strong></p>
+
+        <h3>🏗️ Physical Volumes (PV)</h3>
+        <p>• <strong>Dischi/partizioni fisiche</strong> - Base storage (HDD, SSD, SAN)</p>
+        <p>• <strong>Extent fisici</strong> - Unità base allocazione (tipicamente 4MB)</p>
+        <p>• <strong>Metadata LVM</strong> - Informazioni su layout e configurazione</p>
+        <p>• <strong>UUID unici</strong> - Identificazione univoca di ogni PV</p>
+
+        <h3>📦 Volume Groups (VG)</h3>
+        <p>• <strong>Pool di storage</strong> - Aggregazione di più PV in un singolo pool</p>
+        <p>• <strong>Extent logici</strong> - Unità virtuali corrispondenti a extent fisici</p>
+        <p>• <strong>Politiche allocazione</strong> - Come distribuire dati su PV</p>
+        <p>• <strong>Metadata condivisa</strong> - Configurazione replicata su tutti PV</p>
+
+        <h3>💾 Logical Volumes (LV)</h3>
+        <p>• <strong>Volumi utilizzabili</strong> - Equivalenti a partizioni tradizionali</p>
+        <p>• <strong>Filesystem-ready</strong> - Possono contenere ext4, XFS, Btrfs</p>
+        <p>• <strong>Snapshot-capable</strong> - Supporto per copie istantanee</p>
+        <p>• <strong>Thin-capable</strong> - Allocazione dinamica dello spazio</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando crei un volume logico con LVM, ecco cosa succede:</strong></p>
+
+        <h3>🔍 Creazione Volume Logico</h3>
+        <p>1. Inizializzi dischi fisici come PV con pvcreate</p>
+        <p>2. Raggruppi PV in VG con vgcreate</p>
+        <p>3. Crei LV dal VG con lvcreate</p>
+        <p>4. Formatti LV con filesystem (mkfs.ext4)</p>
+        <p>5. Monti LV come directory normale</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>dm_table</strong> - Tabella mapping device mapper</li>
+            <li><strong>dm_target</strong> - Driver specifici (linear, stripe, mirror)</li>
+            <li><strong>bio</strong> - Struttura I/O block nel kernel</li>
+            <li><strong>extent</strong> - Unità base allocazione LVM</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare volumi logici:</strong></p>
+        <ul>
+            <li><code>pvs</code> - Mostra physical volumes</li>
+            <li><code>vgs</code> - Lista volume groups</li>
+            <li><code>lvs</code> - Mostra logical volumes</li>
+            <li><code>dmsetup ls</code> - Device mapper mappings</li>
+            <li><code>lsblk</code> - Gerarchia dispositivi a blocchi</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Ridimensionamento</h3>
+        <p>Quando estendi un filesystem:</p>
+        <ol>
+            <li>lvextend aumenta dimensione LV</li>
+            <li>resize2fs espande filesystem</li>
+            <li>Device mapper aggiorna mapping</li>
+            <li>Filesystem vede spazio aggiuntivo</li>
+            <li>Applicazioni continuano a funzionare</li>
+        </ol>
+
+        <h2>🔧 Device Mapper Targets</h2>
+        <ul>
+            <li><strong>linear</strong> - Mappatura 1:1 semplice</li>
+            <li><strong>stripe</strong> - RAID 0 per prestazioni</li>
+            <li><strong>mirror</strong> - RAID 1 per ridondanza</li>
+            <li><strong>snapshot</strong> - Copie istantanee</li>
+            <li><strong>thin/thin-pool</strong> - Allocazione dinamica</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Flessibilità</strong> - Ridimensionamento online</li>
+            <li><strong>Ridondanza</strong> - RAID software integrato</li>
+            <li><strong>Snapshot</strong> - Backup senza downtime</li>
+            <li><strong>Migrazione</strong> - Spostamento dati live</li>
+            <li><strong>Thin provisioning</strong> - Overcommit sicuro</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>I volumi logici interagiscono con molteplici componenti del sistema:</strong></p>
+
+        <h3>💽 Block Layer</h3>
+        <p>• <strong>Request queue</strong> - Coda I/O per dispositivi</p>
+        <p>• <strong>Elevator</strong> - Ordinamento richieste I/O</p>
+        <p>• <strong>Bio splitting</strong> - Suddivisione richieste grandi</p>
+
+        <h3>🗂️ Filesystem</h3>
+        <p>• <strong>Block device interface</strong> - LV appaiono come dischi normali</p>
+        <p>• <strong>Extent mapping</strong> - Traduzione indirizzi filesystem</p>
+        <p>• <strong>Resize support</strong> - Filesystem possono crescere</p>
+
+        <h3>🔄 Hotplug</h3>
+        <p>• <strong>Dynamic addition</strong> - Aggiunta dischi senza reboot</p>
+        <p>• <strong>Device scanning</strong> - Rilevamento automatico nuovi PV</p>
+        <p>• <strong>Hot removal</strong> - Rimozione sicura dispositivi</p>
+
+        <h2>🛠️ Comandi LVM</h2>
+        <p><strong>Questi sono i comandi principali per gestire LVM:</strong></p>
+
+        <h3>🏗️ Gestione Physical Volumes</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">pvcreate /dev/sdb</code><br>
+            <span style="color: #666; font-size: 0.9em;">Inizializza disco come physical volume.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">pvdisplay</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mostra dettagli physical volumes.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">pvmove /dev/sdb /dev/sdc</code><br>
+            <span style="color: #666; font-size: 0.9em;">Sposta extent fisici tra dischi.</span>
+        </div>
+
+        <h3>📦 Gestione Volume Groups</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">vgcreate myvg /dev/sdb /dev/sdc</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea volume group da physical volumes.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">vgextend myvg /dev/sdd</code><br>
+            <span style="color: #666; font-size: 0.9em;">Aggiunge PV a volume group esistente.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">vgs</code><br>
+            <span style="color: #666; font-size: 0.9em;">Lista tutti i volume groups.</span>
+        </div>
+
+        <h3>💾 Gestione Logical Volumes</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">lvcreate -L 10G -n mylv myvg</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea logical volume da volume group.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">lvextend -L +5G /dev/myvg/mylv</code><br>
+            <span style="color: #666; font-size: 0.9em;">Estende dimensione logical volume.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">lvcreate -s -L 1G -n snap myvg/mylv</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea snapshot del logical volume.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando aggiungi un disco al sistema:</strong></p>
+        <ol>
+            <li><code>pvcreate /dev/sdb</code> - Inizializza nuovo disco</li>
+            <li><code>vgextend myvg /dev/sdb</code> - Aggiungilo al VG</li>
+            <li><code>lvextend -l +100%FREE myvg/mylv</code> - Estendi LV</li>
+            <li><code>resize2fs /dev/myvg/mylv</code> - Ridimensiona filesystem</li>
+            <li>Il filesystem ora ha più spazio disponibile</li>
+        </ol>
+        <p><em>Tutto questo avviene mentre il sistema è in funzione, senza interruzioni!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale dei Volumi Logici</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei Volumi Logici</h3>
+
+            <!-- Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI & FILESYSTEM</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • ext4, XFS, Btrfs<br>
+                    • Database, Web servers<br>
+                    • File storage<br>
+                    • Virtual machines
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Logical Volumes Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">💾 LOGICAL VOLUMES</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • /dev/mapper/myvg-mylv<br>
+                    • Resize online<br>
+                    • Snapshot support<br>
+                    • Thin provisioning
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Device Mapper Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 DEVICE MAPPER</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📏</div>
+                        <div style="font-size: 0.8em;">Linear</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">Stripe</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Mirror</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📸</div>
+                        <div style="font-size: 0.8em;">Snapshot</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Mapping tables<br>
+                    • Target drivers<br>
+                    • I/O remapping<br>
+                    • Dynamic reconfiguration
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Volume Groups Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">📦 VOLUME GROUP</div>
+                    <div style="font-size: 0.8em; color: #666;">Pool di storage</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🏗️ PHYSICAL VOLUMES</div>
+                    <div style="font-size: 0.8em; color: #666;">Dischi/partizioni</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">💽 HARDWARE</div>
+                    <div style="font-size: 0.8em; color: #666;">HDD, SSD, RAID</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dalla richiesta I/O al disco fisico<br>
+                • Ogni layer aggiunge flessibilità e astrazione<br>
+                • Il Device Mapper è il "traduttore universale" dei volumi<br>
+                • LVM permette di cambiare configurazione senza toccare filesystem
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Creazione Volume Logico</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Setup LVM per Database</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">💽 Storage Fisico</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        3 x 1TB HDD<br>
+                        <span style="color: #666;">(/dev/sdb, /dev/sdc, /dev/sdd)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🗃️ Database Volume</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        2TB RAID 1<br>
+                        <span style="color: #666;">(/dev/mapper/dbvg-dbdata)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comandi eseguiti:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">vgcreate dbvg /dev/sdb /dev/sdc /dev/sdd && lvcreate -L 2T -n dbdata dbvg</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Inizializzazione PV:</strong> pvcreate scrive metadata LVM su ogni disco</li>
+                    <li><strong>2. Creazione VG:</strong> vgcreate aggrega i tre dischi in un pool di storage</li>
+                    <li><strong>3. Allocazione LV:</strong> lvcreate prenota extent per il nuovo volume</li>
+                    <li><strong>4. Device Mapper:</strong> dmsetup crea mapping tra LV e extent fisici</li>
+                    <li><strong>5. Accessibilità:</strong> /dev/mapper/dbvg-dbdata appare come dispositivo a blocchi</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Il database ora ha un volume di 2TB con ridondanza RAID 1. Se un disco si rompe, i dati sono sicuri e il sistema continua a funzionare!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora Volumi Logici</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esplora LVM</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ pvs<br>
+                        PV         VG   Fmt  Attr PSize   PFree<br>
+                        /dev/sda2  vg0  lvm2 a--  465.76g 4.00m<br><br>
+                        $ vgs<br>
+                        VG   #PV #LV #SN Attr   VSize   VFree<br>
+                        vg0    1   2   0 wz--n- 465.76g 4.00m
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi physical e volume groups attivi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza logical volumes</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lvs<br>
+                        LV     VG   Attr       LSize   Pool Origin Data%  Meta%<br>
+                        root   vg0  -wi-ao----  50.00g<br>
+                        swap   vg0  -wi-ao----   8.00g<br>
+                        home   vg0  -wi-ao---- 407.76g
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Lista logical volumes e loro attributi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Esplora device mapper</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ dmsetup ls<br>
+                        vg0-root   (253:0)<br>
+                        vg0-swap   (253:1)<br>
+                        vg0-home   (253:2)<br><br>
+                        $ dmsetup table vg0-root<br>
+                        0 104857600 linear 8:2 2048
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi mapping device mapper e tabelle di traduzione</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💾 Monitora I/O</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ iostat -x 1<br>
+                        Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s<br>
+                        dm-0              0.00     0.00    0.00    0.00     0.00     0.00<br>
+                        dm-1              0.00     0.00    0.00    0.00     0.00     0.00<br>
+                        dm-2              0.00     0.00    0.00    0.00     0.00     0.00
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monitora attività I/O sui dispositivi mapper</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Flessibilità Dinamica</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    I volumi logici possono essere ridimensionati, spostati tra dischi, e riconfigurati senza interrompere il servizio. Questa flessibilità è unica rispetto alle partizioni tradizionali.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📸</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Snapshot Efficienti</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Gli snapshot LVM creano copie istantanee dei volumi usando copy-on-write. Permettono backup consistenti e recovery point senza duplicare tutti i dati.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏗️</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Device Mapper</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Il Device Mapper è il framework generico che permette di creare dispositivi virtuali a blocchi. LVM è solo uno dei molti utilizzatori di questo potente meccanismo.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">💰</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Thin Provisioning</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Il thin provisioning permette di allocare più spazio di quanto fisicamente disponibile, assegnando storage solo quando necessario. Ottimizza l'uso delle risorse.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Volumi Logici
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa sono i volumi logici?",
+            options: ["Partizioni fisiche sui dischi", "Astrazioni software flessibili dello storage", "File di configurazione", "Dispositivi di rete"],
+            correct: 1,
+            explanation: "I volumi logici sono astrazioni software che permettono di gestire lo storage in modo flessibile, indipendente dalla disposizione fisica dei dischi."
+        },
+        {
+            question: "Quale comando mostra i physical volumes?",
+            options: ["pvs", "lvs", "vgs", "lsblk"],
+            correct: 0,
+            explanation: "pvs mostra tutti i physical volumes LVM attivi nel sistema, con informazioni su dimensione e allocazione."
+        },
+        {
+            question: "Cosa significa VG in LVM?",
+            options: ["Virtual Group", "Volume Group", "Virtual Gateway", "Volume Gateway"],
+            correct: 1,
+            explanation: "VG sta per Volume Group, che è un pool di storage creato aggregando più physical volumes."
+        },
+        {
+            question: "Quale comando crea un logical volume?",
+            options: ["vgcreate", "pvcreate", "lvcreate", "mkfs"],
+            correct: 2,
+            explanation: "lvcreate crea un nuovo logical volume da uno spazio allocato in un volume group."
+        },
+        {
+            question: "Cosa permette il thin provisioning?",
+            options: ["Compressione automatica", "Allocazione spazio su richiesta", "Crittografia trasparente", "Backup automatici"],
+            correct: 1,
+            explanation: "Il thin provisioning permette di allocare più spazio logico di quanto fisicamente disponibile, assegnando storage solo quando i dati vengono effettivamente scritti."
+        },
+        {
+            question: "Quale componente traduce indirizzi logici in fisici?",
+            options: ["Filesystem", "Device Mapper", "LVM", "Kernel"],
+            correct: 1,
+            explanation: "Il Device Mapper è il componente del kernel che traduce gli indirizzi logici dei volumi in indirizzi fisici sui dischi."
+        },
+        {
+            question: "Cosa fa lvextend?",
+            options: ["Riduce dimensione LV", "Aumenta dimensione LV", "Crea nuovo LV", "Elimina LV"],
+            correct: 1,
+            explanation: "lvextend aumenta la dimensione di un logical volume esistente, permettendo di aggiungere spazio senza ricreare il volume."
+        },
+        {
+            question: "Quale target DM implementa RAID 0?",
+            options: ["linear", "stripe", "mirror", "snapshot"],
+            correct: 1,
+            explanation: "Il target stripe del Device Mapper implementa RAID 0, distribuendo i dati su più dispositivi per migliorare le prestazioni."
+        },
+        {
+            question: "Cosa sono gli extent in LVM?",
+            options: ["Unità base di allocazione", "File di configurazione", "Dispositivi virtuali", "Comandi LVM"],
+            correct: 0,
+            explanation: "Gli extent sono le unità base di allocazione in LVM, tipicamente di 4MB, usate per assegnare spazio nei volumi."
+        },
+        {
+            question: "Quale comando mostra i volume groups?",
+            options: ["pvs", "lvs", "vgs", "dmsetup ls"],
+            correct: 2,
+            explanation: "vgs mostra tutti i volume groups attivi, con informazioni su numero di PV, LV, e spazio disponibile."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione dei volumi logici! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare i volumi logici! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! I volumi logici sono potenti! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,892 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Files - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Header Files</h1>
+        <p class="subtitle">File Header del Kernel</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">📄 FILE HEADER DEL KERNEL</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>I file header del kernel Linux sono file di intestazione (.h) che definiscono interfacce, strutture dati, costanti e macro utilizzati dal codice del kernel e dai moduli.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come le pagine di un libro che spiegano i termini tecnici usati nel testo principale: i file header definiscono il "vocabolario" che il kernel usa per comunicare con se stesso e con i moduli esterni.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>I file header sono il collante che tiene insieme il kernel Linux.</strong> Immagina un'enorme biblioteca dove ogni libro (file sorgente) ha bisogno di conoscere i termini definiti in altri libri. I file header sono gli indici incrociati che permettono a tutto il codice di capirsi reciprocamente.</p>
+
+        <p>• <strong>Definizioni di strutture</strong> - struct per task, inode, device drivers</p>
+        <p>• <strong>Costanti simboliche</strong> - valori magici, limiti, flag di configurazione</p>
+        <p>• <strong>Prototipi di funzioni</strong> - dichiarazioni di funzioni esportate</p>
+        <p>• <strong>Macro e inline</strong> - codice espanso dal preprocessore</p>
+        <p>• <strong>Tipi di dati</strong> - typedef per chiarezza e portabilità</p>
+        <p>• <strong>Attributi GCC</strong> - estensioni del compilatore per ottimizzazioni</p>
+        <p><em>• Interazione: Inclusi dal preprocessore C, forniscono le definizioni necessarie per compilazione corretta</em></p>
+
+        <h2>⚙️ Tipi di File Header</h2>
+        <p><strong>I file header del kernel sono organizzati in categorie specifiche:</strong></p>
+
+        <h3>🏗️ Header Architetturali</h3>
+        <p>• <strong>asm/*.h</strong> - Definizioni specifiche dell'architettura (x86, ARM)</p>
+        <p>• <strong>asm-generic/*.h</strong> - Implementazioni generiche per architetture</p>
+        <p>• <strong>arch/*/include/asm/*.h</strong> - Header specifici per CPU</p>
+        <p>• <strong>mach-*/include/mach/*.h</strong> - Header per macchine specifiche</p>
+
+        <h3>🔧 Header Core del Kernel</h3>
+        <p>• <strong>linux/*.h</strong> - Header principali del kernel (sched.h, mm.h)</p>
+        <p>• <strong>linux/fs.h</strong> - Strutture filesystem e VFS</p>
+        <p>• <strong>linux/mm.h</strong> - Gestione memoria e page table</p>
+        <p>• <strong>linux/sched.h</strong> - Scheduler e strutture task</p>
+
+        <h3>📡 Header Device e Driver</h3>
+        <p>• <strong>linux/pci.h</strong> - Supporto dispositivi PCI</p>
+        <p>• <strong>linux/usb.h</strong> - Framework USB</p>
+        <p>• <strong>linux/netdevice.h</strong> - Dispositivi di rete</p>
+        <p>• <strong>linux/blkdev.h</strong> - Dispositivi a blocchi</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando compili un modulo kernel, ecco cosa succede con gli header:</strong></p>
+
+        <h3>🔍 Compilazione Modulo</h3>
+        <p>1. Il preprocessore include tutti gli header specificati con #include</p>
+        <p>2. Le macro vengono espanse e le strutture diventano disponibili</p>
+        <p>3. I prototipi di funzione permettono controllo tipi a compile-time</p>
+        <p>4. Le costanti vengono sostituite con i loro valori</p>
+        <p>5. Il codice risultante viene compilato in un modulo kernel</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>task_struct</strong> - Definita in sched.h, rappresenta un processo</li>
+            <li><strong>inode</strong> - Definita in fs.h, rappresenta file su disco</li>
+            <li><strong>file_operations</strong> - Definita in fs.h, operazioni sui file</li>
+            <li><strong>device_driver</strong> - Definita in device.h, struttura driver</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare gli header del kernel:</strong></p>
+        <ul>
+            <li><code>find /usr/src/linux-headers* -name "*.h" | head</code> - Trova file header</li>
+            <li><code>grep -r "struct task_struct" /usr/src/linux-headers*/include/</code> - Cerca definizioni</li>
+            <li><code>cpp -dM /usr/include/linux/sched.h | head</code> - Mostra macro definite</li>
+            <li><code>nm /usr/src/linux-headers*/include/linux/sched.h</code> - Simboli esportati</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Scrivere un Device Driver</h3>
+        <p>Quando scrivi un driver per un dispositivo USB:</p>
+        <ol>
+            <li>#include <linux/module.h> - Per registrazione moduli</li>
+            <li>#include <linux/usb.h> - Per framework USB</li>
+            <li>#include <linux/device.h> - Per device model</li>
+            <li>Usi struct usb_driver dal header</li>
+            <li>Implementi le callback definite negli header</li>
+        </ol>
+
+        <h2>🔧 Organizzazione degli Header</h2>
+        <ul>
+            <li><strong>include/linux/*.h</strong> - Header pubblici del kernel</li>
+            <li><strong>include/asm-generic/*.h</strong> - Implementazioni generiche</li>
+            <li><strong>arch/*/include/asm/*.h</strong> - Header specifici architettura</li>
+            <li><strong>include/uapi/linux/*.h</strong> - Header userspace API</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Modularità</strong> - Header specifici per sottosistemi</li>
+            <li><strong>Portabilità</strong> - Astrazioni per diverse architetture</li>
+            <li><strong>Type Safety</strong> - Controllo tipi a compile-time</li>
+            <li><strong>Documentazione</strong> - Commenti e documentazione integrata</li>
+            <li><strong>Versioning</strong> - Compatibilità tra versioni kernel</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Gli header interagiscono con molteplici componenti del processo di build:</strong></p>
+
+        <h3>⚙️ Preprocessore C</h3>
+        <p>• <strong>#include</strong> - Inclusione file header</p>
+        <p>• <strong>#define</strong> - Definizione macro e costanti</p>
+        <p>• <strong>#ifdef</strong> - Compilazione condizionale</p>
+
+        <h3>🔨 Compilatore GCC</h3>
+        <p>• <strong>__attribute__</strong> - Estensioni GCC per ottimizzazioni</p>
+        <p>• <strong>inline</strong> - Funzioni inline per performance</p>
+        <p>• <strong>typeof</strong> - Operatore per tipi generici</p>
+
+        <h3>📦 Build System</h3>
+        <p>• <strong>Kbuild</strong> - Sistema build del kernel</p>
+        <p>• <strong>make</strong> - Gestione dipendenze</p>
+        <p>• <strong>Module.symvers</strong> - Versioni simboli esportati</p>
+
+        <h2>🛠️ Esempi di Header Importanti</h2>
+        <p><strong>Questi sono alcuni degli header più utilizzati nel kernel:</strong></p>
+
+        <h3>🏗️ Header Fondamentali</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">#include <linux/module.h></code><br>
+            <span style="color: #666; font-size: 0.9em;">Macro per registrazione moduli kernel (MODULE_LICENSE, module_init)</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">#include <linux/kernel.h></code><br>
+            <span style="color: #666; font-size: 0.9em;">Funzioni core del kernel (printk, kmalloc, kfree)</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">#include <linux/sched.h></code><br>
+            <span style="color: #666; font-size: 0.9em;">Strutture scheduler e processi (task_struct, current)</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">#include <linux/fs.h></code><br>
+            <span style="color: #666; font-size: 0.9em;">Filesystem e VFS (inode, file_operations, super_block)</span>
+        </div>
+
+        <h3>📡 Header Device-Specific</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">#include <linux/pci.h></code><br>
+            <span style="color: #666; font-size: 0.9em;">Supporto dispositivi PCI (pci_device_id, pci_driver)</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">#include <linux/usb.h></code><br>
+            <span style="color: #666; font-size: 0.9em;">Framework USB (usb_driver, urb, endpoint)</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">#include <linux/netdevice.h></code><br>
+            <span style="color: #666; font-size: 0.9em;">Dispositivi di rete (net_device, sk_buff)</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando compili il kernel o un modulo esterno:</strong></p>
+        <ol>
+            <li><code>#include <linux/module.h></code> - Abilita registrazione modulo</li>
+            <li><code>#include <linux/kernel.h></code> - Fornisce funzioni base</li>
+            <li>Header specifici per il sottosistema usato</li>
+            <li>Il preprocessore espande tutte le inclusioni</li>
+            <li>GCC compila il codice con type checking</li>
+        </ol>
+        <p><em>Tutto questo permette al codice di essere portabile, sicuro e ben integrato nel kernel!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale dei File Header</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei File Header del Kernel</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ SORGENTI KERNEL</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • kernel/*.c<br>
+                    • drivers/*.c<br>
+                    • fs/*.c<br>
+                    • net/*.c
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Preprocessor Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">⚙️ PREPROCESSORE C</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • #include <...><br>
+                    • #define<br>
+                    • #ifdef/#endif<br>
+                    • Espansione macro
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Header Files Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 FILE HEADER DEL KERNEL</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🏗️</div>
+                        <div style="font-size: 0.8em;">Core</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔧</div>
+                        <div style="font-size: 0.8em;">Device</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🏛️</div>
+                        <div style="font-size: 0.8em;">Arch</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📡</div>
+                        <div style="font-size: 0.8em;">Network</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Strutture dati<br>
+                    • Prototipi funzioni<br>
+                    • Costanti & macro<br>
+                    • Type definitions
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Header Categories -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">include/linux/</div>
+                    <div style="font-size: 0.8em; color: #666;">Header pubblici</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">include/asm/</div>
+                    <div style="font-size: 0.8em; color: #666;">Architettura specifica</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">include/uapi/</div>
+                    <div style="font-size: 0.8em; color: #666;">API userspace</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">asm-generic/</div>
+                    <div style="font-size: 0.8em; color: #666;">Implementazioni generiche</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Build System -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔨 SISTEMA BUILD</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • GCC Compiler<br>
+                    • Kbuild System<br>
+                    • Module Loading<br>
+                    • Dependency Resolution
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dalla scrittura codice alla compilazione<br>
+                • Ogni layer aggiunge definizioni e astrazioni necessarie<br>
+                • Gli header sono il "collante" che tiene insieme tutto il kernel<br>
+                • La struttura gerarchica permette portabilità e modularità
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Utilizzo degli Header</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Compilazione di un Modulo Kernel</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📝 Codice Sorgente</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        #include <linux/module.h><br>
+                        #include <linux/kernel.h><br>
+                        #include <linux/fs.h><br>
+                        <span style="color: #666;">// Definizioni da header</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔨 Compilazione</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        make -C /lib/modules/$(uname -r)/build<br>
+                        <span style="color: #666;">GCC + header inclusi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">make</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Preprocessing:</strong> Il preprocessore include tutti gli header specificati</li>
+                    <li><strong>2. Espansione macro:</strong> MODULE_LICENSE diventa definizione concreta</li>
+                    <li><strong>3. Type checking:</strong> GCC verifica che struct e funzioni siano usate correttamente</li>
+                    <li><strong>4. Linking:</strong> I simboli degli header vengono risolti con il kernel</li>
+                    <li><strong>5. Modulo finito:</strong> File .ko pronto per essere caricato nel kernel</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Il modulo viene compilato con successo grazie agli header che forniscono tutte le definizioni necessarie. Senza header appropriati, la compilazione fallirebbe!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora gli Header del Kernel</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esplora header installati</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls /usr/include/linux/ | head -10<br>
+                        aio.h<br>
+                        blktrace_api.h<br>
+                        capability.h<br>
+                        cdrom.h
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti gli header pubblici del kernel disponibili</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza una struttura</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ grep -A 10 "struct task_struct" /usr/include/linux/sched.h<br>
+                        struct task_struct {<br>
+                        #ifdef CONFIG_THREAD_INFO_IN_TASK<br>
+                        struct thread_info thread_info;<br>
+                        #endif
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina la definizione della struttura task_struct</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Vedi macro definite</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cpp -dM /usr/include/linux/module.h | grep MODULE<br>
+                        #define MODULE_AUTHOR(x)<br>
+                        #define MODULE_DESCRIPTION(x)<br>
+                        #define MODULE_LICENSE(x)
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza le macro per registrazione moduli definite negli header</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🏗️ Controlla dipendenze</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ grep "#include" /usr/include/linux/fs.h | head -5<br>
+                        #include <linux/linkage.h><br>
+                        #include <linux/wait.h><br>
+                        #include <linux/rbtree.h>
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quali altri header sono inclusi da fs.h</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📄</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Interfacce Pubbliche</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Gli header in include/linux/ definiscono l'API pubblica del kernel. Tutto ciò che è esportato qui è stabile e utilizzabile dai moduli e dai driver.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏛️</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Architettura-Specific</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Gli header in arch/*/include/asm/ contengono codice specifico per ogni architettura CPU. Permettono al kernel di essere portabile su diverse piattaforme hardware.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Type Safety</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    I prototipi di funzione negli header permettono al compilatore di verificare la correttezza dei tipi a compile-time, prevenendo molti errori runtime.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📦</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Modularità</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Gli header permettono di compilare solo le parti necessarie del kernel. I moduli possono includere solo gli header relativi alle funzionalità che usano.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui File Header
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa contengono i file header del kernel?",
+            options: ["Codice eseguibile", "Definizioni di strutture e prototipi", "Dati utente", "File di configurazione"],
+            correct: 1,
+            explanation: "I file header (.h) contengono definizioni di strutture dati, prototipi di funzioni, costanti e macro utilizzati dal codice del kernel."
+        },
+        {
+            question: "Quale header contiene la struttura task_struct?",
+            options: ["linux/fs.h", "linux/sched.h", "linux/mm.h", "linux/net.h"],
+            correct: 1,
+            explanation: "sched.h contiene la definizione della struttura task_struct che rappresenta un processo o thread nel kernel."
+        },
+        {
+            question: "Cosa significa #include <linux/module.h>?",
+            options: ["Include codice eseguibile", "Include definizioni per moduli kernel", "Include dati di configurazione", "Include file di testo"],
+            correct: 1,
+            explanation: "linux/module.h fornisce le macro e strutture necessarie per scrivere moduli kernel caricabili dinamicamente."
+        },
+        {
+            question: "Dove si trovano gli header specifici dell'architettura?",
+            options: ["/include/linux/", "/arch/*/include/asm/", "/include/uapi/", "/asm-generic/"],
+            correct: 1,
+            explanation: "Gli header specifici dell'architettura si trovano in /arch/*/include/asm/ e contengono codice dipendente dalla CPU."
+        },
+        {
+            question: "Cosa permette la direttiva #ifdef nel kernel?",
+            options: ["Eseguire codice", "Compilazione condizionale", "Includere file", "Definire funzioni"],
+            correct: 1,
+            explanation: "#ifdef permette di includere o escludere codice in base a condizioni di compilazione, utile per configurazioni variabili."
+        },
+        {
+            question: "Quale comando mostra le macro definite in un header?",
+            options: ["grep", "cat", "cpp -dM", "make"],
+            correct: 2,
+            explanation: "cpp -dM elabora un file header e mostra tutte le macro definite con #define."
+        },
+        {
+            question: "Cosa contengono gli header uapi?",
+            options: ["Solo codice kernel", "API per userspace", "Driver dispositivi", "Codice architettura"],
+            correct: 1,
+            explanation: "Gli header uapi (userspace API) contengono le definizioni delle interfacce tra kernel e programmi userspace."
+        },
+        {
+            question: "Perché sono importanti i prototipi negli header?",
+            options: ["Per eseguire codice", "Per type checking a compile-time", "Per salvare memoria", "Per velocizzare l'esecuzione"],
+            correct: 1,
+            explanation: "I prototipi permettono al compilatore di verificare che le funzioni siano chiamate con i tipi di parametro corretti."
+        },
+        {
+            question: "Cosa sono gli asm-generic header?",
+            options: ["Header specifici x86", "Implementazioni generiche", "Header solo ARM", "Codice assembly"],
+            correct: 1,
+            explanation: "asm-generic/ contiene implementazioni generiche che possono essere usate da più architetture quando non sono necessarie ottimizzazioni specifiche."
+        },
+        {
+            question: "Quale header include le funzioni base del kernel?",
+            options: ["linux/module.h", "linux/kernel.h", "linux/sched.h", "linux/fs.h"],
+            correct: 1,
+            explanation: "linux/kernel.h contiene funzioni fondamentali come printk, kmalloc, kfree usate in tutto il kernel."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione degli header del kernel! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare gli header! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Gli header sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GENERIC HW ACCESS - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>GENERIC HW ACCESS</h1>
+        <p class="subtitle">Accesso hardware generico</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🔌 ACCESSO HW GENERICO</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il Generic Hardware Access è il sottosistema del kernel Linux che fornisce un'interfaccia uniforme e sicura per l'accesso diretto all'hardware. Questo layer astrae le differenze specifiche dell'architettura hardware, fornendo API standard per operazioni di I/O, gestione memoria e controllo dispositivi, garantendo portabilità e sicurezza del sistema operativo.</strong></p>
+        
+        <h2>CONFRONTO:</h2>
+        <p>Immagina il Generic Hardware Access come un traduttore universale che parla tutte le lingue hardware: i programmi parlano un linguaggio comune, e questo sistema traduce automaticamente per ogni tipo di dispositivo, proprio come un interprete simultaneo che permette a persone di culture diverse di comunicare senza problemi.</p>
+        
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il Generic Hardware Access implementa un'architettura a strati che separa l'accesso hardware specifico dall'architettura dal codice generico del kernel. Utilizza tecniche di virtualizzazione hardware, gestione sicura delle risorse e astrazione dei dispositivi per fornire un'interfaccia uniforme indipendentemente dall'architettura sottostante.</strong></p>
+        <p>• <strong>Hardware Abstraction Layer</strong> - Astrazione completa delle differenze hardware specifiche</p>
+        <p>• <strong>Memory-Mapped I/O</strong> - Accesso uniforme a registri hardware attraverso indirizzi virtuali</p>
+        <p>• <strong>Port I/O Operations</strong> - Interfacce standard per operazioni di input/output</p>
+        <p><em>• Interfaccia principale tra kernel generico e hardware specifico dell'architettura</em></p>
+
+<h2>⚙️ Operazioni Principali del Generic Hardware Access</h2>
+<p><strong>Il Generic Hardware Access gestisce diverse categorie critiche di operazioni per l'accesso sicuro all'hardware:</strong></p>
+
+<h3>⚙️ Memory-Mapped I/O</h3>
+<p>• <strong>ioremap()</strong> - Mappa indirizzi fisici in spazio virtuale del kernel</p>
+<p>• <strong>iounmap()</strong> - Rimuove mapping di indirizzi I/O virtuali</p>
+
+<h3>⚙️ Port I/O Operations</h3>
+<p>• <strong>inb()/outb()</strong> - Operazioni I/O su porte a 8 bit</p>
+<p>• <strong>inw()/outw()</strong> - Operazioni I/O su porte a 16 bit</p>
+
+<h3>⚙️ Resource Management</h3>
+<p>• <strong>request_region()</strong> - Riserva regioni di porte I/O</p>
+<p>• <strong>release_region()</strong> - Rilascia regioni di porte I/O</p>
+
+<h2>📋 Esempi Pratici del Generic Hardware Access</h2>
+<p><strong>Il Generic Hardware Access è essenziale per l'accesso sicuro e portabile all'hardware nel kernel Linux:</strong></p>
+
+<h3>🔍 Accesso a Dispositivo PCI</h3>
+<p>1. Driver richiede regione di memoria con request_mem_region()</p>
+<p>2. Mappa indirizzi fisici in spazio virtuale con ioremap()</p>
+<p>3. Legge/scrive registri dispositivo attraverso puntatori virtuali</p>
+<p>4. Rilascia risorse con iounmap() e release_mem_region()</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>resource</strong> - Rappresenta regioni di risorse hardware (memoria, porte I/O)</li>
+<li><strong>ioremap_cookie</strong> - Gestisce mapping di indirizzi virtuali</li>
+<li><strong>hw_regs</strong> - Strutture per accesso sicuro a registri hardware</li>
+<li><strong>mmio_addr</strong> - Indirizzi memory-mapped per dispositivi</li>
+</ul>
+
+<h3>💻 Comandi Linux Essenziali</h3>
+<ul>
+<li><code>$ cat /proc/ioports</code> - Mostra porte I/O allocate</li>
+<li><code>$ cat /proc/iomem</code> - Mostra regioni memoria I/O</li>
+<li><code>$ lspci -v</code> - Dettagli dispositivi PCI e risorse</li>
+<li><code>$ dmesg | grep ioremap</code> - Log operazioni di mapping</li>
+</ul>
+
+<h3>🎯 Caso Reale: Lettura Disco</h3>
+<p>Quando fai <code>$ dd if=/dev/sda of=/dev/null bs=1M count=1</code>:</p>
+<ol>
+<li>Driver storage richiede regione memoria controller</li>
+<li>Kernel mappa registri hardware in spazio virtuale</li>
+<li>Comandi DMA vengono scritti nei registri mappati</li>
+<li>Dati vengono trasferiti direttamente dalla memoria</li>
+</ol>
+
+<h2>💾 Supporto e Compatibilità Generic Hardware Access</h2>
+        <ul>
+            <li><strong>x86/x86_64</strong> - Port I/O e Memory-Mapped I/O</li>
+            <li><strong>ARM</strong> - Solo Memory-Mapped I/O</li>
+            <li><strong>RISC-V</strong> - Memory-Mapped I/O con estensioni</li>
+            <li><strong>PowerPC</strong> - Mixed I/O model</li>
+            <li><strong>MIPS</strong> - Memory-Mapped I/O</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+<ul>
+<li><strong>Security</strong> - Accesso controllato e validazione indirizzi</li>
+<li><strong>Portability</strong> - Codice indipendente dall'architettura</li>
+<li><strong>Performance</strong> - Ottimizzazioni specifiche per architettura</li>
+<li><strong>Debugging</strong> - Strumenti per troubleshooting accessi hardware</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave del Generic Hardware Access</h2>
+<p><strong>Il Generic Hardware Access è il ponte fondamentale tra il kernel e l'hardware fisico:</strong></p>
+
+<h3>💾 Device Drivers</h3>
+<p>• <strong>Resource Allocation</strong> - Fornisce API per richiedere risorse hardware</p>
+<p>• <strong>Register Access</strong> - Interfacce sicure per leggere/scrivere registri</p>
+
+<h3>🌐 Memory Management</h3>
+<p>• <strong>Virtual Mapping</strong> - Collabora con MMU per mapping sicuri</p>
+<p>• <strong>Cache Coherency</strong> - Gestisce coerenza cache per accessi I/O</p>
+
+<h3>🧠 Interrupt System</h3>
+<p>• <strong>IRQ Handling</strong> - Gestione interrupt da dispositivi hardware</p>
+<p>• <strong>ISR Registration</strong> - Registrazione handler interrupt</p>
+
+<h2>🛠️ API Generic Hardware Access</h2>
+        <p><strong>Queste sono le funzioni principali per l'accesso sicuro e portabile all'hardware nel kernel Linux:</strong></p>
+
+        <h3>📂 Memory-Mapped I/O</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">void __iomem *ioremap(phys_addr_t offset, size_t size);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mappa indirizzi fisici I/O in spazio virtuale del kernel.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void iounmap(void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove mapping di indirizzi I/O virtuali.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">void writel(u32 value, void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive valore a 32 bit in indirizzo I/O mappato.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">u32 readl(void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge valore a 32 bit da indirizzo I/O mappato.</span>
+        </div>
+
+        <h3>📊 Port I/O Operations</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">u8 inb(unsigned long port);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge byte da porta I/O specificata.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void outb(u8 value, unsigned long port);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive byte in porta I/O specificata.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">struct resource *request_region(unsigned long start, unsigned long n, const char *name);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Riserva regione di porte I/O per uso esclusivo.</span>
+        </div>
+
+        <h3>💽 Resource Management</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">struct resource *request_mem_region(phys_addr_t start, size_t n, const char *name);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Riserva regione di memoria I/O per dispositivo.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void release_mem_region(phys_addr_t start, size_t n);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rilascia regione di memoria I/O precedentemente riservata.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Come utilizzare le API del Generic Hardware Access nella programmazione kernel:</strong></p>
+<ol>
+<li><code>ioremap(base_addr, size)</code> - Mappa registri dispositivo in memoria virtuale</li>
+<li><code>writel(value, addr)</code> - Scrive nei registri del dispositivo</li>
+<li><code>readl(addr)</code> - Legge dai registri del dispositivo</li>
+<li><code>iounmap(addr)</code> - Rilascia mapping alla disconnessione</li>
+</ol>
+<p><em>Queste API garantiscono accesso sicuro e portabile all'hardware su tutte le architetture supportate.</em></p>
+
+<h2>🗺️ Architettura del Generic Hardware Access</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Generic Hardware Access Subsystem</h3>
+
+            <!-- Kernel Code Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🔧 KERNEL CODE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Device Drivers<br>
+                    • Kernel Modules<br>
+                    • System Calls
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Generic Hardware Access Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🔌 GENERIC HW ACCESS</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🗂️</div>
+                        <div style="font-size: 0.8em;">MMIO</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔌</div>
+                        <div style="font-size: 0.8em;">Port I/O</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🛡️</div>
+                        <div style="font-size: 0.8em;">Security</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌐</div>
+                        <div style="font-size: 0.8em;">Portability</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Hardware Abstraction<br>
+                    • Safe Register Access<br>
+                    • Architecture Independence
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Architecture-Specific Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">x86</div>
+                    <div style="font-size: 0.8em; color: #666;">Port I/O + MMIO</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">ARM</div>
+                    <div style="font-size: 0.8em; color: #666;">MMIO Only</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">RISC-V</div>
+                    <div style="font-size: 0.8em; color: #666;">MMIO + Extensions</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">PowerPC</div>
+                    <div style="font-size: 0.8em; color: #666;">Mixed I/O Model</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Physical Hardware Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔧 PHYSICAL HARDWARE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Device Registers<br>
+                    • I/O Ports<br>
+                    • Memory-Mapped Regions<br>
+                    • Interrupt Lines
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Il flusso va dal codice kernel all'hardware fisico<br>
+                • Generic HW Access astrae differenze architetturali<br>
+                • Ogni architettura ha implementazioni specifiche ma API uniformi<br>
+                • Garantisce sicurezza e portabilità del codice driver
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento del Generic Hardware Access</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona l'accesso sicuro all'hardware</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Driver Request</div>
+        <div style="font-family: monospace; font-size: 0.9em;">Driver richiede accesso a registri hardware dispositivo</div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Hardware Access</div>
+        <div style="font-family: monospace; font-size: 0.9em;">Sistema valida richiesta e fornisce accesso sicuro</div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> Il Generic Hardware Access riceve richieste di accesso hardware dai driver, valida i permessi, gestisce il mapping di indirizzi fisici in virtuali, e fornisce interfacce sicure per operazioni di I/O, garantendo isolamento e sicurezza del sistema.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Ciclo di accesso hardware sicuro:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Resource Request</strong> - Driver richiede risorse hardware (memoria, porte)</li>
+        <li><strong>2. Validation & Mapping</strong> - Sistema valida richiesta e mappa indirizzi</li>
+        <li><strong>3. Access Control</strong> - Controlli di sicurezza e isolamento</li>
+        <li><strong>4. I/O Operations</strong> - Esecuzione operazioni di lettura/scrittura</li>
+        <li><strong>5. Resource Cleanup</strong> - Rilascio risorse alla disconnessione</li>
+        <li><strong>6. Error Handling</strong> - Gestione errori e recovery</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> I driver possono accedere all'hardware in modo sicuro e portabile, con garanzia di isolamento tra dispositivi e protezione del sistema da accessi non autorizzati o errati.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico del Generic Hardware Access</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esplora risorse I/O</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/ioports<br>
+                        0000-0cf7 : PCI Bus 0000:00<br>
+                        0cf8-0cff : PCI conf1<br>
+                        0d00-ffff : PCI Bus 0000:00<br><br>
+                        $ cat /proc/iomem<br>
+                        00000000-00000fff : Reserved
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi regioni di porte I/O e memoria allocate ai dispositivi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Analizza dispositivi PCI</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lspci -v<br>
+                        00:1f.2 SATA controller: Intel Corporation<br>
+                        Region 0: I/O ports at f070 [size=8]<br>
+                        Region 1: I/O ports at f060 [size=4]<br>
+                        Region 5: Memory at feb06000 [size=4K]
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi risorse hardware allocate a ciascun dispositivo PCI</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora interrupt</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/interrupts<br>
+                        CPU0 CPU1<br>
+                        0:  125   0   IO-APIC-edge  timer<br>
+                        1:  12    0   IO-APIC-edge  i8042<br>
+                        16:  0    0   IO-APIC-fasteoi  ehci_hcd:usb1
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi linee interrupt e dispositivi che le utilizzano</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Esamina driver caricati</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lsmod | head -10<br>
+                        Module Size Used by<br>
+                        usb_storage 69632 1<br>
+                        uas 24576 0<br>
+                        usbhid 49152 0<br><br>
+                        $ modinfo usb_storage
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi driver kernel attivi e loro dipendenze</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave del Generic Hardware Access</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🗂️</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Memory-Mapped I/O</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Tecnica che mappa registri hardware in indirizzi di memoria virtuali, permettendo accesso sicuro attraverso puntatori normali.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Port I/O</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">Accesso diretto a porte I/O dedicate per dispositivi legacy, con istruzioni speciali CPU per lettura/scrittura.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Resource Protection</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">Sistema di protezione risorse hardware che previene conflitti tra driver e garantisce isolamento sicuro tra dispositivi.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌐</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Architecture Abstraction</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Astrazione che nasconde differenze architetturali, permettendo scrittura di driver portabili su molteplici piattaforme.</p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sul Generic Hardware Access
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="margin-top: 30px; color: #0288d1; border-bottom: 3px solid #0288d1; padding-bottom: 8px;">📚 Letture Consigliate</h2>
+<ul style="margin-left: 20px; margin-bottom: 30px;">
+<li style="margin-bottom: 10px;"><a href="https://www.kernel.org/doc/html/latest/" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">📖 Linux Kernel Documentation</a> - Documentazione ufficiale completa</li>
+<li><a href="https://en.wikipedia.org/wiki/Linux_kernel" target="_blank" style="color: #0277bd; text-decoration: none; font-weight: bold;">🌐 Wikipedia: Linux Kernel</a> - Panoramica generale dell'architettura</li>
+</ul>
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa fa la funzione ioremap()?",
+            options: ["Legge da una porta I/O", "Mappa memoria fisica in virtuale", "Carica un driver", "Crea un device node"],
+            correct: 1,
+            explanation: "ioremap() mappa indirizzi di memoria fisica (usati da dispositivi) in spazio di indirizzamento virtuale del kernel."
+        },
+        {
+            question: "Quale comando mostra le porte I/O allocate?",
+            options: ["lspci", "lsusb", "cat /proc/ioports", "dmesg"],
+            correct: 2,
+            explanation: "/proc/ioports mostra tutte le regioni di porte I/O allocate ai dispositivi nel sistema."
+        },
+        {
+            question: "Cosa garantisce il Generic Hardware Access?",
+            options: ["Solo velocità massima", "Portabilità e sicurezza", "Solo dispositivi USB", "Solo memoria RAM"],
+            correct: 1,
+            explanation: "Il Generic Hardware Access garantisce portabilità del codice tra architetture e sicurezza nell'accesso hardware."
+        },
+        {
+            question: "Quale funzione scrive in un registro mappato?",
+            options: ["inb()", "readl()", "writel()", "request_region()"],
+            correct: 2,
+            explanation: "writel() scrive un valore a 32 bit in un indirizzo di memoria mappato con ioremap()."
+        },
+        {
+            question: "Cosa contiene /proc/iomem?",
+            options: ["File di log", "Regioni memoria I/O allocate", "Processi attivi", "Configurazione rete"],
+            correct: 1,
+            explanation: "/proc/iomem mostra tutte le regioni di memoria allocate per I/O memory-mapped dei dispositivi."
+        },
+        {
+            question: "Quale architettura usa solo MMIO?",
+            options: ["x86", "ARM", "PowerPC", "Tutte le precedenti"],
+            correct: 1,
+            explanation: "ARM usa esclusivamente Memory-Mapped I/O, senza istruzioni dedicate per porte I/O come x86."
+        },
+        {
+            question: "Cosa fa request_mem_region()?",
+            options: ["Carica memoria RAM", "Riserva regione memoria per dispositivo", "Crea file device", "Avvia interrupt"],
+            correct: 1,
+            explanation: "request_mem_region() riserva una regione di memoria fisica per uso esclusivo di un dispositivo."
+        },
+        {
+            question: "Quale funzione legge da una porta I/O?",
+            options: ["ioremap()", "inb()", "readl()", "request_region()"],
+            correct: 1,
+            explanation: "inb() legge un byte da una porta I/O specificata, usata principalmente su architetture x86."
+        },
+        {
+            question: "Cosa garantisce l'Hardware Abstraction Layer?",
+            options: ["Solo prestazioni", "Codice portabile tra CPU", "Solo dispositivi wireless", "Solo memoria virtuale"],
+            correct: 1,
+            explanation: "L'Hardware Abstraction Layer permette di scrivere driver che funzionano su diverse architetture CPU."
+        },
+        {
+            question: "Quale comando mostra interrupt attivi?",
+            options: ["lspci -v", "cat /proc/interrupts", "lsmod", "ps aux"],
+            correct: 1,
+            explanation: "/proc/interrupts mostra tutte le linee di interrupt, quanti interrupt ha gestito ciascuna e quali dispositivi le usano."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

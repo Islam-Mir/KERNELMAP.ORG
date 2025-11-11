@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACCESS FILES - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>ACCESS FILES</h1>
+        <p class="subtitle">Accesso ai file e gestione permessi</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">📁 ACCESSO FILE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Access Files è il meccanismo del kernel Linux che gestisce i controlli di accesso ai file e alle risorse del sistema. Implementa le politiche di sicurezza basate sui permessi tradizionali (lettura, scrittura, esecuzione) e sui controlli degli accessi discrezionali (DAC), determinando se un processo può accedere a un file specifico in base all'UID, GID e ai permessi configurati.</strong></p>
+        
+        <h2>CONFRONTO:</h2>
+        <p>Immagina Access Files come un buttafuori di un nightclub: controlla l'identità di chi vuole entrare (processo), verifica se ha il biglietto giusto (permessi), e decide se permettere l'accesso alla festa (file). Se non hai il permesso giusto, non entri!</p>
+        
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il sistema di controllo accessi implementa l'algoritmo di verifica dei permessi definito dallo standard POSIX, valutando i bit di permesso del file confrontandoli con l'identità del processo richiedente. Supporta i tre tipi di permesso fondamentali (rwx) per proprietario, gruppo e altri.</strong></p>
+        <p>• <strong>Permessi Tradizionali</strong> - Controllo rwx per user/group/other</p>
+        <p>• <strong>Controllo DAC</strong> - Discretionary Access Control basato su identità</p>
+        <p>• <strong>Verifica Sequenziale</strong> - Controllo proprietario → gruppo → altri</p>
+        <p><em>• Interfaccia principale con il Virtual File System per ogni accesso ai file</em></p>
+
+<h2>⚙️ Operazioni Principali</h2>
+<p><strong>Il controllo accessi gestisce diverse categorie di verifiche di sicurezza:</strong></p>
+
+<h3>⚙️ Verifica Permessi</h3>
+<p>• <strong>generic_permission()</strong> - Controllo permessi generico per inode</p>
+<p>• <strong>acl_permission_check()</strong> - Verifica ACL (Access Control Lists)</p>
+
+<h3>⚙️ Controllo Sicurezza</h3>
+<p>• <strong>security_inode_permission()</strong> - Hook LSM per controlli aggiuntivi</p>
+<p>• <strong>capable()</strong> - Verifica capability del processo</p>
+
+<h3>⚙️ Gestione Identità</h3>
+<p>• <strong>current_uid()</strong> - Ottiene UID del processo corrente</p>
+<p>• <strong>in_group_p()</strong> - Verifica appartenenza a gruppo</p>
+
+<h2>📋 Esempi Pratici</h2>
+<p><strong>Il controllo accessi è attivo in ogni operazione sui file del sistema:</strong></p>
+
+<h3>🔍 Lettura di un File</h3>
+<p>1. Processo chiama open() o read()</p>
+<p>2. Kernel verifica permessi r del file</p>
+<p>3. Se permesso negato, restituisce EACCES</p>
+<p>4. Se permesso concesso, operazione prosegue</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>struct cred</strong> - Credenziali del processo (UID, GID, capabilities)</li>
+<li><strong>struct inode</strong> - Metadati file con i_mode (permessi)</li>
+<li><strong>struct acl</strong> - Access Control List per permessi estesi</li>
+<li><strong>struct security_operations</strong> - Hook LSM per sicurezza avanzata</li>
+</ul>
+
+<h3>💻 Comandi Linux Essenziali</h3>
+<ul>
+<li><code>$ ls -l</code> - Mostra permessi file in formato rwx</li>
+<li><code>$ chmod 644 file</code> - Cambia permessi file</li>
+<li><code>$ chown user:group file</code> - Cambia proprietario/gruppo</li>
+<li><code>$ id</code> - Mostra UID/GID del processo corrente</li>
+</ul>
+
+<h3>🎯 Caso Reale: Accesso Negato</h3>
+<p>Quando fai <code>$ cat /etc/shadow</code> come utente normale:</p>
+<ol>
+<li>Kernel verifica permessi del file (600 - rw-------)</li>
+<li>UID processo ≠ UID file (0) e non in gruppo root</li>
+<li>Controllo "others" permessi = no read</li>
+<li>Kernel restituisce "Permission denied"</li>
+</ol>
+
+<h2>💾 Supporto e Compatibilità</h2>
+        <ul>
+            <li><strong>POSIX Permissions</strong> - Standard Unix permissions (rwx)</li>
+            <li><strong>ACL Extensions</strong> - Access Control Lists (ext4, btrfs)</li>
+            <li><strong>LSM Framework</strong> - Linux Security Modules (SELinux, AppArmor)</li>
+            <li><strong>Capabilities</strong> - Permessi granulari per processi privilegiati</li>
+            <li><strong>POSIX ACL</strong> - Liste di controllo accessi estese</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+<ul>
+<li><strong>SetUID/SetGID</strong> - Esecuzione con privilegi del proprietario</li>
+<li><strong>Sticky Bit</strong> - Solo proprietario può cancellare file</li>
+<li><strong>Immutable Flag</strong> - File non modificabile (chattr +i)</li>
+<li><strong>Extended Attributes</strong> - Metadati aggiuntivi per sicurezza</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave</h2>
+<p><strong>Il controllo accessi è integrato in tutto il sistema operativo:</strong></p>
+
+<h3>💾 Virtual File System</h3>
+<p>• <strong>VFS Layer</strong> - Ogni chiamata system chiama controllo permessi</p>
+<p>• <strong>Inode Operations</strong> - Hook permission() per controlli specifici</p>
+
+<h3>🌐 System Calls</h3>
+<p>• <strong>open()/read()/write()</strong> - Verificano permessi ad ogni accesso</p>
+<p>• <strong>execve()</strong> - Controlla permessi esecuzione e setuid</p>
+
+<h3>🧠 Linux Security Modules</h3>
+<p>• <strong>SELinux/AppArmor</strong> - Politiche di sicurezza aggiuntive</p>
+<p>• <strong>Capabilities</strong> - Permessi granulari oltre root/non-root</p>
+
+<h2>🛠️ API di Sicurezza</h2>
+        <p><strong>Queste sono le funzioni principali per gestire i controlli di accesso:</strong></p>
+
+        <h3>📂 Verifica Permessi</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int access(const char *pathname, int mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica se il processo può accedere al file con i permessi specificati (F_OK, R_OK, W_OK, X_OK).</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int faccessat(int dirfd, const char *pathname, int mode, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Versione avanzata di access() che lavora relativo a un file descriptor di directory.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int euidaccess(const char *pathname, int mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica accessi usando l'EUID effettivo invece dell'RUID reale.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int eaccess(const char *pathname, int mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alias per euidaccess(), verifica permessi con EUID/EGID.</span>
+        </div>
+
+        <h3>📊 Gestione Permessi</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int chmod(const char *pathname, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia i permessi di un file (solo proprietario o root).</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int chown(const char *pathname, uid_t owner, gid_t group);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia proprietario e gruppo di un file (solo root).</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int umask(mode_t mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta la maschera di creazione file per i nuovi file.</span>
+        </div>
+
+        <h3>💽 Controlli di Sicurezza</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">uid_t getuid(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Restituisce l'UID reale del processo corrente.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">uid_t geteuid(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Restituisce l'UID effettivo (considera setuid).</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Come utilizzare i controlli di accesso nella programmazione:</strong></p>
+<ol>
+<li><code>if (access("file.txt", R_OK) == 0)</code> - Verifica se puoi leggere il file</li>
+<li><code>umask(022)</code> - Imposta permessi predefiniti per nuovi file (755)</li>
+<li><code>chmod("script.sh", 0755)</code> - Rende eseguibile uno script</li>
+<li><code>chown("file", 1000, 1000)</code> - Cambia proprietario (richiede root)</li>
+</ol>
+<p><em>Queste API permettono di verificare e modificare i permessi dei file in modo sicuro e controllato.</em></p>
+
+<h2>🗺️ Architettura della Sicurezza</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Controllo Accessi</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi utente<br>
+                    • System calls (open, chmod)<br>
+                    • Librerie (glibc)
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 KERNEL SECURITY LAYER</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔐</div>
+                        <div style="font-size: 0.8em;">DAC</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🛡️</div>
+                        <div style="font-size: 0.8em;">LSM</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">Capabilities</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">ACL</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Controllo accessi discrezionali<br>
+                    • Moduli sicurezza caricabili<br>
+                    • Permessi granulari<br>
+                    • Liste controllo accessi
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- VFS Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">📁 VFS</div>
+                    <div style="font-size: 0.8em; color: #666;">Virtual File System</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💽 INODE</div>
+                    <div style="font-size: 0.8em; color: #666;">Metadati & permessi</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">👤 CRED</div>
+                    <div style="font-size: 0.8em; color: #666;">Credenziali processo</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔑 KEY</div>
+                    <div style="font-size: 0.8em; color: #666;">Keyring sicurezza</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Filesystem Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 FILESYSTEM IMPLEMENTATIONS</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • EXT4 (permessi Unix tradizionali)<br>
+                    • BTRFS (ACL estese)<br>
+                    • NTFS (sicurezza Windows)<br>
+                    • FAT32 (permessi semplificati)
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Ogni accesso file passa attraverso controlli di sicurezza<br>
+                • DAC controlla proprietario/gruppo/altri<br>
+                • LSM aggiunge politiche avanzate (SELinux, AppArmor)<br>
+                • Capabilities permettono permessi granulari oltre root
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento del Controllo Accessi</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona la verifica dei permessi</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Richiesta Accesso</div>
+        <div style="font-family: monospace; font-size: 0.9em;">open("file.txt", O_RDONLY)</div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Verifica Permessi</div>
+        <div style="font-family: monospace; font-size: 0.9em;">UID processo vs i_uid file</div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> Il kernel confronta l'identità del processo richiedente con i permessi memorizzati nell'inode del file, applicando la logica proprietario→gruppo→altri secondo lo standard POSIX.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Algoritmo di Controllo Accessi:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Identificazione</strong> - Ottiene UID/EUID e GID/EGID del processo</li>
+        <li><strong>2. Confronto Proprietario</strong> - Se UID processo = UID file, usa permessi owner</li>
+        <li><strong>3. Confronto Gruppo</strong> - Se GID processo ∈ gruppi file, usa permessi group</li>
+        <li><strong>4. Permessi Altri</strong> - Altrimenti usa permessi world (rwx per tutti)</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> Accesso consentito se il bit di permesso corrispondente è impostato, altrimenti restituito EACCES (Permission denied) al processo richiedente.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico dei Controlli Accessi</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔐 Verifica permessi file</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -l /etc/passwd<br>
+                        -rw-r--r-- 1 root root 2455 gen 15 12:34 /etc/passwd<br><br>
+                        $ ls -l /etc/shadow<br>
+                        -rw-r----- 1 root shadow 1234 gen 15 12:34 /etc/shadow
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi i permessi in formato rwx per ogni file</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">👤 Controlla identità</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ id<br>
+                        uid=1000(user) gid=1000(user) groups=1000(user),27(sudo)<br><br>
+                        $ whoami<br>
+                        user
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Scopri UID, GID e gruppi del tuo utente</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Cambia permessi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ touch testfile<br>
+                        $ ls -l testfile<br>
+                        -rw-r--r-- 1 user user 0 gen 15 12:34 testfile<br><br>
+                        $ chmod 600 testfile<br>
+                        $ ls -l testfile<br>
+                        -rw------- 1 user user 0 gen 15 12:34 testfile
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Cambia permessi per rendere file privato</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🚫 Test accesso negato</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /etc/shadow<br>
+                        cat: /etc/shadow: Permission denied<br><br>
+                        $ sudo cat /etc/shadow<br>
+                        [contenuto visibile come root]
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi come i permessi proteggono file sensibili</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave dei Controlli Accessi</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔐</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">DAC (Discretionary Access Control)</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Controllo accessi discrezionali dove proprietari possono modificare permessi dei propri file secondo regole POSIX.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">LSM (Linux Security Modules)</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">Framework che permette di caricare moduli di sicurezza avanzati come SELinux e AppArmor per controlli granulari.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">SetUID/SetGID</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">Bit speciali che permettono esecuzione programmi con privilegi del proprietario, abilitando sudo e comandi amministrativi.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">ACL (Access Control Lists)</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Liste di controllo accessi estese che permettono permessi specifici per utenti e gruppi aggiuntivi oltre il modello tradizionale.</p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Controlli Accessi
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa controllano i permessi rwx tradizionali?",
+            options: ["Solo lettura", "Lettura, scrittura, esecuzione", "Solo proprietario", "Solo gruppo"],
+            correct: 1,
+            explanation: "I permessi rwx controllano lettura (r), scrittura (w) ed esecuzione (x) sui file."
+        },
+        {
+            question: "In quale ordine vengono verificati i permessi?",
+            options: ["Gruppo → Proprietario → Altri", "Altri → Gruppo → Proprietario", "Proprietario → Gruppo → Altri", "Casuale"],
+            correct: 2,
+            explanation: "I permessi vengono verificati in ordine: prima proprietario, poi gruppo, infine altri."
+        },
+        {
+            question: "Cosa significa DAC?",
+            options: ["Direct Access Control", "Discretionary Access Control", "Device Access Control", "Data Access Control"],
+            correct: 1,
+            explanation: "DAC sta per Discretionary Access Control, il modello di sicurezza dove proprietari controllano accessi ai propri file."
+        },
+        {
+            question: "Quale comando mostra i permessi in formato numerico?",
+            options: ["ls -l", "stat -c '%a'", "chmod", "chown"],
+            correct: 1,
+            explanation: "stat -c '%a' mostra i permessi in formato ottale (es. 644, 755)."
+        },
+        {
+            question: "Cosa permette il bit SetUID?",
+            options: ["Eseguire come root", "Eseguire con UID del proprietario", "Cambiare proprietario", "Solo lettura"],
+            correct: 1,
+            explanation: "SetUID permette di eseguire un programma con i privilegi del proprietario del file, non dell'utente che lo esegue."
+        },
+        {
+            question: "Quale funzione verifica i permessi senza aprire il file?",
+            options: ["open()", "read()", "access()", "stat()"],
+            correct: 2,
+            explanation: "access() verifica se il processo può accedere al file con i permessi specificati senza aprirlo."
+        },
+        {
+            question: "Cosa rappresentano i permessi 755?",
+            options: ["rwxr-xr-x", "rw-r--r--", "rwx------", "rwxrwxrwx"],
+            correct: 0,
+            explanation: "755 significa proprietario ha rwx, gruppo e altri hanno r-x (lettura ed esecuzione)."
+        },
+        {
+            question: "Quale modulo LSM fornisce sicurezza avanzata?",
+            options: ["DAC", "ACL", "SELinux", "POSIX"],
+            correct: 2,
+            explanation: "SELinux è un modulo LSM (Linux Security Module) che fornisce controllo accessi obbligatorio avanzato."
+        },
+        {
+            question: "Cosa fa il comando chmod 600 file?",
+            options: ["Rende file eseguibile", "Rende file privato (solo proprietario)", "Cambia gruppo", "Rimuove permessi"],
+            correct: 1,
+            explanation: "chmod 600 imposta permessi rw-------, permettendo solo al proprietario di leggere e scrivere."
+        },
+        {
+            question: "Quale permesso è necessario per entrare in una directory?",
+            options: ["Lettura", "Scrittura", "Esecuzione", "Tutti e tre"],
+            correct: 2,
+            explanation: "Il permesso di esecuzione (x) su una directory permette di entrarci e listarne il contenuto."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

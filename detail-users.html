@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USERS - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .content code {
+            background: #f0f8ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #0288d1;
+        }
+
+        .code-block {
+            background: #f0f8ff;
+            border-left: 4px solid #0288d1;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            overflow-x: auto;
+            border-radius: 4px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            font-size: 0.7em;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>USERS</h1>
+        <p class="subtitle">Sistema di Gestione Utenti e Permessi</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">👥 GESTIONE UTENTI</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il sistema di gestione utenti e permessi del kernel Linux è il fondamento della sicurezza del sistema operativo.</strong> Ogni utente ha un'identità univoca e il kernel controlla rigorosamente l'accesso a file, processi e risorse di sistema.</p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un condominio sicuro: ogni appartamento (utente) ha la sua chiave, il portiere (kernel) controlla chi può entrare dove, e il padrone (root) ha accesso a tutto l'edificio.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il kernel Linux implementa un modello di sicurezza basato su utenti e gruppi che permea ogni aspetto del sistema operativo.</strong> Immagina un castello medievale dove ogni servo, cavaliere e lord ha chiavi diverse per porte diverse, e il re (root) ha le chiavi di tutto il regno.</p>
+
+        <p>• <strong>User ID (UID)</strong> - Identificatore univoco per ogni utente nel sistema</p>
+        <p>• <strong>Group ID (GID)</strong> - Identificatore per gruppi di utenti con permessi condivisi</p>
+        <p>• <strong>Permessi POSIX</strong> - Modello rwx (read/write/execute) per proprietario, gruppo e altri</p>
+        <p>• <strong>Controllo accessi</strong> - Kernel che valida ogni operazione I/O contro i permessi</p>
+        <p>• <strong>Privilegi elevati</strong> - Meccanismi per eseguire operazioni come root (sudo, capabilities)</p>
+        <p>• <strong>Isolamento processi</strong> - Ogni processo eredita l'identità e i permessi del suo proprietario</p>
+        <p><em>• Interazione: Ogni system call viene validata contro il modello di sicurezza prima dell'esecuzione</em></p>
+
+        <h2>⚙️ Modelli di Sicurezza</h2>
+        <p><strong>Il kernel Linux supporta diversi livelli di controllo accessi:</strong></p>
+
+        <h3>🔐 Permessi Tradizionali (POSIX)</h3>
+        <p>• <strong>Proprietario (user)</strong> - Il creatore del file ha il controllo completo</p>
+        <p>• <strong>Gruppo (group)</strong> - Utenti dello stesso gruppo condividono permessi</p>
+        <p>• <strong>Altri (others)</strong> - Tutti gli utenti rimanenti del sistema</p>
+        <p>• <strong>Permessi rwx</strong> - Read (4), Write (2), Execute (1) combinati</p>
+
+        <h3>🛡️ Controlli Accessi Avanzati</h3>
+        <p>• <strong>ACL (Access Control Lists)</strong> - Permessi granulari per utenti specifici</p>
+        <p>• <strong>Capabilities</strong> - Privilegi specifici invece di "tutto o niente"</p>
+        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control per sicurezza avanzata</p>
+        <p>• <strong>Namespaces</strong> - Isolamento di utenti e gruppi per container</p>
+
+        <h3>👑 Privilegi di Root</h3>
+        <p>• <strong>UID 0</strong> - Superuser con accesso illimitato al sistema</p>
+        <p>• <strong>sudo</strong> - Esecuzione temporanea di comandi come root</p>
+        <p>• <strong>su</strong> - Cambio completo di identità utente</p>
+        <p>• <strong>Capabilities</strong> - Suddivisione dei poteri di root</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>La gestione utenti permea ogni aspetto dell'uso quotidiano di Linux:</strong></p>
+
+        <h3>🔍 Permessi File: Il File /etc/passwd</h3>
+        <ul>
+            <li><strong>Proprietario: root</strong> - Solo root può modificare il database utenti</li>
+            <li><strong>Gruppo: root</strong> - Gruppo amministrativo</li>
+            <li><strong>Altri: read-only</strong> - Tutti possono leggere ma non modificare</li>
+            <li><strong>Permessi: 644</strong> - rw-r--r--</li>
+        </ul>
+
+        <h3>⚡ Esecuzione con sudo</h3>
+        <p>Quando fai <code>sudo apt update</code>:</p>
+        <ol>
+            <li>Autenticazione dell'utente corrente</li>
+            <li>Verifica permessi sudo nel file /etc/sudoers</li>
+            <li>Esecuzione temporanea come root</li>
+            <li>Ritorno ai permessi originali</li>
+        </ol>
+
+        <h3>👥 Gruppi e Condivisione</h3>
+        <ul>
+            <li><strong>Gruppo developers</strong> - Condivisione file di progetto</li>
+            <li><strong>Gruppo www-data</strong> - Accesso ai file del web server</li>
+            <li><strong>Permessi 775</strong> - Proprietario e gruppo possono modificare</li>
+            <li><strong>Directory condivise</strong> - setgid per ereditare il gruppo</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederli?</h3>
+        <p><strong>Comandi Linux per esplorare utenti e permessi:</strong></p>
+        <ul>
+            <li><code>id</code> - Mostra UID, GID e gruppi dell'utente corrente</li>
+            <li><code>whoami</code> - Nome dell'utente corrente</li>
+            <li><code>ls -l file</code> - Mostra permessi, proprietario e gruppo</li>
+            <li><code>groups</code> - Lista dei gruppi dell'utente</li>
+            <li><code>getent passwd</code> - Database completo degli utenti</li>
+            <li><code>stat file</code> - Informazioni dettagliate sui permessi</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Installazione Software</h3>
+        <p>Quando installi un programma con apt:</p>
+        <ol>
+            <li><strong>Verifica permessi</strong> - Solo root può scrivere in /usr/</li>
+            <li><strong>sudo escalation</strong> - Temporaneo accesso amministrativo</li>
+            <li><strong>Scrittura file</strong> - Installazione dei file del programma</li>
+            <li><strong>Permessi corretti</strong> - Impostazione proprietari e permessi</li>
+            <li><strong>Return to user</strong> - Ritorno ai permessi normali</li>
+        </ol>
+
+        <h2>💾 Architetture Supportate</h2>
+        <ul>
+            <li><strong>Permessi tradizionali</strong> - Modello POSIX standard</li>
+            <li><strong>ACL estese</strong> - Access Control Lists avanzate</li>
+            <li><strong>Capabilities</strong> - Privilegi granulari</li>
+            <li><strong>Security modules</strong> - LSM (SELinux, AppArmor)</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Sicurezza multi-livello</strong> - Difesa in profondità</li>
+            <li><strong>Flessibilità</strong> - Adattabile a diversi scenari d'uso</li>
+            <li><strong>Compatibilità</strong> - Standard POSIX mantenuti</li>
+            <li><strong>Scalabilità</strong> - Supporto per migliaia di utenti</li>
+            <li><strong>Auditing</strong> - Tracciamento accessi per sicurezza</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>La gestione utenti è integrata in ogni sottosistema del kernel:</strong></p>
+
+        <h3>💾 Virtual File System (VFS)</h3>
+        <p>• <strong>Controllo accessi file</strong> - Ogni open() verifica i permessi</p>
+        <p>• <strong>Proprietà file</strong> - UID/GID memorizzati negli inode</p>
+        <p>• <strong>Permessi directory</strong> - Controllo navigazione filesystem</p>
+
+        <h3>⚙️ Process Scheduler</h3>
+        <p>• <strong>Proprietà processi</strong> - Ogni processo ha UID/GID reali/effettivi</p>
+        <p>• <strong>Permessi esecuzione</strong> - Controllo su programmi eseguibili</p>
+        <p>• <strong>Resource limits</strong> - Limiti per utente (ulimit)</p>
+
+        <h3>🌐 Network Stack</h3>
+        <p>• <strong>Port binding</strong> - Solo root può usare porte < 1024</p>
+        <p>• <strong>Raw sockets</strong> - Privilegi speciali per socket raw</p>
+        <p>• <strong>Firewall rules</strong> - Controllo configurazione rete</p>
+
+        <h3>🔐 Security Framework</h3>
+        <p>• <strong>Audit subsystem</strong> - Logging di tutti gli accessi</p>
+        <p>• <strong>SELinux contexts</strong> - Etichette di sicurezza avanzate</p>
+        <p>• <strong>Namespaces</strong> - Isolamento utenti per container</p>
+
+        <h3>💽 Device Access</h3>
+        <p>• <strong>Device permissions</strong> - Controllo accesso dispositivi hardware</p>
+        <p>• <strong>Special files</strong> - /dev/* con permessi specifici</p>
+        <p>• <strong>Hardware security</strong> - Moduli TPM e chiavi sicure</p>
+
+        <h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le funzioni che il kernel usa per controllare la sicurezza:</strong></p>
+
+        <h3>👤 Gestione Identità</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">uid_t getuid(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Restituisce l'UID reale del processo corrente.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">uid_t geteuid(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Restituisce l'UID effettivo (potrebbe essere diverso per setuid).</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int setuid(uid_t uid);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia l'UID del processo (richiede privilegi).</span>
+        </div>
+
+        <h3>🔐 Controllo Permessi</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int access(const char *pathname, int mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica i permessi di accesso a un file senza aprirlo.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int chmod(const char *pathname, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia i permessi di un file (solo proprietario o root).</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int chown(const char *pathname, uid_t owner, gid_t group);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia proprietario e gruppo di un file (solo root).</span>
+        </div>
+
+        <h3>🎯 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando modifichi i permessi di un file:</strong></p>
+        <ol>
+            <li><code>ls -l script.sh</code> - Controlla permessi attuali</li>
+            <li><code>chmod 755 script.sh</code> - Imposta permessi di esecuzione</li>
+            <li><code>sudo chown root:root script.sh</code> - Cambia proprietario</li>
+            <li><code>./script.sh</code> - Esegue con i nuovi permessi</li>
+        </ol>
+        <p><em>Ogni passo coinvolge controlli di sicurezza del kernel!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale della Gestione Utenti</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏰 Architettura della Sicurezza Utenti</h3>
+
+            <!-- Root User Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #d32f2f, #f44336); padding: 20px; border-radius: 15px; border: 3px solid #b71c1c; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">👑 ROOT (UID 0)</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔑</div>
+                        <div style="font-size: 0.8em;">Accesso Totale</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">Privilegi Illimitati</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🛡️</div>
+                        <div style="font-size: 0.8em;">Controllo Sistema</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #ffcdd2;">
+                    • sudo escalation<br>
+                    • System administration<br>
+                    • Hardware access
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Users Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #e65100; margin-bottom: 10px;">🤖 SYSTEM USERS</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • www-data (web server)<br>
+                    • mysql, postgres (database)<br>
+                    • systemd services<br>
+                    • UID 1-999
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Regular Users Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">👤 REGULAR USERS</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • UID 1000+<br>
+                    • Home directory<br>
+                    • Limited privileges<br>
+                    • sudo access (optional)
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Kernel Security Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🔐 KERNEL</div>
+                    <div style="font-size: 0.8em; color: #666;">Access Control</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾 VFS</div>
+                    <div style="font-size: 0.8em; color: #666;">File Permissions</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">⚙️ PROCESSES</div>
+                    <div style="font-size: 0.8em; color: #666;">UID/GID Context</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🌐 NETWORK</div>
+                    <div style="font-size: 0.8em; color: #666;">Port Restrictions</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano la gerarchia di privilegi<br>
+                • Ogni livello ha permessi specifici controllati dal kernel<br>
+                • Root ha accesso a tutto, utenti normali hanno accesso limitato<br>
+                • La sicurezza permea ogni aspetto del sistema
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Permessi in Azione</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Creazione di un File Condiviso</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 File Condiviso</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        progetto.txt<br>
+                        <span style="color: #666;">(gruppo: developers, permessi: 664)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">🔐</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">👥 Gruppo Sviluppatori</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        alice, bob, charlie<br>
+                        <span style="color: #666;">(tutti possono leggere/scrivere)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comandi eseguiti:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">groupadd developers && usermod -aG developers alice && chmod 664 progetto.txt</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Creazione gruppo</strong> - Il kernel registra il nuovo gruppo developers</li>
+                    <li><strong>2. Aggiunta membri</strong> - Utenti vengono associati al gruppo</li>
+                    <li><strong>3. Impostazione permessi</strong> - File ottiene permessi rw-rw-r--</li>
+                    <li><strong>4. Controllo accessi</strong> - Ogni accesso viene validato dal kernel</li>
+                    <li><strong>5. Collaborazione sicura</strong> - Team può lavorare senza rischi di sicurezza!</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Hai creato un ambiente di collaborazione sicuro dove il team può condividere file senza che altri utenti possano accedervi. Questo è il fondamento della sicurezza multi-utente!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora la Gestione Utenti</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">👤 Esplora la tua identità</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ id<br>
+                        uid=1000(user) gid=1000(user)<br>
+                        groups=1000(user),27(sudo)<br><br>
+                        $ whoami<br>
+                        user
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Scopri il tuo UID, GID e gruppi di appartenenza</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔐 Analizza i permessi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -la /etc/passwd<br>
+                        -rw-r--r-- 1 root root 2455 gen 1 12:00 /etc/passwd<br><br>
+                        $ stat /etc/shadow<br>
+                        Access: (0640/-rw-------) Uid: (0/root) Gid: (0/root)
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina permessi e proprietari dei file di sistema</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Test di sudo</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ sudo whoami<br>
+                        root<br><br>
+                        $ sudo -l<br>
+                        User may run the following commands on this host:<br>
+                        (ALL : ALL) ALL
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Testa l'escalation dei privilegi e controlla i permessi sudo</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">👥 Gestione gruppi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ groups<br>
+                        user adm cdrom sudo<br><br>
+                        $ getent group sudo<br>
+                        sudo:x:27:user
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esplora i gruppi di sistema e la loro composizione</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔐</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Difesa in Profondità</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    La sicurezza non dipende da un singolo meccanismo. UID, permessi, gruppi, sudo e SELinux lavorano insieme per proteggere il sistema.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">👑</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Privilegio Minimo</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Ogni utente dovrebbe avere solo i permessi necessari. Root è potente ma pericoloso - usa sudo per operazioni specifiche.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Ereditarietà</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Processi ereditano l'identità del loro genitore. Un programma setuid può temporaneamente assumere altri privilegi.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📊</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Auditing</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Ogni accesso viene registrato. Strumenti come auditd permettono di monitorare chi fa cosa, quando e dove.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sulla Gestione Utenti
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa rappresenta l'UID 0 nel sistema Linux?",
+            options: ["Il primo utente normale", "Il superuser (root) con privilegi illimitati", "Un utente ospite", "L'amministratore di sistema"],
+            correct: 1,
+            explanation: "L'UID 0 è riservato al superuser root, che ha accesso completo e illimitato a tutto il sistema operativo."
+        },
+        {
+            question: "Quale comando mostra l'UID e GID dell'utente corrente?",
+            options: ["whoami", "pwd", "id", "who"],
+            correct: 2,
+            explanation: "Il comando id mostra l'User ID (UID), Group ID (GID) e tutti i gruppi di appartenenza dell'utente corrente."
+        },
+        {
+            question: "Cosa significa il permesso '755' su un file?",
+            options: ["Solo il proprietario può leggere e scrivere", "Proprietario ha pieno controllo, gruppo e altri possono leggere/eseguire", "Tutti hanno pieno accesso", "Nessuno può accedere"],
+            correct: 1,
+            explanation: "755 significa: proprietario (7=rwx), gruppo (5=rx), altri (5=rx). Proprietario controlla tutto, altri possono leggere ed eseguire."
+        },
+        {
+            question: "Quale comando permette di eseguire temporaneamente comandi come root?",
+            options: ["su", "root", "admin", "sudo"],
+            correct: 3,
+            explanation: "sudo permette di eseguire un singolo comando con privilegi di root, richiedendo autenticazione e controllando i permessi nel file /etc/sudoers."
+        },
+        {
+            question: "Cosa controlla il kernel prima di ogni accesso a un file?",
+            options: ["La dimensione del file", "I permessi POSIX (rwx) dell'utente", "Il contenuto del file", "La data di creazione"],
+            correct: 1,
+            explanation: "Il kernel valida sempre i permessi POSIX (read/write/execute) confrontando UID/GID dell'utente con quelli del file prima di consentire qualsiasi operazione."
+        },
+        {
+            question: "Quale file contiene le password criptate degli utenti?",
+            options: ["/etc/passwd", "/etc/shadow", "/etc/group", "/etc/sudoers"],
+            correct: 1,
+            explanation: "/etc/shadow contiene le password criptate e altre informazioni sensibili, accessibile solo a root per motivi di sicurezza."
+        },
+        {
+            question: "Cosa permette di fare il comando chmod?",
+            options: ["Creare nuovi utenti", "Cambiare i permessi di file e directory", "Modificare password", "Eliminare utenti"],
+            correct: 1,
+            explanation: "chmod cambia i permessi di accesso (rwx) per proprietario, gruppo e altri su file e directory."
+        },
+        {
+            question: "Quale principio di sicurezza significa che gli utenti dovrebbero avere solo i permessi necessari?",
+            options: ["Permesso totale", "Privilegio minimo", "Accesso completo", "Controllo assoluto"],
+            correct: 1,
+            explanation: "Il principio del privilegio minimo significa che ogni utente/processo dovrebbe avere solo i permessi strettamente necessari per svolgere il proprio compito."
+        },
+        {
+            question: "Cosa succede quando un processo eredita l'UID del suo genitore?",
+            options: ["Perde tutti i permessi", "Mantiene gli stessi permessi del processo padre", "Ottiene permessi di root", "Cambia automaticamente gruppo"],
+            correct: 1,
+            explanation: "I processi figli ereditano UID, GID e permessi dal processo genitore, mantenendo lo stesso contesto di sicurezza."
+        },
+        {
+            question: "Quale comando mostra tutti i gruppi di un utente?",
+            options: ["id -g", "groups", "groupadd", "usermod"],
+            correct: 1,
+            explanation: "Il comando groups mostra tutti i gruppi di cui l'utente corrente fa parte, utile per capire i permessi di accesso."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione della gestione utenti! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare la sicurezza Linux! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! La sicurezza è fondamentale! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

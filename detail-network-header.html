@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Header - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Network Header</h1>
+        <p class="subtitle">Intestazioni di Rete</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🌐 GESTORE INTESTAZIONI RETE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Network Header gestisce la creazione, modifica e interpretazione delle intestazioni dei protocolli di rete nel kernel Linux, coordinando il flusso di dati attraverso gli stack TCP/IP.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un ufficio postale che aggiunge e rimuove etichette dagli indirizzi sui pacchetti, il Network Header coordina l'informazione di routing e controllo attraverso i vari livelli del modello OSI.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il Network Header è il componente del kernel Linux responsabile della gestione delle intestazioni di protocollo nei pacchetti di rete, orchestrando la comunicazione tra i diversi strati dello stack TCP/IP.</strong> Immagina un'orchestra dove ogni musicista (protocollo) ha bisogno delle sue istruzioni (header) per suonare in armonia, e il Network Header è il direttore che coordina tutto.</p>
+
+        <p>• <strong>Header manipulation</strong> - Creazione e modifica intestazioni protocollo</p>
+        <p>• <strong>Protocol coordination</strong> - Interazione tra strati TCP/IP</p>
+        <p>• <strong>Checksum calculation</strong> - Calcolo integrità pacchetti</p>
+        <p>• <strong>Fragmentation handling</strong> - Gestione frammentazione pacchetti</p>
+        <p>• <strong>Routing information</strong> - Gestione indirizzi IP e porte</p>
+        <p>• <strong>QoS parameters</strong> - Quality of Service e priorità</p>
+        <p><em>• Interazione: Coordina trasformazione pacchetti attraverso stack di rete</em></p>
+
+        <h2>⚙️ Strati di Protocollo</h2>
+        <p><strong>Il Network Header opera attraverso i principali strati del modello TCP/IP:</strong></p>
+
+        <h3>🔗 Network Layer (IP)</h3>
+        <p>• <strong>IPv4/IPv6 headers</strong> - Indirizzi sorgente/destinazione, TTL, checksum</p>
+        <p>• <strong>Routing decisions</strong> - Scelta percorso attraverso forwarding table</p>
+        <p>• <strong>Fragmentation/Reassembly</strong> - Suddivisione pacchetti grandi</p>
+
+        <h3>🔌 Transport Layer (TCP/UDP)</h3>
+        <p>• <strong>TCP headers</strong> - Sequence/acknowledgment numbers, flags di controllo</p>
+        <p>• <strong>UDP headers</strong> - Porte sorgente/destinazione, lunghezza</p>
+        <p>• <strong>Connection state</strong> - Gestione stato connessioni TCP</p>
+
+        <h3>🌐 Application Layer</h3>
+        <p>• <strong>Port multiplexing</strong> - Demultiplexing pacchetti alle applicazioni</p>
+        <p>• <strong>Socket association</strong> - Collegamento socket a connessioni</p>
+        <p>• <strong>Data segmentation</strong> - Suddivisione dati in pacchetti</p>
+
+        <h2>📋 Strutture Dati Chiave</h2>
+        <p><strong>Il kernel utilizza strutture specializzate per gestire gli header:</strong></p>
+
+        <h3>📦 Socket Buffer (sk_buff)</h3>
+        <ul>
+            <li><strong>Data container</strong> - Contiene dati e header del pacchetto</li>
+            <li><strong>Header pointers</strong> - Puntatori ai vari header (MAC, IP, TCP)</li>
+            <li><strong>Control information</strong> - Metadata per elaborazione</li>
+            <li><strong>Reference counting</strong> - Gestione memoria condivisa</li>
+        </ul>
+
+        <h3>🔧 Network Device</h3>
+        <ul>
+            <li><strong>MTU handling</strong> - Maximum Transmission Unit</li>
+            <li><strong>Hardware addresses</strong> - MAC addresses</li>
+            <li><strong>Queue management</strong> - Code di trasmissione</li>
+            <li><strong>Offload capabilities</strong> - Scarico elaborazione su hardware</li>
+        </ul>
+
+        <h3>🌐 Routing Table</h3>
+        <ul>
+            <li><strong>Destination networks</strong> - Reti raggiungibili</li>
+            <li><strong>Next hop</strong> - Router successivo</li>
+            <li><strong>Interface binding</strong> - Interfaccia di uscita</li>
+            <li><strong>Metrics</strong> - Costo percorsi</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare gli header di rete:</strong></p>
+        <ul>
+            <li><code>tcpdump -i eth0 -vv</code> - Cattura pacchetti con header completi</li>
+            <li><code>ip route show</code> - Visualizza tabella routing</li>
+            <li><code>netstat -tuln</code> - Stato connessioni e porte</li>
+            <li><code>ss -tuln</code> - Socket statistics avanzate</li>
+            <li><code>wireshark</code> - Analizzatore pacchetti grafico</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Invio HTTP</h3>
+        <p>Quando un browser invia una richiesta HTTP:</p>
+        <ol>
+            <li>Applicazione crea richiesta HTTP</li>
+            <li>TCP aggiunge header di trasporto</li>
+            <li>IP aggiunge header di rete</li>
+            <li>Ethernet aggiunge header di collegamento</li>
+            <li>Pacchetto trasmesso sulla rete</li>
+        </ol>
+
+        <h2>🔧 Protocolli Supportati</h2>
+        <ul>
+            <li><strong>TCP</strong> - Reliable transport con controllo flusso</li>
+            <li><strong>UDP</strong> - Fast transport senza garanzia consegna</li>
+            <li><strong>IPv4/IPv6</strong> - Internet Protocol versioni</li>
+            <li><strong>ICMP</strong> - Internet Control Message Protocol</li>
+            <li><strong>ARP</strong> - Address Resolution Protocol</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+        <ul>
+            <li><strong>Checksum offload</strong> - Calcolo checksum su hardware</li>
+            <li><strong>TSO/GSO</strong> - TCP Segmentation/Generic Offload</li>
+            <li><strong>RSS</strong> - Receive Side Scaling per multi-core</li>
+            <li><strong>VLAN tagging</strong> - Supporto reti virtuali</li>
+        </ul>
+
+        <h2>🔗 Integrazione con Stack</h2>
+        <p><strong>Il Network Header collabora con molti componenti:</strong></p>
+
+        <h3>🔌 Socket Layer</h3>
+        <p>• <strong>Socket creation</strong> - Allocazione strutture socket</p>
+        <p>• <strong>Address binding</strong> - Associazione indirizzi locali</p>
+
+        <h3>💽 Device Drivers</h3>
+        <p>• <strong>Packet transmission</strong> - Invio pacchetti su hardware</p>
+        <p>• <strong>Interrupt handling</strong> - Gestione eventi I/O</p>
+
+        <h3>🛡️ Firewall/Netfilter</h3>
+        <p>• <strong>Packet filtering</strong> - Controllo accessi basato regole</p>
+        <p>• <strong>NAT</strong> - Network Address Translation</p>
+
+        <h3>⚡ Performance Subsystems</h3>
+        <p>• <strong>Connection tracking</strong> - Monitoraggio stato connessioni</p>
+        <p>• <strong>Traffic shaping</strong> - Controllo velocità trasmissione</p>
+
+        <h2>🛠️ API di Programmazione</h2>
+        <p><strong>Le principali funzioni per lavorare con gli header di rete:</strong></p>
+
+        <h3>🔌 Socket Operations</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int socket(int domain, int type, int protocol);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un socket per comunicazione di rete.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Associa indirizzo locale al socket.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Stabilisce connessione con host remoto.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">ssize_t send(int sockfd, const void *buf, size_t len, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia dati attraverso connessione stabilita.</span>
+        </div>
+
+        <h3>📊 Network Configuration</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">ip addr add 192.168.1.100/24 dev eth0</code><br>
+            <span style="color: #666; font-size: 0.9em;">Configura indirizzo IP su interfaccia.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">ip route add default via 192.168.1.1</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta gateway predefinito per routing.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">iptables -A INPUT -p tcp --dport 80 -j ACCEPT</code><br>
+            <span style="color: #666; font-size: 0.9em;">Configura regole firewall per traffico HTTP.</span>
+        </div>
+
+        <h3>🔍 Packet Analysis</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">tcpdump -i eth0 tcp port 80 -w capture.pcap</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cattura traffico HTTP per analisi.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">wireshark capture.pcap</code><br>
+            <span style="color: #666; font-size: 0.9em;">Analizza pacchetti catturati con Wireshark.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">tshark -r capture.pcap -T fields -e ip.src -e ip.dst</code><br>
+            <span style="color: #666; font-size: 0.9em;">Estrai indirizzi IP dai pacchetti.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando navighi su un sito web:</strong></p>
+        <ol>
+            <li>Browser risolve nome dominio in IP</li>
+            <li>Crea connessione TCP sulla porta 80/443</li>
+            <li>Invia richiesta HTTP con header appropriati</li>
+            <li>Riceve risposta con contenuto e header</li>
+            <li>Chiude connessione TCP elegantemente</li>
+        </ol>
+        <p><em>Il Network Header rende trasparente tutta la complessità dei protocolli di rete</em></p>
+
+
+        <h2>🗺️ Mappa Architetturale degli Header di Rete</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura degli Header di Rete</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Browser Web<br>
+                    • Server HTTP<br>
+                    • Client Email<br>
+                    • Applicazioni di rete
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Socket Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔌 SOCKET LAYER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Socket API (BSD)<br>
+                    • Address binding<br>
+                    • Connection management<br>
+                    • Data buffering
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Network Header Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌐 NETWORK HEADER CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📦</div>
+                        <div style="font-size: 0.8em;">TCP/UDP</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌍</div>
+                        <div style="font-size: 0.8em;">IPv4/IPv6</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔀</div>
+                        <div style="font-size: 0.8em;">Routing</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">Checksum</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Header creation/modification<br>
+                    • Protocol coordination<br>
+                    • Checksum calculation<br>
+                    • Fragmentation handling
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Network Interfaces -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🌐</div>
+                    <div style="font-size: 0.8em; color: #666;">Ethernet</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">📶</div>
+                    <div style="font-size: 0.8em; color: #666;">WiFi</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔌</div>
+                    <div style="font-size: 0.8em; color: #666;">USB Ethernet</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🛰️</div>
+                    <div style="font-size: 0.8em; color: #666;">Virtual</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Physical Network -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🌍 RETE FISICA</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Switch/Router<br>
+                    • Cavi di rete<br>
+                    • Segnale elettrico<br>
+                    • Protocolli hardware
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dei pacchetti attraverso gli strati<br>
+                • Ogni strato aggiunge/rimuove header specifici<br>
+                • Il Network Header coordina la trasformazione dei pacchetti<br>
+                • L'integrazione hardware permette trasmissione efficiente
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Creazione Pacchetto</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Invio richiesta HTTP attraverso gli strati di rete</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🌐 Applicazione</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        GET /index.html HTTP/1.1<br>
+                        Host: example.com<br>
+                        User-Agent: Browser/1.0
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⬇️</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📦 Pacchetto Finale</div>
+                    <div style="font-family: monospace; font-size: 0.8em;">
+                        [Ethernet Header]<br>
+                        [IP Header: 192.168.1.100 → 93.184.216.34]<br>
+                        [TCP Header: Port 34567 → 80]<br>
+                        [HTTP Request Data]
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Processo di incapsulamento:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">HTTP → TCP → IP → Ethernet</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Trasformazione del pacchetto:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>T=0.001ms: Applicazione</strong> - Crea richiesta HTTP con dati applicativi</li>
+                    <li><strong>T=0.002ms: TCP Layer</strong> - Aggiunge header TCP (porte, sequence number, checksum)</li>
+                    <li><strong>T=0.003ms: IP Layer</strong> - Aggiunge header IP (indirizzi, TTL, protocollo)</li>
+                    <li><strong>T=0.004ms: Ethernet Layer</strong> - Aggiunge header Ethernet (MAC addresses, ethertype)</li>
+                    <li><strong>T=0.050ms: Trasmissione</strong> - Pacchetto inviato sulla rete fisica</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Un semplice messaggio applicativo diventa un pacchetto complesso con 4 livelli di header, pronto per il viaggio attraverso internet!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora gli Header di Rete</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti con gli header di rete</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Cattura pacchetti</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ sudo tcpdump -i eth0 -c 5 -vv<br>
+                        IP 192.168.1.100.34567 > 93.184.216.34.80: Flags [S]<br>
+                        IP 93.184.216.34.80 > 192.168.1.100.34567: Flags [S.]<br>
+                        IP 192.168.1.100.34567 > 93.184.216.34.80: Flags [.]
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi header TCP/IP in tempo reale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Configurazione rete</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ip addr show<br>
+                        2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP><br>
+                        inet 192.168.1.100/24 brd 192.168.1.255 scope global eth0<br>
+                        $ ip route show<br>
+                        default via 192.168.1.1 dev eth0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina configurazione indirizzi e routing</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Stato connessioni</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ss -tuln<br>
+                        Netid State  Recv-Q Send-Q Local Address:Port<br>
+                        tcp   LISTEN 0      128    0.0.0.0:22<br>
+                        tcp   ESTAB  0      0      192.168.1.100:34567<br>
+                        udp   UNCONN 0      0      0.0.0.0:68
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monitora socket e porte aperte</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Analisi pacchetti</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ tcpdump -i eth0 -w capture.pcap<br>
+                        $ wireshark capture.pcap<br>
+                        # Analizza header Ethernet, IP, TCP/UDP
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Cattura e analizza header completi</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📦</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Incapsulamento</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Ogni strato aggiunge il proprio header creando una struttura gerarchica. I dati applicativi vengono incapsulati attraverso TCP, IP, Ethernet.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔀</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Routing Intelligente</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Gli header IP contengono informazioni di routing che permettono ai pacchetti di trovare la strada corretta attraverso internet.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Checksum e Integrità</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Ogni header contiene checksum per verificare l'integrità dei dati. Errori di trasmissione vengono rilevati e corretti automaticamente.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌐</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Protocolli Complementari</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    TCP garantisce consegna affidabile, UDP velocità massima. Ogni protocollo ha header ottimizzati per il proprio scopo.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sugli Header di Rete
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa contiene un header IP?",
+            options: ["Indirizzi MAC", "Indirizzi IP sorgente e destinazione", "Dati applicativi", "Solo checksum"],
+            correct: 1,
+            explanation: "L'header IP contiene gli indirizzi IP sorgente e destinazione, TTL, protocollo, e altre informazioni di routing."
+        },
+        {
+            question: "Quale protocollo garantisce consegna affidabile?",
+            options: ["UDP", "TCP", "IP", "Ethernet"],
+            correct: 1,
+            explanation: "TCP garantisce consegna affidabile con ritrasmissione, controllo flusso e ordinamento pacchetti."
+        },
+        {
+            question: "Cosa fa il checksum negli header?",
+            options: ["Comprime i dati", "Verifica integrità pacchetto", "Crittografa i dati", "Instrada il pacchetto"],
+            correct: 1,
+            explanation: "Il checksum permette di verificare se il pacchetto è stato corrotto durante la trasmissione."
+        },
+        {
+            question: "Quale comando mostra le connessioni di rete?",
+            options: ["ps aux", "df -h", "netstat -tuln", "ls -la"],
+            correct: 2,
+            explanation: "netstat -tuln mostra tutte le connessioni TCP/UDP in ascolto e stabilite."
+        },
+        {
+            question: "Cosa significa TTL nell'header IP?",
+            options: ["Time To Live", "Total Transmission Length", "Transport Type Label", "Traffic Transfer Limit"],
+            correct: 0,
+            explanation: "TTL (Time To Live) limita la vita del pacchetto prevenendo loop infiniti nel routing."
+        },
+        {
+            question: "Quale strato aggiunge gli indirizzi MAC?",
+            options: ["Applicativo", "Trasporto", "Rete", "Collegamento"],
+            correct: 3,
+            explanation: "Il livello di collegamento (Ethernet) aggiunge gli indirizzi MAC hardware per la trasmissione locale."
+        },
+        {
+            question: "Cosa permette il port multiplexing?",
+            options: ["Connessioni multiple su stessa interfaccia", "Compressione dati", "Crittografia automatica", "Load balancing"],
+            correct: 0,
+            explanation: "Il port multiplexing permette multiple connessioni simultanee usando diverse porte TCP/UDP."
+        },
+        {
+            question: "Quale comando cattura pacchetti di rete?",
+            options: ["ping", "traceroute", "tcpdump", "nslookup"],
+            correct: 2,
+            explanation: "tcpdump cattura e analizza pacchetti di rete mostrando tutti gli header."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione degli Header di Rete! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare gli Header di Rete! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Gli Header di Rete sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

@@ -1,0 +1,103 @@
+/* style.css - aqua soft theme */
+:root{
+  --bg: #e8f7f9;
+  --card1: #bdefef;
+  --card2: #9edfe2;
+  --accent: #6fbfca;
+  --text: #21343a;
+  --muted: #536b6f;
+}
+*{box-sizing:border-box}
+body{font-family: Inter, Arial, Helvetica, sans-serif; margin:0; background:var(--bg); color:var(--text);}
+header{background:linear-gradient(90deg,var(--card1),var(--card2)); padding:28px 18px; text-align:center; border-bottom:1px solid rgba(0,0,0,0.05)}
+h1{margin:0; color:var(--text); font-size:28px}
+.subtitle{margin-top:6px; color:var(--muted); font-size:14px}
+
+.container{max-width:1200px; margin:24px auto; padding:0 16px; overflow: visible;}
+.grid{display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; align-items:stretch; overflow: visible;}
+
+/* cell */
+.cell{background:linear-gradient(180deg,var(--card1),var(--card2)); padding:10px; border-radius:6px; min-height:80px; display:flex; flex-direction:column; justify-content:center; text-align:center; border:1px solid rgba(0,0,0,0.06); transition:transform .18s ease, box-shadow .18s ease;}
+.cell:hover{transform:translateY(-4px); box-shadow: 0 10px 24px rgba(30,80,90,0.08); cursor:pointer; background:var(--accent); color:white;}
+.cell h3{margin:6px 0 4px; font-size:14px}
+.cell p{margin:0; font-size:12px; color:var(--muted)}
+
+/* responsive */
+@media (max-width:1000px){ .grid{grid-template-columns: repeat(4,1fr);} }
+@media (max-width:700px){ .grid{grid-template-columns: repeat(2,1fr);} }
+
+/* page */
+.page{max-width:900px; margin:28px auto; padding:20px; background:white; border-radius:8px; box-shadow:0 6px 18px rgba(20,60,70,0.05)}
+.page h2{margin-top:0; color:var(--text)}
+.meta{color:var(--muted); font-size:13px; margin-bottom:12px}
+.back{display:inline-block; margin-top:16px; padding:8px 12px; background:var(--card1); color:var(--text); border-radius:8px; text-decoration:none;}
+
+/* footer */
+footer{margin:36px 0 12px; text-align:center; color:var(--muted); font-size:13px}
+
+/* index-only stronger hover (only when body has .index) */
+body.index .cell{transition:transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease, z-index .18s ease}
+body.index .cell:hover{transform:translateX(-12px) translateY(-8px); box-shadow: 0 18px 40px rgba(30,80,90,0.12); z-index:5}
+
+/* Fix hover per le 3 celle cliccabili - tooltip a destra */
+body.index .cell[href*="detail-threads"],
+body.index .cell[href*="detail-synchronization"],
+body.index .cell[href*="detail-scheduler"] {
+    pointer-events: auto;
+    position: relative;
+    z-index: 20; /* Sempre sopra le altre celle */
+}
+
+body.index .cell[href*="detail-threads"]:hover,
+body.index .cell[href*="detail-synchronization"]:hover,
+body.index .cell[href*="detail-scheduler"]:hover {
+    transform: none;
+    box-shadow: 0 18px 40px rgba(30,80,90,0.12);
+    background: var(--accent);
+    color: white;
+}
+
+/* Tooltip per le 3 celle speciali */
+body.index .cell[href*="detail-threads"]::after,
+body.index .cell[href*="detail-synchronization"]::after,
+body.index .cell[href*="detail-scheduler"]::after {
+    content: 'Click per aprire';
+    position: absolute;
+    left: 110%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--accent);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(30,80,90,0.15);
+}
+
+body.index .cell[href*="detail-threads"]:hover::after,
+body.index .cell[href*="detail-synchronization"]:hover::after,
+body.index .cell[href*="detail-scheduler"]:hover::after {
+    opacity: 1;
+}
+
+/* side panels for non-index pages */
+.side-panel{position:fixed; top:0; bottom:0; width:220px; overflow:hidden; pointer-events:none; z-index:9999}
+.side-panel.left{left:0}
+.side-panel.right{right:0}
+.side-panel .viewport{position:absolute; inset:0; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-start;}
+.side-panel .list{padding:18px 12px; box-sizing:border-box; color:var(--text); font-size:14px; line-height:1.6;}
+.side-panel .item{padding:6px 0; white-space:nowrap; opacity:0.95}
+
+/* animations */
+.scroll-up{animation:scroll-up 18s linear infinite}
+.scroll-down{animation:scroll-down 18s linear infinite}
+@keyframes scroll-up{from{transform:translateY(0)} to{transform:translateY(-50%)}}
+@keyframes scroll-down{from{transform:translateY(-50%)} to{transform:translateY(0)}}
+
+/* reduce visual impact on small screens */
+@media (max-width:900px){ .side-panel{display:none} }

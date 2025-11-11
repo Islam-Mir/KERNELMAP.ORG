@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threads - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Threads</h1>
+        <p class="subtitle">Thread e Programmazione Concorrente</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🧵 GESTORE THREAD E CONCORRENZA</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>I Thread sono l'unità base di esecuzione nel kernel Linux, permettendo la concorrenza e il parallelismo all'interno dei processi attraverso la condivisione efficiente delle risorse.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un'orchestra dove ogni musicista (thread) suona la sua parte ma condivide lo spartito (memoria del processo), sotto la direzione del maestro (scheduler).</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>I Thread nel kernel Linux rappresentano l'unità minima di esecuzione schedulabile, permettendo ai programmi di eseguire multiple attività contemporaneamente attraverso la condivisione controllata delle risorse di un processo.</strong> Immagina un ristorante dove ogni cameriere lavora indipendentemente ma condivide la cucina e le ordinazioni, permettendo di servire più clienti contemporaneamente con massima efficienza.</p>
+
+        <p>• <strong>Unità di esecuzione</strong> - Thread come entità schedulabili indipendenti</p>
+        <p>• <strong>Condivisione risorse</strong> - Memoria, file descriptors, segnali condivisi</p>
+        <p>• <strong>Concorrenza leggera</strong> - Creazione e switching più efficienti dei processi</p>
+        <p>• <strong>Comunicazione efficiente</strong> - Accesso diretto alla memoria condivisa</p>
+        <p>• <strong>Sincronizzazione</strong> - Mutex, semafori, condition variables</p>
+        <p>• <strong>Modelli threading</strong> - 1:1, N:1, N:M mapping tra user e kernel threads</p>
+        <p><em>• Interazione: Scheduler gestisce thread come task indipendenti con priorità e politiche diverse</em></p>
+
+        <h2>⚙️ Modelli di Threading</h2>
+        <p><strong>Linux supporta diversi modelli di threading, ciascuno con caratteristiche specifiche:</strong></p>
+
+        <h3>1:1 Model (Kernel Threads)</h3>
+        <p>• <strong>Ogni user thread</strong> corrisponde a un kernel thread</p>
+        <p>• <strong>Vantaggi</strong> - Parallelismo reale, blocking I/O non blocca altri thread</p>
+        <p>• <strong>Svantaggi</strong> - Overhead creazione, limitato dal kernel</p>
+
+        <h3>N:1 Model (User Threads)</h3>
+        <p>• <strong>Multiple user thread</strong> mappati su un singolo kernel thread</p>
+        <p>• <strong>Vantaggi</strong> - Creazione veloce, portabilità, nessun limite kernel</p>
+        <p>• <strong>Svantaggi</strong> - Un thread bloccato blocca tutto il processo</p>
+
+        <h3>N:M Model (Hybrid)</h3>
+        <p>• <strong>M thread kernel</strong> per N thread user, mapping dinamico</p>
+        <p>• <strong>Vantaggi</strong> - Miglior compromesso prestazioni/scalabilità</p>
+        <p>• <strong>Svantaggi</strong> - Complessità implementazione</p>
+
+        <h2>📋 Struttura dei Thread</h2>
+        <p><strong>Ogni thread Linux è rappresentato da una struttura task_struct con informazioni complete:</strong></p>
+
+        <h3>🏗️ Task Structure</h3>
+        <ul>
+            <li><strong>Stato thread</strong> - Running, Ready, Blocked, Zombie</li>
+            <li><strong>Stack kernel</strong> - Stack privato per esecuzione in kernel mode</li>
+            <li><strong>Contesto CPU</strong> - Registri, flags, instruction pointer</li>
+            <li><strong>Priorità e policy</strong> - Scheduling parameters</li>
+            <li><strong>File descriptors</strong> - Puntatori a file aperti (condivisi)</li>
+            <li><strong>Signal handlers</strong> - Gestione segnali (condivisi)</li>
+        </ul>
+
+        <h3>🔄 Thread Groups</h3>
+        <ul>
+            <li><strong>Thread group leader</strong> - Thread principale del processo</li>
+            <li><strong>TGID (Thread Group ID)</strong> - Identificatore del gruppo</li>
+            <li><strong>Condivisione risorse</strong> - Memoria, segnali, file descriptors</li>
+            <li><strong>Exit notification</strong> - Gestione terminazione thread</li>
+        </ul>
+
+        <h3>⚡ Context Switching</h3>
+        <ul>
+            <li><strong>Salvataggio contesto</strong> - Registri, stack pointer, flags</li>
+            <li><strong>Switch stack</strong> - Cambio da kernel stack a user stack</li>
+            <li><strong>TLB flush</strong> - Invalida translation cache se necessario</li>
+            <li><strong>Cache pollution</strong> - Perdita locality di riferimento</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare i thread:</strong></p>
+        <ul>
+            <li><code>ps -T</code> - Mostra tutti i thread di ogni processo</li>
+            <li><code>top -H</code> - Monitor risorse per thread individuali</li>
+            <li><code>cat /proc/PID/task/</code> - Directory con info per ogni thread</li>
+            <li><code>pthreads</code> - Libreria per threading in user space</li>
+            <li><code>strace -f programma</code> - Trace system calls per thread</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Web Server</h3>
+        <p>Quando un web server riceve richieste multiple:</p>
+        <ol>
+            <li>Thread main accetta connessioni</li>
+            <li>Per ogni richiesta, crea nuovo thread worker</li>
+            <li>Thread worker elabora richiesta indipendentemente</li>
+            <li>Condivono pool di connessioni database</li>
+            <li>Scheduler bilancia carico tra CPU disponibili</li>
+        </ol>
+
+        <h2>🔧 Threading in Linux</h2>
+        <ul>
+            <li><strong>NPTL (Native POSIX Thread Library)</strong> - Implementazione standard Linux</li>
+            <li><strong>Clone system call</strong> - Creazione thread a basso livello</li>
+            <li><strong>Futex</strong> - Fast user-space mutex per sincronizzazione</li>
+            <li><strong>Thread-local storage</strong> - Variabili private per thread</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+        <ul>
+            <li><strong>CPU affinity</strong> - Binding thread a CPU specifiche</li>
+            <li><strong>Nice values</strong> - Controllo priorità thread</li>
+            <li><strong>Real-time scheduling</strong> - Policy SCHED_RR, SCHED_FIFO</li>
+            <li><strong>Thread cancellation</strong> - Terminazione thread sicura</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>I thread interagiscono con molti sottosistemi del kernel:</strong></p>
+
+        <h3>⚙️ Scheduler</h3>
+        <p>• <strong>CFS (Completely Fair Scheduler)</strong> - Scheduling fair tra thread</p>
+        <p>• <strong>Load balancing</strong> - Distribuzione thread tra CPU</p>
+
+        <h3>🧠 Memory Manager</h3>
+        <p>• <strong>Shared memory</strong> - Memoria condivisa tra thread</p>
+        <p>• <strong>Thread-local storage</strong> - Allocazione privata</p>
+
+        <h3>🔐 Synchronization</h3>
+        <p>• <strong>Mutex e semafori</strong> - Sincronizzazione thread</p>
+        <p>• <strong>Condition variables</strong> - Attesa eventi</p>
+
+        <h3>🌐 Signals</h3>
+        <p>• <strong>Signal handling</strong> - Gestione segnali per thread</p>
+        <p>• <strong>Signal masks</strong> - Mascheramento per-thread</p>
+
+        <h2>🛠️ API Threading</h2>
+        <p><strong>Le principali funzioni per gestire thread nei programmi:</strong></p>
+
+        <h3>📂 Creazione e Gestione</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un nuovo thread che esegue la funzione start_routine con argomento arg.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void pthread_exit(void *retval);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Termina il thread chiamante restituendo retval al thread che fa join.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int pthread_join(pthread_t thread, void **retval);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attende la terminazione del thread specificato e ottiene il valore di ritorno.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">pthread_t pthread_self(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Restituisce l'identificatore del thread chiamante.</span>
+        </div>
+
+        <h3>📊 Sincronizzazione</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int pthread_mutex_lock(pthread_mutex_t *mutex);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Blocca il mutex, attendendo se necessario fino a quando non diventa disponibile.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attende su una condition variable, rilasciando automaticamente il mutex.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int sem_wait(sem_t *sem);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Decrementa il semaforo, bloccando se il valore è zero.</span>
+        </div>
+
+        <h3>💽 Attributi Thread</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int pthread_attr_setdetachstate(pthread_attr_t *attr, int detachstate);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta se il thread sarà joinable o detached alla creazione.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int pthread_setschedparam(pthread_t thread, int policy, const struct sched_param *param);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta la politica di scheduling e priorità per un thread.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int pthread_setaffinity_np(pthread_t thread, size_t cpusetsize, const cpu_set_t *cpuset);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta l'affinità CPU per un thread specifico.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando un browser carica una pagina web:</strong></p>
+        <ol>
+            <li>Thread main gestisce interfaccia utente</li>
+            <li>Thread separato scarica HTML e risorse</li>
+            <li>Thread per immagini, CSS, JavaScript</li>
+            <li>Thread per rendering pagina</li>
+            <li>Sincronizzazione per aggiornare DOM</li>
+        </ol>
+        <p><em>I thread permettono interfaccia responsive mentre operazioni I/O avvengono in background</em></p>
+
+
+        <h2>🗺️ Mappa Architetturale dei Thread</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei Thread in Linux</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi multithread<br>
+                    • Librerie pthreads<br>
+                    • Web servers, database<br>
+                    • Thread pools
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Thread Library Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">📚 NPTL (Thread Library)</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • POSIX Thread API<br>
+                    • Thread creation/destruction<br>
+                    • Synchronization primitives<br>
+                    • Thread-local storage
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Kernel Thread Management -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🧵 KERNEL THREAD MANAGEMENT</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">Task Struct</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Context Switch</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚖️</div>
+                        <div style="font-size: 0.8em;">Scheduler</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔒</div>
+                        <div style="font-size: 0.8em;">Synchronization</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Thread creation/destruction<br>
+                    • Scheduling e priorità<br>
+                    • Sincronizzazione<br>
+                    • Resource sharing
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- CPU and Hardware -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🧠</div>
+                    <div style="font-size: 0.8em; color: #666;">CPU Cores</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾</div>
+                    <div style="font-size: 0.8em; color: #666;">Shared Memory</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔄</div>
+                    <div style="font-size: 0.8em; color: #666;">Context Switching</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">⚡</div>
+                    <div style="font-size: 0.8em; color: #666;">CPU Affinity</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔧 HARDWARE THREAD SUPPORT</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Multi-core CPUs<br>
+                    • Hyper-threading<br>
+                    • CPU registers<br>
+                    • Memory hierarchy
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dalla creazione thread alla esecuzione hardware<br>
+                • Ogni layer astrae i dettagli del layer sottostante<br>
+                • NPTL fornisce API standard mentre il kernel gestisce scheduling<br>
+                • I thread condivono risorse ma vengono schedulati indipendentemente
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Thread Pool</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Web server con thread pool per gestire richieste HTTP</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🌐 Client HTTP</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Richieste simultanee:<br>
+                        <span style="color: #666;">• GET /index.html</span><br>
+                        <span style="color: #666;">• GET /api/data</span><br>
+                        <span style="color: #666;">• POST /upload</span><br>
+                        <span style="color: #666;">• GET /images/logo.png</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🖥️ Web Server (Thread Pool)</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Thread pool workers:<br>
+                        <span style="color: #666;">• Thread-1: elabora GET /index.html</span><br>
+                        <span style="color: #666;">• Thread-2: elabora GET /api/data</span><br>
+                        <span style="color: #666;">• Thread-3: elabora POST /upload</span><br>
+                        <span style="color: #666;">• Thread-4: in coda...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Architettura thread pool:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">Main Thread → Queue ← Worker Threads → Processing</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Come funziona il thread pool:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>T=0.001s: Main thread</strong> - Accetta connessione e accoda richiesta nella work queue</li>
+                    <li><strong>T=0.002s: Worker thread idle</strong> - Thread libero prende richiesta dalla coda</li>
+                    <li><strong>T=0.003s: Processing</strong> - Thread elabora richiesta (lettura file, database query)</li>
+                    <li><strong>T=0.050s: Response</strong> - Thread invia risposta HTTP al client</li>
+                    <li><strong>T=0.051s: Thread returns</strong> - Thread torna al pool per servire prossima richiesta</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Vantaggi:</strong> Thread pool evita overhead creazione/distruzione thread, limita numero thread concorrenti, migliora cache locality e responsiveness del server.
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora i Thread</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti con i thread in Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Lista thread processo</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ps -T -p $(pidof firefox)<br>
+                        PID  SPID TTY      STAT   TIME COMMAND<br>
+                        1234 1234 pts/0    Sl     0:05 firefox<br>
+                        1234 1235 pts/0    Sl     0:01 firefox<br>
+                        1234 1236 pts/0    Sl     0:00 firefox
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i thread di un processo specifico</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Monitor thread con top</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ top -H<br>
+                        PID USER  PR  NI VIRT  RES  SHR S %CPU %MEM  TIME+ COMMAND<br>
+                        1234 user  20   0 1.2g 300m 100m S 15.0  3.0  0:05.32 Thread-1<br>
+                        1235 user  20   0 1.2g 300m 100m S 12.0  3.0  0:03.21 Thread-2
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monitora risorse usate da thread individuali</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Info thread specifiche</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/1234/task/1235/status<br>
+                        Name: Thread-1<br>
+                        State: S (sleeping)<br>
+                        Pid: 1235<br>
+                        PPid: 1234<br>
+                        TracerPid: 0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Informazioni dettagliate su un thread specifico</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ CPU affinity thread</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ taskset -c 0-3 programma &<br>
+                        $ taskset -p 1234<br>
+                        pid 1234's current affinity mask: f<br>
+                        $ taskset -p 1 1234
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla su quali CPU possono eseguire i thread</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🧵</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Concorrenza Leggera</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    I thread condivono memoria e risorse del processo ma vengono schedulati indipendentemente, permettendo concorrenza efficiente senza overhead dei processi.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Context Switching</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Il cambio tra thread è più veloce dei processi perché non richiede cambio di spazio di indirizzamento. Tuttavia, ogni switch ha comunque un costo in performance.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Race Conditions</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    L'accesso concorrente a dati condivisi può causare race conditions. Mutex, semafori e altre primitive di sincronizzazione sono essenziali per thread safety.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚖️</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Load Balancing</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Il kernel distribuisce thread tra CPU disponibili per massimizzare prestazioni. CPU affinity permette di controllare questa distribuzione per ottimizzazioni specifiche.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Thread
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa condividono i thread dello stesso processo?",
+            options: ["Solo il codice eseguibile", "Memoria, file descriptors e segnali", "Solo le variabili globali", "Niente, sono completamente indipendenti"],
+            correct: 1,
+            explanation: "I thread dello stesso processo condivono memoria virtuale, file descriptors aperti, handlers di segnale e altre risorse del processo."
+        },
+        {
+            question: "Qual è il vantaggio principale dei thread rispetto ai processi?",
+            options: ["Maggiore sicurezza", "Creazione e context switch più veloci", "Maggiore isolamento", "Minore consumo memoria"],
+            correct: 1,
+            explanation: "I thread hanno context switch più veloci e creazione meno costosa perché condividono lo stesso spazio di indirizzamento."
+        },
+        {
+            question: "Cosa fa pthread_join()?",
+            options: ["Crea un nuovo thread", "Termina il thread corrente", "Attende la terminazione di un thread", "Sincronizza l'accesso a una risorsa"],
+            correct: 2,
+            explanation: "pthread_join() blocca il thread chiamante fino a quando il thread specificato non termina, permettendo di ottenere il valore di ritorno."
+        },
+        {
+            question: "Cosa previene le race conditions?",
+            options: ["Thread pools", "Mutex e semafori", "CPU affinity", "Context switching"],
+            correct: 1,
+            explanation: "Mutex, semafori e altre primitive di sincronizzazione prevengono race conditions coordinando l'accesso a risorse condivise."
+        },
+        {
+            question: "Cosa mostra il comando 'ps -T'?",
+            options: ["Solo i processi attivi", "Thread di tutti i processi", "Solo i processi del kernel", "Statistiche di memoria"],
+            correct: 1,
+            explanation: "ps -T mostra tutti i thread di ogni processo, permettendo di vedere la struttura threading dei programmi."
+        },
+        {
+            question: "Quale modello di threading usa Linux?",
+            options: ["Solo user-level threads", "Solo kernel threads", "1:1 mapping (NPTL)", "N:1 mapping semplice"],
+            correct: 2,
+            explanation: "Linux usa NPTL (Native POSIX Thread Library) che implementa un modello 1:1, dove ogni thread user corrisponde a un thread kernel."
+        },
+        {
+            question: "Cosa permette CPU affinity?",
+            options: ["Controllare priorità thread", "Vincolare thread a CPU specifiche", "Sincronizzare thread", "Creare nuovi thread"],
+            correct: 1,
+            explanation: "CPU affinity permette di controllare su quali CPU core possono eseguire specifici thread, utile per ottimizzazioni prestazionali e isolamento."
+        },
+        {
+            question: "Quale libreria implementa threading in Linux?",
+            options: ["glibc", "NPTL", "uClibc", "musl"],
+            correct: 1,
+            explanation: "NPTL (Native POSIX Thread Library) è l'implementazione Linux delle POSIX threads, che fornisce il mapping 1:1 tra thread user e kernel."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione dei Thread! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare i Thread! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! I Thread sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

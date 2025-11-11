@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGICAL FUNCTIONS - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>LOGICAL FUNCTIONS</h1>
+        <p class="subtitle">Funzioni Logiche del Sistema</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🧠 FUNZIONI LOGICHE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Le Logical Functions rappresentano le funzioni logiche fondamentali che gestiscono l'elaborazione dei dati e le operazioni computazionali nel sistema operativo Linux.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come il cervello di un computer: riceve input, elabora informazioni attraverso algoritmi logici, e produce output attraverso decisioni binarie e operazioni matematiche.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Le Logical Functions sono il motore computazionale del sistema operativo Linux, gestendo tutte le operazioni logiche e matematiche fondamentali.</strong> Immagina un'orchestra di circuiti logici che lavorano in armonia: porte AND, OR, XOR, flip-flop, e algoritmi complessi che trasformano input grezzi in informazioni elaborate.</p>
+
+        <p>• <strong>Elaborazione booleana</strong> - Operazioni logiche fondamentali (AND, OR, NOT, XOR) alla base di ogni decisione</p>
+        <p>• <strong>Calcolo aritmetico</strong> - Operazioni matematiche (addizione, sottrazione, moltiplicazione, divisione) con gestione overflow</p>
+        <p>• <strong>Controllo di flusso</strong> - Istruzioni condizionali e cicli che determinano il percorso di esecuzione</p>
+        <p>• <strong>Gestione bit</strong> - Manipolazione di singoli bit per ottimizzazioni e controllo hardware</p>
+        <p>• <strong>Algoritmi crittografici</strong> - Funzioni hash, crittografia simmetrica/asimmetrica per sicurezza</p>
+        <p>• <strong>Elaborazione vettoriale</strong> - Operazioni SIMD per elaborazione parallela di dati</p>
+        <p><em>• Interazione: Riceve dati grezzi dall'hardware e li trasforma in informazioni significative per il software applicativo</em></p>
+
+        <h2>⚙️ Operazioni Principali</h2>
+        <p><strong>Le Logical Functions gestiscono quattro categorie fondamentali di operazioni logiche, ciascuna essenziale per l'elaborazione dei dati:</strong></p>
+
+        <h3>🔢 Operazioni Aritmetiche</h3>
+        <p>• <strong>add/sub()</strong> - Addizione e sottrazione con gestione overflow e carry</p>
+        <p>• <strong>mul/div()</strong> - Moltiplicazione e divisione con precisione estesa</p>
+        <p>• <strong>mod()</strong> - Operazione modulo per calcoli ciclici</p>
+        <p>• <strong>inc/dec()</strong> - Incremento/decremento ottimizzato</p>
+        <p>• <strong>neg()</strong> - Negazione aritmetica con complemento a due</p>
+
+        <h3>🔀 Operazioni Logiche</h3>
+        <p>• <strong>and/or/xor()</strong> - Operazioni bit-wise fondamentali</p>
+        <p>• <strong>not()</strong> - Negazione logica bit per bit</p>
+        <p>• <strong>shift()</strong> - Spostamenti logici e aritmetici</p>
+        <p>• <strong>rotate()</strong> - Rotazioni circolari per crittografia</p>
+        <p>• <strong>test()</strong> - Verifica condizioni senza modificare operandi</p>
+
+        <h3>🧮 Operazioni Avanzate</h3>
+        <p>• <strong>cmp()</strong> - Confronto tra valori con flag di stato</p>
+        <p>• <strong>min/max()</strong> - Determinazione valori estremi</p>
+        <p>• <strong>abs()</strong> - Valore assoluto</p>
+        <p>• <strong>sign()</strong> - Estrazione segno</p>
+        <p>• <strong>round()</strong> - Arrotondamento matematico</p>
+
+        <h3>🔐 Operazioni Crittografiche</h3>
+        <p>• <strong>hash()</strong> - Funzioni hash crittografiche (SHA, MD5)</p>
+        <p>• <strong>encrypt/decrypt()</strong> - Crittografia simmetrica</p>
+        <p>• <strong>sign/verify()</strong> - Firma digitale e verifica</p>
+        <p>• <strong>random()</strong> - Generazione numeri casuali sicuri</p>
+        <p>• <strong>checksum()</strong> - Calcolo somme di controllo</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando apri un file come /home/user/documento.txt, ecco cosa succede nel VFS:</strong></p>
+
+        <h3>🔍 Risoluzione del Percorso</h3>
+        <p>1. Il VFS divide "/home/user/documento.txt" in componenti: "home" → "user" → "documento.txt"</p>
+        <p>2. Per ogni componente, cerca nella dentry cache se esiste già una traduzione</p>
+        <p>3. Se non trova, chiede al filesystem (ext4) di cercare nel disco</p>
+        <p>4. Il filesystem restituisce l'inode corrispondente</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>inode (index node)</strong> - Contiene tutti i metadati di un file: permessi, dimensione, date, puntatori ai blocchi dati. È come la "carta d'identità" del file</li>
+            <li><strong>dentry (directory entry)</strong> - Collega un nome (es. "documento.txt") al suo inode. È la "voce del dizionario" che traduce nomi in indirizzi</li>
+            <li><strong>file object</strong> - Rappresenta un file aperto da un processo specifico. Tiene traccia della posizione corrente, dei flags di apertura, etc.</li>
+            <li><strong>superblock</strong> - Contiene informazioni globali del filesystem: dimensione totale, blocchi liberi, tipo di filesystem, parametri di tuning</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare il VFS:</strong></p>
+        <ul>
+            <li><code>ls -i file.txt</code> - Mostra il numero inode del file</li>
+            <li><code>stat file.txt</code> - Visualizza tutti i metadati dell'inode</li>
+            <li><code>df -h</code> - Mostra i superblock dei filesystem montati</li>
+            <li><code>mount</code> - Elenca tutti i filesystem montati</li>
+            <li><code>find / -inum 12345</code> - Trova file per numero inode</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Apertura di un File</h3>
+        <p>Quando fai <code>cat /etc/passwd</code>:</p>
+        <ol>
+            <li>VFS risolve percorso: "/" (root) → "etc" → "passwd"</li>
+            <li>Per ogni directory, carica l'inode e cerca il nome successivo</li>
+            <li>Trova l'inode del file passwd e crea un file object</li>
+            <li>Legge i blocchi dati puntati dall'inode</li>
+            <li>Restituisce il contenuto al comando cat</li>
+        </ol>
+
+        <h2>💾 Filesystem Supportati</h2>
+        <ul>
+            <li><strong>ext4</strong> - Filesystem nativo Linux</li>
+            <li><strong>btrfs</strong> - Moderno con snapshot e checksum</li>
+            <li><strong>xfs</strong> - High-performance journaling</li>
+            <li><strong>nfs</strong> - Network File System</li>
+            <li><strong>procfs</strong> - Process information pseudo-fs</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Unified API</strong> - Stessa interfaccia per tutti FS</li>
+            <li><strong>Caching</strong> - Buffer e page cache integrate</li>
+            <li><strong>Permissions</strong> - Modello Unix completo</li>
+            <li><strong>Mounting</strong> - Gerarchia unificata</li>
+            <li><strong>Hotplug</strong> - Supporto dispositivi rimovibili</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Il VFS è il "collante" che tiene insieme molti sottosistemi del kernel Linux:</strong></p>
+
+        <h3>💾 Storage Layer (Block Device)</h3>
+        <p>• <strong>Block layer</strong> - Gestisce la comunicazione con dischi, SSD, e altri dispositivi a blocchi. Il VFS chiede "dammi il blocco N" e il block layer si occupa dei dettagli hardware</p>
+        <p>• <strong>Device mapper</strong> - Permette LVM, RAID software, encryption trasparenti</p>
+
+        <h3>🌐 Network Stack</h3>
+        <p>• <strong>NFS client</strong> - Monta filesystem remoti come se fossero locali</p>
+        <p>• <strong>CIFS/SMB</strong> - Accesso a condivisioni Windows</p>
+        <p>• <strong>9P</strong> - Protocollo usato in container e virtualizzazione</p>
+
+        <h3>🧠 Memory Manager</h3>
+        <p>• <strong>Page cache</strong> - Cache intelligente che mantiene in RAM i dati più usati, riducendo accessi al disco</p>
+        <p>• <strong>Buffer cache</strong> - Cache per metadata dei filesystem</p>
+        <p>• <strong>Memory-mapped files</strong> - Permette di trattare file come se fossero memoria</p>
+
+        <h3>🔐 Security Framework</h3>
+        <p>• <strong>POSIX ACLs</strong> - Controllo accessi avanzato oltre i permessi Unix tradizionali</p>
+        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control per sicurezza avanzata</p>
+        <p>• <strong>Capabilities</strong> - Permessi granulari per processi privilegiati</p>
+
+        <h3>⚡ Performance Subsystems</h3>
+        <p>• <strong>IO scheduler</strong> - Ottimizza l'ordine delle operazioni I/O per ridurre seek time</p>
+        <p>• <strong>Writeback</strong> - Scrive dati modificati in background per non bloccare applicazioni</p>
+        <p>• <strong>Read-ahead</strong> - Pre-carica dati che probabilmente saranno richiesti</p>
+
+        <h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le funzioni che ogni programmatore usa quotidianamente, spesso senza sapere che parlano con il VFS:</strong></p>
+
+        <h3>📂 Gestione File Base</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre un file e restituisce un file descriptor. Il VFS risolve il pathname e chiama il filesystem specifico.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge dati dal file nel buffer. Il VFS coordina con il page cache per evitare accessi disco inutili.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive dati nel file. I dati vanno prima nel page cache, poi vengono scritti su disco in background.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Forza la scrittura di dati buffered.</span>
+        </div>
+
+        <h3>📊 Metadata e Navigazione</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni complete sul file (dimensione, permessi, date). Legge dall'inode.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">DIR *opendir(const char *name);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre una directory per la navigazione. Crea un context per readdir().</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry della directory. Restituisce nome file e tipo.</span>
+        </div>
+
+        <h3>💽 Gestione Filesystem</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Monta un dispositivo nel filesystem tree. Il VFS registra il nuovo filesystem.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int umount(const char *target);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Smonta un filesystem. Il VFS rimuove tutti i riferimenti e invalida le cache.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando copi un file con cp:</strong></p>
+        <ol>
+            <li><code>open(file_sorgente, O_RDONLY)</code> - Apre file sorgente</li>
+            <li><code>open(file_destinazione, O_WRONLY|O_CREAT)</code> - Crea/apre destinazione</li>
+            <li>Ciclo: <code>read()</code> dal sorgente, <code>write()</code> nella destinazione</li>
+            <li><code>close()</code> entrambi i file</li>
+        </ol>
+        <p><em>Tutto questo passa attraverso il VFS, che nasconde se i file sono su ext4, NFS, o qualsiasi altro filesystem!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Virtual File System</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi (cat, cp, ls)<br>
+                    • Librerie (glibc)<br>
+                    • System Calls
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Call Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • open() • read() • write()<br>
+                    • stat() • mkdir() • mount()<br>
+                    • Interfaccia uniforme
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- VFS Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 VFS CORE (Virtual File System)</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
+                        <div style="font-size: 0.8em;">inode</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
+                        <div style="font-size: 0.8em;">dentry</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">file</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
+                        <div style="font-size: 0.8em;">superblock</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Caching intelligente<br>
+                    • API uniforme<br>
+                    • Gestione metadati
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Filesystem Implementations -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
+                    <div style="font-size: 0.8em; color: #666;">Linux nativo</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
+                    <div style="font-size: 0.8em; color: #666;">Snapshot & checksum</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
+                    <div style="font-size: 0.8em; color: #666;">Network FS</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
+                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Storage Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Block Devices (HDD, SSD)<br>
+                    • Network Storage (SAN, NAS)<br>
+                    • Virtual Storage (RAID, LVM)
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste I/O<br>
+                • Ogni layer astrae i dettagli del layer sottostante<br>
+                • Il VFS è il "traduttore universale" che rende tutto uniforme<br>
+                • Gli stessi comandi funzionano su qualsiasi storage sottostante
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Come Funziona il VFS</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Copia di un file tra filesystem diversi</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 File sorgente su EXT4</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        /home/user/documento.txt<br>
+                        <span style="color: #666;">(filesystem: ext4, device: /dev/sda1)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 Destinazione su NFS</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        /mnt/server/backup.txt<br>
+                        <span style="color: #666;">(filesystem: nfs, server: 192.168.1.100)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">cp /home/user/documento.txt /mnt/server/backup.txt</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Risoluzione percorsi:</strong> VFS traduce entrambi i path in inode</li>
+                    <li><strong>2. Lettura EXT4:</strong> VFS chiama le funzioni di ext4 per leggere i dati</li>
+                    <li><strong>3. Scrittura NFS:</strong> VFS chiama le funzioni NFS per scrivere sulla rete</li>
+                    <li><strong>4. Caching intelligente:</strong> I dati passano attraverso il page cache</li>
+                    <li><strong>5. Trasparenza totale:</strong> L'utente non sa che sta copiando tra dispositivi diversi!</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Il comando <code>cp</code> funziona esattamente allo stesso modo, che il file sia su disco locale, USB, o server remoto. Il VFS rende tutto uniforme!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora il VFS</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -i /etc/passwd<br>
+                        12345678 /etc/passwd<br><br>
+                        $ stat /etc/passwd<br>
+                        File: /etc/passwd<br>
+                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
+                        Inode: 12345678 Links: 1
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ mount<br>
+                        /dev/sda1 on / type ext4<br>
+                        /dev/sdb1 on /home type ext4<br>
+                        server:/share on /mnt/nfs type nfs
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ iostat -x 1<br>
+                        Device r/s w/s rkB/s wkB/s<br>
+                        sda 15.0 25.0 120.0 200.0<br>
+                        nfs 2.0 8.0 16.0 64.0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/slabinfo | grep dentry<br>
+                        $ cat /proc/slabinfo | grep inode
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Astrazione Universale</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Il VFS nasconde tutte le differenze tra filesystem. EXT4, BTRFS, NFS, FAT32... per il programmatore sono tutti uguali!
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Performance Intelligente</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Caching multi-livello, read-ahead, write-back... il VFS ottimizza automaticamente l'accesso ai dati.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Estensibilità</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Nuovi filesystem si "agganciano" al VFS senza cambiare il resto del sistema operativo.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza Integrata</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Controllo accessi, audit trail, supporto per SELinux e AppArmor integrati nel VFS.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz su Funzioni Logiche
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+                const quizQuestions = [
+        {
+            question: "Quale è il compito principale delle logical functions nel kernel?",
+            options: ["Gestire operazioni logiche CPU", "Fornire interfacce VFS e system call", "Gestire memoria logica", "Schedulare processi"],
+            correct: 1,
+            explanation: "Le funzioni logiche forniscono interfacce astratte come VFS e system call."
+        },
+        {
+            question: "Quale struttura rappresenta un file aperto nel kernel?",
+            options: ["struct file_entry", "struct file", "struct file_struct", "struct inode"],
+            correct: 1,
+            explanation: "struct file rappresenta un file aperto in un processo nel kernel."
+        },
+        {
+            question: "Quale è il ruolo di struct inode nel VFS?",
+            options: ["Rappresentare un file aperto", "Memorizzare metadati del file", "Gestire permessi di accesso", "Tutte le precedenti"],
+            correct: 3,
+            explanation: "struct inode memorizza metadati, permessi, e rappresenta il file nel filesystem."
+        },
+        {
+            question: "Come identifica il kernel un file?",
+            options: ["Con il nome", "Con inode number", "Con file descriptor", "Con path completo"],
+            correct: 1,
+            explanation: "Il kernel identifica internamente i file con inode numbers, non nomi."
+        },
+        {
+            question: "Quale è il significato di file descriptor?",
+            options: ["Metadati del file", "Descrizione testuale", "Indice nella file descriptor table del processo", "Percorso del file"],
+            correct: 2,
+            explanation: "Un file descriptor è un indice in una tabella che mappa a struct file."
+        },
+        {
+            question: "Quale è la funzione di VFS nel kernel?",
+            options: ["Virtualizzare filesystem", "Fornire interfaccia astratta ai filesystem", "Unificare diversi filesystem", "Tutte le precedenti"],
+            correct: 3,
+            explanation: "VFS virtualizza filesystem fornendo interfaccia astratta e unificata."
+        },
+        {
+            question: "Come trasla il kernel da pathname a inode?",
+            options: ["Name lookup", "Path traversal", "Name resolution", "Tutte le precedenti"],
+            correct: 3,
+            explanation: "Il kernel usa name lookup/resolution per trovare inode da un pathname."
+        },
+        {
+            question: "Quale struttura kernel rappresenta una directory?",
+            options: ["struct directory", "struct dentry", "struct dir_entry", "struct dirent"],
+            correct: 1,
+            explanation: "struct dentry (directory entry) representa una entry nel filesystem cache del kernel."
+        },
+        {
+            question: "Cosa memorizza la dentru cache del VFS?",
+            options: ["Nomi file recentemente accessati", "Mapping pathname a inode", "Metadati di filesystem", "Tutto quanto sopra"],
+            correct: 3,
+            explanation: "La dcache memorizza nomi, inode mapping, e ottimizza ricerche di path."
+        },
+        {
+            question: "Come gestisce il VFS permessi di accesso a file?",
+            options: ["Tramite ACL solo", "Tramite inode permissions (uid/gid/mode)", "Tramite SELinux", "Tutte le precedenti"],
+            correct: 3,
+            explanation: "Il VFS gestisce permessi tramite mode bits tradizionali, ACL, e SELinux."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRIDGES - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+        
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    
+        .nav-buttons-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>BRIDGES</h1>
+        <p class="subtitle">Bridge di rete e forwarding</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🌉 BRIDGE RETE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Il bridge di rete è un dispositivo che collega più segmenti di rete, operando al livello Data Link (Layer 2) del modello OSI. Nel kernel Linux, il bridging permette di creare reti virtuali che connettono interfacce fisiche e virtuali, facilitando il forwarding trasparente dei pacchetti.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un incrocio stradale intelligente: invece di un semaforo che ferma tutto il traffico, un bridge osserva il flusso dei veicoli (pacchetti) e li dirige verso la strada corretta senza interruzioni, creando un flusso continuo e trasparente tra diverse direzioni.</p>
+
+<h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Il bridge nel kernel Linux è implementato attraverso il modulo bridge.ko e fornisce funzionalità di Layer 2 forwarding, learning e filtering.</strong> Immagina di avere un ristorante con diverse sale (reti) collegate da un maître esperto (bridge) che sa esattamente dove sedere ogni cliente (pacchetto) basandosi sui loro biglietti da visita (indirizzi MAC).</p>
+
+        <p>• <strong>Forwarding trasparente</strong> - Inoltra pacchetti tra interfacce senza modificare gli indirizzi Layer 2</p>
+        <p>• <strong>Learning automatico</strong> - Impara dinamicamente quali MAC address sono raggiungibili su quali porte</p>
+        <p>• <strong>Flooding controllato</strong> - Gestisce pacchetti broadcast e unknown unicast in modo intelligente</p>
+        <p>• <strong>STP support</strong> - Previene loop di rete attraverso Spanning Tree Protocol</p>
+        <p>• <strong>VLAN awareness</strong> - Supporta segmentazione logica della rete attraverso VLAN</p>
+        <p>• <strong>Filtering avanzato</strong> - Permette regole di firewalling al livello bridge</p>
+        <p><em>• Interazione: Riceve pacchetti dalle interfacce di rete e decide se forwardarli, droppare o processarli localmente</em></p>
+
+<h2>⚙️ Operazioni Principali</h2>
+        <p><strong>Il bridge gestisce quattro categorie principali di operazioni per il forwarding intelligente dei pacchetti:</strong></p>
+
+        <h3>🔄 Forwarding e Learning</h3>
+        <p>• <strong>br_forward()</strong> - Inoltra pacchetti unicast tra porte basandosi sulla forwarding database</p>
+        <p>• <strong>br_fdb_update()</strong> - Aggiorna la forwarding database con nuovi MAC address appresi</p>
+        <p>• <strong>br_flood()</strong> - Invia pacchetti broadcast/unknown su tutte le porte appropriate</p>
+        <p>• <strong>br_handle_frame()</strong> - Gestisce l'arrivo di nuovi frame e decide l'azione da intraprendere</p>
+
+        <h3>🌉 Gestione Bridge</h3>
+        <p>• <strong>br_add_bridge()</strong> - Crea una nuova istanza di bridge device</p>
+        <p>• <strong>br_add_if()</strong> - Aggiunge un'interfaccia al bridge</p>
+        <p>• <strong>br_del_if()</strong> - Rimuove un'interfaccia dal bridge</p>
+        <p>• <strong>br_set_ageing_time()</strong> - Configura il timeout per le entries della FDB</p>
+
+        <h3>🛡️ Sicurezza e Filtering</h3>
+        <p>• <strong>br_fdb_delete()</strong> - Rimuove entries specifiche dalla forwarding database</p>
+        <p>• <strong>br_set_promisc()</strong> - Configura la modalità promiscua per sniffing</p>
+        <p>• <strong>br_filter()</strong> - Applica regole di filtering sui pacchetti</p>
+        <p>• <strong>br_stp_set_enabled()</strong> - Abilita/disabilita Spanning Tree Protocol</p>
+
+        <h3>📊 Monitoraggio e Debug</h3>
+        <p>• <strong>br_show_fdb()</strong> - Mostra il contenuto della forwarding database</p>
+        <p>• <strong>br_get_stats()</strong> - Ottiene statistiche di traffico per porta</p>
+        <p>• <strong>br_read_config()</strong> - Legge la configurazione corrente del bridge</p>
+        <p>• <strong>br_dev_ioctl()</strong> - Interfaccia ioctl per configurazione runtime</p>
+
+<h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando colleghi due reti Ethernet attraverso un bridge Linux, ecco cosa succede dietro le quinte:</strong></p>
+
+        <h3>🔍 Configurazione Base</h3>
+        <p>1. Creazione del bridge device virtuale con brctl addbr br0</p>
+        <p>2. Aggiunta delle interfacce fisiche eth0 e eth1 al bridge</p>
+        <p>3. Attivazione del bridge con ip link set br0 up</p>
+        <p>4. Il bridge inizia a imparare gli indirizzi MAC dal traffico</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>net_bridge</strong> - Struttura principale che rappresenta un bridge device, contiene configurazione globale e puntatori alle strutture ausiliarie</li>
+            <li><strong>net_bridge_port</strong> - Rappresenta una porta del bridge, collega l'interfaccia fisica al bridge logico</li>
+            <li><strong>net_bridge_fdb_entry</strong> - Entry della Forwarding Database che mappa MAC address a porte del bridge</li>
+            <li><strong>br_config</strong> - Struttura di configurazione che contiene parametri come ageing time, STP settings, etc.</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare i bridge:</strong></p>
+        <ul>
+            <li><code>brctl show</code> - Mostra tutti i bridge attivi e le loro porte</li>
+            <li><code>brctl showmacs br0</code> - Visualizza la forwarding database del bridge</li>
+            <li><code>ip link show type bridge</code> - Mostra i bridge device con iproute2</li>
+            <li><code>bridge fdb show</code> - Mostra la forwarding database con il nuovo comando bridge</li>
+            <li><code>bridge link show</code> - Mostra le porte del bridge e il loro stato</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Routing tra VLAN</h3>
+        <p>Quando configuri un bridge con VLAN tagging:</p>
+        <ol>
+            <li>Un pacchetto VLAN 10 arriva su eth0 taggato</li>
+            <li>Il bridge riconosce il tag VLAN e consulta la FDB specifica per VLAN 10</li>
+            <li>Trova che il MAC destinazione è su eth2</li>
+            <li>Inoltra il pacchetto mantenendo il tag VLAN intatto</li>
+        </ol>
+
+<h2>💾 Protocolli e Standard Supportati</h2>
+        <ul>
+            <li><strong>802.1D STP</strong> - Spanning Tree Protocol per prevenzione loop</li>
+            <li><strong>802.1Q VLAN</strong> - Supporto per Virtual LAN e trunking</li>
+            <li><strong>802.1X</strong> - Port-based Network Access Control</li>
+            <li><strong>IGMP/MLD snooping</strong> - Ottimizzazione traffico multicast</li>
+            <li><strong>DHCP snooping</strong> - Sicurezza per protocolli DHCP</li>
+            <li><strong>BPDU Guard</strong> - Protezione contro bridge non autorizzati</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Trasparente</strong> - I dispositivi collegati non sanno di essere su un bridge</li>
+            <li><strong>Auto-learning</strong> - Impara automaticamente la topologia di rete</li>
+            <li><strong>High-performance</strong> - Forwarding a velocità wire con hardware acceleration</li>
+            <li><strong>VLAN-capable</strong> - Supporto completo per segmentazione logica</li>
+            <li><strong>Security-aware</strong> - Integrazione con firewall e sicurezza di rete</li>
+        </ul>
+
+<h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Il bridge è il "ponte" tra il mondo fisico delle interfacce di rete e il mondo virtuale del networking Linux:</strong></p>
+
+        <h3>🌐 Network Stack</h3>
+        <p>• <strong>Netfilter</strong> - Integrazione con iptables per filtering al livello bridge (ebtables). Il bridge può applicare regole di firewall sui pacchetti forwarded</p>
+        <p>• <strong>Routing subsystem</strong> - Collabora con il router per decisioni di forwarding Layer 3 quando necessario</p>
+
+        <h3>🔧 Device Drivers</h3>
+        <p>• <strong>Network drivers</strong> - Riceve pacchetti dai driver delle schede di rete e li elabora prima del forwarding</p>
+        <p>• <strong>Virtual devices</strong> - Supporta interfacce virtuali come tap, veth per container e virtualizzazione</p>
+
+        <h3>🛡️ Security Framework</h3>
+        <p>• <strong>SELinux/AppArmor</strong> - Può applicare policy di sicurezza specifiche per il traffico bridged</p>
+        <p>• <strong>Netfilter hooks</strong> - Punti di aggancio per moduli di sicurezza nel flusso dei pacchetti</p>
+
+        <h3>📊 Monitoring Tools</h3>
+        <p>• <strong>procfs/sysfs</strong> - Esporta statistiche e configurazione attraverso /proc/net/bridge/ e /sys/class/net/</p>
+        <p>• <strong>Netlink</strong> - Interfaccia per monitoraggio e configurazione programmatica dei bridge</p>
+
+<h2>🛠️ API e Interfacce</h2>
+        <p><strong>Queste sono le interfacce principali per configurare e monitorare i bridge nel kernel Linux:</strong></p>
+
+        <h3>🔧 Configurazione Bridge</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int br_add_bridge(struct net *net, const char *name);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un nuovo bridge device con il nome specificato nella rete netns.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int br_add_if(struct net_bridge *br, struct net_device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Aggiunge un'interfaccia di rete al bridge specificato.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int br_del_if(struct net_bridge *br, struct net_device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove un'interfaccia dal bridge e ripristina la sua configurazione originale.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void br_fdb_update(struct net_bridge *br, struct net_bridge_port *source, const unsigned char *addr, u16 vid);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Aggiorna la forwarding database con un nuovo indirizzo MAC appreso.</span>
+        </div>
+
+        <h3>📊 Monitoraggio e Statistiche</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">struct net_bridge_fdb_entry *br_fdb_find_port(struct net_bridge *br, const unsigned char *addr, u16 vid);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cerca un indirizzo MAC nella forwarding database del bridge.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void br_show_stats(struct seq_file *seq, struct net_bridge *br);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mostra statistiche dettagliate del bridge per debugging.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int br_get_link_af_spec(struct net_bridge_port *p, struct nlattr *af_spec);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni specifiche del link per l'interfaccia Netlink.</span>
+        </div>
+
+        <h3>🔄 Forwarding Engine</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int br_handle_frame(struct sk_buff *skb);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Funzione principale che gestisce l'arrivo di un frame sul bridge.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void br_flood(struct net_bridge *br, struct sk_buff *skb, struct net_bridge_port *p, bool forward);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Inoltra un pacchetto broadcast su tutte le porte appropriate del bridge.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando crei una rete virtuale per container:</strong></p>
+        <ol>
+            <li><code>ip link add br0 type bridge</code> - Crea il bridge device</li>
+            <li><code>ip link set eth0 master br0</code> - Aggiunge interfaccia fisica</li>
+            <li><code>ip link add veth0 type veth peer name veth1</code> - Crea interfaccia virtuale</li>
+            <li><code>ip link set veth1 master br0</code> - Connette container al bridge</li>
+        </ol>
+        <p><em>Il bridge rende possibile la comunicazione trasparente tra container e rete esterna, aprendendo dinamicamente gli indirizzi MAC!</em></p>
+
+<h2>🗺️ Architettura del Bridge Subsystem</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Bridge Subsystem</h3>
+
+            <!-- User Space Tools -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ STRUMENTI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • brctl (legacy)<br>
+                    • iproute2 (bridge)<br>
+                    • NetworkManager<br>
+                    • Configurazione bridge
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Netlink/Syscall Interface -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 NETLINK/SYSCALL INTERFACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • RTM_NEWLINK • RTM_DELLINK<br>
+                    • RTM_GETLINK • Bridge attributes<br>
+                    • ioctl() per configurazione
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Bridge Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌉 BRIDGE CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🏗️</div>
+                        <div style="font-size: 0.8em;">net_bridge</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔌</div>
+                        <div style="font-size: 0.8em;">net_bridge_port</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 0.8em;">fdb_entry</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">br_config</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Forwarding Database<br>
+                    • STP State Machine<br>
+                    • VLAN Processing
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Network Interfaces -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🌐 ETHERNET</div>
+                    <div style="font-size: 0.8em; color: #666;">Interfacce fisiche</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🔗 VETH</div>
+                    <div style="font-size: 0.8em; color: #666;">Virtual Ethernet</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🖧 TAP</div>
+                    <div style="font-size: 0.8em; color: #666;">Virtual TAP</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">📡 WIRELESS</div>
+                    <div style="font-size: 0.8em; color: #666;">WiFi bridging</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware/Network Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE/NETWORK LAYER</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Network Interface Cards<br>
+                    • Switch Hardware<br>
+                    • Virtual Network Devices<br>
+                    • Packet Forwarding
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dei pacchetti attraverso il bridge<br>
+                • Ogni layer gestisce aspetti specifici del forwarding<br>
+                • Il bridge core è il cervello che decide dove inoltrare i pacchetti<br>
+                • Le interfacce possono essere fisiche o virtuali (container, VM)
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento del Bridge</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona il forwarding nel bridge</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Pacchetto in Arrivo</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        Frame Ethernet:<br>
+        - MAC src: AA:BB:CC:11:22:33<br>
+        - MAC dst: DD:EE:FF:44:55:66<br>
+        - VLAN: 10 (tagged)<br>
+        - Protocollo: IPv4
+        </div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔍 Consultazione FDB</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        Lookup nella Forwarding DB:<br>
+        - MAC DD:EE:FF:44:55:66 → Porta 3<br>
+        - VLAN 10 → Bridge instance<br>
+        - Aging timer: 300s
+        </div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> Il bridge riceve il frame, apprende il MAC sorgente, consulta la FDB per il MAC destinazione e inoltra selettivamente solo sulla porta corretta.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Algoritmo di Forwarding:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Arrivo Frame</strong> - Pacchetto ricevuto su una porta del bridge</li>
+        <li><strong>2. Learning</strong> - MAC sorgente aggiunto alla FDB con porta di ingresso</li>
+        <li><strong>3. Lookup</strong> - Ricerca MAC destinazione nella Forwarding Database</li>
+        <li><strong>4. Forwarding</strong> - Inoltro su porta specifica, flooding o dropping</li>
+        <li><strong>5. Aging</strong> - Aggiornamento timer per evitare entries stantie</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> Il pacchetto viene inoltrato solo dove necessario, creando segmentazione logica trasparente senza modificare gli indirizzi Layer 2.
+        </div>
+        </div>
+
+<h2>🧪 Laboratorio Pratico: Esplora i Bridge</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌉 Crea un Bridge</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ sudo ip link add br0 type bridge<br>
+                        $ sudo ip link set br0 up<br>
+                        $ ip link show br0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Crea e attiva un bridge device virtuale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Aggiungi Interfacce</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ sudo ip link set eth0 master br0<br>
+                        $ sudo ip link set eth1 master br0<br>
+                        $ bridge link show
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Collega interfacce fisiche al bridge</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📋 Mostra Forwarding DB</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ bridge fdb show<br>
+                        $ brctl showmacs br0<br>
+                        52:54:00:12:34:56 dev eth0<br>
+                        aa:bb:cc:dd:ee:ff dev eth1
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quali MAC sono appresi su quali porte</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora il Traffico</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ bridge -s link show<br>
+                        $ cat /sys/class/net/br0/statistics/rx_packets<br>
+                        $ cat /sys/class/net/br0/statistics/tx_packets
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva statistiche di traffico del bridge</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌉</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Trasparenza Layer 2</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+        I dispositivi collegati al bridge non sanno di essere connessi attraverso un bridge. Tutto funziona come se fossero sulla stessa rete fisica.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🧠</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Auto-Learning</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+        Il bridge apprende dinamicamente la topologia di rete osservando il traffico. Non richiede configurazione manuale delle tabelle di forwarding.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Forwarding Selettivo</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+        Ogni pacchetto viene inoltrato solo sulla porta necessaria, riducendo il traffico broadcast e migliorando le prestazioni della rete.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">STP Protection</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+        Spanning Tree Protocol previene i loop di rete, BPDU Guard protegge da bridge non autorizzati, garantendo stabilità.
+        </p>
+        </div>
+        </div>
+
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sui Bridge
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    </ul>
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa fa un bridge di rete?",
+            options: ["Connette reti diverse al livello fisico", "Inoltra pacchetti al livello Data Link", "Instrada pacchetti IP", "Fornisce indirizzi IP"],
+            correct: 1,
+            explanation: "Il bridge opera al livello Data Link (Layer 2) del modello OSI, inoltrando pacchetti Ethernet basandosi sugli indirizzi MAC."
+        },
+        {
+            question: "Cosa contiene la Forwarding Database (FDB)?",
+            options: ["Indirizzi IP e porte", "MAC address e porte associate", "Route IP", "Configurazioni VLAN"],
+            correct: 1,
+            explanation: "La FDB mappa gli indirizzi MAC alle porte del bridge, permettendo il forwarding selettivo dei pacchetti."
+        },
+        {
+            question: "Cosa significa 'auto-learning' in un bridge?",
+            options: ["Il bridge apprende automaticamente la configurazione", "Il bridge apprende dinamicamente gli indirizzi MAC", "Il bridge impara a riconoscere i protocolli", "Il bridge ottimizza automaticamente le prestazioni"],
+            correct: 1,
+            explanation: "L'auto-learning permette al bridge di apprendere dinamicamente quali MAC address sono raggiungibili su quali porte osservando il traffico."
+        },
+        {
+            question: "Quale protocollo previene i loop di rete nei bridge?",
+            options: ["DHCP", "NAT", "STP (Spanning Tree Protocol)", "VLAN"],
+            correct: 2,
+            explanation: "STP identifica e disabilita percorsi ridondanti per prevenire loop di rete che causerebbero broadcast storm."
+        },
+        {
+            question: "Cosa succede quando un bridge riceve un pacchetto con MAC destinazione sconosciuto?",
+            options: ["Lo scarta", "Lo inoltra su tutte le porte (flooding)", "Lo tiene in coda", "Lo invia al gateway"],
+            correct: 1,
+            explanation: "Quando il MAC destinazione non è nella FDB, il bridge fa flooding inviando il pacchetto su tutte le porte eccetto quella di ingresso."
+        },
+        {
+            question: "Quale comando mostra la Forwarding Database di un bridge?",
+            options: ["ip route show", "bridge fdb show", "netstat -r", "arp -a"],
+            correct: 1,
+            explanation: "bridge fdb show visualizza la Forwarding Database del bridge, mostrando le associazioni MAC-porta."
+        },
+        {
+            question: "Cosa garantisce la 'trasparenza' di un bridge?",
+            options: ["I dispositivi non sanno di essere su un bridge", "Il bridge è invisibile al livello IP", "Il bridge nasconde gli indirizzi MAC", "Il bridge modifica i pacchetti"],
+            correct: 0,
+            explanation: "La trasparenza significa che i dispositivi collegati non sanno di essere connessi attraverso un bridge; tutto funziona come una rete fisica unica."
+        },
+        {
+            question: "Quale struttura dati rappresenta una porta del bridge?",
+            options: ["net_bridge", "net_bridge_port", "net_bridge_fdb_entry", "br_config"],
+            correct: 1,
+            explanation: "net_bridge_port rappresenta una singola porta del bridge, collegando l'interfaccia fisica al bridge logico."
+        },
+        {
+            question: "Cosa permette il supporto VLAN nei bridge?",
+            options: ["Segmentazione logica della rete", "Instradamento IP avanzato", "Crittografia dei pacchetti", "Compressione dei dati"],
+            correct: 0,
+            explanation: "Il supporto VLAN permette di creare segmenti logici separati all'interno della stessa infrastruttura fisica."
+        },
+        {
+            question: "Quale comando crea un bridge device in Linux?",
+            options: ["brctl addbr br0", "ip link add br0 type ethernet", "ip link add br0 type bridge", "ifconfig br0 create"],
+            correct: 2,
+            explanation: "ip link add br0 type bridge crea un nuovo bridge device virtuale nel kernel Linux."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione dei bridge! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare i bridge! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! I bridge sono fondamentali per le reti! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+

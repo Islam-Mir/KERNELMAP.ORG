@@ -1,0 +1,824 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Interfaces Core - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>System Interfaces Core</h1>
+        <p class="subtitle">Interfacce Core del Sistema</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🔧 INTERFACCE SISTEMA CORE</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Le interfacce core del sistema sono i meccanismi fondamentali che permettono al kernel Linux di interagire con l'hardware sottostante, fornendo astrazioni uniformi per dispositivi, memoria, e risorse di sistema.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come il sistema nervoso centrale di un organismo: riceve stimoli dal mondo esterno (hardware), li elabora, e coordina le risposte attraverso muscoli e organi (processi e dispositivi).</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Le interfacce core del sistema sono il "collante" che tiene insieme tutti i sottosistemi del kernel Linux.</strong> Immagina un'orchestra sinfonica dove ogni sezione (memoria, dispositivi, rete) suona la sua parte, ma c'è un direttore d'orchestra (system interfaces) che coordina tutto per creare un'armonia perfetta.</p>
+
+        <p>• <strong>Device Model</strong> - Gerarchia unificata di tutti i dispositivi del sistema</p>
+        <p>• <strong>Bus Abstraction</strong> - Interfacce standard per diversi tipi di bus (PCI, USB, etc.)</p>
+        <p>• <strong>Resource Management</strong> - Allocazione e gestione risorse hardware (IRQ, I/O ports, DMA)</p>
+        <p>• <strong>Power Management</strong> - Controllo stati di risparmio energetico</p>
+        <p>• <strong>Hotplug Support</strong> - Gestione dispositivi collegati/rimossi a runtime</p>
+        <p>• <strong>Device Discovery</strong> - Rilevamento automatico dispositivi al boot</p>
+        <p><em>• Interazione: Coordina tutti i sottosistemi del kernel per fornire un'interfaccia coerente all'hardware</em></p>
+
+        <h2>⚙️ Componenti Principali</h2>
+        <p><strong>Il sistema di interfacce core è composto da diversi framework interdipendenti:</strong></p>
+
+        <h3>🏗️ Device Model</h3>
+        <p>• <strong>kobject/kset</strong> - Oggetti base per rappresentazione dispositivi</p>
+        <p>• <strong>device/driver</strong> - Strutture per dispositivi e relativi driver</p>
+        <p>• <strong>bus_type</strong> - Astrazione per diversi tipi di bus</p>
+        <p>• <strong>class</strong> - Raggruppamento dispositivi per funzionalità</p>
+
+        <h3>🔌 Bus Subsystems</h3>
+        <p>• <strong>PCI Subsystem</strong> - Gestione bus PCI/PCIe</p>
+        <p>• <strong>USB Core</strong> - Framework USB completo</p>
+        <p>• <strong>I2C/SPI</strong> - Bus per dispositivi embedded</p>
+        <p>• <strong>Platform Bus</strong> - Dispositivi integrati nella scheda madre</p>
+
+        <h3>⚡ Resource Management</h3>
+        <p>• <strong>IRQ Management</strong> - Allocazione e routing interrupt</p>
+        <p>• <strong>I/O Ports</strong> - Gestione porte di I/O</p>
+        <p>• <strong>DMA Channels</strong> - Canali Direct Memory Access</p>
+        <p>• <strong>Memory Regions</strong> - Aree memoria riservate</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando colleghi una chiavetta USB, ecco cosa succede nelle interfacce core:</strong></p>
+
+        <h3>🔍 Device Discovery</h3>
+        <p>1. Hardware USB rileva dispositivo e genera interrupt</p>
+        <p>2. USB core riceve interrupt e avvia enumerazione</p>
+        <p>3. Device descriptor viene letto via control transfer</p>
+        <p>4. Viene creato struct device nel device model</p>
+        <p>5. Driver appropriato viene associato al dispositivo</p>
+        <p>6. Device node viene creato in /dev/</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>struct kobject</strong> - Base per tutti gli oggetti del kernel</li>
+            <li><strong>struct device</strong> - Rappresenta un dispositivo</li>
+            <li><strong>struct device_driver</strong> - Driver associato al dispositivo</li>
+            <li><strong>struct bus_type</strong> - Tipo di bus (PCI, USB, etc.)</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare le interfacce core:</strong></p>
+        <ul>
+            <li><code>ls /sys/devices/</code> - Gerarchia dispositivi del sistema</li>
+            <li><code>ls /sys/bus/</code> - Diversi tipi di bus attivi</li>
+            <li><code>udevadm info /dev/sda</code> - Informazioni dispositivo</li>
+            <li><code>lspci -v</code> - Dispositivi PCI con driver</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Boot del Sistema</h3>
+        <p>Durante l'avvio del sistema:</p>
+        <ol>
+            <li>Kernel inizializza device model</li>
+            <li>Bus controllers vengono registrati</li>
+            <li>Dispositivi vengono enumerati</li>
+            <li>Driver vengono caricati e associati</li>
+            <li>Filesystem virtuali vengono montati</li>
+            <li>Servizi di sistema vengono avviati</li>
+        </ol>
+
+        <h2>🔧 Framework Principali</h2>
+        <ul>
+            <li><strong>Device Model</strong> - Gerarchia unificata dispositivi</li>
+            <li><strong>Driver Model</strong> - Separazione driver/dispositivo</li>
+            <li><strong>Bus Abstraction</strong> - Interfacce bus indipendenti</li>
+            <li><strong>Power Management</strong> - Stati energetico dispositivi</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Modularità</strong> - Driver caricabili dinamicamente</li>
+            <li><strong>Hotplug</strong> - Supporto dispositivi plug-and-play</li>
+            <li><strong>Scalabilità</strong> - Supporto migliaia di dispositivi</li>
+            <li><strong>Robustezza</strong> - Gestione errori e recovery</li>
+            <li><strong>Performance</strong> - Ottimizzazioni per bassa latenza</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Le interfacce core interagiscono con tutti i sottosistemi del kernel:</strong></p>
+
+        <h3>💾 Storage Subsystem</h3>
+        <p>• <strong>Block Layer</strong> - Interfaccia dispositivi a blocchi</p>
+        <p>• <strong>SCSI Subsystem</strong> - Protocollo storage standard</p>
+        <p>• <strong>ATA/IDE</strong> - Interfacce dischi tradizionali</p>
+
+        <h3>🌐 Network Stack</h3>
+        <p>• <strong>Network Device Drivers</strong> - Gestione schede rete</p>
+        <p>• <strong>PHY/MAC Layers</strong> - Controlli hardware rete</p>
+
+        <h3>🖥️ Input/Output</h3>
+        <p>• <strong>Input Subsystem</strong> - Mouse, tastiere, touchscreen</p>
+        <p>• <strong>Framebuffer</strong> - Gestione display</p>
+        <p>• <strong>Sound</strong> - Sottosistema audio</p>
+
+        <h2>🛠️ API e Strutture</h2>
+        <p><strong>Queste sono le interfacce fondamentali per sviluppare driver:</strong></p>
+
+        <h3>📂 Device Registration</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int device_register(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra dispositivo nel device model.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int driver_register(struct device_driver *drv);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra driver nel sistema.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int bus_register(struct bus_type *bus);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra nuovo tipo di bus.</span>
+        </div>
+
+        <h3>🔄 Resource Management</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int request_irq(unsigned int irq, irq_handler_t handler, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Richiede linea interrupt per dispositivo.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">struct resource *request_resource(struct resource *root, struct resource *new);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Richiede risorsa hardware (I/O ports, memoria).</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int dma_set_mask(struct device *dev, u64 mask);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Configura supporto DMA per dispositivo.</span>
+        </div>
+
+        <h3>⚙️ Device Model Operations</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">struct device *get_device(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Incrementa reference count dispositivo.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void put_device(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Decrementa reference count dispositivo.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int device_add(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Aggiunge dispositivo al device model.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando installi un nuovo dispositivo hardware:</strong></p>
+        <ol>
+            <li>Kernel rileva dispositivo sul bus</li>
+            <li>device_register() crea struct device</li>
+            <li>driver_register() associa driver appropriato</li>
+            <li>request_irq() alloca interrupt line</li>
+            <li>request_resource() riserva I/O ports</li>
+            <li>Device diventa accessibile al sistema</li>
+        </ol>
+        <p><em>Tutto questo avviene automaticamente grazie alle interfacce core del sistema!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale delle Interfacce Core</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Interfacce Core del Sistema</h3>
+
+            <!-- Kernel Core Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🧠 KERNEL CORE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Memory Management<br>
+                    • Process Scheduler<br>
+                    • System Calls<br>
+                    • Core Subsystems
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- System Interfaces Core Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 SYSTEM INTERFACES CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🏗️</div>
+                        <div style="font-size: 0.8em;">Device Model</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔌</div>
+                        <div style="font-size: 0.8em;">Bus Systems</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">Resources</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Hotplug</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • kobject/kset hierarchy<br>
+                    • Driver binding<br>
+                    • Resource allocation<br>
+                    • Power management
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Bus Types Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🔌 PCI BUS</div>
+                    <div style="font-size: 0.8em; color: #666;">Schede interne</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">📱 USB BUS</div>
+                    <div style="font-size: 0.8em; color: #666;">Dispositivi esterni</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔧 PLATFORM</div>
+                    <div style="font-size: 0.8em; color: #666;">Dispositivi onboard</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🌐 NETWORK</div>
+                    <div style="font-size: 0.8em; color: #666;">Schede rete</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE DEVICES</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • CPU, RAM, Storage<br>
+                    • Network Interfaces<br>
+                    • Input/Output Devices<br>
+                    • Expansion Cards
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dall'hardware al kernel<br>
+                • Ogni layer aggiunge astrazione e gestione<br>
+                • Le interfacce core sono il "sistema nervoso" del kernel<br>
+                • Tutto converge nel device model unificato
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Device Registration</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Registrazione di un Nuovo Dispositivo</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔌 Nuovo Dispositivo</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Scheda Wi-Fi USB<br>
+                        <span style="color: #666;">(ID: 148f:5370)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌟 System Interfaces</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Device Model<br>
+                        <span style="color: #666;">(rt2800usb driver)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Sequenza registrazione:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">USB detection → device_register() → driver binding → resource allocation → /sys/devices/ entry</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede nei millisecondi:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Hardware detection:</strong> USB controller rileva nuovo dispositivo</li>
+                    <li><strong>2. Device creation:</strong> usb_device_register() crea struct device</li>
+                    <li><strong>3. Driver matching:</strong> Device model cerca driver compatibile</li>
+                    <li><strong>4. Probe execution:</strong> rt2800usb_probe() inizializza dispositivo</li>
+                    <li><strong>5. Resource allocation:</strong> request_irq(), request_resource() riservano risorse</li>
+                    <li><strong>6. Sysfs population:</strong> Device appare in /sys/devices/</li>
+                    <li><strong>7. Udev notification:</strong> udev crea /dev/wlan0 e regola udev</li>
+                    <li><strong>8. Network interface:</strong> Interfaccia diventa disponibile per configurazione</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> La scheda Wi-Fi è ora completamente integrata nel sistema. Puoi configurarla con iwconfig, connetterti alle reti, e il sistema gestisce automaticamente power management e hotplug. Tutto grazie alle interfacce core!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora le Interfacce Core</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esplora device model</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ find /sys/devices/ -name "*cpu*" | head -5<br>
+                        /sys/devices/system/cpu/cpu0<br>
+                        /sys/devices/system/cpu/cpu1<br>
+                        $ ls /sys/bus/pci/devices/<br>
+                        0000:00:1f.2  0000:02:00.0
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Naviga la gerarchia dispositivi del sistema</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza driver caricati</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ lsmod | grep usb<br>
+                        usbcore              286720  4 ehci_hcd,ohci_hcd,uhci_hcd<br>
+                        ehci_hcd              73728  1<br>
+                        $ ls /sys/bus/usb/drivers/
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi driver attivi e loro dipendenze</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Monitora risorse sistema</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/ioports<br>
+                        0000-0cf7 : PCI Bus 0000:00<br>
+                        0000-001f : dma1<br>
+                        $ cat /proc/iomem | grep RAM<br>
+                        00001000-0009fbff : System RAM
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla allocazione risorse I/O e memoria</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Testa hotplug</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ udevadm monitor<br>
+                        monitor will print the received events for:<br>
+                        KERNEL - the kernel uevent<br>
+                        $ dmesg | grep usb<br>
+                        usb 1-1: new high-speed USB device
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva eventi hotplug in tempo reale</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏗️</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Device Model Unificato</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Il device model fornisce una visione unificata di tutti i dispositivi del sistema, permettendo gestione coerente attraverso kobject, device, e driver. È il fondamento dell'architettura driver di Linux.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Hotplug Architecture</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    Linux supporta dispositivi collegati/rimossi a runtime grazie al device model e udev. Questo permette sistemi embedded e desktop moderni di gestire hardware dinamico senza riavvii.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚙️</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Resource Management</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Le interfacce core gestiscono allocazione di risorse critiche come interrupt, I/O ports, e DMA channels. Questo previene conflitti e garantisce funzionamento stabile di tutti i dispositivi.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔗</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Bus Abstraction</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Ogni tipo di bus (PCI, USB, I2C) ha la sua astrazione, ma tutti condividono l'interfaccia comune del device model. Questo permette driver portabili e gestione unificata.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sulle Interfacce Core
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa rappresenta il device model?",
+            options: ["Solo dispositivi USB", "Gerarchia unificata di tutti i dispositivi", "File di configurazione", "Parte del filesystem"],
+            correct: 1,
+            explanation: "Il device model fornisce una rappresentazione gerarchica unificata di tutti i dispositivi del sistema attraverso kobject e struct device."
+        },
+        {
+            question: "Quale struttura è la base del device model?",
+            options: ["struct file", "struct kobject", "struct inode", "struct task_struct"],
+            correct: 1,
+            explanation: "struct kobject è la struttura base che fornisce reference counting, naming, e gerarchia per tutti gli oggetti del device model."
+        },
+        {
+            question: "Cosa permette l'hotplug?",
+            options: ["Solo dispositivi PCI", "Dispositivi collegati/rimossi a runtime", "Velocità più alta", "Meno memoria usata"],
+            correct: 1,
+            explanation: "L'hotplug permette di collegare e rimuovere dispositivi mentre il sistema è in funzione, senza bisogno di riavvio."
+        },
+        {
+            question: "Quale comando esplora la gerarchia dispositivi?",
+            options: ["ls /dev/", "ls /sys/devices/", "ps aux", "free -h"],
+            correct: 1,
+            explanation: "ls /sys/devices/ mostra la gerarchia completa dei dispositivi rappresentati nel device model del kernel."
+        },
+        {
+            question: "Cosa gestisce il resource management?",
+            options: ["Solo memoria", "IRQ, I/O ports, DMA channels", "Solo processi", "Solo file"],
+            correct: 1,
+            explanation: "Il resource management coordina l'allocazione di risorse hardware critiche come interrupt lines, I/O ports, e canali DMA."
+        },
+        {
+            question: "Quale funzione registra un dispositivo?",
+            options: ["device_add()", "kobject_init()", "bus_register()", "class_create()"],
+            correct: 0,
+            explanation: "device_add() aggiunge un dispositivo al device model, rendendolo visibile al sistema e permettendo il binding con driver."
+        },
+        {
+            question: "Cosa è udev?",
+            options: ["Driver USB", "Userspace device manager", "Filesystem virtuale", "Sistema di boot"],
+            correct: 1,
+            explanation: "udev è il device manager userspace che crea nodi in /dev/, applica regole, e gestisce eventi hotplug."
+        },
+        {
+            question: "Quale struttura rappresenta un bus?",
+            options: ["struct device", "struct bus_type", "struct kset", "struct class"],
+            correct: 1,
+            explanation: "struct bus_type rappresenta un tipo di bus (PCI, USB, etc.) e definisce come i dispositivi vengono enumerati e gestiti su quel bus."
+        },
+        {
+            question: "Cosa permette il driver binding?",
+            options: ["Solo dispositivi PCI", "Associazione dinamica driver-dispositivo", "Velocità più alta", "Meno consumo energetico"],
+            correct: 1,
+            explanation: "Il driver binding permette al kernel di associare dinamicamente driver appropriati ai dispositivi rilevati, basandosi su compatibilità."
+        },
+        {
+            question: "Quale directory contiene informazioni dispositivi?",
+            options: ["/dev/", "/proc/", "/sys/", "/etc/"],
+            correct: 2,
+            explanation: "/sys/ contiene il sysfs filesystem che espone informazioni dettagliate su dispositivi, driver, e bus del sistema."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione delle interfacce core! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare le interfacce core! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Le interfacce core sono fondamentali! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                    🔄 Riprova il Quiz
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
+

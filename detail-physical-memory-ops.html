@@ -1,0 +1,697 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physical Memory Operations - Dettagli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f4ff 0%, #b3e5fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 {
+            color: #0288d1;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-box p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .info-box ul {
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #555;
+            margin-left: 18px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+        }
+
+        .content h2 {
+            font-size: 1.3em;
+            color: #0288d1;
+            margin: 18px 0 10px 0;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content h3 {
+            font-size: 1.05em;
+            color: #01579b;
+            margin: 14px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            font-size: 0.9em;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .content ul, .content ol {
+            margin-left: 20px;
+            margin-bottom: 14px;
+        }
+
+        .content li {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 7px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1000;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(2, 136, 209, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.5);
+        }
+
+        .back-button-fixed {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 1000px) {
+            .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .right-panel {
+                width: 100%;
+                flex-direction: row;
+            }
+            .info-box {
+                flex: 1;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 3px;
+            border-top: 1px solid #ddd;
+            font-size: 0.4em;
+            color: #999;
+            background: white;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Physical Memory Operations</h1>
+        <p class="subtitle">Operazioni Memoria Fisica</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🧠 OPERAZIONI MEMORIA FISICA</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Le operazioni di memoria fisica gestiscono l'allocazione, deallocazione e gestione delle pagine fisiche RAM, fornendo le primitive di base per la gestione della memoria nel kernel Linux.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come un magazziniere in un deposito: riceve ordini (richieste allocazione), trova spazi liberi (buddy system), etichetta pacchi (page flags), e organizza il magazzino (memory zones).</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Le operazioni di memoria fisica sono il cuore del memory management nel kernel Linux.</strong> Immagina un sistema di gestione magazzino altamente ottimizzato: ogni pagina fisica è un pallet che deve essere allocato, tracciato, e liberato con massima efficienza. Il sistema gestisce miliardi di operazioni al secondo mantenendo integrità e performance.</p>
+
+        <p>• <strong>Buddy system</strong> - Algoritmo di allocazione efficiente per potenze di 2</p>
+        <p>• <strong>Page allocation</strong> - Allocazione/deallocazione pagine fisiche</p>
+        <p>• <strong>Memory zones</strong> - Suddivisione memoria per caratteristiche hardware</p>
+        <p>• <strong>Page migration</strong> - Spostamento pagine per deframmentazione</p>
+        <p>• <strong>Memory compaction</strong> - Compattazione per ridurre frammentazione</p>
+        <p>• <strong>Hotplug memory</strong> - Aggiunta/rimozione memoria a runtime</p>
+        <p><em>• Interazione: Fornisce primitive di allocazione a tutti i sottosistemi kernel che necessitano memoria fisica</em></p>
+
+        <h2>⚙️ Algoritmi di Allocazione</h2>
+        <p><strong>Il kernel usa algoritmi sofisticati per gestire l'allocazione memoria:</strong></p>
+
+        <h3>🔗 Buddy System</h3>
+        <p>• <strong>Binary buddy</strong> - Allocazione blocchi 2^k pagine contigue</p>
+        <p>• <strong>Free lists</strong> - Liste per ogni ordine di allocazione</p>
+        <p>• <strong>Splitting</strong> - Suddivisione blocchi grandi in piccoli</p>
+        <p>• <strong>Merging</strong> - Ricombinazione buddy liberi adiacenti</p>
+
+        <h3>📦 SLAB Allocator</h3>
+        <p>• <strong>Object caching</strong> - Cache per strutture dati comuni</p>
+        <p>• <strong>Constructor/destructor</strong> - Inizializzazione oggetti</p>
+        <p>• <strong>Coloring</strong> - Ottimizzazione cache alignment</p>
+
+        <h3>🎯 Page Allocator</h3>
+        <p>• <strong>Zone-based</strong> - Allocazione per zone di memoria</p>
+        <p>• <strong>Watermarks</strong> - Soglie per gestione pressione memoria</p>
+        <p>• <strong>Fallback</strong> - Allocazione zone alternative se necessario</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando lanci un programma, ecco cosa succede nelle operazioni memoria fisica:</strong></p>
+
+        <h3>🔍 Allocazione Memoria</h3>
+        <p>1. Programma richiede memoria via malloc()</p>
+        <p>2. libc chiama brk() o mmap() per espandere heap</p>
+        <p>3. Kernel richiede pagine fisiche dal page allocator</p>
+        <p>4. Buddy system trova blocco libero appropriato</p>
+        <p>5. Pagine vengono mappate nello spazio virtuale del processo</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>struct page</strong> - Header per ogni pagina fisica</li>
+            <li><strong>free_area</strong> - Liste buddy per ogni ordine</li>
+            <li><strong>zone</strong> - Zone di memoria (DMA, NORMAL, HIGHMEM)</li>
+            <li><strong>kmem_cache</strong> - Cache SLAB per oggetti kernel</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per esplorare operazioni memoria fisica:</strong></p>
+        <ul>
+            <li><code>cat /proc/buddyinfo</code> - Stato buddy allocator</li>
+            <li><code>cat /proc/pagetypeinfo</code> - Distribuzione tipi pagina</li>
+            <li><code>slabtop</code> - Utilizzo SLAB allocator</li>
+            <li><code>vmstat -m</code> - Statistiche memoria slab</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Out of Memory</h3>
+        <p>Quando il sistema esaurisce memoria fisica:</p>
+        <ol>
+            <li>Page allocator non trova pagine libere</li>
+            <li>Si attiva kswapd per reclamation</li>
+            <li>Pagine anonime scambiate su swap</li>
+            <li>Page cache ridotto se necessario</li>
+            <li>Se ancora insufficiente, OOM killer termina processi</li>
+        </ol>
+
+        <h2>🔧 Zone di Memoria</h2>
+        <ul>
+            <li><strong>ZONE_DMA</strong> - Pagine per dispositivi DMA (0-16MB)</li>
+            <li><strong>ZONE_DMA32</strong> - DMA a 32-bit (0-4GB)</li>
+            <li><strong>ZONE_NORMAL</strong> - Memoria normale kernel (16MB-896MB)</li>
+            <li><strong>ZONE_HIGHMEM</strong> - Memoria alta (896MB+)</li>
+            <li><strong>ZONE_MOVABLE</strong> - Pagine hot-removable</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Efficienza</strong> - Buddy system O(log n) complexity</li>
+            <li><strong>Scalabilità</strong> - Supporto memoria multi-terabyte</li>
+            <li><strong>Frammentazione</strong> - Controllo frammentazione esterna</li>
+            <li><strong>Hotplug</strong> - Aggiunta memoria a runtime</li>
+            <li><strong>NUMA</strong> - Ottimizzazione architetture multi-socket</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Le operazioni memoria fisica interagiscono con molteplici componenti:</strong></p>
+
+        <h3>🗂️ Virtual Memory Manager</h3>
+        <p>• <strong>Page tables</strong> - Mapping virtuale-fisico</p>
+        <p>• <strong>Page faults</strong> - Risoluzione indirizzi mancanti</p>
+        <p>• <strong>Swap</strong> - Scambio memoria su disco</p>
+
+        <h3>💾 I/O Subsystem</h3>
+        <p>• <strong>DMA</strong> - Trasferimenti diretti memoria</p>
+        <p>• <strong>Block I/O</strong> - Buffer management</p>
+        <p>• <strong>Network buffers</strong> - Socket buffers</p>
+
+        <h3>⚙️ Kernel Objects</h3>
+        <p>• <strong>Task structs</strong> - Strutture processo</p>
+        <p>• <strong>Inodes</strong> - Metadata filesystem</p>
+        <p>• <strong>Network sockets</strong> - Strutture connessione</p>
+
+        <h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le funzioni core per allocazione memoria fisica:</strong></p>
+
+        <h3>📄 Page Allocator</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">struct page *alloc_pages(gfp_t gfp_mask, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca 2^order pagine contigue dalla zona appropriata.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void __free_pages(struct page *page, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Libera 2^order pagine a partire dalla pagina specificata.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">unsigned long __get_free_pages(gfp_t gfp_mask, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca pagine e restituisce indirizzo virtuale kernel.</span>
+        </div>
+
+        <h3>🏗️ Buddy System</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">void expand(struct zone *zone, struct page *page, int low, int high, int free_base);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Espande zona aggiungendo pagine al buddy system.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void __free_one_page(struct page *page, unsigned int order, struct zone *zone);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Libera una pagina nel buddy system, facendo merge se possibile.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">struct page *__rmqueue(struct zone *zone, unsigned int order);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove e restituisce pagina dalle free lists del buddy.</span>
+        </div>
+
+        <h3>📦 SLAB Allocator</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">struct kmem_cache *kmem_cache_create(const char *name, size_t size, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea cache SLAB per oggetti di dimensione fissa.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void *kmem_cache_alloc(struct kmem_cache *cachep, gfp_t flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca oggetto dalla cache SLAB specificata.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">void kmem_cache_free(struct kmem_cache *cachep, void *objp);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Libera oggetto nella cache SLAB appropriata.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando apri un file di testo:</strong></p>
+        <ol>
+            <li>Comando cat richiede buffer per leggere file</li>
+            <li>Kernel chiama get_free_pages() per allocare pagine</li>
+            <li>Buddy system trova blocco 4KB libero</li>
+            <li>Pagina mappata in spazio kernel</li>
+            <li>Dati file letti da disco nel buffer</li>
+            <li>Dopo uso, pagine liberate con free_pages()</li>
+        </ol>
+        <p><em>Ogni allocazione/deallocazione passa attraverso queste operazioni fisiche, ottimizzate per performance e affidabilità!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale delle Operazioni Memoria Fisica</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Operazioni Memoria Fisica</h3>
+
+            <!-- Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ PROCESSI USER SPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • malloc(), free()<br>
+                    • mmap(), munmap()<br>
+                    • brk(), sbrk()
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Kernel Subsystems Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SOTTOSISTEMI KERNEL</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Virtual Memory<br>
+                    • Filesystem<br>
+                    • Network Stack<br>
+                    • Device Drivers
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Physical Memory Operations Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 OPERAZIONI MEMORIA FISICA</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📦</div>
+                        <div style="font-size: 0.8em;">Buddy</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🏗️</div>
+                        <div style="font-size: 0.8em;">SLAB</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
+                        <div style="font-size: 0.8em;">Pages</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🗂️</div>
+                        <div style="font-size: 0.8em;">Zones</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Allocazione efficiente<br>
+                    • Gestione frammentazione<br>
+                    • Memory zones<br>
+                    • Hotplug support
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Physical Memory Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🧠 RAM</div>
+                    <div style="font-size: 0.8em; color: #666;">DDR4, DDR5</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾 SWAP</div>
+                    <div style="font-size: 0.8em; color: #666;">Disco/SSD</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔌 NVDIMM</div>
+                    <div style="font-size: 0.8em; color: #666;">Persistent Memory</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🌐 REMOTE</div>
+                    <div style="font-size: 0.8em; color: #666;">RDMA Memory</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso delle richieste di memoria dall'alto verso il basso<br>
+                • Ogni layer ottimizza e gestisce la memoria in modo specifico<br>
+                • Le operazioni fisiche sono il livello base che gestisce l'hardware<br>
+                • L'efficienza qui determina le performance di tutto il sistema
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Allocazione Memoria Fisica</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Allocazione di un buffer di 64KB</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔧 Kernel Subsystem</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Network Driver<br>
+                        <span style="color: #666;">(Richiesta 64KB buffer)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🧠 Physical Memory</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        Buddy Allocator<br>
+                        <span style="color: #666;">(16 pagine da 4KB)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Sequenza allocazione:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">alloc_pages(GFP_KERNEL, 4) → 16 pagine contigue → indirizzo virtuale kernel</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede nell'allocazione fisica:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Richiesta ordine 4:</strong> 2^4 = 16 pagine contigue (64KB)</li>
+                    <li><strong>2. Controllo zone:</strong> ZONE_NORMAL ha abbastanza pagine libere?</li>
+                    <li><strong>3. Buddy search:</strong> Cerca nelle free lists ordine 4</li>
+                    <li><strong>4. Splitting se necessario:</strong> Se ordine 4 vuoto, split blocco ordine 5</li>
+                    <li><strong>5. Page allocation:</strong> Rimuovi pagine dalle free lists</li>
+                    <li><strong>6. Header update:</strong> Imposta flags PG_reserved, _refcount=1</li>
+                    <li><strong>7. Virtual mapping:</strong> Mappa in spazio kernel se necessario</li>
+                    <li><strong>8. Return address:</strong> Restituisce struct page* o indirizzo virtuale</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Il driver ottiene 64KB di memoria fisica contigua, ottimale per DMA e buffer di rete. Il buddy system garantisce allocazione efficiente con controllo frammentazione.
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora Operazioni Memoria Fisica</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Stato buddy allocator</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/buddyinfo<br>
+                        Node 0, zone      DMA      1      1      1      0      2      1      1      0      1      1      3<br>
+                        Node 0, zone   Normal    227    187    189    235    193    152    113     63     39     11      4<br>
+                        $ echo "Ordini: 0-1-2-3-4-5-6-7-8-9-10 pagine"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi blocchi liberi per ogni ordine del buddy system</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📦 Analizza SLAB allocator</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ slabtop -o | head -5<br>
+                        OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME<br>
+                        50000  45000  90%    0.19K     500       100     20000K buffer_head<br>
+                        25000  24000  96%    1.05K     250       100     25600K inode_cache<br>
+                        $ vmstat -m | head -10
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina cache SLAB e utilizzo memoria per oggetti kernel</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Monitora allocazioni</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/vmstat | grep -E "pgalloc|pgfree|pgfault"<br>
+                        pgalloc_normal 1500000<br>
+                        pgalloc_dma 5000<br>
+                        pgfree 1450000<br>
+                        pgfault 50000<br>
+                        $ watch -n 1 'cat /proc/meminfo | grep -E "MemFree|Buffers|Cached"'
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva allocazioni/deallocazioni pagine in tempo reale</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Testa pressione memoria</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ stress --vm 1 --vm-bytes 512M --vm-keep<br>
+                        $ watch -n 1 'cat /proc/buddyinfo'<br>
+                        $ dmesg | grep -i "page allocation failure"<br>
+                        $ echo "OOM killer attivo se memoria insufficiente"
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Carica sistema e osserva comportamento sotto pressione memoria</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔗</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Buddy System</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    L'algoritmo buddy garantisce allocazione efficiente di blocchi contigui di memoria fisica. Splitting e merging automatici controllano la frammentazione esterna mantenendo performance ottimali.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🗂️</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Memory Zones</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    La memoria è divisa in zone (DMA, NORMAL, HIGHMEM) per riflettere limitazioni hardware. Ogni zona ha politiche di allocazione specifiche e watermarks per gestione pressione memoria.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📦</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">SLAB Allocator</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Il SLAB allocator ottimizza allocazione di strutture dati kernel comuni. Cache per oggetti di dimensione fissa riducono frammentazione e migliorano locality di riferimento.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏷️</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Page Flags</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Ogni pagina fisica ha un set di flags che ne determinano stato e uso: locked per I/O, dirty per modifiche, referenced per accessi recenti. Questi flags guidano tutte le decisioni di gestione.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz sulle Operazioni Memoria Fisica
+            </button>
+            <div id="quizContainer" style="display: none; margin-top: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa fa il buddy system?",
+            options: ["Gestisce memoria virtuale", "Alloca blocchi 2^k pagine", "Gestisce processi", "Controlla CPU"],
+            correct: 1,
+            explanation: "Il buddy system alloca blocchi di memoria fisica di dimensioni potenze di 2 (1, 2, 4, 8 pagine, etc.) per ridurre frammentazione."
+        },
+        {
+            question: "Quale comando mostra stato buddy?",
+            options: ["free -h", "cat /proc/buddyinfo", "ps aux", "df -h"],
+            correct: 1,
+            explanation: "cat /proc/buddyinfo mostra il numero di blocchi liberi per ogni ordine del buddy allocator."
+        },
+        {
+            question: "Cosa significa ZONE_NORMAL?",
+            options: ["Memoria per DMA", "Memoria normale kernel", "Memoria alta", "Memoria swap"],
+            correct: 1,
+            explanation: "ZONE_NORMAL contiene memoria normalmente accessibile dal kernel, tipicamente da 16MB a 896MB."
+        },
+        {
+            question: "Quale funzione alloca pagine?",
+            options: ["malloc()", "alloc_pages()", "kmalloc()", "vmalloc()"],
+            correct: 1,
+            explanation: "alloc_pages() è la funzione principale per allocare pagine fisiche contigue nel kernel."
+        },
+        {
+            question: "Cosa gestisce SLAB allocator?",
+            options: ["Pagine virtuali", "Oggetti kernel di dimensione fissa", "File aperti", "Processi"],
+            correct: 1,
+            explanation: "Il SLAB allocator gestisce cache per oggetti kernel di dimensione fissa, riducendo frammentazione."
+        },
+        {
+            question: "Quale flag marca pagina sporca?",
+            options: ["PG_locked", "PG_dirty", "PG_referenced", "PG_uptodate"],
+            correct: 1,
+            explanation: "PG_dirty indica che la pagina è stata modificata e deve essere sincronizzata con il backing store."
+        },
+        {
+            question: "Cosa fa __free_pages()?",
+            options: ["Alloca pagine", "Libera pagine fisiche", "Mappa pagine", "Blocca pagine"],
+            correct: 1,
+            explanation: "__free_pages() libera pagine fisiche precedentemente allocate, restituendole al buddy system."
+        },
+        {
+            question: "Quale zona è per dispositivi legacy?",
+            options: ["ZONE_NORMAL", "ZONE_DMA", "ZONE_HIGHMEM", "ZONE_MOVABLE"],
+            correct: 1,
+            explanation: "ZONE_DMA contiene pagine utilizzabili per dispositivi DMA legacy che possono indirizzare solo i primi 16MB."
+        },
+        {
+            question: "Cosa monitora /proc/vmstat?",
+            options: ["CPU usage", "Statistiche virtual memory", "Dischi", "Rete"],
+            correct: 1,
+            explanation: "/proc/vmstat contiene contatori dettagliati delle operazioni del virtual memory manager."
+        },
+        {
+            question: "Quale algoritmo riduce frammentazione?",
+            options: ["First-fit", "Best-fit", "Buddy system", "Worst-fit"],
+            correct: 2,
+            explanation: "Il buddy system riduce frammentazione esterna attraverso splitting e merging controllati di blocchi adiacenti."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+   
+
