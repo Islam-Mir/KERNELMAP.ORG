@@ -247,6 +247,39 @@
             font-size: 0.7em;
             color: #999;
         }
+    
+        @media (max-width: 768px) {
+            .back-button-fixed {
+                top: 10px;
+                left: 10px;
+                padding: 10px 16px;
+                font-size: 12px;
+                z-index: 1001;
+            }
+            
+            .nav-buttons-right {
+                position: fixed;
+                top: 60px;
+                left: 10px;
+                right: auto;
+                flex-direction: column;
+                gap: 8px;
+                z-index: 1000;
+                width: calc(100% - 20px);
+            }
+            
+            .nav-button {
+                width: 100%;
+                padding: 10px 16px;
+                font-size: 12px;
+                text-align: center;
+            }
+            
+            body {
+                padding-top: 140px;
+            }
+        }
+
     </style>
 </head>
 <body>
