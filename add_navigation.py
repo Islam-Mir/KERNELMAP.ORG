@@ -72,7 +72,7 @@ navigation_css = '''
         }
 
         .nav-button {
-            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -85,7 +85,7 @@ navigation_css = '''
         }
 
         .nav-button:hover {
-            background: linear-gradient(135deg, #FB8C00 0%, #E65100 100%);
+            background: linear-gradient(135deg, #45a049 0%, #388e3c 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }

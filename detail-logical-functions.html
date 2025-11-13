@@ -627,14 +627,14 @@
             <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
                 📝 Fai il Quiz su Funzioni Logiche
             </button>
-            <div id="quizContainer" style="display: none; margin-top: 20px;">
+            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
                 <div id="quizContent"></div>
             </div>
         </div>
     </div>
 
 
-    <div style="text-align: center; padding: 10px; margin-top: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
         © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
 </div>
 
@@ -831,8 +831,8 @@
                 <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
-                <button onclick="startQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                    🔄 Riprova il Quiz
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
+                    ⬆️ Torna all'Inizio della Pagina
                 </button>
             </div>
         `;
@@ -841,4 +841,14 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
