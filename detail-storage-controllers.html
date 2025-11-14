@@ -483,8 +483,9 @@
         </ol>
         <p><em>Tutto questo passa attraverso il VFS, che nasconde se i file sono su ext4, NFS, o qualsiasi altro filesystem!</em></p>
 
+        <p style="text-align: center; margin: 30px 0; padding: 20px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;"><strong>📖 Nota:</strong> Per una spiegazione completa dell'architettura VFS, i diagrammi concettuali, demo interattive e laboratori pratici, consulta <a href="detail-vfs.html" style="color: #0277bd; font-weight: bold;">detail-vfs.html</a>.</p>
 
-        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
             <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Virtual File System</h3>
 
@@ -947,7 +948,7 @@
         const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
+            const currentPage = decodeURIComponent(window.location.pathname.split('/').pop());
             return pageOrder.indexOf(currentPage);
         }
 
