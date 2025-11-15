@@ -353,148 +353,155 @@
         <p>• <strong>ACPI calls</strong> - Chiamate ACPI per gestione energia</p>
 
         <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando apri un file come /home/user/documento.txt, ecco cosa succede nel VFS:</strong></p>
+        <p><strong>Esempi concreti di gestione del system run in Linux:</strong></p>
 
-        <h3>🔍 Risoluzione del Percorso</h3>
-        <p>1. Il VFS divide "/home/user/documento.txt" in componenti: "home" → "user" → "documento.txt"</p>
-        <p>2. Per ogni componente, cerca nella dentry cache se esiste già una traduzione</p>
-        <p>3. Se non trova, chiede al filesystem (ext4) di cercare nel disco</p>
-        <p>4. Il filesystem restituisce l'inode corrispondente</p>
+        <h3>🔍 Gestione Servizi</h3>
+        <p>Per controllare i servizi di sistema:</p>
+        <ul>
+            <li><code>systemctl start apache2</code> - Avvia il web server Apache</li>
+            <li><code>systemctl enable mysql</code> - Abilita avvio automatico del database</li>
+            <li><code>systemctl stop nginx</code> - Ferma il web server Nginx</li>
+            <li><code>systemctl restart sshd</code> - Riavvia il servizio SSH</li>
+        </ul>
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
-            <li><strong>inode (index node)</strong> - Contiene tutti i metadati di un file: permessi, dimensione, date, puntatori ai blocchi dati. È come la "carta d'identità" del file</li>
-            <li><strong>dentry (directory entry)</strong> - Collega un nome (es. "documento.txt") al suo inode. È la "voce del dizionario" che traduce nomi in indirizzi</li>
-            <li><strong>file object</strong> - Rappresenta un file aperto da un processo specifico. Tiene traccia della posizione corrente, dei flags di apertura, etc.</li>
-            <li><strong>superblock</strong> - Contiene informazioni globali del filesystem: dimensione totale, blocchi liberi, tipo di filesystem, parametri di tuning</li>
+            <li><strong>systemd units</strong> - File .service, .target, .mount che definiscono unità di sistema</li>
+            <li><strong>targets</strong> - Stati del sistema (multi-user.target, graphical.target)</li>
+            <li><strong>dependencies</strong> - Relazioni "Wants=", "Requires=", "After=" tra unità</li>
+            <li><strong>sockets</strong> - File .socket per socket activation</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare il VFS:</strong></p>
+        <p><strong>Comandi Linux per esplorare il system run:</strong></p>
         <ul>
-            <li><code>ls -i file.txt</code> - Mostra il numero inode del file</li>
-            <li><code>stat file.txt</code> - Visualizza tutti i metadati dell'inode</li>
-            <li><code>df -h</code> - Mostra i superblock dei filesystem montati</li>
-            <li><code>mount</code> - Elenca tutti i filesystem montati</li>
-            <li><code>find / -inum 12345</code> - Trova file per numero inode</li>
+            <li><code>systemctl list-units --type=service</code> - Lista tutti i servizi attivi</li>
+            <li><code>systemctl status NetworkManager</code> - Stato dettagliato di un servizio</li>
+            <li><code>journalctl -u apache2 --since "1 hour ago"</code> - Log recenti di un servizio</li>
+            <li><code>systemctl get-default</code> - Target di default del sistema</li>
+            <li><code>systemd-analyze blame</code> - Tempi di avvio dei servizi</li>
         </ul>
 
-        <h3>🎯 Caso Reale: Apertura di un File</h3>
-        <p>Quando fai <code>cat /etc/passwd</code>:</p>
+        <h3>🎯 Caso Reale: Configurazione Server Web</h3>
+        <p>Per configurare un server LAMP (Linux, Apache, MySQL, PHP):</p>
         <ol>
-            <li>VFS risolve percorso: "/" (root) → "etc" → "passwd"</li>
-            <li>Per ogni directory, carica l'inode e cerca il nome successivo</li>
-            <li>Trova l'inode del file passwd e crea un file object</li>
-            <li>Legge i blocchi dati puntati dall'inode</li>
-            <li>Restituisce il contenuto al comando cat</li>
+            <li><code>systemctl enable apache2 mysql</code> - Abilita servizi per avvio automatico</li>
+            <li><code>systemctl start apache2 mysql</code> - Avvia i servizi</li>
+            <li><code>systemctl status apache2 mysql</code> - Verifica che siano attivi</li>
+            <li><code>journalctl -u apache2 -f</code> - Monitora log in tempo reale</li>
+            <li><code>systemctl reload apache2</code> - Ricarica configurazione senza interrompere</li>
         </ol>
 
-        <h2>💾 Filesystem Supportati</h2>
+        <h2>💾 Init Systems Supportati</h2>
         <ul>
-            <li><strong>ext4</strong> - Filesystem nativo Linux</li>
-            <li><strong>btrfs</strong> - Moderno con snapshot e checksum</li>
-            <li><strong>xfs</strong> - High-performance journaling</li>
-            <li><strong>nfs</strong> - Network File System</li>
-            <li><strong>procfs</strong> - Process information pseudo-fs</li>
+            <li><strong>systemd</strong> - Init system moderno con parallelizzazione e dependency management</li>
+            <li><strong>SysV init</strong> - Sistema tradizionale con runlevels e script di init</li>
+            <li><strong>Upstart</strong> - Event-based init system (legacy)</li>
+            <li><strong>OpenRC</strong> - Init system indipendente da specifiche distribuzioni</li>
+            <li><strong>runit</strong> - Init system semplice e sicuro</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
-            <li><strong>Unified API</strong> - Stessa interfaccia per tutti FS</li>
-            <li><strong>Caching</strong> - Buffer e page cache integrate</li>
-            <li><strong>Permissions</strong> - Modello Unix completo</li>
-            <li><strong>Mounting</strong> - Gerarchia unificata</li>
-            <li><strong>Hotplug</strong> - Supporto dispositivi rimovibili</li>
+            <li><strong>Parallelizzazione</strong> - Avvio servizi in parallelo per velocità</li>
+            <li><strong>Dependency management</strong> - Risoluzione automatica dipendenze</li>
+            <li><strong>Socket activation</strong> - Servizi avviati su richiesta</li>
+            <li><strong>Resource control</strong> - Limiti e controllo risorse per processi</li>
+            <li><strong>Logging integrato</strong> - Sistema di logging unificato</li>
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Il VFS è il "collante" che tiene insieme molti sottosistemi del kernel Linux:</strong></p>
+        <p><strong>Il System Run coordina molteplici sottosistemi del kernel e userspace:</strong></p>
 
-        <h3>💾 Storage Layer (Block Device)</h3>
-        <p>• <strong>Block layer</strong> - Gestisce la comunicazione con dischi, SSD, e altri dispositivi a blocchi. Il VFS chiede "dammi il blocco N" e il block layer si occupa dei dettagli hardware</p>
-        <p>• <strong>Device mapper</strong> - Permette LVM, RAID software, encryption trasparenti</p>
+        <h3>⚙️ Kernel Subsystems</h3>
+        <p>• <strong>Process scheduler</strong> - Gestisce l'esecuzione di init e servizi di sistema</p>
+        <p>• <strong>Memory manager</strong> - Alloca risorse per processi di sistema</p>
+        <p>• <strong>Device drivers</strong> - Inizializza driver essenziali durante il boot</p>
 
         <h3>🌐 Network Stack</h3>
-        <p>• <strong>NFS client</strong> - Monta filesystem remoti come se fossero locali</p>
-        <p>• <strong>CIFS/SMB</strong> - Accesso a condivisioni Windows</p>
-        <p>• <strong>9P</strong> - Protocollo usato in container e virtualizzazione</p>
+        <p>• <strong>Network configuration</strong> - Configura interfacce durante l'avvio</p>
+        <p>• <strong>Service networking</strong> - Abilita servizi di rete (sshd, httpd)</p>
+        <p>• <strong>DNS resolution</strong> - Configura risoluzione nomi</p>
 
-        <h3>🧠 Memory Manager</h3>
-        <p>• <strong>Page cache</strong> - Cache intelligente che mantiene in RAM i dati più usati, riducendo accessi al disco</p>
-        <p>• <strong>Buffer cache</strong> - Cache per metadata dei filesystem</p>
-        <p>• <strong>Memory-mapped files</strong> - Permette di trattare file come se fossero memoria</p>
+        <h3>💾 Storage Layer</h3>
+        <p>• <strong>Filesystem mounting</strong> - Monta filesystem necessari per il boot</p>
+        <p>• <strong>Device enumeration</strong> - Rileva dispositivi di storage</p>
+        <p>• <strong>Swap activation</strong> - Abilita spazio di swap</p>
 
         <h3>🔐 Security Framework</h3>
-        <p>• <strong>POSIX ACLs</strong> - Controllo accessi avanzato oltre i permessi Unix tradizionali</p>
-        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control per sicurezza avanzata</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari per processi privilegiati</p>
+        <p>• <strong>User authentication</strong> - Configura utenti e gruppi di sistema</p>
+        <p>• <strong>Permission setup</strong> - Imposta permessi per file e directory</p>
+        <p>• <strong>SELinux/AppArmor</strong> - Carica politiche di sicurezza</p>
 
-        <h3>⚡ Performance Subsystems</h3>
-        <p>• <strong>IO scheduler</strong> - Ottimizza l'ordine delle operazioni I/O per ridurre seek time</p>
-        <p>• <strong>Writeback</strong> - Scrive dati modificati in background per non bloccare applicazioni</p>
-        <p>• <strong>Read-ahead</strong> - Pre-carica dati che probabilmente saranno richiesti</p>
+        <h3>📊 System Monitoring</h3>
+        <p>• <strong>Logging systems</strong> - Avvia syslog e journald</p>
+        <p>• <strong>Performance monitoring</strong> - Abilita monitoraggio risorse</p>
+        <p>• <strong>Health checks</strong> - Verifica integrità del sistema</p>
 
         <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni che ogni programmatore usa quotidianamente, spesso senza sapere che parlano con il VFS:</strong></p>
+        <p><strong>Queste sono le interfacce principali per gestire il system run:</strong></p>
 
-        <h3>📂 Gestione File Base</h3>
+        <h3>⚙️ Systemd Service Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre un file e restituisce un file descriptor. Il VFS risolve il pathname e chiama il filesystem specifico.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">systemctl start service</code><br>
+            <span style="color: #666; font-size: 0.9em;">Avvia un servizio di sistema</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge dati dal file nel buffer. Il VFS coordina con il page cache per evitare accessi disco inutili.</span><br><br>
+            <code style="color: #2e7d32; font-weight: bold;">systemctl enable service</code><br>
+            <span style="color: #666; font-size: 0.9em;">Abilita un servizio per l'avvio automatico</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scrive dati nel file. I dati vanno prima nel page cache, poi vengono scritti su disco in background.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">systemctl status service</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mostra lo stato di un servizio</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Forza la scrittura di dati buffered.</span>
+            <code style="color: #9c27b0; font-weight: bold;">systemctl list-units</code><br>
+            <span style="color: #666; font-size: 0.9em;">Elenca tutte le unit systemd</span>
         </div>
 
-        <h3>📊 Metadata e Navigazione</h3>
+        <h3>📊 System Monitoring</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni complete sul file (dimensione, permessi, date). Legge dall'inode.</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">journalctl -u service</code><br>
+            <span style="color: #666; font-size: 0.9em;">Visualizza log di un servizio specifico</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">DIR *opendir(const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre una directory per la navigazione. Crea un context per readdir().</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">systemd-analyze</code><br>
+            <span style="color: #666; font-size: 0.9em;">Analizza i tempi di boot del sistema</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry della directory. Restituisce nome file e tipo.</span>
+            <code style="color: #2e7d32; font-weight: bold;">uptime</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mostra da quanto tempo il sistema è attivo</span>
         </div>
 
-        <h3>💽 Gestione Filesystem</h3>
+        <h3>💽 Boot Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Monta un dispositivo nel filesystem tree. Il VFS registra il nuovo filesystem.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">systemctl isolate target</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cambia il target di runlevel del sistema</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int umount(const char *target);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Smonta un filesystem. Il VFS rimuove tutti i riferimenti e invalida le cache.</span>
+            <code style="color: #9c27b0; font-weight: bold;">systemctl reboot</code><br>
+            <span style="color: #666; font-size: 0.9em;">Riavvia il sistema</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">systemctl poweroff</code><br>
+            <span style="color: #666; font-size: 0.9em;">Spegne il sistema</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando copi un file con cp:</strong></p>
+        <p><strong>Quando avvii un servizio come SSH:</strong></p>
         <ol>
-            <li><code>open(file_sorgente, O_RDONLY)</code> - Apre file sorgente</li>
-            <li><code>open(file_destinazione, O_WRONLY|O_CREAT)</code> - Crea/apre destinazione</li>
-            <li>Ciclo: <code>read()</code> dal sorgente, <code>write()</code> nella destinazione</li>
-            <li><code>close()</code> entrambi i file</li>
+            <li><code>systemctl start sshd</code> - Avvia il demone SSH</li>
+            <li><code>systemctl enable sshd</code> - Lo abilita per l'avvio automatico</li>
+            <li><code>systemctl status sshd</code> - Verifica che sia attivo</li>
+            <li><code>journalctl -u sshd</code> - Controlla i log del servizio</li>
         </ol>
-        <p><em>Tutto questo passa attraverso il VFS, che nasconde se i file sono su ext4, NFS, o qualsiasi altro filesystem!</em></p>
+        <p><em>systemd gestisce tutto il ciclo di vita dei servizi, dalla dipendenza alla supervisione!</em></p>
 
 
         <h2>🗺️ Mappa Concettuale del VFS</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Virtual File System</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del System Run</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Programmi (cat, cp, ls)<br>
-                    • Librerie (glibc)<br>
-                    • System Calls
+                    • systemctl commands<br>
+                    • System administration<br>
+                    • Service management
                 </div>
             </div>
 
@@ -505,180 +512,166 @@
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • open() • read() • write()<br>
-                    • stat() • mkdir() • mount()<br>
-                    • Interfaccia uniforme
+                    • systemd • SysV init<br>
+                    • Service units • Targets<br>
+                    • Dependency management
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- VFS Core -->
+            <!-- Kernel Core -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 VFS CORE (Virtual File System)</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 KERNEL CORE</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
-                        <div style="font-size: 0.8em;">inode</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🚀</div>
+                        <div style="font-size: 0.8em;">Boot</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
-                        <div style="font-size: 0.8em;">dentry</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">Scheduler</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
-                        <div style="font-size: 0.8em;">file</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🧠</div>
+                        <div style="font-size: 0.8em;">Memory</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">superblock</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔌</div>
+                        <div style="font-size: 0.8em;">Devices</div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Caching intelligente<br>
-                    • API uniforme<br>
-                    • Gestione metadati
+                    • Process management<br>
+                    • Resource allocation<br>
+                    • System initialization
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Filesystem Implementations -->
+            <!-- Hardware Layer -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
-                    <div style="font-size: 0.8em; color: #666;">Linux nativo</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🔌 HARDWARE</div>
+                    <div style="font-size: 0.8em; color: #666;">CPU, RAM, Storage</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Snapshot & checksum</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🌐 FIRMWARE</div>
+                    <div style="font-size: 0.8em; color: #666;">BIOS/UEFI</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Network FS</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">💽 BOOTLOADER</div>
+                    <div style="font-size: 0.8em; color: #666;">GRUB, LILO</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
-                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🗄️ INITRD</div>
+                    <div style="font-size: 0.8em; color: #666;">Initial RAM disk</div>
                 </div>
             </div>
 
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Storage Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Block Devices (HDD, SSD)<br>
-                    • Network Storage (SAN, NAS)<br>
-                    • Virtual Storage (RAID, LVM)
-                </div>
-            </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste I/O<br>
-                • Ogni layer astrae i dettagli del layer sottostante<br>
-                • Il VFS è il "traduttore universale" che rende tutto uniforme<br>
-                • Gli stessi comandi funzionano su qualsiasi storage sottostante
+                • Le frecce mostrano la sequenza di boot del sistema<br>
+                • Ogni layer dipende dal precedente per funzionare<br>
+                • Il kernel è il cuore che coordina tutto il system run<br>
+                • L'init system gestisce la fase userspace del boot
             </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funziona il VFS</h2>
+        <h2>🎬 Demo Interattiva: Sequenza di Boot</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Copia di un file tra filesystem diversi</h3>
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Avvio del sistema Linux</h3>
 
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 File sorgente su EXT4</div>
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔌 Hardware</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /home/user/documento.txt<br>
-                        <span style="color: #666;">(filesystem: ext4, device: /dev/sda1)</span>
+                        CPU: Intel i7<br>
+                        RAM: 16GB<br>
+                        <span style="color: #666;">(BIOS/UEFI pronto)</span>
                     </div>
                 </div>
 
                 <div style="font-size: 2em; color: #f57c00;">⚡</div>
 
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 Destinazione su NFS</div>
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🐧 Sistema Linux</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /mnt/server/backup.txt<br>
-                        <span style="color: #666;">(filesystem: nfs, server: 192.168.1.100)</span>
+                        Kernel 5.15<br>
+                        systemd init<br>
+                        <span style="color: #666;">(tutti i servizi attivi)</span>
                     </div>
                 </div>
             </div>
 
             <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">cp /home/user/documento.txt /mnt/server/backup.txt</code>
+                <strong>Comando per vedere il boot:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">journalctl -b</code>
             </div>
 
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza di boot:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Risoluzione percorsi:</strong> VFS traduce entrambi i path in inode</li>
-                    <li><strong>2. Lettura EXT4:</strong> VFS chiama le funzioni di ext4 per leggere i dati</li>
-                    <li><strong>3. Scrittura NFS:</strong> VFS chiama le funzioni NFS per scrivere sulla rete</li>
-                    <li><strong>4. Caching intelligente:</strong> I dati passano attraverso il page cache</li>
-                    <li><strong>5. Trasparenza totale:</strong> L'utente non sa che sta copiando tra dispositivi diversi!</li>
+                    <li><strong>1. POST (Power-On Self-Test):</strong> BIOS testa l'hardware</li>
+                    <li><strong>2. Bootloader:</strong> GRUB carica kernel e initrd</li>
+                    <li><strong>3. Kernel init:</strong> Inizializzazione memoria e dispositivi</li>
+                    <li><strong>4. Root filesystem:</strong> Montaggio del disco root</li>
+                    <li><strong>5. Systemd:</strong> Avvio parallelo di tutti i servizi</li>
                 </ol>
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Il comando <code>cp</code> funziona esattamente allo stesso modo, che il file sia su disco locale, USB, o server remoto. Il VFS rende tutto uniforme!
+                <strong>🎯 Risultato:</strong> In pochi secondi il sistema passa da hardware spento a desktop Linux completamente funzionale!
             </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora il VFS</h2>
+        <h2>🧪 Laboratorio Pratico: Esplora il System Run</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Gestisci servizi systemd</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        12345678 /etc/passwd<br><br>
-                        $ stat /etc/passwd<br>
-                        File: /etc/passwd<br>
-                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
-                        Inode: 12345678 Links: 1
+                        $ systemctl list-units --type=service<br>
+                        $ systemctl status sshd<br>
+                        $ systemctl start/stop/enable/disable apache2
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla e gestisci i servizi di sistema</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza i tempi di boot</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ mount<br>
-                        /dev/sda1 on / type ext4<br>
-                        /dev/sdb1 on /home type ext4<br>
-                        server:/share on /mnt/nfs type nfs
+                        $ systemd-analyze<br>
+                        $ systemd-analyze blame<br>
+                        $ systemd-analyze plot > boot.svg
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanto tempo impiegano i servizi per avviarsi</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📋 Leggi i log di sistema</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ iostat -x 1<br>
-                        Device r/s w/s rkB/s wkB/s<br>
-                        sda 15.0 25.0 120.0 200.0<br>
-                        nfs 2.0 8.0 16.0 64.0
+                        $ journalctl -b<br>
+                        $ journalctl -u nginx<br>
+                        $ journalctl --since "1 hour ago"
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina i log del sistema e dei servizi</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔄 Cambia runlevel/target</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep dentry<br>
-                        $ cat /proc/slabinfo | grep inode
+                        $ systemctl get-default<br>
+                        $ systemctl set-default multi-user.target<br>
+                        $ systemctl isolate graphical.target
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Modifica lo stato di esecuzione del sistema</em></p>
                 </div>
             </div>
         </div>
@@ -686,34 +679,34 @@
         <h2>🎯 Concetti Chiave da Ricordare</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
             <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Astrazione Universale</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Sequenza Ordinata</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Il VFS nasconde tutte le differenze tra filesystem. EXT4, BTRFS, NFS, FAT32... per il programmatore sono tutti uguali!
+                    Il boot segue una sequenza precisa: hardware → firmware → bootloader → kernel → init system → servizi.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Performance Intelligente</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚙️</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Init System Moderno</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Caching multi-livello, read-ahead, write-back... il VFS ottimizza automaticamente l'accesso ai dati.
+                    systemd gestisce servizi, targets, logging e monitoraggio con avvio parallelo e dependency resolution.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Estensibilità</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📊</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Logging Unificato</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Nuovi filesystem si "agganciano" al VFS senza cambiare il resto del sistema operativo.
+                    journald raccoglie log da kernel, servizi e applicazioni in un sistema centralizzato e strutturato.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza Integrata</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Runtime Management</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Controllo accessi, audit trail, supporto per SELinux e AppArmor integrati nel VFS.
+                    Oltre l'avvio, il system run gestisce monitoraggio, riavvii automatici e transizioni tra stati del sistema.
                 </p>
             </div>
         </div>
@@ -723,7 +716,7 @@
         <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
         <div style="text-align: center;">
             <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz su System Run
+                📝 Fai il Quiz sul System Run
             </button>
             <div id="quizContainer" style="display: none; margin-bottom: 20px;">
                 <div id="quizContent"></div>
@@ -739,67 +732,67 @@
 <script>
     // Quiz functionality
                 const quizQuestions = [
-        {
-            question: "Quale è il compito principale dello scheduler del kernel?",
-            options: ["Gestire lo spazio disco", "Allocare il tempo CPU ai processi", "Gestire la memoria", "Gestire i dispositivi"],
-            correct: 1,
-            explanation: "Lo scheduler determina quale processo esegue in quale momento sulla CPU."
-        },
-        {
-            question: "Come si chiama l'algoritmo di scheduling default in Linux moderno?",
-            options: ["FIFO", "Round Robin", "CFS (Completely Fair Scheduler)", "Priority-based"],
-            correct: 2,
-            explanation: "CFS (Completely Fair Scheduler) è l'algoritmo default negli ultimi kernel Linux."
-        },
-        {
-            question: "Quale struttura dati mantiene i processi pronti?",
-            options: ["run_queue", "task_queue", "process_queue", "scheduler_queue"],
-            correct: 0,
-            explanation: "La run_queue (runqueue) contiene i processi pronti per esecuzione su ogni CPU."
-        },
-        {
-            question: "Cosa significa context switch nel kernel?",
-            options: ["Cambio di cartella di lavoro", "Cambio del processo in esecuzione", "Cambio di cache", "Cambio di memoria virtuale"],
-            correct: 1,
-            explanation: "Un context switch è quando il kernel interrompe un processo e ne esegue un altro."
-        },
-        {
-            question: "Quale sistema determina la priorità dei processi in Linux?",
-            options: ["Nice value", "Real-time priority", "CFS vruntime", "Tutte le precedenti"],
-            correct: 3,
-            explanation: "Linux usa nice values, real-time priority, e vruntime per gestire le priorità."
-        },
-        {
-            question: "Quale funzione kernel ritorna il current process?",
-            options: ["get_current()", "current", "get_task_struct()", "current_task"],
-            correct: 1,
-            explanation: "La macro 'current' in kernel restituisce il task_struct del processo corrente."
-        },
-        {
-            question: "Cosa rappresenta il vruntime nel CFS?",
-            options: ["Tempo reale di esecuzione", "Tempo virtuale pesato equamente", "Tempo di wait", "Tempo di sleep"],
-            correct: 1,
-            explanation: "vruntime (virtual runtime) è il tempo di esecuzione ponderato dal CFS per fairness."
-        },
-        {
-            question: "Quale è lo stato di un processo quando è in esecuzione?",
-            options: ["TASK_RUNNING", "TASK_INTERRUPTIBLE", "TASK_STOPPED", "TASK_DEAD"],
-            correct: 0,
-            explanation: "TASK_RUNNING indica che un processo è pronto o in esecuzione sulla CPU."
-        },
-        {
-            question: "Cosa fa la funzione schedule() nel kernel?",
-            options: ["Crea un nuovo processo", "Invoca lo scheduler", "Termina il processo", "Alloca memoria"],
-            correct: 1,
-            explanation: "schedule() invoca lo scheduler per selezionare il prossimo processo da eseguire."
-        },
-        {
-            question: "Quale è il parametro che influenza il time slice nel CFS?",
-            options: ["timeslice", "sched_latency", "min_vruntime", "rq->clock"],
-            correct: 1,
-            explanation: "sched_latency controlla la latenza di scheduling e il time slice dei processi."
-        }
-    ];
+                    {
+                        question: "Cosa gestisce il System Run nel kernel Linux?",
+                        options: ["Solo la memoria", "Avvio, inizializzazione e esecuzione del sistema", "Solo i dispositivi", "Solo la rete"],
+                        correct: 1,
+                        explanation: "Il System Run coordina l'avvio completo del sistema dall'accensione fino all'esecuzione dei servizi."
+                    },
+                    {
+                        question: "Quale componente avvia i servizi di sistema in ordine?",
+                        options: ["BIOS", "Kernel", "Init system (systemd)", "Bootloader"],
+                        correct: 2,
+                        explanation: "L'init system (come systemd) gestisce l'avvio ordinato dei servizi risolvendo le dipendenze."
+                    },
+                    {
+                        question: "Cosa fa GRUB durante il boot?",
+                        options: ["Inizializza la RAM", "Carica il kernel in memoria", "Avvia i servizi", "Configura la rete"],
+                        correct: 1,
+                        explanation: "GRUB è il bootloader che carica il kernel Linux e l'initrd nella memoria."
+                    },
+                    {
+                        question: "Quale comando mostra i log del boot corrente?",
+                        options: ["dmesg", "journalctl -b", "systemctl status", "uptime"],
+                        correct: 1,
+                        explanation: "journalctl -b mostra i log del boot corrente registrati da systemd."
+                    },
+                    {
+                        question: "Cosa rappresenta un 'target' in systemd?",
+                        options: ["Un file di configurazione", "Uno stato del sistema (es. multi-user.target)", "Un processo", "Un dispositivo"],
+                        correct: 1,
+                        explanation: "I target sono stati del sistema che definiscono quali servizi devono essere attivi."
+                    },
+                    {
+                        question: "Quale fase del boot avviene prima del caricamento del kernel?",
+                        options: ["Init system", "BIOS/UEFI POST", "Filesystem mount", "Service start"],
+                        correct: 1,
+                        explanation: "BIOS/UEFI esegue il POST e inizializza l'hardware prima di passare al bootloader."
+                    },
+                    {
+                        question: "Cosa fa systemd-analyze?",
+                        options: ["Avvia servizi", "Analizza i tempi di boot", "Mostra log", "Cambia target"],
+                        correct: 1,
+                        explanation: "systemd-analyze misura e mostra i tempi impiegati da ciascun servizio durante l'avvio."
+                    },
+                    {
+                        question: "Quale comando abilita un servizio per l'avvio automatico?",
+                        options: ["systemctl start", "systemctl enable", "systemctl status", "systemctl list-units"],
+                        correct: 1,
+                        explanation: "systemctl enable crea i link simbolici necessari per avviare il servizio automaticamente."
+                    },
+                    {
+                        question: "Cosa succede durante uno shutdown ordinato?",
+                        options: ["Il sistema si spegne immediatamente", "I servizi vengono arrestati in ordine inverso", "Il kernel viene ricaricato", "La RAM viene cancellata"],
+                        correct: 1,
+                        explanation: "Durante lo shutdown, systemd arresta i servizi nell'ordine inverso rispetto all'avvio."
+                    },
+                    {
+                        question: "Quale componente gestisce le dipendenze tra servizi?",
+                        options: ["Kernel", "BIOS", "Init system", "Bootloader"],
+                        correct: 2,
+                        explanation: "L'init system risolve le dipendenze e avvia i servizi nell'ordine corretto."
+                    }
+                ];
 
     let currentQuestionIndex = 0;
     let score = 0;
@@ -913,13 +906,13 @@
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            message = "Eccellente! Hai una buona comprensione del System Run! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            message = "Buon lavoro! Continua a studiare il system run! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            message = "Continua a studiare! Il system run è fondamentale! 📚";
             color = "#d32f2f";
         }
 

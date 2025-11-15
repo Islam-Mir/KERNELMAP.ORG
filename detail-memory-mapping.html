@@ -353,148 +353,144 @@
         <p>• <strong>tlb_miss()</strong> - Gestisce miss del TLB</p>
 
         <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando apri un file come /home/user/documento.txt, ecco cosa succede nel VFS:</strong></p>
+        <p><strong>Quando usi mmap() per mappare un file in memoria, ecco cosa succede:</strong></p>
 
-        <h3>🔍 Risoluzione del Percorso</h3>
-        <p>1. Il VFS divide "/home/user/documento.txt" in componenti: "home" → "user" → "documento.txt"</p>
-        <p>2. Per ogni componente, cerca nella dentry cache se esiste già una traduzione</p>
-        <p>3. Se non trova, chiede al filesystem (ext4) di cercare nel disco</p>
-        <p>4. Il filesystem restituisce l'inode corrispondente</p>
+        <h3>🔍 Memory-Mapped File</h3>
+        <p>1. Il kernel valida i parametri di mmap() (file descriptor, offset, lunghezza)</p>
+        <p>2. Alloca strutture vm_area_struct per rappresentare il mapping</p>
+        <p>3. Popola le tabelle di pagine con entry che puntano ai dati del file</p>
+        <p>4. Restituisce un indirizzo virtuale al processo chiamante</p>
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
-            <li><strong>inode (index node)</strong> - Contiene tutti i metadati di un file: permessi, dimensione, date, puntatori ai blocchi dati. È come la "carta d'identità" del file</li>
-            <li><strong>dentry (directory entry)</strong> - Collega un nome (es. "documento.txt") al suo inode. È la "voce del dizionario" che traduce nomi in indirizzi</li>
-            <li><strong>file object</strong> - Rappresenta un file aperto da un processo specifico. Tiene traccia della posizione corrente, dei flags di apertura, etc.</li>
-            <li><strong>superblock</strong> - Contiene informazioni globali del filesystem: dimensione totale, blocchi liberi, tipo di filesystem, parametri di tuning</li>
+            <li><strong>vm_area_struct</strong> - Rappresenta una regione di memoria virtuale mappata, con indirizzi, permessi, e operazioni associate</li>
+            <li><strong>page table entry (PTE)</strong> - Contiene mapping tra indirizzo virtuale e fisico, con flag di presenza e protezione</li>
+            <li><strong>mm_struct</strong> - Descrive lo spazio di indirizzamento completo di un processo, contenente la gerarchia delle tabelle di pagine</li>
+            <li><strong>address_space</strong> - Gestisce le pagine associate a un file, coordinando tra cache e storage</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare il VFS:</strong></p>
+        <p><strong>Comandi Linux per esplorare la memory mapping:</strong></p>
         <ul>
-            <li><code>ls -i file.txt</code> - Mostra il numero inode del file</li>
-            <li><code>stat file.txt</code> - Visualizza tutti i metadati dell'inode</li>
-            <li><code>df -h</code> - Mostra i superblock dei filesystem montati</li>
-            <li><code>mount</code> - Elenca tutti i filesystem montati</li>
-            <li><code>find / -inum 12345</code> - Trova file per numero inode</li>
+            <li><code>pmap PID</code> - Mostra tutte le regioni di memoria mappate di un processo</li>
+            <li><code>cat /proc/PID/maps</code> - Visualizza il memory map completo di un processo</li>
+            <li><code>cat /proc/PID/smaps</code> - Dettagli avanzati su ogni mapping (RSS, PSS, etc.)</li>
+            <li><code>strace -e trace=mmap ./program</code> - Traccia chiamate mmap</li>
+            <li><code>perf stat -e dTLB-load-misses ./program</code> - Monitora miss del TLB</li>
         </ul>
 
-        <h3>🎯 Caso Reale: Apertura di un File</h3>
-        <p>Quando fai <code>cat /etc/passwd</code>:</p>
+        <h3>🎯 Caso Reale: Database Memory-Mapped</h3>
+        <p>Quando un database usa mmap() per file di dati:</p>
         <ol>
-            <li>VFS risolve percorso: "/" (root) → "etc" → "passwd"</li>
-            <li>Per ogni directory, carica l'inode e cerca il nome successivo</li>
-            <li>Trova l'inode del file passwd e crea un file object</li>
-            <li>Legge i blocchi dati puntati dall'inode</li>
-            <li>Restituisce il contenuto al comando cat</li>
+            <li>Il database chiama mmap() per mappare l'intero file in memoria</li>
+            <li>Il kernel crea PTE che puntano direttamente ai blocchi del file</li>
+            <li>Le query accedono ai dati come se fossero in memoria normale</li>
+            <li>Il page fault carica automaticamente i dati dal disco quando necessario</li>
+            <li>Le modifiche vengono scritte automaticamente su disco dal kernel</li>
         </ol>
 
-        <h2>💾 Filesystem Supportati</h2>
+        <h2>🗺️ Tipi di Memory Mapping</h2>
         <ul>
-            <li><strong>ext4</strong> - Filesystem nativo Linux</li>
-            <li><strong>btrfs</strong> - Moderno con snapshot e checksum</li>
-            <li><strong>xfs</strong> - High-performance journaling</li>
-            <li><strong>nfs</strong> - Network File System</li>
-            <li><strong>procfs</strong> - Process information pseudo-fs</li>
+            <li><strong>File-backed mapping</strong> - Mappa contenuto di file direttamente in memoria (mmap() con fd)</li>
+            <li><strong>Anonymous mapping</strong> - Alloca memoria senza file sottostante (MAP_ANONYMOUS)</li>
+            <li><strong>Shared mapping</strong> - Modifiche visibili ad altri processi (MAP_SHARED)</li>
+            <li><strong>Private mapping</strong> - Modifiche private con copy-on-write (MAP_PRIVATE)</li>
+            <li><strong>Huge pages</strong> - Mappature con pagine di grandi dimensioni per performance</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
-            <li><strong>Unified API</strong> - Stessa interfaccia per tutti FS</li>
-            <li><strong>Caching</strong> - Buffer e page cache integrate</li>
-            <li><strong>Permissions</strong> - Modello Unix completo</li>
-            <li><strong>Mounting</strong> - Gerarchia unificata</li>
-            <li><strong>Hotplug</strong> - Supporto dispositivi rimovibili</li>
+            <li><strong>Zero-copy I/O</strong> - Accesso diretto ai dati senza copie aggiuntive</li>
+            <li><strong>Demand paging</strong> - Caricamento lazy delle pagine su page fault</li>
+            <li><strong>Shared memory</strong> - Comunicazione efficiente tra processi</li>
+            <li><strong>Memory protection</strong> - Controllo granulare di lettura/scrittura/esecuzione</li>
+            <li><strong>TLB optimization</strong> - Cache efficiente delle traduzioni indirizzo</li>
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Il VFS è il "collante" che tiene insieme molti sottosistemi del kernel Linux:</strong></p>
+        <p><strong>La Memory Mapping coordina con tutti i principali sottosistemi del kernel Linux:</strong></p>
 
-        <h3>💾 Storage Layer (Block Device)</h3>
-        <p>• <strong>Block layer</strong> - Gestisce la comunicazione con dischi, SSD, e altri dispositivi a blocchi. Il VFS chiede "dammi il blocco N" e il block layer si occupa dei dettagli hardware</p>
-        <p>• <strong>Device mapper</strong> - Permette LVM, RAID software, encryption trasparenti</p>
+        <h3>🧠 Memory Management</h3>
+        <p>• <strong>Page allocator</strong> - Fornisce pagine fisiche per i mapping</p>
+        <p>• <strong>Page fault handler</strong> - Gestisce caricamento lazy delle pagine</p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>NFS client</strong> - Monta filesystem remoti come se fossero locali</p>
-        <p>• <strong>CIFS/SMB</strong> - Accesso a condivisioni Windows</p>
-        <p>• <strong>9P</strong> - Protocollo usato in container e virtualizzazione</p>
+        <h3>💾 Virtual File System</h3>
+        <p>• <strong>Address space operations</strong> - Coordina caricamento pagine da file</p>
+        <p>• <strong>Page cache</strong> - Cache intelligente per dati mappati</p>
 
-        <h3>🧠 Memory Manager</h3>
-        <p>• <strong>Page cache</strong> - Cache intelligente che mantiene in RAM i dati più usati, riducendo accessi al disco</p>
-        <p>• <strong>Buffer cache</strong> - Cache per metadata dei filesystem</p>
-        <p>• <strong>Memory-mapped files</strong> - Permette di trattare file come se fossero memoria</p>
+        <h3>⚡ MMU Hardware</h3>
+        <p>• <strong>TLB management</strong> - Cache efficiente delle traduzioni</p>
+        <p>• <strong>Page table walker</strong> - Hardware per traduzione indirizzi</p>
 
         <h3>🔐 Security Framework</h3>
-        <p>• <strong>POSIX ACLs</strong> - Controllo accessi avanzato oltre i permessi Unix tradizionali</p>
-        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control per sicurezza avanzata</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari per processi privilegiati</p>
+        <p>• <strong>Memory protection</strong> - Controllo accessi per regione</p>
+        <p>• <strong>Address space layout randomization</strong> - Sicurezza ASLR</p>
 
-        <h3>⚡ Performance Subsystems</h3>
-        <p>• <strong>IO scheduler</strong> - Ottimizza l'ordine delle operazioni I/O per ridurre seek time</p>
-        <p>• <strong>Writeback</strong> - Scrive dati modificati in background per non bloccare applicazioni</p>
-        <p>• <strong>Read-ahead</strong> - Pre-carica dati che probabilmente saranno richiesti</p>
+        <h3>⚙️ Process Management</h3>
+        <p>• <strong>Fork handling</strong> - Gestione copy-on-write per processi figli</p>
+        <p>• <strong>Exec handling</strong> - Cleanup mapping durante execve</p>
 
         <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni che ogni programmatore usa quotidianamente, spesso senza sapere che parlano con il VFS:</strong></p>
+        <p><strong>Queste sono le funzioni principali per gestire memory mapping in Linux:</strong></p>
 
-        <h3>📂 Gestione File Base</h3>
+        <h3>🗺️ Creazione Mapping</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre un file e restituisce un file descriptor. Il VFS risolve il pathname e chiama il filesystem specifico.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un nuovo mapping di memoria. fd=-1 per anonymous mapping.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge dati dal file nel buffer. Il VFS coordina con il page cache per evitare accessi disco inutili.</span><br><br>
+            <code style="color: #2e7d32; font-weight: bold;">void *mremap(void *old_address, size_t old_size, size_t new_size, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ridimensiona o sposta un mapping esistente.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scrive dati nel file. I dati vanno prima nel page cache, poi vengono scritti su disco in background.</span><br><br>
-
-            <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Forza la scrittura di dati buffered.</span>
+            <code style="color: #f57c00; font-weight: bold;">int munmap(void *addr, size_t length);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove un mapping e libera le risorse associate.</span>
         </div>
 
-        <h3>📊 Metadata e Navigazione</h3>
+        <h3>🔄 Sincronizzazione</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni complete sul file (dimensione, permessi, date). Legge dall'inode.</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">int msync(void *addr, size_t length, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Sincronizza modifiche alla memoria mappata con il file sottostante.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">DIR *opendir(const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre una directory per la navigazione. Crea un context per readdir().</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">int madvise(void *addr, size_t length, int advice);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Fornisce suggerimenti al kernel su come gestire la memoria mappata.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry della directory. Restituisce nome file e tipo.</span>
+            <code style="color: #2e7d32; font-weight: bold;">int mprotect(void *addr, size_t len, int prot);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica i permessi di protezione di una regione di memoria.</span>
         </div>
 
-        <h3>💽 Gestione Filesystem</h3>
+        <h3>🔍 Informazioni Mapping</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Monta un dispositivo nel filesystem tree. Il VFS registra il nuovo filesystem.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">int mincore(void *addr, size_t length, unsigned char *vec);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica quali pagine di un mapping sono in memoria fisica.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int umount(const char *target);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Smonta un filesystem. Il VFS rimuove tutti i riferimenti e invalida le cache.</span>
+            <code style="color: #9c27b0; font-weight: bold;">void *malloc(size_t size);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Allocazione memoria che può usare anonymous mapping internamente.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">void *brk(void *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica la fine dell'heap del processo (sbrk è il wrapper).</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando copi un file con cp:</strong></p>
+        <p><strong>Quando un programma carica una libreria condivisa:</strong></p>
         <ol>
-            <li><code>open(file_sorgente, O_RDONLY)</code> - Apre file sorgente</li>
-            <li><code>open(file_destinazione, O_WRONLY|O_CREAT)</code> - Crea/apre destinazione</li>
-            <li>Ciclo: <code>read()</code> dal sorgente, <code>write()</code> nella destinazione</li>
-            <li><code>close()</code> entrambi i file</li>
+            <li><code>open("/lib/libc.so.6", O_RDONLY)</code> - Apre il file della libreria</li>
+            <li><code>mmap(NULL, size, PROT_READ|PROT_EXEC, MAP_PRIVATE, fd, 0)</code> - Mappa il codice</li>
+            <li>Il programma può chiamare funzioni come se fossero in memoria normale</li>
+            <li><code>munmap()</code> rilascia la memoria quando la libreria viene scaricata</li>
         </ol>
-        <p><em>Tutto questo passa attraverso il VFS, che nasconde se i file sono su ext4, NFS, o qualsiasi altro filesystem!</em></p>
+        <p><em>La memory mapping rende trasparenti le differenze tra RAM e storage!</em></p>
 
 
-        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <h2>🗺️ Mappa Concettuale della Memory Mapping</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Virtual File System</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura della Memory Mapping</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ PROCESSI USER SPACE</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Programmi (cat, cp, ls)<br>
-                    • Librerie (glibc)<br>
-                    • System Calls
+                    • Applicazioni normali<br>
+                    • Database, server<br>
+                    • mmap(), munmap()
                 </div>
             </div>
 
@@ -503,182 +499,182 @@
 
             <!-- System Call Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • open() • read() • write()<br>
-                    • stat() • mkdir() • mount()<br>
-                    • Interfaccia uniforme
+                    • mmap() • munmap() • mremap()<br>
+                    • msync() • madvise() • mprotect()<br>
+                    • Gestione mapping
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- VFS Core -->
+            <!-- Memory Mapping Core -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 VFS CORE (Virtual File System)</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 MEMORY MAPPING CORE</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
-                        <div style="font-size: 0.8em;">inode</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
-                        <div style="font-size: 0.8em;">dentry</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🗺️</div>
+                        <div style="font-size: 0.8em;">vm_area_struct</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
-                        <div style="font-size: 0.8em;">file</div>
+                        <div style="font-size: 0.8em;">Page Tables</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">TLB</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">superblock</div>
+                        <div style="font-size: 0.8em;">Page Cache</div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Caching intelligente<br>
-                    • API uniforme<br>
-                    • Gestione metadati
+                    • Traduzione indirizzi<br>
+                    • Demand paging<br>
+                    • Memory protection
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Filesystem Implementations -->
+            <!-- Memory Types -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
-                    <div style="font-size: 0.8em; color: #666;">Linux nativo</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">📄 FILE-BACKED</div>
+                    <div style="font-size: 0.8em; color: #666;">Mappa file su disco</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Snapshot & checksum</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🚫 ANONYMOUS</div>
+                    <div style="font-size: 0.8em; color: #666;">Memoria senza file</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Network FS</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔗 SHARED</div>
+                    <div style="font-size: 0.8em; color: #666;">Visibile ad altri processi</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
-                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔒 PRIVATE</div>
+                    <div style="font-size: 0.8em; color: #666;">Copy-on-write</div>
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Storage Layer -->
+            <!-- Hardware Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">⚙️ MMU HARDWARE</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Block Devices (HDD, SSD)<br>
-                    • Network Storage (SAN, NAS)<br>
-                    • Virtual Storage (RAID, LVM)
+                    • Page Table Walker<br>
+                    • TLB (Translation Cache)<br>
+                    • Memory Protection Unit
                 </div>
             </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste I/O<br>
-                • Ogni layer astrae i dettagli del layer sottostante<br>
-                • Il VFS è il "traduttore universale" che rende tutto uniforme<br>
-                • Gli stessi comandi funzionano su qualsiasi storage sottostante
+                • Le frecce mostrano il flusso della traduzione indirizzi<br>
+                • vm_area_struct gestisce regioni virtuali<br>
+                • Page tables traducono virtuale in fisico<br>
+                • TLB accelera le traduzioni più usate
             </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funziona il VFS</h2>
+        <h2>🎬 Demo Interattiva: Come Funziona la Memory Mapping</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Copia di un file tra filesystem diversi</h3>
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Accesso a un file memory-mapped</h3>
 
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 File sorgente su EXT4</div>
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📄 File su Disco</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /home/user/documento.txt<br>
-                        <span style="color: #666;">(filesystem: ext4, device: /dev/sda1)</span>
+                        /var/log/syslog<br>
+                        <span style="color: #666;">(file: 10MB, device: /dev/sda1)</span>
                     </div>
                 </div>
 
-                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+                <div style="font-size: 2em; color: #f57c00;">🗺️</div>
 
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 Destinazione su NFS</div>
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🧠 Memoria Virtuale</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /mnt/server/backup.txt<br>
-                        <span style="color: #666;">(filesystem: nfs, server: 192.168.1.100)</span>
+                        0x7f8b2c000000<br>
+                        <span style="color: #666;">(indirizzo virtuale: 10MB mappati)</span>
                     </div>
                 </div>
             </div>
 
             <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">cp /home/user/documento.txt /mnt/server/backup.txt</code>
+                <strong>Codice eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">void *addr = mmap(NULL, 10485760, PROT_READ, MAP_PRIVATE, fd, 0);</code>
             </div>
 
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Risoluzione percorsi:</strong> VFS traduce entrambi i path in inode</li>
-                    <li><strong>2. Lettura EXT4:</strong> VFS chiama le funzioni di ext4 per leggere i dati</li>
-                    <li><strong>3. Scrittura NFS:</strong> VFS chiama le funzioni NFS per scrivere sulla rete</li>
-                    <li><strong>4. Caching intelligente:</strong> I dati passano attraverso il page cache</li>
-                    <li><strong>5. Trasparenza totale:</strong> L'utente non sa che sta copiando tra dispositivi diversi!</li>
+                    <li><strong>1. Creazione vm_area_struct:</strong> Il kernel alloca una struttura per rappresentare il mapping</li>
+                    <li><strong>2. Setup page tables:</strong> Popola le tabelle di pagine con entry che puntano al file</li>
+                    <li><strong>3. Lazy loading:</strong> Le pagine vengono caricate solo quando accedute (demand paging)</li>
+                    <li><strong>4. Accesso diretto:</strong> Il programma accede ai dati come se fossero in memoria</li>
+                    <li><strong>5. Page fault handling:</strong> Se una pagina non è in RAM, viene caricata automaticamente</li>
                 </ol>
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Il comando <code>cp</code> funziona esattamente allo stesso modo, che il file sia su disco locale, USB, o server remoto. Il VFS rende tutto uniforme!
+                <strong>🎯 Risultato:</strong> Il file di 10MB diventa accessibile come un array in memoria! Zero-copy I/O rende l'accesso ultra-veloce!
             </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora il VFS</h2>
+        <h2>🧪 Laboratorio Pratico: Esplora la Memory Mapping</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🗺️ Esplora i mapping di memoria</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        12345678 /etc/passwd<br><br>
-                        $ stat /etc/passwd<br>
-                        File: /etc/passwd<br>
-                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
-                        Inode: 12345678 Links: 1
+                        $ pmap $$<br>
+                        000055... r-xp 00000000 08:01 123456 /bin/bash<br>
+                        00007f... r--p 00000000 08:01 789012 libc.so<br><br>
+                        $ cat /proc/$$/maps | head -10
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i mapping di memoria del tuo processo</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza l'uso della memoria</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ mount<br>
-                        /dev/sda1 on / type ext4<br>
-                        /dev/sdb1 on /home type ext4<br>
-                        server:/share on /mnt/nfs type nfs
+                        $ cat /proc/$$/smaps | grep -A 5 "heap"<br>
+                        Size: 135168 kB<br>
+                        Rss: 12345 kB<br>
+                        Pss: 12345 kB<br>
+                        Shared_Clean: 0 kB
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Dettagli avanzati su ogni regione di memoria</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Monitora page fault</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ iostat -x 1<br>
-                        Device r/s w/s rkB/s wkB/s<br>
-                        sda 15.0 25.0 120.0 200.0<br>
-                        nfs 2.0 8.0 16.0 64.0
+                        $ ps -o pid,min_flt,maj_flt $$<br>
+                        PID MINFL MAJFL<br>
+                        1234 1500 25<br><br>
+                        $ perf stat -e page-faults ./program
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Conta i page fault minori e maggiori</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Traccia mmap calls</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep dentry<br>
-                        $ cat /proc/slabinfo | grep inode
+                        $ strace -e trace=mmap,munmap ls /tmp<br>
+                        mmap(NULL, 4096, ...) = 0x7f8b2c000000<br>
+                        munmap(0x7f8b2c000000, 4096) = 0
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutte le chiamate mmap fatte da un programma</em></p>
                 </div>
             </div>
         </div>
@@ -686,34 +682,34 @@
         <h2>🎯 Concetti Chiave da Ricordare</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
             <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Astrazione Universale</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🗺️</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Traduzione Indirizzi</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Il VFS nasconde tutte le differenze tra filesystem. EXT4, BTRFS, NFS, FAT32... per il programmatore sono tutti uguali!
+                    Gli indirizzi virtuali vengono tradotti in fisici attraverso tabelle di pagine multi-livello. L'MMU accelera con il TLB.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Performance Intelligente</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Demand Paging</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Caching multi-livello, read-ahead, write-back... il VFS ottimizza automaticamente l'accesso ai dati.
+                    Le pagine vengono caricate in memoria solo quando accedute. Page fault triggherano il caricamento lazy dal disco.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Estensibilità</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Copy-on-Write</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Nuovi filesystem si "agganciano" al VFS senza cambiare il resto del sistema operativo.
+                    In mapping privati, le modifiche creano copie private. Essenziale per fork() efficiente e sicurezza.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza Integrata</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Memory Protection</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Controllo accessi, audit trail, supporto per SELinux e AppArmor integrati nel VFS.
+                    Ogni pagina ha flag di protezione (RWX). Violazioni causano segmentation fault per sicurezza.
                 </p>
             </div>
         </div>
@@ -913,13 +909,13 @@
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            message = "Eccellente! Hai una buona comprensione della memory mapping! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            message = "Buon lavoro! Continua a esplorare la memory mapping! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            message = "Continua a studiare! La memory mapping è fondamentale! 📚";
             color = "#d32f2f";
         }
 

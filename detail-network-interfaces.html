@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
 <script>
@@ -11,7 +12,6 @@
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
      crossorigin="anonymous"></script>
-
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -353,332 +353,332 @@
         <p>• <strong>nmap</strong> - Scansione porte e discovery servizi di rete</p>
 
         <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando apri un file come /home/user/documento.txt, ecco cosa succede nel VFS:</strong></p>
+        <p><strong>Quando invii un ping a un server remoto, ecco cosa succede nelle network interfaces:</strong></p>
 
-        <h3>🔍 Risoluzione del Percorso</h3>
-        <p>1. Il VFS divide "/home/user/documento.txt" in componenti: "home" → "user" → "documento.txt"</p>
-        <p>2. Per ogni componente, cerca nella dentry cache se esiste già una traduzione</p>
-        <p>3. Se non trova, chiede al filesystem (ext4) di cercare nel disco</p>
-        <p>4. Il filesystem restituisce l'inode corrispondente</p>
+        <h3>🔍 Invio Pacchetto ICMP</h3>
+        <p>1. Il comando ping crea socket ICMP e prepara pacchetto echo request</p>
+        <p>2. Il kernel instrada il pacchetto attraverso la network interface appropriata</p>
+        <p>3. Il driver hardware trasmette il pacchetto sulla rete fisica</p>
+        <p>4. La network interface riceve la risposta echo reply</p>
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
-            <li><strong>inode (index node)</strong> - Contiene tutti i metadati di un file: permessi, dimensione, date, puntatori ai blocchi dati. È come la "carta d'identità" del file</li>
-            <li><strong>dentry (directory entry)</strong> - Collega un nome (es. "documento.txt") al suo inode. È la "voce del dizionario" che traduce nomi in indirizzi</li>
-            <li><strong>file object</strong> - Rappresenta un file aperto da un processo specifico. Tiene traccia della posizione corrente, dei flags di apertura, etc.</li>
-            <li><strong>superblock</strong> - Contiene informazioni globali del filesystem: dimensione totale, blocchi liberi, tipo di filesystem, parametri di tuning</li>
+            <li><strong>struct net_device</strong> - Rappresenta un'interfaccia di rete con indirizzo MAC, MTU, flags di stato</li>
+            <li><strong>struct sk_buff</strong> - Buffer per pacchetti di rete con headers e payload</li>
+            <li><strong>struct net_device_ops</strong> - Operazioni del driver (ndo_start_xmit, ndo_open, ndo_stop)</li>
+            <li><strong>struct netif_queue</strong> - Code di trasmissione per gestire congestione</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare il VFS:</strong></p>
+        <p><strong>Comandi Linux per esplorare le network interfaces:</strong></p>
         <ul>
-            <li><code>ls -i file.txt</code> - Mostra il numero inode del file</li>
-            <li><code>stat file.txt</code> - Visualizza tutti i metadati dell'inode</li>
-            <li><code>df -h</code> - Mostra i superblock dei filesystem montati</li>
-            <li><code>mount</code> - Elenca tutti i filesystem montati</li>
-            <li><code>find / -inum 12345</code> - Trova file per numero inode</li>
+            <li><code>ip link show</code> - Mostra tutte le interfacce con stato e configurazione</li>
+            <li><code>ethtool eth0</code> - Visualizza parametri avanzati dell'interfaccia</li>
+            <li><code>cat /proc/net/dev</code> - Statistiche di traffico per ogni interfaccia</li>
+            <li><code>ifconfig -a</code> - Configurazione dettagliata delle interfacce</li>
+            <li><code>ip route show</code> - Tabella di instradamento associata alle interfacce</li>
         </ul>
 
-        <h3>🎯 Caso Reale: Apertura di un File</h3>
-        <p>Quando fai <code>cat /etc/passwd</code>:</p>
+        <h3>🎯 Caso Reale: Download File via HTTP</h3>
+        <p>Quando scarichi un file con wget:</p>
         <ol>
-            <li>VFS risolve percorso: "/" (root) → "etc" → "passwd"</li>
-            <li>Per ogni directory, carica l'inode e cerca il nome successivo</li>
-            <li>Trova l'inode del file passwd e crea un file object</li>
-            <li>Legge i blocchi dati puntati dall'inode</li>
-            <li>Restituisce il contenuto al comando cat</li>
+            <li>Browser risolve DNS e stabilisce connessione TCP</li>
+            <li>Invia richiesta HTTP attraverso la network interface</li>
+            <li>Il driver hardware trasmette pacchetti sulla rete</li>
+            <li>Riceve risposta con dati del file</li>
+            <li>Network interface gestisce ricezione e passaggio allo stack TCP/IP</li>
         </ol>
 
-        <h2>💾 Filesystem Supportati</h2>
+        <h2>🌐 Tipi di Network Interfaces</h2>
         <ul>
-            <li><strong>ext4</strong> - Filesystem nativo Linux</li>
-            <li><strong>btrfs</strong> - Moderno con snapshot e checksum</li>
-            <li><strong>xfs</strong> - High-performance journaling</li>
-            <li><strong>nfs</strong> - Network File System</li>
-            <li><strong>procfs</strong> - Process information pseudo-fs</li>
+            <li><strong>Ethernet (eth0)</strong> - Interfacce wired standard (RJ45, fibra ottica)</li>
+            <li><strong>Wireless (wlan0)</strong> - Interfacce Wi-Fi con supporto 802.11</li>
+            <li><strong>Loopback (lo)</strong> - Interfaccia virtuale per comunicazione locale</li>
+            <li><strong>VLAN (eth0.100)</strong> - Virtual LAN per segmentazione logica</li>
+            <li><strong>Bridge (br0)</strong> - Bridge per connessione reti virtuali</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
-            <li><strong>Unified API</strong> - Stessa interfaccia per tutti FS</li>
-            <li><strong>Caching</strong> - Buffer e page cache integrate</li>
-            <li><strong>Permissions</strong> - Modello Unix completo</li>
-            <li><strong>Mounting</strong> - Gerarchia unificata</li>
-            <li><strong>Hotplug</strong> - Supporto dispositivi rimovibili</li>
+            <li><strong>MTU Management</strong> - Maximum Transmission Unit per ottimizzare dimensione pacchetti</li>
+            <li><strong>Queue Management</strong> - Code di trasmissione per gestire congestione</li>
+            <li><strong>Offloading</strong> - Scarico operazioni CPU su hardware (checksum, TSO)</li>
+            <li><strong>Multiqueue</strong> - Multiple code per parallelismo e prestazioni</li>
+            <li><strong>Promiscuous Mode</strong> - Ricezione di tutti i pacchetti per sniffing</li>
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Il VFS è il "collante" che tiene insieme molti sottosistemi del kernel Linux:</strong></p>
+        <p><strong>Le network interfaces sono il ponte tra stack di rete e hardware fisico:</strong></p>
 
-        <h3>💾 Storage Layer (Block Device)</h3>
-        <p>• <strong>Block layer</strong> - Gestisce la comunicazione con dischi, SSD, e altri dispositivi a blocchi. Il VFS chiede "dammi il blocco N" e il block layer si occupa dei dettagli hardware</p>
-        <p>• <strong>Device mapper</strong> - Permette LVM, RAID software, encryption trasparenti</p>
+        <h3>📡 Network Stack</h3>
+        <p>• <strong>IP layer</strong> - Instradamento pacchetti e gestione indirizzi</p>
+        <p>• <strong>TCP/UDP</strong> - Protocolli di trasporto che utilizzano le interfacce</p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>NFS client</strong> - Monta filesystem remoti come se fossero locali</p>
-        <p>• <strong>CIFS/SMB</strong> - Accesso a condivisioni Windows</p>
-        <p>• <strong>9P</strong> - Protocollo usato in container e virtualizzazione</p>
+        <h3>🔧 Device Drivers</h3>
+        <p>• <strong>Hardware abstraction</strong> - Driver specifici per chipset Ethernet/Wi-Fi</p>
+        <p>• <strong>Interrupt handling</strong> - Gestione eventi hardware di rete</p>
 
-        <h3>🧠 Memory Manager</h3>
-        <p>• <strong>Page cache</strong> - Cache intelligente che mantiene in RAM i dati più usati, riducendo accessi al disco</p>
-        <p>• <strong>Buffer cache</strong> - Cache per metadata dei filesystem</p>
-        <p>• <strong>Memory-mapped files</strong> - Permette di trattare file come se fossero memoria</p>
+        <h3>🧠 Memory Management</h3>
+        <p>• <strong>SKB allocation</strong> - Gestione buffer per pacchetti di rete</p>
+        <p>• <strong>DMA coordination</strong> - Trasferimenti diretti memoria-hardware</p>
+
+        <h3>⚙️ Network Subsystems</h3>
+        <p>• <strong>Netfilter</strong> - Firewalling e NAT attraverso le interfacce</p>
+        <p>• <strong>Traffic Control</strong> - QoS e shaping del traffico</p>
 
         <h3>🔐 Security Framework</h3>
-        <p>• <strong>POSIX ACLs</strong> - Controllo accessi avanzato oltre i permessi Unix tradizionali</p>
-        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control per sicurezza avanzata</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari per processi privilegiati</p>
-
-        <h3>⚡ Performance Subsystems</h3>
-        <p>• <strong>IO scheduler</strong> - Ottimizza l'ordine delle operazioni I/O per ridurre seek time</p>
-        <p>• <strong>Writeback</strong> - Scrive dati modificati in background per non bloccare applicazioni</p>
-        <p>• <strong>Read-ahead</strong> - Pre-carica dati che probabilmente saranno richiesti</p>
+        <p>• <strong>Packet filtering</strong> - Controllo accessi a livello rete</p>
+        <p>• <strong>VLAN support</strong> - Isolamento traffico per sicurezza</p>
 
         <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni che ogni programmatore usa quotidianamente, spesso senza sapere che parlano con il VFS:</strong></p>
+        <p><strong>Queste sono le funzioni chiave per gestire le network interfaces nel kernel Linux:</strong></p>
 
-        <h3>📂 Gestione File Base</h3>
+        <h3>🔌 Device Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre un file e restituisce un file descriptor. Il VFS risolve il pathname e chiama il filesystem specifico.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">int register_netdev(struct net_device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra una network interface nel sistema.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge dati dal file nel buffer. Il VFS coordina con il page cache per evitare accessi disco inutili.</span><br><br>
+            <code style="color: #2e7d32; font-weight: bold;">void unregister_netdev(struct net_device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove una network interface dal sistema.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scrive dati nel file. I dati vanno prima nel page cache, poi vengono scritti su disco in background.</span><br><br>
-
-            <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Forza la scrittura di dati buffered.</span>
+            <code style="color: #f57c00; font-weight: bold;">int dev_open(struct net_device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attiva una network interface per trasmissione/ricezione.</span>
         </div>
 
-        <h3>📊 Metadata e Navigazione</h3>
+        <h3>📦 Packet Transmission</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni complete sul file (dimensione, permessi, date). Legge dall'inode.</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">int dev_queue_xmit(struct sk_buff *skb);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Accoda un pacchetto per trasmissione attraverso l'interfaccia.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">DIR *opendir(const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre una directory per la navigazione. Crea un context per readdir().</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">netdev_tx_t ndo_start_xmit(struct sk_buff *skb, struct net_device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Funzione del driver per iniziare trasmissione pacchetto.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry della directory. Restituisce nome file e tipo.</span>
+            <code style="color: #2e7d32; font-weight: bold;">int netif_rx(struct sk_buff *skb);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Passa pacchetto ricevuto allo stack di rete.</span>
         </div>
 
-        <h3>💽 Gestione Filesystem</h3>
+        <h3>⚙️ Configuration & Control</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Monta un dispositivo nel filesystem tree. Il VFS registra il nuovo filesystem.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">int dev_set_mtu(struct net_device *dev, int new_mtu);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta il Maximum Transmission Unit dell'interfaccia.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int umount(const char *target);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Smonta un filesystem. Il VFS rimuove tutti i riferimenti e invalida le cache.</span>
+            <code style="color: #9c27b0; font-weight: bold;">void dev_set_promiscuity(struct net_device *dev, int inc);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Abilita/disabilita modalità promiscua per sniffing.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int dev_change_flags(struct net_device *dev, unsigned int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica flags dell'interfaccia (IFF_UP, IFF_PROMISC, etc.).</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando copi un file con cp:</strong></p>
+        <p><strong>Quando fai ping a un host remoto:</strong></p>
         <ol>
-            <li><code>open(file_sorgente, O_RDONLY)</code> - Apre file sorgente</li>
-            <li><code>open(file_destinazione, O_WRONLY|O_CREAT)</code> - Crea/apre destinazione</li>
-            <li>Ciclo: <code>read()</code> dal sorgente, <code>write()</code> nella destinazione</li>
-            <li><code>close()</code> entrambi i file</li>
+            <li><code>dev_queue_xmit()</code> - ICMP echo request accodato per trasmissione</li>
+            <li><code>ndo_start_xmit()</code> - Driver hardware trasmette pacchetto</li>
+            <li>Hardware riceve echo reply e genera interrupt</li>
+            <li><code>netif_rx()</code> - Pacchetto ricevuto passato allo stack</li>
+            <li>Applicazione riceve risposta dal socket ICMP</li>
         </ol>
-        <p><em>Tutto questo passa attraverso il VFS, che nasconde se i file sono su ext4, NFS, o qualsiasi altro filesystem!</em></p>
+        <p><em>Le network interfaces rendono trasparente la complessità dell'hardware di rete!</em></p>
 
 
-        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <h2>🗺️ Mappa Concettuale delle Network Interfaces</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Virtual File System</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Network Interfaces</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Programmi (cat, cp, ls)<br>
-                    • Librerie (glibc)<br>
-                    • System Calls
+                    • Browser, SSH, FTP<br>
+                    • Server web, database<br>
+                    • Socket API
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- System Call Layer -->
+            <!-- Socket Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔌 SOCKET LAYER</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • open() • read() • write()<br>
-                    • stat() • mkdir() • mount()<br>
-                    • Interfaccia uniforme
+                    • socket(), bind(), connect()<br>
+                    • send(), recv(), close()<br>
+                    • Socket buffers
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- VFS Core -->
+            <!-- Network Interfaces Layer -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 VFS CORE (Virtual File System)</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌐 NETWORK INTERFACES LAYER</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
-                        <div style="font-size: 0.8em;">inode</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📡</div>
+                        <div style="font-size: 0.8em;">net_device</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
-                        <div style="font-size: 0.8em;">dentry</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📦</div>
+                        <div style="font-size: 0.8em;">sk_buff</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
-                        <div style="font-size: 0.8em;">file</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">netif_queue</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">superblock</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔧</div>
+                        <div style="font-size: 0.8em;">ndo_ops</div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Caching intelligente<br>
-                    • API uniforme<br>
-                    • Gestione metadati
+                    • Packet queuing<br>
+                    • MTU management<br>
+                    • Hardware abstraction
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Filesystem Implementations -->
+            <!-- Network Drivers -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
-                    <div style="font-size: 0.8em; color: #666;">Linux nativo</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🖧 Ethernet</div>
+                    <div style="font-size: 0.8em; color: #666;">e1000, r8169</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Snapshot & checksum</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">📶 Wireless</div>
+                    <div style="font-size: 0.8em; color: #666;">ath9k, iwlwifi</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Network FS</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🌐 Virtual</div>
+                    <div style="font-size: 0.8em; color: #666;">tun, veth, bridge</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
-                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔗 Loopback</div>
+                    <div style="font-size: 0.8em; color: #666;">127.0.0.1</div>
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Storage Layer -->
+            <!-- Hardware Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE LAYER</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Block Devices (HDD, SSD)<br>
-                    • Network Storage (SAN, NAS)<br>
-                    • Virtual Storage (RAID, LVM)
+                    • Network Interface Cards<br>
+                    • Physical media (copper, fiber, wireless)<br>
+                    • Link layer protocols
                 </div>
             </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste I/O<br>
+                • Le frecce mostrano il flusso dei pacchetti dall'applicazione all'hardware<br>
                 • Ogni layer astrae i dettagli del layer sottostante<br>
-                • Il VFS è il "traduttore universale" che rende tutto uniforme<br>
-                • Gli stessi comandi funzionano su qualsiasi storage sottostante
+                • Le network interfaces sono il ponte tra software e hardware<br>
+                • I driver gestiscono la comunicazione fisica con i dispositivi
             </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funziona il VFS</h2>
+        <h2>🎬 Demo Interattiva: Come Funzionano le Network Interfaces</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Copia di un file tra filesystem diversi</h3>
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Invio di un pacchetto attraverso una network interface</h3>
 
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 File sorgente su EXT4</div>
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📤 Applicazione Invia Dati</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /home/user/documento.txt<br>
-                        <span style="color: #666;">(filesystem: ext4, device: /dev/sda1)</span>
+                        write(sockfd, "Hello", 5)<br>
+                        <span style="color: #666;">(socket TCP connesso)</span>
                     </div>
                 </div>
 
-                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+                <div style="font-size: 2em; color: #f57c00;">🌐</div>
 
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 Destinazione su NFS</div>
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔌 Network Interface</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /mnt/server/backup.txt<br>
-                        <span style="color: #666;">(filesystem: nfs, server: 192.168.1.100)</span>
+                        eth0 (MTU: 1500)<br>
+                        <span style="color: #666;">(driver: e1000)</span>
                     </div>
                 </div>
             </div>
 
             <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">cp /home/user/documento.txt /mnt/server/backup.txt</code>
+                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">echo "Hello" | nc server 1234</code>
             </div>
 
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Risoluzione percorsi:</strong> VFS traduce entrambi i path in inode</li>
-                    <li><strong>2. Lettura EXT4:</strong> VFS chiama le funzioni di ext4 per leggere i dati</li>
-                    <li><strong>3. Scrittura NFS:</strong> VFS chiama le funzioni NFS per scrivere sulla rete</li>
-                    <li><strong>4. Caching intelligente:</strong> I dati passano attraverso il page cache</li>
-                    <li><strong>5. Trasparenza totale:</strong> L'utente non sa che sta copiando tra dispositivi diversi!</li>
+                    <li><strong>1. Socket layer:</strong> Dati passati dal socket alla network interface</li>
+                    <li><strong>2. Packet creation:</strong> Creazione SKB con headers TCP/IP/Ethernet</li>
+                    <li><strong>3. Queue management:</strong> Pacchetto accodato per trasmissione</li>
+                    <li><strong>4. Hardware transmission:</strong> Driver chiama ndo_start_xmit()</li>
+                    <li><strong>5. Physical transmission:</strong> Pacchetto inviato sulla rete fisica</li>
+                    <li><strong>6. Acknowledgment:</strong> TCP aspetta ACK dal ricevente</li>
                 </ol>
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Il comando <code>cp</code> funziona esattamente allo stesso modo, che il file sia su disco locale, USB, o server remoto. Il VFS rende tutto uniforme!
+                <strong>🎯 Risultato:</strong> Da semplice chiamata write() a trasmissione fisica! Le network interfaces rendono trasparente tutta la complessità del networking!
             </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora il VFS</h2>
+        <h2>🧪 Laboratorio Pratico: Esplora le Network Interfaces</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Esplora interfacce di rete</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        12345678 /etc/passwd<br><br>
-                        $ stat /etc/passwd<br>
-                        File: /etc/passwd<br>
-                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
-                        Inode: 12345678 Links: 1
+                        $ ip link show<br>
+                        1: lo: <LOOPBACK,UP,LOWER_UP><br>
+                        2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP><br><br>
+                        $ ip addr show eth0
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutte le interfacce e le loro configurazioni</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Configura parametri avanzati</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ mount<br>
-                        /dev/sda1 on / type ext4<br>
-                        /dev/sdb1 on /home type ext4<br>
-                        server:/share on /mnt/nfs type nfs
+                        $ ethtool eth0<br>
+                        Settings for eth0:<br>
+                        Speed: 1000Mb/s<br>
+                        Duplex: Full<br><br>
+                        $ ethtool -k eth0
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla velocità, duplex e offloading features</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora statistiche traffico</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ iostat -x 1<br>
-                        Device r/s w/s rkB/s wkB/s<br>
-                        sda 15.0 25.0 120.0 200.0<br>
-                        nfs 2.0 8.0 16.0 64.0
+                        $ cat /proc/net/dev<br>
+                        Inter-|   Receive                    |  Transmit<br>
+                        face |bytes    packets errs drop fifo frame<br>
+                        eth0: 12345678  98765    0    0    0     0<br><br>
+                        $ ip -s link show eth0
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva pacchetti ricevuti/trasmessi e errori</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Cattura pacchetti in tempo reale</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep dentry<br>
-                        $ cat /proc/slabinfo | grep inode
+                        $ sudo tcpdump -i eth0 -c 5<br>
+                        10:30:45.123456 IP client.54321 > server.80: Flags [S]<br>
+                        10:30:45.123467 IP server.80 > client.54321: Flags [S.]<br><br>
+                        $ sudo tcpdump -i eth0 icmp -c 3
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi pacchetti che attraversano l'interfaccia</em></p>
                 </div>
             </div>
         </div>
@@ -686,34 +686,34 @@
         <h2>🎯 Concetti Chiave da Ricordare</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
             <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Astrazione Universale</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📡</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Hardware Abstraction</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Il VFS nasconde tutte le differenze tra filesystem. EXT4, BTRFS, NFS, FAT32... per il programmatore sono tutti uguali!
+                    Le network interfaces astraggono i dettagli hardware. Ethernet, Wi-Fi, fibra... per il software sono tutte uguali!
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Performance Intelligente</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Packet Queuing</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Caching multi-livello, read-ahead, write-back... il VFS ottimizza automaticamente l'accesso ai dati.
+                    Code di trasmissione gestiscono congestione. Multiple code per priorità e qualità del servizio.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Estensibilità</h4>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">MTU Management</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Nuovi filesystem si "agganciano" al VFS senza cambiare il resto del sistema operativo.
+                    Maximum Transmission Unit determina dimensione massima pacchetti. Ethernet: 1500, Jumbo: 9000.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza Integrata</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Interrupt Handling</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Controllo accessi, audit trail, supporto per SELinux e AppArmor integrati nel VFS.
+                    Interrupt dal hardware segnalano eventi. NAPI bilancia polling/interrupt per prestazioni ottimali.
                 </p>
             </div>
         </div>
@@ -913,13 +913,13 @@
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            message = "Eccellente! Hai una buona comprensione delle network interfaces! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            message = "Buon lavoro! Continua a esplorare le network interfaces! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            message = "Continua a studiare! Le network interfaces sono fondamentali! 📚";
             color = "#d32f2f";
         }
 

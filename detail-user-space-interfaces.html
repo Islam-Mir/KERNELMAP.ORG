@@ -192,73 +192,6 @@
                 font-size: 1.6em;
             }
         }
-
-        .content h2 {
-            font-size: 1.3em;
-            color: #0288d1;
-            margin: 18px 0 10px 0;
-            border-bottom: 3px solid #0288d1;
-            padding-bottom: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .content h3 {
-            font-size: 1.05em;
-            color: #01579b;
-            margin: 14px 0 8px 0;
-            font-weight: 600;
-        }
-
-        .content p {
-            font-size: 0.9em;
-            line-height: 1.7;
-            color: #444;
-            margin-bottom: 10px;
-        }
-
-        .content ul, .content ol {
-            margin-left: 20px;
-            margin-bottom: 14px;
-        }
-
-        .content li {
-            font-size: 0.9em;
-            line-height: 1.6;
-            color: #555;
-            margin-bottom: 7px;
-        }
-
-        .content code {
-            background: #f0f8ff;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85em;
-            color: #0288d1;
-        }
-
-        .code-block {
-            background: #f0f8ff;
-            border-left: 4px solid #0288d1;
-            padding: 12px;
-            margin: 12px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 0.8em;
-            overflow-x: auto;
-            border-radius: 4px;
-            color: #333;
-            line-height: 1.5;
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            font-size: 0.7em;
-            color: #999;
-        }
     
         #prevBtn {    position: fixed;    bottom: 20px;    left: 20px;    z-index: 1000;}#nextBtn {    position: fixed;    bottom: 20px;    right: 20px;    z-index: 1000;}
 
@@ -392,10 +325,13 @@
         <p>• <strong>tmpfs</strong> - Filesystem in memoria per file temporanei</p>
 
         <h3>📡 Segnali e IPC</h3>
-        <p>• <strong>Signals</strong> - Notifiche asincrone (SIGKILL, SIGTERM, etc.)</p>
-        <p>• <strong>Pipes</strong> - Comunicazione unidirezionale tra processi</p>
-        <p>• <strong>Shared Memory</strong> - Memoria condivisa per comunicazione veloce</p>
-        <p>• <strong>Message Queues</strong> - Code di messaggi per IPC strutturato</p>
+        <p>• <strong>Signals</strong> - Notifiche asincrone tra processi (SIGKILL, SIGTERM, SIGUSR1, etc.)</p>
+        <p>• <strong>Pipes</strong> - Comunicazione unidirezionale tra processi (pipe(), dup2())</p>
+        <p>• <strong>Named Pipes (FIFOs)</strong> - Pipe con nome per processi non correlati (mkfifo())</p>
+        <p>• <strong>Shared Memory</strong> - Memoria condivisa per comunicazione veloce (shmget(), shmat(), shmdt())</p>
+        <p>• <strong>Message Queues</strong> - Code di messaggi per IPC strutturato (msgget(), msgsnd(), msgrcv())</p>
+        <p>• <strong>Semaphores</strong> - Sincronizzazione tra processi (semget(), semop())</p>
+        <p>• <strong>Unix Domain Sockets</strong> - Comunicazione locale efficiente tra processi</p>
 
         <h2>📋 Esempi Pratici</h2>
         <p><strong>Ogni azione quotidiana su Linux coinvolge le user space interfaces:</strong></p>
@@ -413,11 +349,20 @@
         <ul>
             <li><strong>socket()</strong> - Crea un socket di rete</li>
             <li><strong>bind()</strong> - Associa indirizzo IP e porta</li>
-            <li><strong>listen()</strong> - Mette in ascolto il socket</li>
-            <li><strong>accept()</strong> - Accetta connessioni in entrata</li>
+            <li><strong>listen()</strong> - Mette in ascolto il socket (server)</li>
+            <li><strong>connect()</strong> - Connette a un server remoto (client)</li>
+            <li><strong>accept()</strong> - Accetta connessioni in entrata (server)</li>
         </ul>
 
-        <h3>📊 Monitoraggio Sistema</h3>
+        <h3>📡 Comunicazione tra Processi</h3>
+        <ul>
+            <li><strong>pipe()</strong> - Crea una pipe per comunicazione padre-figlio</li>
+            <li><strong>kill()</strong> - Invia segnali tra processi</li>
+            <li><strong>shmget()/shmat()</strong> - Crea e attacca memoria condivisa</li>
+            <li><strong>semget()/semop()</strong> - Gestisce semafori per sincronizzazione</li>
+        </ul>
+
+        <h3> Monitoraggio Sistema</h3>
         <ul>
             <li><code>cat /proc/cpuinfo</code> - Legge informazioni CPU</li>
             <li><code>ls /sys/block/</code> - Elenca dispositivi a blocchi</li>
@@ -485,7 +430,12 @@
         <p>• <strong>Shared Memory</strong> - shmget, shmat per IPC</p>
         <p>• <strong>Memory Protection</strong> - mprotect per cambiare permessi</p>
 
-        <h3>🔐 Security Framework</h3>
+        <h3>🔌 Device Drivers</h3>
+        <p>• <strong>Device Access</strong> - open, read, write per dispositivi</p>
+        <p>• <strong>Device Control</strong> - ioctl per comandi specifici del driver</p>
+        <p>• <strong>Device Files</strong> - /dev/* per accesso dispositivi</p>
+
+        <h3> Security Framework</h3>
         <p>• <strong>Permission Checks</strong> - Ogni chiamata valida UID/GID</p>
         <p>• <strong>Capability System</strong> - Controlli granulari oltre root</p>
         <p>• <strong>Audit System</strong> - Logging di chiamate sensibili</p>
@@ -523,7 +473,28 @@
             <span style="color: #666; font-size: 0.9em;">Crea un endpoint per comunicazione e restituisce un file descriptor.</span><br><br>
 
             <code style="color: #d32f2f; font-weight: bold;">int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Associa un indirizzo locale al socket.</span>
+            <span style="color: #666; font-size: 0.9em;">Associa un indirizzo locale al socket.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Connette il socket a un indirizzo remoto.</span>
+        </div>
+
+        <h3>📡 Segnali</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #9c27b0; font-weight: bold;">int kill(pid_t pid, int sig);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia un segnale a un processo specifico.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta l'azione da eseguire alla ricezione di un segnale.</span>
+        </div>
+
+        <h3>🔧 Controllo Dispositivi</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int ioctl(int fd, unsigned long request, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Controlla dispositivi attraverso richieste specifiche del driver.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int fcntl(int fd, int cmd, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica proprietà di file descriptor (bloccante/non-bloccante, etc.).</span>
         </div>
 
         <h3>🎯 Esempi di Utilizzo Quotidiano</h3>
@@ -533,6 +504,22 @@
             <li><code>execve()</code> - Il figlio carica il programma del comando</li>
             <li><code>dup2()</code> - Reindirizza stdin/stdout se necessario</li>
             <li><code>waitpid()</code> - La shell attende che il comando finisca</li>
+        </ol>
+
+        <p><strong>Quando controlli un dispositivo hardware:</strong></p>
+        <ol>
+            <li><code>open("/dev/sda")</code> - Apre il dispositivo a blocchi</li>
+            <li><code>ioctl(fd, BLKGETSIZE64, &size)</code> - Ottiene la dimensione del disco</li>
+            <li><code>read()/write()</code> - Legge/scrive dati dal dispositivo</li>
+            <li><code>close()</code> - Chiude il file descriptor</li>
+        </ol>
+
+        <p><strong>Quando invii un segnale a un processo:</strong></p>
+        <ol>
+            <li><code>kill(pid, SIGTERM)</code> - Invia segnale di terminazione</li>
+            <li><code>sigaction(SIGTERM, &handler)</code> - Imposta gestore segnale</li>
+            <li>Il kernel instrada il segnale al processo destinatario</li>
+            <li>Il processo esegue il gestore o termina</li>
         </ol>
         <p><em>Ogni comando che esegui coinvolge multiple system calls coordinate dal kernel!</em></p>
 
@@ -706,6 +693,28 @@
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Esplora interfacce di rete attraverso sysfs e procfs</em></p>
                 </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📡 Segnali e IPC</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ kill -l<br>
+                        $ ps aux | head -5<br>
+                        $ kill -SIGTERM <pid><br>
+                        $ ipcs -m  # memoria condivisa
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Sperimenta con segnali e meccanismi IPC</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Device Control</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls /dev/sd*<br>
+                        $ sudo hdparm -I /dev/sda<br>
+                        $ cat /sys/block/sda/size<br>
+                        $ udevadm info -a -n /dev/sda
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esplora dispositivi e usa ioctl attraverso sysfs</em></p>
+                </div>
             </div>
         </div>
 
@@ -823,6 +832,30 @@
             options: ["ps", "top", "lsof", "free"],
             correct: 2,
             explanation: "lsof (list open files) mostra tutti i file e socket aperti da processi, utilizzando le informazioni delle user space interfaces."
+        },
+        {
+            question: "Cosa permette di fare la system call ioctl()?",
+            options: ["Aprire file", "Controllare dispositivi specifici", "Creare processi", "Inviare segnali"],
+            correct: 1,
+            explanation: "ioctl() permette di inviare comandi specifici ai driver dei dispositivi, permettendo controllo granulare dell'hardware."
+        },
+        {
+            question: "Quale meccanismo permette comunicazione veloce tra processi?",
+            options: ["Signals", "Shared Memory", "Pipes", "Message Queues"],
+            correct: 1,
+            explanation: "La Shared Memory permette ai processi di condividere direttamente aree di memoria, offrendo comunicazione molto veloce senza copie."
+        },
+        {
+            question: "Cosa rappresenta SIGKILL?",
+            options: ["Un segnale ignorabile", "Un segnale che termina forzatamente un processo", "Un segnale per pausa", "Un segnale personalizzato"],
+            correct: 1,
+            explanation: "SIGKILL (segnale 9) termina forzatamente un processo senza possibilità di intercettazione o pulizia."
+        },
+        {
+            question: "Quale filesystem espone la gerarchia dei dispositivi?",
+            options: ["/proc", "/dev", "/sys", "/tmp"],
+            correct: 2,
+            explanation: "/sys (sysfs) espone informazioni sui dispositivi hardware e sui loro driver in una struttura gerarchica navigabile."
         }
     ];
 
@@ -847,7 +880,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= 10) { // Show all questions
             showResults();
             return;
         }
@@ -855,7 +888,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/10</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -934,24 +967,24 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / 10) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione delle User Space Interfaces! 🎉";
+            message = "Eccellente! Hai una comprensione approfondita delle User Space Interfaces! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare le interfacce di sistema! 👍";
+            message = "Buon lavoro! Continua a esplorare le interfacce di sistema! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! Le system calls sono fondamentali! 📚";
+            message = "Continua a studiare! Le system calls e le interfacce sono cruciali! 📚";
             color = "#d32f2f";
         }
 
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/10</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">

@@ -317,7 +317,7 @@
         <p>• <strong>Mutex</strong> - Semafori binari per esclusione mutua con sleep</p>
         <p>• <strong>Semaphores</strong> - Contatori per controllo accesso a risorse multiple</p>
         <p>• <strong>Read-Write locks</strong> - Permessi differenziati per lettura/scrittura</p>
-        <p>• <strong>Futex</strong> - Fast user-space mutex per sincronizzazione efficiente</p>
+        <p>• <strong>Futex</strong> - Meccanismo ibrido user-kernel per implementare lock in user space con supporto kernel per wait/wakeup</p>
         <p>• <strong>Atomic operations</strong> - Operazioni indivisibili su memoria condivisa</p>
         <p><em>• Interazione: Coordina accesso concorrente a strutture dati condivise tra processi e interrupt</em></p>
 
@@ -353,148 +353,187 @@
         <p>• <strong>atomic_cmpxchg()</strong> - Compare-and-exchange atomico</p>
 
         <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando apri un file come /home/user/documento.txt, ecco cosa succede nel VFS:</strong></p>
+        <p><strong>Quando due processi accedono contemporaneamente a una risorsa condivisa, ecco cosa succede nella sincronizzazione:</strong></p>
 
-        <h3>🔍 Risoluzione del Percorso</h3>
-        <p>1. Il VFS divide "/home/user/documento.txt" in componenti: "home" → "user" → "documento.txt"</p>
-        <p>2. Per ogni componente, cerca nella dentry cache se esiste già una traduzione</p>
-        <p>3. Se non trova, chiede al filesystem (ext4) di cercare nel disco</p>
-        <p>4. Il filesystem restituisce l'inode corrispondente</p>
+        <h3>🔍 Accesso a Risorsa Condivisa</h3>
+        <p>1. Processo A acquisisce un mutex sulla risorsa condivisa</p>
+        <p>2. Processo B tenta di accedere ma trova il mutex occupato</p>
+        <p>3. Processo B viene messo in sleep nella wait queue del mutex</p>
+        <p>4. Quando A rilascia il mutex, B viene svegliato e può procedere</p>
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
-            <li><strong>inode (index node)</strong> - Contiene tutti i metadati di un file: permessi, dimensione, date, puntatori ai blocchi dati. È come la "carta d'identità" del file</li>
-            <li><strong>dentry (directory entry)</strong> - Collega un nome (es. "documento.txt") al suo inode. È la "voce del dizionario" che traduce nomi in indirizzi</li>
-            <li><strong>file object</strong> - Rappresenta un file aperto da un processo specifico. Tiene traccia della posizione corrente, dei flags di apertura, etc.</li>
-            <li><strong>superblock</strong> - Contiene informazioni globali del filesystem: dimensione totale, blocchi liberi, tipo di filesystem, parametri di tuning</li>
+            <li><strong>spinlock_t</strong> - Struttura per spinlock: flag di stato e proprietario</li>
+            <li><strong>struct mutex</strong> - Mutex con wait queue e stato di ownership</li>
+            <li><strong>struct semaphore</strong> - Semaforo con contatore e wait queue</li>
+            <li><strong>atomic_t</strong> - Tipo per operazioni atomiche su interi</li>
+            <li><strong>wait_queue_head_t</strong> - Coda di processi in attesa di un evento</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare il VFS:</strong></p>
+        <p><strong>Comandi Linux per esplorare la sincronizzazione:</strong></p>
         <ul>
-            <li><code>ls -i file.txt</code> - Mostra il numero inode del file</li>
-            <li><code>stat file.txt</code> - Visualizza tutti i metadati dell'inode</li>
-            <li><code>df -h</code> - Mostra i superblock dei filesystem montati</li>
-            <li><code>mount</code> - Elenca tutti i filesystem montati</li>
-            <li><code>find / -inum 12345</code> - Trova file per numero inode</li>
+            <li><code>cat /proc/locks</code> - Lock attivi nel sistema</li>
+            <li><code>debugfs -R 'info locks' /sys/kernel/debug</code> - Alternativa moderna per lock info</li>
+            <li><code>perf lock cont</code> - Analisi contese lock</li>
+            <li><code>strace -e trace=futex ./program</code> - Traccia chiamate futex</li>
+            <li><code>cat /proc/slabinfo | grep mutex</code> - Memoria usata per mutex</li>
         </ul>
 
-        <h3>🎯 Caso Reale: Apertura di un File</h3>
-        <p>Quando fai <code>cat /etc/passwd</code>:</p>
+        <h3>🎯 Caso Reale: Database Multi-Threaded</h3>
+        <p>Quando un database gestisce richieste concorrenti:</p>
         <ol>
-            <li>VFS risolve percorso: "/" (root) → "etc" → "passwd"</li>
-            <li>Per ogni directory, carica l'inode e cerca il nome successivo</li>
-            <li>Trova l'inode del file passwd e crea un file object</li>
-            <li>Legge i blocchi dati puntati dall'inode</li>
-            <li>Restituisce il contenuto al comando cat</li>
+            <li>Thread A acquisisce read-write lock in lettura</li>
+            <li>Thread B può anche acquisire lock in lettura (letture concorrenti)</li>
+            <li>Thread C aspetta perché vuole scrivere (esclusione)</li>
+            <li>A e B finiscono, C ottiene lock esclusivo per scrittura</li>
+            <li>Tutti i thread successivi aspettano la fine della scrittura</li>
         </ol>
 
-        <h2>💾 Filesystem Supportati</h2>
+        <h2>🔒 Meccanismi di Sincronizzazione</h2>
         <ul>
-            <li><strong>ext4</strong> - Filesystem nativo Linux</li>
-            <li><strong>btrfs</strong> - Moderno con snapshot e checksum</li>
-            <li><strong>xfs</strong> - High-performance journaling</li>
-            <li><strong>nfs</strong> - Network File System</li>
-            <li><strong>procfs</strong> - Process information pseudo-fs</li>
+            <li><strong>Spinlocks</strong> - Lock busy-wait per sezioni critiche brevi</li>
+            <li><strong>Mutex</strong> - Lock con sleep per esclusione mutua</li>
+            <li><strong>Semaphores</strong> - Contatori per risorse multiple</li>
+            <li><strong>Read-Write Locks</strong> - Lock differenziati lettura/scrittura</li>
+            <li><strong>RCU</strong> - Read-Copy-Update per letture ad alta frequenza</li>
+            <li><strong>Futex</strong> - Fast user-space mutex per sincronizzazione efficiente</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
-            <li><strong>Unified API</strong> - Stessa interfaccia per tutti FS</li>
-            <li><strong>Caching</strong> - Buffer e page cache integrate</li>
-            <li><strong>Permissions</strong> - Modello Unix completo</li>
-            <li><strong>Mounting</strong> - Gerarchia unificata</li>
-            <li><strong>Hotplug</strong> - Supporto dispositivi rimovibili</li>
+            <li><strong>Atomicità</strong> - Operazioni indivisibili su memoria condivisa</li>
+            <li><strong>Performance</strong> - Lock contention, false sharing, NUMA awareness, lock-free algorithms</li>
+            <li><strong>Scalabilità</strong> - Supporto per sistemi multi-core e NUMA</li>
+            <li><strong>Debugging</strong> - Lockdep validator rileva deadlock potenziali a runtime</li>
+            <li><strong>Sicurezza</strong> - Prevenzione di accessi concorrenti dannosi</li>
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Il VFS è il "collante" che tiene insieme molti sottosistemi del kernel Linux:</strong></p>
+        <p><strong>La sincronizzazione coordina l'accesso concorrente tra tutti i principali sottosistemi del kernel:</strong></p>
 
-        <h3>💾 Storage Layer (Block Device)</h3>
-        <p>• <strong>Block layer</strong> - Gestisce la comunicazione con dischi, SSD, e altri dispositivi a blocchi. Il VFS chiede "dammi il blocco N" e il block layer si occupa dei dettagli hardware</p>
-        <p>• <strong>Device mapper</strong> - Permette LVM, RAID software, encryption trasparenti</p>
+        <h3>⚙️ Scheduler Subsystem</h3>
+        <p>• <strong>Context switching</strong> - Salva/ripristina stato processi con lock protection</p>
+        <p>• <strong>Load balancing</strong> - Sincronizzazione tra CPU per distribuzione carico</p>
+        <p>• <strong>Real-time scheduling</strong> - Priorità assoluta con lock avoidance</p>
+
+        <h3>🧠 Memory Management</h3>
+        <p>• <strong>Page allocation</strong> - Lock per allocazione/deallocazione pagine</p>
+        <p>• <strong>Virtual memory</strong> - Sincronizzazione tabelle delle pagine</p>
+        <p>• <strong>Memory mapping</strong> - Lock per operazioni mmap/munmap</p>
+
+        <h3>📡 Interrupt System</h3>
+        <p>• <strong>Bottom-half locking</strong> - Sincronizzazione tra interrupt e processi</p>
+        <p>• <strong>Tasklet coordination</strong> - Lock per esecuzione tasklet differita</p>
+        <p>• <strong>Workqueue sync</strong> - Coordinamento lavoro in background</p>
+
+        <h3>🔌 Device Drivers</h3>
+        <p>• <strong>Hardware access</strong> - Lock per registri e memoria dispositivi</p>
+        <p>• <strong>Buffer management</strong> - Sincronizzazione buffer DMA</p>
+        <p>• <strong>Device state</strong> - Lock per configurazione dispositivi</p>
 
         <h3>🌐 Network Stack</h3>
-        <p>• <strong>NFS client</strong> - Monta filesystem remoti come se fossero locali</p>
-        <p>• <strong>CIFS/SMB</strong> - Accesso a condivisioni Windows</p>
-        <p>• <strong>9P</strong> - Protocollo usato in container e virtualizzazione</p>
+        <p>• <strong>Socket locking</strong> - Sincronizzazione strutture socket</p>
+        <p>• <strong>Protocol state</strong> - Lock per stati protocollo TCP/UDP</p>
+        <p>• <strong>Routing tables</strong> - Sincronizzazione tabelle di routing</p>
 
-        <h3>🧠 Memory Manager</h3>
-        <p>• <strong>Page cache</strong> - Cache intelligente che mantiene in RAM i dati più usati, riducendo accessi al disco</p>
-        <p>• <strong>Buffer cache</strong> - Cache per metadata dei filesystem</p>
-        <p>• <strong>Memory-mapped files</strong> - Permette di trattare file come se fossero memoria</p>
+        <h2>🛠️ API di Sincronizzazione</h2>
+        <p><strong>La sincronizzazione opera su tre livelli: user space (system call), kernel space (funzioni interne), e hardware primitives:</strong></p>
 
-        <h3>🔐 Security Framework</h3>
-        <p>• <strong>POSIX ACLs</strong> - Controllo accessi avanzato oltre i permessi Unix tradizionali</p>
-        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control per sicurezza avanzata</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari per processi privilegiati</p>
+        <h3>👤 USER SPACE API (System Calls)</h3>
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #4caf50;">
+            <code style="color: #2e7d32; font-weight: bold;">int futex(int *uaddr, int futex_op, int val, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Meccanismo ibrido user-kernel per implementare lock in user space con supporto kernel per wait/wakeup.</span><br><br>
 
-        <h3>⚡ Performance Subsystems</h3>
-        <p>• <strong>IO scheduler</strong> - Ottimizza l'ordine delle operazioni I/O per ridurre seek time</p>
-        <p>• <strong>Writeback</strong> - Scrive dati modificati in background per non bloccare applicazioni</p>
-        <p>• <strong>Read-ahead</strong> - Pre-carica dati che probabilmente saranno richiesti</p>
+            <code style="color: #f57c00; font-weight: bold;">int semop(int semid, struct sembuf *sops, size_t nsops);</code><br>
+            <span style="color: #666; font-size: 0.9em;">System V semaphores per sincronizzazione tra processi.</span><br><br>
 
-        <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni che ogni programmatore usa quotidianamente, spesso senza sapere che parlano con il VFS:</strong></p>
-
-        <h3>📂 Gestione File Base</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre un file e restituisce un file descriptor. Il VFS risolve il pathname e chiama il filesystem specifico.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge dati dal file nel buffer. Il VFS coordina con il page cache per evitare accessi disco inutili.</span><br><br>
-
-            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scrive dati nel file. I dati vanno prima nel page cache, poi vengono scritti su disco in background.</span><br><br>
-
-            <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Forza la scrittura di dati buffered.</span>
+            <code style="color: #9c27b0; font-weight: bold;">int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);</code><br>
+            <span style="color: #666; font-size: 0.9em;">POSIX semaphores con timeout per evitare deadlock infiniti.</span>
         </div>
 
-        <h3>📊 Metadata e Navigazione</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni complete sul file (dimensione, permessi, date). Legge dall'inode.</span><br><br>
+        <h3>⚙️ KERNEL SPACE API (Funzioni Interne)</h3>
+        <div style="background: #fff3e0; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ff9800;">
+            <code style="color: #d32f2f; font-weight: bold;">void spin_lock(spinlock_t *lock);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Funzione kernel per spinlock - busy-wait, solo in contesti non-sleep (interrupt handlers).</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">DIR *opendir(const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre una directory per la navigazione. Crea un context per readdir().</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">void mutex_lock(struct mutex *lock);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Funzione kernel per mutex - può dormire, per process context ordinario.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry della directory. Restituisce nome file e tipo.</span>
+            <code style="color: #f57c00; font-weight: bold;">void down(struct semaphore *sem);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Funzione kernel per semafori kernel-space.</span>
         </div>
 
-        <h3>💽 Gestione Filesystem</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Monta un dispositivo nel filesystem tree. Il VFS registra il nuovo filesystem.</span><br><br>
+        <h3>🔧 HARDWARE PRIMITIVES</h3>
+        <div style="background: #f3e5f5; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #9c27b0;">
+            <code style="color: #9c27b0; font-weight: bold;">int test_and_set(int *ptr, int value);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Operazione atomica fondamentale: legge e scrive in un'unica istruzione.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int umount(const char *target);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Smonta un filesystem. Il VFS rimuove tutti i riferimenti e invalida le cache.</span>
+            <code style="color: #0288d1; font-weight: bold;">bool compare_and_swap(long *ptr, long old, long new);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Confronta valore corrente con expected, scambia se uguale (lock-free programming).</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void smp_mb(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Memory barrier completa per SMP - garantisce ordine operazioni memoria.</span>
+        </div>
+
+        <h3>⚡ ATOMIC OPERATIONS COMPLETE</h3>
+        <div style="background: #e0f2f1; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #009688;">
+            <code style="color: #f57c00; font-weight: bold;">void atomic_inc(atomic_t *v);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Integer operations: inc, dec, add, sub, read, set.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void atomic_set_bit(int nr, volatile unsigned long *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Bit operations: set, clear, test-and-set, test-and-clear.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">void *atomic_xchg(void **ptr, void *new);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Pointer operations: exchange, compare-exchange per strutture dati lock-free.</span>
+        </div>
+
+        <h3>🔄 RCU (Read-Copy-Update)</h3>
+        <div style="background: #fff9c4; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #f57c00;">
+            <code style="color: #f57c00; font-weight: bold;">void rcu_read_lock(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Marca inizio sezione lettura RCU (letture concorrenti senza lock).</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void synchronize_rcu(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attende che tutte le sezioni RCU precedenti terminino prima di liberare memoria.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">void call_rcu(struct rcu_head *head, rcu_callback_t func);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Defer cleanup di strutture dati RCU in modo sicuro.</span>
+        </div>
+
+        <h3>🔢 SEQLOCKS</h3>
+        <div style="background: #fce4ec; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #e91e63;">
+            <code style="color: #e91e63; font-weight: bold;">unsigned read_seqbegin(const seqlock_t *sl);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Inizia lettura sequenziale (può fallire se scrittura in corso).</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void write_seqlock(seqlock_t *sl);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Acquisisce seqlock per scrittura (letture possono continuare).</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int read_seqretry(const seqlock_t *sl, unsigned start);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica se lettura è valida (nessuna scrittura durante lettura).</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando copi un file con cp:</strong></p>
+        <p><strong>Quando aggiorni una struttura dati condivisa:</strong></p>
         <ol>
-            <li><code>open(file_sorgente, O_RDONLY)</code> - Apre file sorgente</li>
-            <li><code>open(file_destinazione, O_WRONLY|O_CREAT)</code> - Crea/apre destinazione</li>
-            <li>Ciclo: <code>read()</code> dal sorgente, <code>write()</code> nella destinazione</li>
-            <li><code>close()</code> entrambi i file</li>
+            <li><code>spin_lock(&my_lock)</code> - Acquisisci lock per protezione</li>
+            <li><code>atomic_inc(&counter)</code> - Modifica atomica del contatore</li>
+            <li>Aggiorna struttura dati condivisa</li>
+            <li><code>spin_unlock(&my_lock)</code> - Rilascia lock</li>
         </ol>
-        <p><em>Tutto questo passa attraverso il VFS, che nasconde se i file sono su ext4, NFS, o qualsiasi altro filesystem!</em></p>
+        <p><em>La sincronizzazione garantisce che le modifiche siano visibili correttamente a tutti i thread/processi!</em></p>
 
 
-        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <h2>🗺️ Mappa Concettuale della Sincronizzazione</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Virtual File System</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura della Sincronizzazione</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI MULTI-THREADED</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Programmi (cat, cp, ls)<br>
-                    • Librerie (glibc)<br>
-                    • System Calls
+                    • Server web (Apache, Nginx)<br>
+                    • Database (MySQL, PostgreSQL)<br>
+                    • Applicazioni concorrenti
                 </div>
             </div>
 
@@ -503,182 +542,180 @@
 
             <!-- System Call Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • open() • read() • write()<br>
-                    • stat() • mkdir() • mount()<br>
-                    • Interfaccia uniforme
+                    • pthread_mutex_lock()<br>
+                    • sem_wait() • sem_post()<br>
+                    • futex() per ottimizzazione
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- VFS Core -->
+            <!-- Synchronization Core -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 VFS CORE (Virtual File System)</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 SYNCHRONIZATION CORE</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
-                        <div style="font-size: 0.8em;">inode</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Spinlocks</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
-                        <div style="font-size: 0.8em;">dentry</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔒</div>
+                        <div style="font-size: 0.8em;">Mutex</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
-                        <div style="font-size: 0.8em;">file</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📊</div>
+                        <div style="font-size: 0.8em;">Semaphores</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">superblock</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">Atomic Ops</div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Caching intelligente<br>
-                    • API uniforme<br>
-                    • Gestione metadati
+                    • Race condition prevention<br>
+                    • Deadlock avoidance<br>
+                    • Performance optimization
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Filesystem Implementations -->
+            <!-- Kernel Subsystems -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
-                    <div style="font-size: 0.8em; color: #666;">Linux nativo</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚙️ SCHEDULER</div>
+                    <div style="font-size: 0.8em; color: #666;">Context switching</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Snapshot & checksum</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🧠 MEMORY</div>
+                    <div style="font-size: 0.8em; color: #666;">Page allocation</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Network FS</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">📡 NETWORK</div>
+                    <div style="font-size: 0.8em; color: #666;">Socket locking</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
-                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔌 DEVICES</div>
+                    <div style="font-size: 0.8em; color: #666;">Hardware access</div>
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Storage Layer -->
+            <!-- Hardware Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">⚡ HARDWARE LAYER</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Block Devices (HDD, SSD)<br>
-                    • Network Storage (SAN, NAS)<br>
-                    • Virtual Storage (RAID, LVM)
+                    • CPU Cache Coherency<br>
+                    • Memory Barriers<br>
+                    • Atomic Instructions
                 </div>
             </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste I/O<br>
-                • Ogni layer astrae i dettagli del layer sottostante<br>
-                • Il VFS è il "traduttore universale" che rende tutto uniforme<br>
-                • Gli stessi comandi funzionano su qualsiasi storage sottostante
+                • <strong>User Space:</strong> System calls (futex, semop) per applicazioni<br>
+                • <strong>Kernel Space:</strong> Funzioni interne (spin_lock, mutex_lock) per kernel<br>
+                • <strong>Hardware:</strong> Primitive atomiche (test-and-set, memory barriers)<br>
+                • La sincronizzazione garantisce integrità dati in ambienti concorrenti<br>
+                • La scelta del lock giusto è cruciale per le performance
             </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funziona il VFS</h2>
+        <h2>🎬 Demo Interattiva: Race Condition</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Copia di un file tra filesystem diversi</h3>
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Accesso concorrente senza sincronizzazione</h3>
 
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 File sorgente su EXT4</div>
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">⚙️ Thread A</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /home/user/documento.txt<br>
-                        <span style="color: #666;">(filesystem: ext4, device: /dev/sda1)</span>
+                        counter = counter + 1<br>
+                        <span style="color: #666;">(incrementa contatore globale)</span>
                     </div>
                 </div>
 
-                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+                <div style="font-size: 2em; color: #f57c00;">⚠️</div>
 
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 Destinazione su NFS</div>
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #f44336;">
+                    <div style="font-weight: bold; color: #c62828; margin-bottom: 10px;">⚙️ Thread B</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /mnt/server/backup.txt<br>
-                        <span style="color: #666;">(filesystem: nfs, server: 192.168.1.100)</span>
+                        counter = counter + 1<br>
+                        <span style="color: #666;">(incrementa stesso contatore)</span>
                     </div>
                 </div>
             </div>
 
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">cp /home/user/documento.txt /mnt/server/backup.txt</code>
+            <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Problema:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">counter++ non è atomico!</code>
             </div>
 
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede senza sincronizzazione:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Risoluzione percorsi:</strong> VFS traduce entrambi i path in inode</li>
-                    <li><strong>2. Lettura EXT4:</strong> VFS chiama le funzioni di ext4 per leggere i dati</li>
-                    <li><strong>3. Scrittura NFS:</strong> VFS chiama le funzioni NFS per scrivere sulla rete</li>
-                    <li><strong>4. Caching intelligente:</strong> I dati passano attraverso il page cache</li>
-                    <li><strong>5. Trasparenza totale:</strong> L'utente non sa che sta copiando tra dispositivi diversi!</li>
+                    <li><strong>1. Thread A legge counter:</strong> valore = 5</li>
+                    <li><strong>2. Thread B legge counter:</strong> valore = 5 (stesso valore!)</li>
+                    <li><strong>3. Thread A incrementa:</strong> counter = 6</li>
+                    <li><strong>4. Thread B incrementa:</strong> counter = 6 (non 7!)</li>
+                    <li><strong>5. Risultato finale:</strong> counter = 6 invece di 7!</li>
                 </ol>
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Il comando <code>cp</code> funziona esattamente allo stesso modo, che il file sia su disco locale, USB, o server remoto. Il VFS rende tutto uniforme!
+                <strong>🎯 Soluzione:</strong> Usa <code>atomic_inc(&counter)</code> o proteggi con mutex per garantire atomicità!
             </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora il VFS</h2>
+        <h2>🧪 Laboratorio Pratico: Esplora la Sincronizzazione</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora i lock del kernel</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        12345678 /etc/passwd<br><br>
-                        $ stat /etc/passwd<br>
-                        File: /etc/passwd<br>
-                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
-                        Inode: 12345678 Links: 1
+                        $ cat /proc/lock_stat | head -10<br>
+                        lock_stat version 0.4<br>
+                        -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br>
+                        class name con-bounces contentions [...truncated...]
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi statistiche sui lock del kernel</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Traccia chiamate futex</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ mount<br>
-                        /dev/sda1 on / type ext4<br>
-                        /dev/sdb1 on /home type ext4<br>
-                        server:/share on /mnt/nfs type nfs
+                        $ strace -f -e trace=futex ./my_program<br>
+                        [pid 1234] futex(0x7f8b8c0049d0, FUTEX_WAIT_PRIVATE, 0, NULL) = 0<br>
+                        [pid 1235] futex(0x7f8b8c0049d0, FUTEX_WAKE_PRIVATE, 1) = 1
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le chiamate di sincronizzazione</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza memoria mutex</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ iostat -x 1<br>
-                        Device r/s w/s rkB/s wkB/s<br>
-                        sda 15.0 25.0 120.0 200.0<br>
-                        nfs 2.0 8.0 16.0 64.0
+                        $ cat /proc/slabinfo | grep mutex<br>
+                        mutex 125 125 256 16 1 : tunables [...]<br>
+                        $ cat /proc/slabinfo | grep semaphore
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usano strutture di sincronizzazione</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora performance lock</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep dentry<br>
-                        $ cat /proc/slabinfo | grep inode
+                        $ perf lock record -a sleep 10<br>
+                        $ perf lock report<br>
+                        [...lock contention statistics...]
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Analizza contese e performance dei lock</em></p>
                 </div>
             </div>
         </div>
@@ -686,34 +723,34 @@
         <h2>🎯 Concetti Chiave da Ricordare</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
             <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Astrazione Universale</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚠️</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Race Condition</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Il VFS nasconde tutte le differenze tra filesystem. EXT4, BTRFS, NFS, FAT32... per il programmatore sono tutti uguali!
+                    Quando due thread accedono contemporaneamente a dati condivisi senza sincronizzazione, causando comportamenti imprevedibili e bug difficili da riprodurre.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Performance Intelligente</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Atomicità</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Caching multi-livello, read-ahead, write-back... il VFS ottimizza automaticamente l'accesso ai dati.
+                    Operazioni che appaiono come un singolo passo indivisibile. Le atomic operations del kernel garantiscono che modifiche a dati condivisi siano visibili immediatamente a tutti i processori.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Estensibilità</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Lock Granularity</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Nuovi filesystem si "agganciano" al VFS senza cambiare il resto del sistema operativo.
+                    La dimensione del lock determina le performance. Lock fini (fine-grained) permettono maggiore concorrenza ma aumentano overhead. Lock grossi (coarse-grained) sono più semplici ma riducono concorrenza.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza Integrata</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚪</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Deadlock</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Controllo accessi, audit trail, supporto per SELinux e AppArmor integrati nel VFS.
+                    Situazione in cui processi attendono reciprocamente risorse. Prevenzione: lock ordering, timeout, try-lock con backoff, hierarchy validation.
                 </p>
             </div>
         </div>
@@ -764,10 +801,10 @@
             explanation: "RCU (Read-Copy-Update) è un meccanismo efficiente per letture concorrenti."
         },
         {
-            question: "Quale comando mostra gli spinlock occupati nel kernel?",
-            options: ["ps aux", "lsof", "cat /proc/lock-stat", "watch -n 1 cat /proc/stat"],
+            question: "Quale comando mostra i lock attivi nel sistema?",
+            options: ["ps aux", "lsof", "cat /proc/locks", "watch -n 1 cat /proc/stat"],
             correct: 2,
-            explanation: "/proc/lock-stat fornisce informazioni dettagliate sui lock del kernel."
+            explanation: "/proc/locks mostra i file lock e le loro informazioni nel sistema."
         },
         {
             question: "Quale struttura kernel gestisce i mutex?",
@@ -794,10 +831,40 @@
             explanation: "Un semaphore è un contatore che controlla l'accesso a più risorse."
         },
         {
-            question: "Come si visualizzano i lock attivi nel kernel?",
-            options: ["cat /proc/locks", "lockstat -a", "watch locks", "ps -L"],
-            correct: 0,
-            explanation: "/proc/locks mostra i file lock e le loro informazioni nel sistema."
+            question: "Cosa fa test_and_set()?",
+            options: ["Legge un valore", "Scrive un valore", "Legge e scrive in un'unica istruzione atomica", "Confronta due valori"],
+            correct: 2,
+            explanation: "test_and_set() è una primitiva hardware che legge e scrive in un'unica operazione atomica indivisibile."
+        },
+        {
+            question: "Cosa sono le memory barriers?",
+            options: ["Barriere fisiche", "Istruzioni che garantiscono ordine operazioni memoria", "Limiti di memoria", "Cache memory"],
+            correct: 1,
+            explanation: "Memory barriers (smp_mb(), rmb(), wmb()) garantiscono che operazioni memoria siano visibili in ordine corretto a tutti i processori."
+        },
+        {
+            question: "Cosa fa seqlock_t?",
+            options: ["Blocca sequenzialmente", "Permette letture mentre si scrive", "Blocca definitivamente", "Conta sequenze"],
+            correct: 1,
+            explanation: "Seqlocks permettono letture concorrenti durante scritture, con meccanismo per rilevare scritture in corso."
+        },
+        {
+            question: "Cosa rileva lockdep nel kernel?",
+            options: ["Solo deadlock", "Deadlock potenziali e dipendenze lock a runtime", "Solo race condition", "Solo performance"],
+            correct: 1,
+            explanation: "Lockdep traccia dipendenze tra lock e rileva deadlock potenziali durante l'esecuzione del kernel."
+        },
+        {
+            question: "Quale è un problema di performance nei lock?",
+            options: ["Lock contention", "False sharing", "NUMA awareness", "Tutti i precedenti"],
+            correct: 3,
+            explanation: "Lock contention, false sharing, e mancanza di NUMA awareness sono tutti problemi di performance nei sistemi concorrenti."
+        },
+        {
+            question: "Quando usare spinlock vs mutex?",
+            options: ["Sempre spinlock", "Sempre mutex", "Spinlock per interrupt context, mutex per process context", "Dipende dal programmatore"],
+            correct: 2,
+            explanation: "Spinlock per contesti che non possono dormire (interrupt handlers), mutex per process context ordinario."
         }
     ];
 
@@ -822,7 +889,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= 10) { // Show first 10 questions
             showResults();
             return;
         }
@@ -830,7 +897,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/10</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -909,24 +976,24 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / 10) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            message = "Eccellente! Hai una buona comprensione della sincronizzazione! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            message = "Buon lavoro! Continua a studiare la sincronizzazione! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            message = "Continua a studiare! La sincronizzazione è cruciale! 📚";
             color = "#d32f2f";
         }
 
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/10</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">

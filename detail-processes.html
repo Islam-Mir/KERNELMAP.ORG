@@ -332,11 +332,11 @@
         <p>• <strong>clone()</strong> - Crea processo con opzioni avanzate (threads)</p>
 
         <h3>🎯 Scheduling Operations</h3>
-        <p>• <strong>schedule()</strong> - Funzione principale scheduler per cambio contesto</p>
-        <p>• <strong>wake_up_process()</strong> - Riattiva processo dormiente</p>
-        <p>• <strong>yield()</strong> - Cede volontariamente CPU ad altri processi</p>
-        <p>• <strong>nice()</strong> - Modifica priorità processo</p>
-        <p>• <strong>sched_setscheduler()</strong> - Imposta politica scheduling</p>
+        <p>• <strong>schedule()</strong> - Funzione kernel interna per cambio contesto (non system call)</p>
+        <p>• <strong>wake_up_process()</strong> - Funzione kernel per riattivare processo dormiente</p>
+        <p>• <strong>sched_yield()</strong> - System call per cedere volontariamente CPU</p>
+        <p>• <strong>nice()</strong> - System call per modificare priorità processo</p>
+        <p>• <strong>sched_setscheduler()</strong> - System call per impostare politica scheduling</p>
 
         <h3>💬 Inter-Process Communication</h3>
         <p>• <strong>pipe()</strong> - Crea canale comunicazione unidirezionale</p>
@@ -346,11 +346,12 @@
         <p>• <strong>msgget()</strong> - Crea coda messaggi</p>
 
         <h3>📊 Process Monitoring</h3>
-        <p>• <strong>getpid()</strong> - Ottiene ID processo corrente</p>
-        <p>• <strong>getppid()</strong> - Ottiene ID processo padre</p>
-        <p>• <strong>ps()</strong> - Elenca processi attivi</p>
-        <p>• <strong>top()</strong> - Monitora attività processi in tempo reale</p>
-        <p>• <strong>strace()</strong> - Traccia system call di un processo</p>
+        <p>• <strong>getpid()</strong> - System call per ottenere ID processo corrente</p>
+        <p>• <strong>getppid()</strong> - System call per ottenere ID processo padre</p>
+        <p>• <strong>gettid()</strong> - System call per ottenere thread ID (Linux-specific)</p>
+        <p>• <strong>ps</strong> - Programma utente per elencare processi attivi</p>
+        <p>• <strong>top</strong> - Programma utente per monitorare processi in tempo reale</p>
+        <p>• <strong>strace</strong> - Programma utente per tracciare system call</p>
 
         <h2>📋 Esempi Pratici</h2>
         <p><strong>Quando lanci un programma come Firefox, ecco cosa succede nella gestione dei processi:</strong></p>
@@ -365,9 +366,12 @@
         <ul>
             <li><strong>task_struct</strong> - Contiene tutti i dati di un processo: PID, stato, priorità, memoria, file aperti. È il "passaporto" del processo</li>
             <li><strong>process descriptor</strong> - Puntatore alla task_struct nel kernel</li>
-            <li><strong>thread_info</strong> - Informazioni thread-specifiche nel kernel stack</li>
+            <li><strong>thread_info</strong> - Su alcune architetture, embedded nel kernel stack per accesso rapido al task_struct</li>
             <li><strong>mm_struct</strong> - Descrittore dello spazio di memoria virtuale del processo</li>
             <li><strong>files_struct</strong> - Lista dei file descriptor aperti dal processo</li>
+            <li><strong>sched_entity</strong> - Entità di scheduling per CFS con vruntime e load</li>
+            <li><strong>sched_class</strong> - Classe di scheduling (fair, real-time, deadline)</li>
+            <li><strong>cred</strong> - Credenziali di sicurezza (UID, GID, capabilities)</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
@@ -398,7 +402,9 @@
             <li><strong>Interruptible Sleep (S)</strong> - In attesa di evento (I/O, segnale)</li>
             <li><strong>Uninterruptible Sleep (D)</strong> - In attesa di I/O, non può essere interrotto</li>
             <li><strong>Stopped (T)</strong> - Fermato da segnale (Ctrl+Z)</li>
-            <li><strong>Zombie (Z)</strong> - Terminati ma non ancora "raccolti" dal padre</li>
+            <li><strong>Zombie (Z)</strong> - Processi terminati che hanno rilasciato risorse ma di cui il padre non ha ancora letto lo stato di uscita (exit status)</li>
+            <li><strong>Idle (I)</strong> - Processi in attesa su più CPU in sistemi SMP</li>
+            <li><strong>Dead (X)</strong> - Processi completamente terminati e rimossi dalla process table</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
@@ -411,93 +417,100 @@
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Il VFS è il "collante" che tiene insieme molti sottosistemi del kernel Linux:</strong></p>
+        <p><strong>La gestione dei processi coordina con tutti i principali sottosistemi del kernel:</strong></p>
 
-        <h3>💾 Storage Layer (Block Device)</h3>
-        <p>• <strong>Block layer</strong> - Gestisce la comunicazione con dischi, SSD, e altri dispositivi a blocchi. Il VFS chiede "dammi il blocco N" e il block layer si occupa dei dettagli hardware</p>
-        <p>• <strong>Device mapper</strong> - Permette LVM, RAID software, encryption trasparenti</p>
+        <h3>⚙️ Scheduler Subsystem</h3>
+        <p>• <strong>CFS scheduler</strong> - Gestisce l'allocazione del tempo CPU tra processi runnable</p>
+        <p>• <strong>Real-time scheduler</strong> - Supporta processi con priorità assoluta</p>
+        <p>• <strong>Load balancer</strong> - Distribuisce processi tra CPU disponibili</p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>NFS client</strong> - Monta filesystem remoti come se fossero locali</p>
-        <p>• <strong>CIFS/SMB</strong> - Accesso a condivisioni Windows</p>
-        <p>• <strong>9P</strong> - Protocollo usato in container e virtualizzazione</p>
+        <h3>🧠 Memory Management</h3>
+        <p>• <strong>Virtual memory</strong> - Gestisce spazi di indirizzamento per processi</p>
+        <p>• <strong>Page tables</strong> - Traduce indirizzi virtuali in fisici per processo</p>
+        <p>• <strong>Memory limits</strong> - Applica limiti RAM per processo (rlimits)</p>
 
-        <h3>🧠 Memory Manager</h3>
-        <p>• <strong>Page cache</strong> - Cache intelligente che mantiene in RAM i dati più usati, riducendo accessi al disco</p>
-        <p>• <strong>Buffer cache</strong> - Cache per metadata dei filesystem</p>
-        <p>• <strong>Memory-mapped files</strong> - Permette di trattare file come se fossero memoria</p>
+        <h3>🔌 Interrupt System</h3>
+        <p>• <strong>Context switching</strong> - Salva/restaura stato durante cambi di contesto</p>
+        <p>• <strong>Preemption</strong> - Permette interruzione processi per priorità più alta</p>
+        <p>• <strong>Timer interrupts</strong> - Gestisce time slice e scheduling periodico</p>
 
         <h3>🔐 Security Framework</h3>
-        <p>• <strong>POSIX ACLs</strong> - Controllo accessi avanzato oltre i permessi Unix tradizionali</p>
-        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control per sicurezza avanzata</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari per processi privilegiati</p>
+        <p>• <strong>Credentials</strong> - Gestisce UID, GID, capabilities per processo</p>
+        <p>• <strong>Namespaces</strong> - Isola processi in ambienti separati</p>
+        <p>• <strong>Capabilities</strong> - Permessi granulari oltre il modello root/non-root</p>
 
-        <h3>⚡ Performance Subsystems</h3>
-        <p>• <strong>IO scheduler</strong> - Ottimizza l'ordine delle operazioni I/O per ridurre seek time</p>
-        <p>• <strong>Writeback</strong> - Scrive dati modificati in background per non bloccare applicazioni</p>
-        <p>• <strong>Read-ahead</strong> - Pre-carica dati che probabilmente saranno richiesti</p>
+        <h3>📡 IPC Subsystem</h3>
+        <p>• <strong>Signals</strong> - Meccanismo di comunicazione asincrona tra processi</p>
+        <p>• <strong>Pipes/FIFOs</strong> - Comunicazione unidirezionale tra processi</p>
+        <p>• <strong>Shared memory</strong> - Memoria condivisa per comunicazione veloce</p>
 
         <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni che ogni programmatore usa quotidianamente, spesso senza sapere che parlano con il VFS:</strong></p>
+        <p><strong>Queste sono le funzioni kernel per gestire processi e scheduling:</strong></p>
 
-        <h3>📂 Gestione File Base</h3>
+        <h3>🔄 Gestione Processi</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre un file e restituisce un file descriptor. Il VFS risolve il pathname e chiama il filesystem specifico.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">pid_t fork(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea un nuovo processo usando copy-on-write per ottimizzazione (non copia fisicamente tutta la memoria).</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge dati dal file nel buffer. Il VFS coordina con il page cache per evitare accessi disco inutili.</span><br><br>
+            <code style="color: #2e7d32; font-weight: bold;">int execve(const char *pathname, char *const argv[], char *const envp[]);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Sostituisce l'immagine del processo corrente con un nuovo programma.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">ssize_t write(int fd, const void *buf, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scrive dati nel file. I dati vanno prima nel page cache, poi vengono scritti su disco in background.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">pid_t waitpid(pid_t pid, int *wstatus, int options);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Attende la terminazione di un processo figlio.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Forza la scrittura di dati buffered.</span>
+            <code style="color: #9c27b0; font-weight: bold;">void exit(int status);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Termina il processo corrente e rilascia le risorse.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">long clone(unsigned long flags, void *child_stack, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea processo/thread con opzioni avanzate (CLONE_VM crea thread, non processi separati).</span>
         </div>
 
-        <h3>📊 Metadata e Navigazione</h3>
+        <h3>🎯 Scheduling Operations</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int stat(const char *pathname, struct stat *statbuf);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni complete sul file (dimensione, permessi, date). Legge dall'inode.</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">int nice(int inc);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica la priorità del processo corrente.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">DIR *opendir(const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre una directory per la navigazione. Crea un context per readdir().</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">int sched_setscheduler(pid_t pid, int policy, const struct sched_param *param);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta la politica di scheduling per un processo.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">struct dirent *readdir(DIR *dirp);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge la prossima entry della directory. Restituisce nome file e tipo.</span>
+            <code style="color: #2e7d32; font-weight: bold;">int sched_yield(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cede volontariamente la CPU ad altri processi.</span>
         </div>
 
-        <h3>💽 Gestione Filesystem</h3>
+        <h3>📡 Inter-Process Communication</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Monta un dispositivo nel filesystem tree. Il VFS registra il nuovo filesystem.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">int kill(pid_t pid, int sig);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia un segnale a un processo specifico.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int umount(const char *target);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Smonta un filesystem. Il VFS rimuove tutti i riferimenti e invalida le cache.</span>
+            <code style="color: #9c27b0; font-weight: bold;">int pipe(int pipefd[2]);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea una pipe per comunicazione unidirezionale tra processi.</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">key_t ftok(const char *pathname, int proj_id);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Genera una chiave unica per System V IPC.</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando copi un file con cp:</strong></p>
+        <p><strong>Quando lanci un comando nella shell:</strong></p>
         <ol>
-            <li><code>open(file_sorgente, O_RDONLY)</code> - Apre file sorgente</li>
-            <li><code>open(file_destinazione, O_WRONLY|O_CREAT)</code> - Crea/apre destinazione</li>
-            <li>Ciclo: <code>read()</code> dal sorgente, <code>write()</code> nella destinazione</li>
-            <li><code>close()</code> entrambi i file</li>
+            <li><code>fork()</code> - La shell crea un processo figlio</li>
+            <li><code>execve()</code> - Il figlio carica l'immagine del comando</li>
+            <li><code>waitpid()</code> - La shell attende che il comando finisca</li>
+            <li><code>exit()</code> - Il comando termina e rilascia risorse</li>
         </ol>
-        <p><em>Tutto questo passa attraverso il VFS, che nasconde se i file sono su ext4, NFS, o qualsiasi altro filesystem!</em></p>
+        <p><em>Ogni comando che esegui coinvolge la gestione dei processi del kernel!</em></p>
 
 
-        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <h2>🗺️ Mappa Concettuale della Gestione Processi</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Virtual File System</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura della Gestione Processi</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Programmi (cat, cp, ls)<br>
-                    • Librerie (glibc)<br>
-                    • System Calls
+                    • Programmi (bash, firefox)<br>
+                    • Daemons (sshd, apache)<br>
+                    • System tools
                 </div>
             </div>
 
@@ -506,182 +519,182 @@
 
             <!-- System Call Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • open() • read() • write()<br>
-                    • stat() • mkdir() • mount()<br>
-                    • Interfaccia uniforme
+                    • fork() • exec() • wait()<br>
+                    • getpid() • nice() • kill()<br>
+                    • Context switch
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- VFS Core -->
+            <!-- Process Management Core -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 VFS CORE (Virtual File System)</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 PROCESS MANAGEMENT CORE</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
-                        <div style="font-size: 0.8em;">inode</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📂</div>
-                        <div style="font-size: 0.8em;">dentry</div>
-                    </div>
-                    <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
-                        <div style="font-size: 0.8em;">file</div>
+                        <div style="font-size: 0.8em;">task_struct</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">superblock</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">scheduler</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🧠</div>
+                        <div style="font-size: 0.8em;">memory</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔐</div>
+                        <div style="font-size: 0.8em;">security</div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Caching intelligente<br>
-                    • API uniforme<br>
-                    • Gestione metadati
+                    • Process lifecycle<br>
+                    • Context switching<br>
+                    • Resource management
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Filesystem Implementations -->
+            <!-- Kernel Subsystems -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">EXT4</div>
-                    <div style="font-size: 0.8em; color: #666;">Linux nativo</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚙️ SCHEDULER</div>
+                    <div style="font-size: 0.8em; color: #666;">CFS, RT, Deadline</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">BTRFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Snapshot & checksum</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🧠 MEMORY</div>
+                    <div style="font-size: 0.8em; color: #666;">Virtual memory</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">NFS</div>
-                    <div style="font-size: 0.8em; color: #666;">Network FS</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔐 SECURITY</div>
+                    <div style="font-size: 0.8em; color: #666;">Credentials, caps</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">FAT32</div>
-                    <div style="font-size: 0.8em; color: #666;">Compatibilità</div>
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">📡 IPC</div>
+                    <div style="font-size: 0.8em; color: #666;">Signals, pipes, shm</div>
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- Storage Layer -->
+            <!-- Hardware Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 STORAGE LAYER</div>
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">⚡ HARDWARE LAYER</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Block Devices (HDD, SSD)<br>
-                    • Network Storage (SAN, NAS)<br>
-                    • Virtual Storage (RAID, LVM)
+                    • CPU Cores & Registers<br>
+                    • Memory Hierarchy (RAM, Cache)<br>
+                    • Interrupt Controllers
                 </div>
             </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste I/O<br>
-                • Ogni layer astrae i dettagli del layer sottostante<br>
-                • Il VFS è il "traduttore universale" che rende tutto uniforme<br>
-                • Gli stessi comandi funzionano su qualsiasi storage sottostante
+                • Le frecce mostrano il flusso dalla user space al kernel<br>
+                • Ogni struttura dati contiene informazioni specifiche<br>
+                • La gestione processi collega tutti i sottosistemi del kernel<br>
+                • task_struct è il cuore della gestione processi
             </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funziona il VFS</h2>
+        <h2>🎬 Demo Interattiva: Context Switching</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Copia di un file tra filesystem diversi</h3>
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Cambio di processo nel kernel</h3>
 
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📂 File sorgente su EXT4</div>
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">⚙️ Processo A (bash)</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /home/user/documento.txt<br>
-                        <span style="color: #666;">(filesystem: ext4, device: /dev/sda1)</span>
+                        PID: 1234<br>
+                        Stato: RUNNING<br>
+                        <span style="color: #666;">(in esecuzione sulla CPU)</span>
                     </div>
                 </div>
 
-                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+                <div style="font-size: 2em; color: #f57c00;">🔄</div>
 
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 Destinazione su NFS</div>
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📊 Processo B (firefox)</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        /mnt/server/backup.txt<br>
-                        <span style="color: #666;">(filesystem: nfs, server: 192.168.1.100)</span>
+                        PID: 5678<br>
+                        Stato: READY<br>
+                        <span style="color: #666;">(pronto per esecuzione)</span>
                     </div>
                 </div>
             </div>
 
             <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">cp /home/user/documento.txt /mnt/server/backup.txt</code>
+                <strong>Evento scatenante:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">Timer interrupt (HZ del kernel tipicamente 250-1000Hz, 1-4ms)</code>
             </div>
 
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza del context switch:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Risoluzione percorsi:</strong> VFS traduce entrambi i path in inode</li>
-                    <li><strong>2. Lettura EXT4:</strong> VFS chiama le funzioni di ext4 per leggere i dati</li>
-                    <li><strong>3. Scrittura NFS:</strong> VFS chiama le funzioni NFS per scrivere sulla rete</li>
-                    <li><strong>4. Caching intelligente:</strong> I dati passano attraverso il page cache</li>
-                    <li><strong>5. Trasparenza totale:</strong> L'utente non sa che sta copiando tra dispositivi diversi!</li>
+                    <li><strong>1. Interrupt handler:</strong> CPU salva stato corrente in thread_info</li>
+                    <li><strong>2. Scheduler invocation:</strong> schedule() seleziona prossimo processo</li>
+                    <li><strong>3. Context save:</strong> Salva registri e stack pointer in task_struct</li>
+                    <li><strong>4. Memory switch:</strong> Aggiorna il registro CR3 (x86) o equivalente per puntare alle nuove page tables dello spazio di indirizzamento</li>
+                    <li><strong>5. Context restore:</strong> Carica registri e stack del nuovo processo</li>
+                    <li><strong>6. Resume execution:</strong> Nuovo processo continua dall'istruzione successiva</li>
                 </ol>
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Il comando <code>cp</code> funziona esattamente allo stesso modo, che il file sia su disco locale, USB, o server remoto. Il VFS rende tutto uniforme!
+                <strong>🎯 Risultato:</strong> L'utente percepisce multitasking continuo, ma il kernel alterna rapidamente tra processi usando le strutture dati per salvare e ripristinare lo stato!
             </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora il VFS</h2>
+        <h2>🧪 Laboratorio Pratico: Esplora i Processi</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora i processi</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        12345678 /etc/passwd<br><br>
-                        $ stat /etc/passwd<br>
-                        File: /etc/passwd<br>
-                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
-                        Inode: 12345678 Links: 1
+                        $ ps aux | head -5<br>
+                        USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND<br>
+                        root 1 0.0 0.1 225688 13944 ? Ss gen01 0:01 /sbin/init<br>
+                        $ cat /proc/$$/status | head -10
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi le informazioni dettagliate sui processi attivi</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Analizza lo scheduling</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ mount<br>
-                        /dev/sda1 on / type ext4<br>
-                        /dev/sdb1 on /home type ext4<br>
-                        server:/share on /mnt/nfs type nfs
+                        $ cat /proc/$$/sched<br>
+                        $ chrt --pid $$<br>
+                        $ nice -n 10 sleep 1 &
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina i parametri di scheduling dei processi</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🧠 Monitora l'uso memoria</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ iostat -x 1<br>
-                        Device r/s w/s rkB/s wkB/s<br>
-                        sda 15.0 25.0 120.0 200.0<br>
-                        nfs 2.0 8.0 16.0 64.0
+                        $ cat /proc/$$/maps | head -5<br>
+                        $ pmap $$ | head -10<br>
+                        $ ps -o pid,ppid,pgid,sid,comm $$
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi la mappatura memoria e relazioni tra processi</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔐 Controlla le credenziali</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep dentry<br>
-                        $ cat /proc/slabinfo | grep inode
+                        $ id<br>
+                        $ cat /proc/$$/status | grep -E "(Uid|Gid|Cap)"<br>
+                        $ getpcaps $$
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esamina UID, GID e capabilities dei processi</em></p>
                 </div>
             </div>
         </div>
@@ -689,34 +702,34 @@
         <h2>🎯 Concetti Chiave da Ricordare</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
             <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Astrazione Universale</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Task Struct Core</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Il VFS nasconde tutte le differenze tra filesystem. EXT4, BTRFS, NFS, FAT32... per il programmatore sono tutti uguali!
+                    task_struct contiene tutto ciò che il kernel deve sapere su un processo. thread_info è un'ottimizzazione architettura-dipendente per accesso rapido.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Performance Intelligente</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Context Switching</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Caching multi-livello, read-ahead, write-back... il VFS ottimizza automaticamente l'accesso ai dati.
+                    Context switch costa ~1000-5000 cicli CPU. CFS usa virtual runtime, non time slice fissi. Non è l'operazione più costosa del kernel.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Estensibilità</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Scheduling Entity</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Nuovi filesystem si "agganciano" al VFS senza cambiare il resto del sistema operativo.
+                    sched_entity contiene vruntime e load per CFS. sched_class definisce il tipo di scheduler (fair, RT, deadline). Segnali non sono vero IPC ma notifiche asincrone.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza Integrata</h4>
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔐</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Security Context</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Controllo accessi, audit trail, supporto per SELinux e AppArmor integrati nel VFS.
+                    Ogni processo ha credenziali (UID/GID), capabilities, e namespace. Le strutture dati garantiscono isolamento e controllo accessi.
                 </p>
             </div>
         </div>
@@ -770,7 +783,7 @@
             question: "Cosa significa CFS nel kernel Linux?",
             options: ["Completely Fair Scheduler", "Central File System", "Critical Function Set", "Core Functionality System"],
             correct: 0,
-            explanation: "CFS (Completely Fair Scheduler) è l'algoritmo di scheduling predefinito che garantisce equità nella distribuzione del tempo CPU."
+            explanation: "CFS (Completely Fair Scheduler) usa virtual runtime per garantire equità, non time slice fissi come gli scheduler tradizionali."
         },
         {
             question: "Quale comando mostra tutti i processi attivi?",
@@ -800,7 +813,31 @@
             question: "Quale system call invia segnali ai processi?",
             options: ["fork", "exec", "kill", "wait"],
             correct: 2,
-            explanation: "kill() invia segnali ai processi, permettendo comunicazione e controllo tra processi."
+            explanation: "kill() invia segnali ai processi. I segnali non sono vero IPC ma notifiche asincrone unidirezionali."
+        },
+        {
+            question: "Cosa fa clone() con CLONE_VM?",
+            options: ["Crea un processo separato", "Crea un thread nello stesso processo", "Clona la memoria fisica", "Crea un nuovo namespace"],
+            correct: 1,
+            explanation: "clone() con CLONE_VM crea un thread che condivide lo spazio di memoria con il processo padre, non un processo separato."
+        },
+        {
+            question: "Cosa ottiene gettid()?",
+            options: ["Process ID", "Thread ID nel kernel", "Parent Process ID", "Group ID"],
+            correct: 1,
+            explanation: "gettid() ottiene il thread ID (TID) del thread corrente, diverso dal PID che identifica il processo."
+        },
+        {
+            question: "I processi Zombie occupano risorse significative?",
+            options: ["Sì, molta memoria", "Sì, molto CPU", "No, solo uno slot nella process table", "No, vengono eliminati immediatamente"],
+            correct: 2,
+            explanation: "Gli zombie non occupano risorse significative: hanno rilasciato memoria e CPU, solo il padre deve leggere il loro exit status."
+        },
+        {
+            question: "fork() copia fisicamente tutta la memoria?",
+            options: ["Sì, sempre", "No, usa copy-on-write per ottimizzazione", "Solo per processi piccoli", "Dipende dal kernel"],
+            correct: 1,
+            explanation: "fork() usa copy-on-write: inizialmente condivide le pagine di memoria, copiandole solo quando vengono modificate."
         }
     ];
 
@@ -825,7 +862,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= 10) { // Show all questions
             showResults();
             return;
         }
@@ -833,7 +870,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/10</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -912,24 +949,24 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / 10) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione del VFS! 🎉";
+            message = "Eccellente! Hai una buona comprensione della gestione processi! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il VFS! 👍";
+            message = "Buon lavoro! Continua a studiare i processi! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il VFS è complesso ma importante! 📚";
+            message = "Continua a studiare! La gestione processi è fondamentale! 📚";
             color = "#d32f2f";
         }
 
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/10</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
