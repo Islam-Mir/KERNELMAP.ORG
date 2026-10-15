@@ -101,7 +101,7 @@ body {
 .subsection {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
     flex: 1;
     align-items: center;
     justify-content: center;
@@ -118,7 +118,7 @@ body {
     overflow-wrap: break-word;
     word-break: break-word;
     width: 100%;
-    max-height: 50%;
+    max-height: 90%;
     overflow: hidden;
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -664,3 +664,117 @@ body {
     display: block;
     pointer-events: none;
 }
+
+
+/* --- INTRO OVERLAY --- */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #030b18 40%, #000 100%);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: fadeOut 0.5s ease-in-out 1.25s forwards; /* Dissolve after 2.5s total */
+}
+
+/* --- TEXT EFFECT --- */
+.intro-text {
+  position: absolute;
+  bottom: 10%;
+  color: #64d2ff;
+  font-family: 'Courier New', monospace;
+  font-size: 1.4rem;
+  text-shadow: 0 0 10px #64d2ff;
+  animation: flicker 0.5s infinite alternate;
+}
+
+/* --- LOADING BAR --- */
+.loading-bar {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 4px;
+  background: rgba(100, 210, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #64d2ff, #00bcd4);
+  border-radius: 2px;
+  animation: loadingProgress 5s ease-in-out;
+}
+
+@keyframes loadingProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Durata originale animazione barra di caricamento */
+.loading-fill {
+  animation: loadingProgress 2s ease-in-out !important;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.3; }
+}
+
+        @media (max-width: 768px) {
+            .kernel-map-container {
+                padding: 10px;
+                overflow-x: auto;
+            }
+            
+            .section {
+                min-width: 120px;
+                padding: 8px;
+            }
+            
+            .section-title {
+                font-size: 11px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+            }
+            
+            .subsection {
+                font-size: 10px;
+                padding: 6px;
+                min-height: 40px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header p {
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section {
+                min-width: 100px;
+                padding: 6px;
+            }
+            
+            .section-title {
+                font-size: 9px;
+            }
+            
+            .subsection {
+                font-size: 8px;
+                padding: 4px;
+                min-height: 35px;
+            }
+        }
