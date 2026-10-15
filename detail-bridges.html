@@ -15,7 +15,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRIDGES - Dettagli</title>
+    <title>FUNZIONALITÀ TRASVERSALI</title>
     
     <!--Libreria css per pagine-->
     <link rel="stylesheet" href="style_pages.css">
@@ -27,191 +27,191 @@
     </button>
     
     <div class="header">
-        <h1>BRIDGES</h1>
-        <p class="subtitle">Bridge di rete e forwarding</p>
+        <h1>FUNZIONALITÀ TRASVERSALI</h1>
+        <p class="subtitle">Moduli trasversali: IPC • Notifiche</p>
     </div>
 
     <div class="content">
-        <span class="badge">🌉 BRIDGE RETE</span>
+        <span class="badge">🌉 MODULI TRASVERSALI</span>
         <h2>DESCRIZIONE:</h2>
-        <p><strong>Il bridge di rete è un dispositivo che collega più segmenti di rete, operando al livello Data Link (Layer 2) del modello OSI. Nel kernel Linux, il bridging permette di creare reti virtuali che connettono interfacce fisiche e virtuali, facilitando il forwarding trasparente dei pacchetti.</strong></p>
+        <p><strong>I moduli trasversali di IPC (Inter-Process Communication) e notifica sono i meccanismi con cui processi, thread, driver e sottosistemi del kernel Linux si scambiano dati, si sincronizzano e si avvisano quando accade un evento. Non appartengono a un solo livello: attraversano l'intero kernel e fanno da ponte tra le sue parti.</strong></p>
 
         <h2>CONFRONTO:</h2>
-        <p>Come un incrocio stradale intelligente: invece di un semaforo che ferma tutto il traffico, un bridge osserva il flusso dei veicoli (pacchetti) e li dirige verso la strada corretta senza interruzioni, creando un flusso continuo e trasparente tra diverse direzioni.</p>
+        <p>Come il sistema postale e i campanelli di un grande condominio: pipe e code di messaggi sono le lettere che passano di mano in mano, la memoria condivisa è la bacheca comune, mentre segnali e notifiche sono il campanello che avvisa quando c'è qualcosa di nuovo, senza dover controllare continuamente la cassetta delle lettere.</p>
 
 <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>Il bridge nel kernel Linux è implementato attraverso il modulo bridge.ko e fornisce funzionalità di Layer 2 forwarding, learning e filtering.</strong> Immagina di avere un ristorante con diverse sale (reti) collegate da un maître esperto (bridge) che sa esattamente dove sedere ogni cliente (pacchetto) basandosi sui loro biglietti da visita (indirizzi MAC).</p>
+        <p><strong>IPC e notifiche sono implementati da più componenti del kernel (fs/pipe.c, ipc/, kernel/signal.c, fs/notify/, kernel/notifier.c) che offrono comunicazione, sincronizzazione ed eventi asincroni.</strong> Immagina un grande condominio: i vicini si passano biglietti (messaggi), usano una bacheca comune (memoria condivisa) e suonano il campanello (notifica) quando serve attirare l'attenzione.</p>
 
-        <p>• <strong>Forwarding trasparente</strong> - Inoltra pacchetti tra interfacce senza modificare gli indirizzi Layer 2</p>
-        <p>• <strong>Learning automatico</strong> - Impara dinamicamente quali MAC address sono raggiungibili su quali porte</p>
-        <p>• <strong>Flooding controllato</strong> - Gestisce pacchetti broadcast e unknown unicast in modo intelligente</p>
-        <p>• <strong>STP support</strong> - Previene loop di rete attraverso Spanning Tree Protocol</p>
-        <p>• <strong>VLAN awareness</strong> - Supporta segmentazione logica della rete attraverso VLAN</p>
-        <p>• <strong>Filtering avanzato</strong> - Permette regole di firewalling al livello bridge</p>
-        <p><em>• Interazione: Riceve pacchetti dalle interfacce di rete e decide se forwardarli, droppare o processarli localmente</em></p>
+        <p>• <strong>Trasferimento dati</strong> - Pipe, FIFO, code di messaggi e socket UNIX spostano informazioni tra processi</p>
+        <p>• <strong>Memoria condivisa</strong> - Regioni mappate in più spazi di indirizzamento per comunicare senza copie</p>
+        <p>• <strong>Sincronizzazione</strong> - Semafori e futex coordinano l'accesso alle risorse condivise</p>
+        <p>• <strong>Segnali</strong> - Notifiche asincrone inviate ai processi (SIGINT, SIGCHLD, SIGUSR1...)</p>
+        <p>• <strong>Notifiche di eventi</strong> - inotify, fanotify, eventfd e uevent avvisano senza polling</p>
+        <p>• <strong>Notifier chain</strong> - Meccanismo interno con cui i sottosistemi del kernel si registrano per ricevere eventi</p>
+        <p><em>• Interazione: Collega processi e sottosistemi, mettendo a dormire e risvegliando i task tramite lo scheduler</em></p>
 
 <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>Il bridge gestisce quattro categorie principali di operazioni per il forwarding intelligente dei pacchetti:</strong></p>
+        <p><strong>Questi moduli gestiscono quattro categorie principali di operazioni per comunicare e notificare:</strong></p>
 
-        <h3>🔄 Forwarding e Learning</h3>
-        <p>• <strong>br_forward()</strong> - Inoltra pacchetti unicast tra porte basandosi sulla forwarding database</p>
-        <p>• <strong>br_fdb_update()</strong> - Aggiorna la forwarding database con nuovi MAC address appresi</p>
-        <p>• <strong>br_flood()</strong> - Invia pacchetti broadcast/unknown su tutte le porte appropriate</p>
-        <p>• <strong>br_handle_frame()</strong> - Gestisce l'arrivo di nuovi frame e decide l'azione da intraprendere</p>
+        <h3>🔄 Pipe e Code di Messaggi</h3>
+        <p>• <strong>pipe_write()</strong> - Scrive dati nel buffer circolare della pipe e risveglia i lettori</p>
+        <p>• <strong>pipe_read()</strong> - Legge dati dalla pipe, bloccandosi se è vuota</p>
+        <p>• <strong>do_msgsnd()</strong> - Inserisce un messaggio nella coda System V</p>
+        <p>• <strong>do_msgrcv()</strong> - Preleva un messaggio dalla coda in base a tipo e priorità</p>
 
-        <h3>🌉 Gestione Bridge</h3>
-        <p>• <strong>br_add_bridge()</strong> - Crea una nuova istanza di bridge device</p>
-        <p>• <strong>br_add_if()</strong> - Aggiunge un'interfaccia al bridge</p>
-        <p>• <strong>br_del_if()</strong> - Rimuove un'interfaccia dal bridge</p>
-        <p>• <strong>br_set_ageing_time()</strong> - Configura il timeout per le entries della FDB</p>
+        <h3>🌉 Memoria Condivisa e Futex</h3>
+        <p>• <strong>do_shmat()</strong> - Mappa un segmento di memoria condivisa nello spazio del processo</p>
+        <p>• <strong>shmem_file_setup()</strong> - Crea il file su tmpfs che sostiene la memoria condivisa</p>
+        <p>• <strong>futex_wait()</strong> - Mette il thread in attesa su un indirizzo se il valore è invariato</p>
+        <p>• <strong>futex_wake()</strong> - Risveglia i thread in attesa sul futex</p>
 
-        <h3>🛡️ Sicurezza e Filtering</h3>
-        <p>• <strong>br_fdb_delete()</strong> - Rimuove entries specifiche dalla forwarding database</p>
-        <p>• <strong>br_set_promisc()</strong> - Configura la modalità promiscua per sniffing</p>
-        <p>• <strong>br_filter()</strong> - Applica regole di filtering sui pacchetti</p>
-        <p>• <strong>br_stp_set_enabled()</strong> - Abilita/disabilita Spanning Tree Protocol</p>
+        <h3>🛡️ Segnali ed Eventi</h3>
+        <p>• <strong>do_send_sig_info()</strong> - Invia un segnale a un processo</p>
+        <p>• <strong>eventfd_signal()</strong> - Incrementa il contatore di un eventfd e risveglia chi attende</p>
+        <p>• <strong>__wake_up()</strong> - Risveglia i task in attesa su una wait queue</p>
+        <p>• <strong>poll_wait()</strong> - Registra il task per essere svegliato da poll, select ed epoll</p>
 
-        <h3>📊 Monitoraggio e Debug</h3>
-        <p>• <strong>br_show_fdb()</strong> - Mostra il contenuto della forwarding database</p>
-        <p>• <strong>br_get_stats()</strong> - Ottiene statistiche di traffico per porta</p>
-        <p>• <strong>br_read_config()</strong> - Legge la configurazione corrente del bridge</p>
-        <p>• <strong>br_dev_ioctl()</strong> - Interfaccia ioctl per configurazione runtime</p>
+        <h3>📊 Notifiche e Monitoraggio</h3>
+        <p>• <strong>fsnotify()</strong> - Genera eventi di filesystem per inotify e fanotify</p>
+        <p>• <strong>blocking_notifier_call_chain()</strong> - Esegue i callback registrati su una notifier chain</p>
+        <p>• <strong>kobject_uevent()</strong> - Invia un uevent al user space tramite Netlink</p>
+        <p>• <strong>netlink_broadcast()</strong> - Trasmette un messaggio a un gruppo di socket Netlink</p>
 
 <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando colleghi due reti Ethernet attraverso un bridge Linux, ecco cosa succede dietro le quinte:</strong></p>
+        <p><strong>Quando in una shell scrivi ls | grep txt, ecco cosa succede dietro le quinte:</strong></p>
 
-        <h3>🔍 Configurazione Base</h3>
-        <p>1. Creazione del bridge device virtuale con brctl addbr br0</p>
-        <p>2. Aggiunta delle interfacce fisiche eth0 e eth1 al bridge</p>
-        <p>3. Attivazione del bridge con ip link set br0 up</p>
-        <p>4. Il bridge inizia a imparare gli indirizzi MAC dal traffico</p>
+        <h3>🔍 Flusso Base: una pipe tra due processi</h3>
+        <p>1. La shell crea la pipe con pipe2() e ottiene due file descriptor (lettura e scrittura)</p>
+        <p>2. Dopo fork(), dup2() collega stdout di ls al lato scrittura e stdin di grep al lato lettura</p>
+        <p>3. ls scrive nel buffer circolare del kernel tramite pipe_write()</p>
+        <p>4. grep viene risvegliato dalla wait queue e legge i dati con pipe_read()</p>
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
-            <li><strong>net_bridge</strong> - Struttura principale che rappresenta un bridge device, contiene configurazione globale e puntatori alle strutture ausiliarie</li>
-            <li><strong>net_bridge_port</strong> - Rappresenta una porta del bridge, collega l'interfaccia fisica al bridge logico</li>
-            <li><strong>net_bridge_fdb_entry</strong> - Entry della Forwarding Database che mappa MAC address a porte del bridge</li>
-            <li><strong>br_config</strong> - Struttura di configurazione che contiene parametri come ageing time, STP settings, etc.</li>
+            <li><strong>pipe_inode_info</strong> - Rappresenta una pipe: contiene l'anello di buffer, le wait queue e i contatori di lettori e scrittori</li>
+            <li><strong>kern_ipc_perm</strong> - Chiave e permessi comuni a tutti gli oggetti System V (code, memoria condivisa, semafori)</li>
+            <li><strong>notifier_block</strong> - Elemento di una notifier chain che contiene callback e priorità</li>
+            <li><strong>fsnotify_group</strong> - Gruppo che raccoglie gli eventi destinati a un listener inotify o fanotify</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare i bridge:</strong></p>
+        <p><strong>Comandi Linux per esplorare IPC e notifiche:</strong></p>
         <ul>
-            <li><code>brctl show</code> - Mostra tutti i bridge attivi e le loro porte</li>
-            <li><code>brctl showmacs br0</code> - Visualizza la forwarding database del bridge</li>
-            <li><code>ip link show type bridge</code> - Mostra i bridge device con iproute2</li>
-            <li><code>bridge fdb show</code> - Mostra la forwarding database con il nuovo comando bridge</li>
-            <li><code>bridge link show</code> - Mostra le porte del bridge e il loro stato</li>
+            <li><code>ipcs -a</code> - Mostra code di messaggi, memoria condivisa e semafori System V attivi</li>
+            <li><code>ls -l /proc/PID/fd</code> - Elenca i file descriptor di un processo, comprese pipe ed eventfd</li>
+            <li><code>grep Sig /proc/PID/status</code> - Mostra i segnali pendenti, bloccati e ignorati di un processo</li>
+            <li><code>inotifywait -m /tmp</code> - Osserva in tempo reale gli eventi inotify su una directory</li>
+            <li><code>udevadm monitor</code> - Mostra gli uevent inviati dal kernel via Netlink</li>
         </ul>
 
-        <h3>🎯 Caso Reale: Routing tra VLAN</h3>
-        <p>Quando configuri un bridge con VLAN tagging:</p>
+        <h3>🎯 Caso Reale: Notifica di modifica file con inotify</h3>
+        <p>Quando un'applicazione vuole sapere che una directory è cambiata:</p>
         <ol>
-            <li>Un pacchetto VLAN 10 arriva su eth0 taggato</li>
-            <li>Il bridge riconosce il tag VLAN e consulta la FDB specifica per VLAN 10</li>
-            <li>Trova che il MAC destinazione è su eth2</li>
-            <li>Inoltra il pacchetto mantenendo il tag VLAN intatto</li>
+            <li>L'app chiama inotify_init1() e inotify_add_watch() su /tmp</li>
+            <li>Un altro processo crea un file e il VFS chiama fsnotify()</li>
+            <li>L'evento viene accodato nel fsnotify_group dell'app</li>
+            <li>L'app, in attesa con epoll, viene svegliata e legge struct inotify_event con read()</li>
         </ol>
 
-<h2>💾 Protocolli e Standard Supportati</h2>
+<h2>💾 Meccanismi e Standard Supportati</h2>
         <ul>
-            <li><strong>802.1D STP</strong> - Spanning Tree Protocol per prevenzione loop</li>
-            <li><strong>802.1Q VLAN</strong> - Supporto per Virtual LAN e trunking</li>
-            <li><strong>802.1X</strong> - Port-based Network Access Control</li>
-            <li><strong>IGMP/MLD snooping</strong> - Ottimizzazione traffico multicast</li>
-            <li><strong>DHCP snooping</strong> - Sicurezza per protocolli DHCP</li>
-            <li><strong>BPDU Guard</strong> - Protezione contro bridge non autorizzati</li>
+            <li><strong>POSIX signals</strong> - Segnali standard e real-time (SIGRTMIN–SIGRTMAX)</li>
+            <li><strong>POSIX message queues</strong> - Code di messaggi con priorità (mq_open, mq_send)</li>
+            <li><strong>System V IPC</strong> - Code, semafori e memoria condivisa (msgget, semget, shmget)</li>
+            <li><strong>POSIX shared memory</strong> - Memoria condivisa tramite shm_open e mmap</li>
+            <li><strong>Netlink</strong> - Socket AF_NETLINK per messaggi e notifiche kernel-user space</li>
+            <li><strong>UNIX domain sockets</strong> - Socket AF_UNIX con passaggio di descriptor via SCM_RIGHTS</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
-            <li><strong>Trasparente</strong> - I dispositivi collegati non sanno di essere su un bridge</li>
-            <li><strong>Auto-learning</strong> - Impara automaticamente la topologia di rete</li>
-            <li><strong>High-performance</strong> - Forwarding a velocità wire con hardware acceleration</li>
-            <li><strong>VLAN-capable</strong> - Supporto completo per segmentazione logica</li>
-            <li><strong>Security-aware</strong> - Integrazione con firewall e sicurezza di rete</li>
+            <li><strong>Trasversale</strong> - Usato da tutti i sottosistemi: processi, VFS, rete e driver</li>
+            <li><strong>Asincrono</strong> - Le notifiche evitano il polling e risparmiano CPU</li>
+            <li><strong>Efficiente</strong> - Memoria condivisa e splice riducono le copie dei dati</li>
+            <li><strong>Controllato</strong> - Permessi, capabilities e namespace limitano chi può comunicare</li>
+            <li><strong>Scalabile</strong> - epoll gestisce migliaia di descriptor con poche chiamate</li>
         </ul>
 
 <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Il bridge è il "ponte" tra il mondo fisico delle interfacce di rete e il mondo virtuale del networking Linux:</strong></p>
+        <p><strong>IPC e notifiche sono il "ponte" tra sottosistemi diversi: permettono a processi, driver e kernel di comunicare e di avvisarsi a vicenda:</strong></p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>Netfilter</strong> - Integrazione con iptables per filtering al livello bridge (ebtables). Il bridge può applicare regole di firewall sui pacchetti forwarded</p>
-        <p>• <strong>Routing subsystem</strong> - Collabora con il router per decisioni di forwarding Layer 3 quando necessario</p>
+        <h3>🌐 Network e VFS</h3>
+        <p>• <strong>Socket layer</strong> - Socket UNIX e Netlink trasportano dati e notifiche tra processi e kernel, anche passando file descriptor con SCM_RIGHTS</p>
+        <p>• <strong>VFS</strong> - Pipe, FIFO e code POSIX sono file speciali; fsnotify intercetta le operazioni sui file per generare eventi</p>
 
-        <h3>🔧 Device Drivers</h3>
-        <p>• <strong>Network drivers</strong> - Riceve pacchetti dai driver delle schede di rete e li elabora prima del forwarding</p>
-        <p>• <strong>Virtual devices</strong> - Supporta interfacce virtuali come tap, veth per container e virtualizzazione</p>
+        <h3>🔧 Scheduler e Driver</h3>
+        <p>• <strong>Scheduler</strong> - Wait queue e futex addormentano e risvegliano i task quando un dato o un evento è pronto</p>
+        <p>• <strong>Device drivers</strong> - Usano wait queue, poll e uevent per avvisare lo user space di nuovi dati o dispositivi</p>
 
         <h3>🛡️ Security Framework</h3>
-        <p>• <strong>SELinux/AppArmor</strong> - Può applicare policy di sicurezza specifiche per il traffico bridged</p>
-        <p>• <strong>Netfilter hooks</strong> - Punti di aggancio per moduli di sicurezza nel flusso dei pacchetti</p>
+        <p>• <strong>LSM (SELinux/AppArmor)</strong> - Hook di sicurezza controllano invio di segnali, messaggi e accesso alla memoria condivisa</p>
+        <p>• <strong>Namespace e capabilities</strong> - L'IPC namespace isola gli oggetti System V e le code POSIX; CAP_KILL regola l'invio di segnali</p>
 
         <h3>📊 Monitoring Tools</h3>
-        <p>• <strong>procfs/sysfs</strong> - Esporta statistiche e configurazione attraverso /proc/net/bridge/ e /sys/class/net/</p>
-        <p>• <strong>Netlink</strong> - Interfaccia per monitoraggio e configurazione programmatica dei bridge</p>
+        <p>• <strong>procfs/sysfs</strong> - Espongono lo stato attraverso /proc/sysvipc/, /proc/PID/status e /sys/kernel/</p>
+        <p>• <strong>Tracing</strong> - strace, ftrace e tracepoint come signal_generate permettono di osservare segnali e chiamate IPC</p>
 
 <h2>🛠️ API e Interfacce</h2>
-        <p><strong>Queste sono le interfacce principali per configurare e monitorare i bridge nel kernel Linux:</strong></p>
+        <p><strong>Queste sono le interfacce principali del kernel Linux per creare canali IPC e gestire segnali e notifiche:</strong></p>
 
-        <h3>🔧 Configurazione Bridge</h3>
+        <h3>🔧 Creazione Canali IPC</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int br_add_bridge(struct net *net, const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea un nuovo bridge device con il nome specificato nella rete netns.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">int do_pipe_flags(int *fd, int flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea una pipe e restituisce i due file descriptor (lettura e scrittura).</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">int br_add_if(struct net_bridge *br, struct net_device *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Aggiunge un'interfaccia di rete al bridge specificato.</span><br><br>
+            <code style="color: #2e7d32; font-weight: bold;">long ksys_msgget(key_t key, int msgflg);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene o crea una coda di messaggi System V associata alla chiave.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">int br_del_if(struct net_bridge *br, struct net_device *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Rimuove un'interfaccia dal bridge e ripristina la sua configurazione originale.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">long ksys_shmget(key_t key, size_t size, int shmflg);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene o crea un segmento di memoria condivisa System V.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">void br_fdb_update(struct net_bridge *br, struct net_bridge_port *source, const unsigned char *addr, u16 vid);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Aggiorna la forwarding database con un nuovo indirizzo MAC appreso.</span>
+            <code style="color: #9c27b0; font-weight: bold;">struct file *shmem_file_setup(const char *name, loff_t size, unsigned long flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea il file su tmpfs che sostiene la memoria condivisa.</span>
         </div>
 
-        <h3>📊 Monitoraggio e Statistiche</h3>
+        <h3>📊 Notifiche e Monitoraggio</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">struct net_bridge_fdb_entry *br_fdb_find_port(struct net_bridge *br, const unsigned char *addr, u16 vid);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Cerca un indirizzo MAC nella forwarding database del bridge.</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">int fsnotify(__u32 mask, const void *data, int data_type, struct inode *dir, const struct qstr *file_name, struct inode *inode, u32 cookie);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Genera un evento di filesystem consegnato a inotify e fanotify.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">void br_show_stats(struct seq_file *seq, struct net_bridge *br);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Mostra statistiche dettagliate del bridge per debugging.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">int blocking_notifier_call_chain(struct blocking_notifier_head *nh, unsigned long val, void *v);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Esegue i callback registrati su una notifier chain bloccante.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">int br_get_link_af_spec(struct net_bridge_port *p, struct nlattr *af_spec);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni specifiche del link per l'interfaccia Netlink.</span>
+            <code style="color: #2e7d32; font-weight: bold;">int kobject_uevent(struct kobject *kobj, enum kobject_action action);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia un uevent al user space tramite Netlink (usato da udev).</span>
         </div>
 
-        <h3>🔄 Forwarding Engine</h3>
+        <h3>🔄 Segnali e Wake-up</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int br_handle_frame(struct sk_buff *skb);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Funzione principale che gestisce l'arrivo di un frame sul bridge.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">int send_sig_info(int sig, struct kernel_siginfo *info, struct task_struct *p);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Invia un segnale a un processo specifico.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">void br_flood(struct net_bridge *br, struct sk_buff *skb, struct net_bridge_port *p, bool forward);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Inoltra un pacchetto broadcast su tutte le porte appropriate del bridge.</span>
+            <code style="color: #9c27b0; font-weight: bold;">void __wake_up(struct wait_queue_head *wq_head, unsigned int mode, int nr_exclusive, void *key);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Risveglia i task in attesa su una wait queue.</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando crei una rete virtuale per container:</strong></p>
+        <p><strong>Quando due processi comunicano tramite memoria condivisa POSIX:</strong></p>
         <ol>
-            <li><code>ip link add br0 type bridge</code> - Crea il bridge device</li>
-            <li><code>ip link set eth0 master br0</code> - Aggiunge interfaccia fisica</li>
-            <li><code>ip link add veth0 type veth peer name veth1</code> - Crea interfaccia virtuale</li>
-            <li><code>ip link set veth1 master br0</code> - Connette container al bridge</li>
+            <li><code>shm_open("/demo", O_CREAT|O_RDWR, 0600)</code> - Crea l'oggetto di memoria condivisa</li>
+            <li><code>ftruncate(fd, 4096)</code> - Ne imposta la dimensione</li>
+            <li><code>mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)</code> - Lo mappa nel processo</li>
+            <li><code>kill(pid, SIGUSR1)</code> - Avvisa l'altro processo che i dati sono pronti</li>
         </ol>
-        <p><em>Il bridge rende possibile la comunicazione trasparente tra container e rete esterna, aprendendo dinamicamente gli indirizzi MAC!</em></p>
+        <p><em>La memoria condivisa trasferisce i dati senza copie, mentre il segnale avvisa il destinatario che sono pronti!</em></p>
 
-<h2>🗺️ Architettura del Bridge Subsystem</h2>
+<h2>🗺️ Architettura dei Moduli IPC e Notifiche</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del Bridge Subsystem</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura IPC e Notification</h3>
 
             <!-- User Space Tools -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ STRUMENTI USER SPACE</div>
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • brctl (legacy)<br>
-                    • iproute2 (bridge)<br>
-                    • NetworkManager<br>
-                    • Configurazione bridge
+                    • Processi e thread<br>
+                    • libc (pthread, mq_*)<br>
+                    • systemd, D-Bus<br>
+                    • udev, inotify-tools
                 </div>
             </div>
 
@@ -220,11 +220,11 @@
 
             <!-- Netlink/Syscall Interface -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 NETLINK/SYSCALL INTERFACE</div>
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSCALL INTERFACE</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • RTM_NEWLINK • RTM_DELLINK<br>
-                    • RTM_GETLINK • Bridge attributes<br>
-                    • ioctl() per configurazione
+                    • pipe2() • msgsnd() • shmat()<br>
+                    • futex() • kill() • eventfd()<br>
+                    • inotify_add_watch() • epoll_wait()
                 </div>
             </div>
 
@@ -233,29 +233,29 @@
 
             <!-- Bridge Core -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌉 BRIDGE CORE</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌉 IPC &amp; NOTIFICATION CORE</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">🏗️</div>
-                        <div style="font-size: 0.8em;">net_bridge</div>
+                        <div style="font-size: 0.8em;">pipe_inode_info</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">🔌</div>
-                        <div style="font-size: 0.8em;">net_bridge_port</div>
+                        <div style="font-size: 0.8em;">kern_ipc_perm</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
-                        <div style="font-size: 0.8em;">fdb_entry</div>
+                        <div style="font-size: 0.8em;">wait_queue</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
-                        <div style="font-size: 0.8em;">br_config</div>
+                        <div style="font-size: 0.8em;">notifier_block</div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Forwarding Database<br>
-                    • STP State Machine<br>
-                    • VLAN Processing
+                    • Wait Queue &amp; Wake-up<br>
+                    • Signal Delivery<br>
+                    • fsnotify &amp; Notifier Chains
                 </div>
             </div>
 
@@ -265,20 +265,20 @@
             <!-- Network Interfaces -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🌐 ETHERNET</div>
-                    <div style="font-size: 0.8em; color: #666;">Interfacce fisiche</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🔗 PIPE/FIFO</div>
+                    <div style="font-size: 0.8em; color: #666;">Flussi di byte</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🔗 VETH</div>
-                    <div style="font-size: 0.8em; color: #666;">Virtual Ethernet</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">📬 MESSAGGI</div>
+                    <div style="font-size: 0.8em; color: #666;">SysV / POSIX mq</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🖧 TAP</div>
-                    <div style="font-size: 0.8em; color: #666;">Virtual TAP</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🧠 SHM/FUTEX</div>
+                    <div style="font-size: 0.8em; color: #666;">Memoria condivisa</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">📡 WIRELESS</div>
-                    <div style="font-size: 0.8em; color: #666;">WiFi bridging</div>
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">📡 NETLINK/UNIX</div>
+                    <div style="font-size: 0.8em; color: #666;">Socket locali</div>
                 </div>
             </div>
 
@@ -287,118 +287,118 @@
 
             <!-- Hardware/Network Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE/NETWORK LAYER</div>
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 SOTTOSISTEMI KERNEL</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Network Interface Cards<br>
-                    • Switch Hardware<br>
-                    • Virtual Network Devices<br>
-                    • Packet Forwarding
+                    • Scheduler (wake-up)<br>
+                    • VFS (pipefs, fsnotify)<br>
+                    • Network stack (AF_UNIX, Netlink)<br>
+                    • Driver model (uevent)
                 </div>
             </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso dei pacchetti attraverso il bridge<br>
-                • Ogni layer gestisce aspetti specifici del forwarding<br>
-                • Il bridge core è il cervello che decide dove inoltrare i pacchetti<br>
-                • Le interfacce possono essere fisiche o virtuali (container, VM)
+                • Le frecce mostrano il flusso di dati ed eventi dalle app fino al kernel<br>
+                • Ogni layer gestisce un aspetto: sincronizzazione, trasferimento dati o notifica<br>
+                • Il core è il punto di incontro che mette in comunicazione i sottosistemi<br>
+                • I partecipanti possono essere processi, thread, driver o il kernel stesso
             </div>
         </div>
 
-        <h2>🎬 Funzionamento del Bridge</h2>
+        <h2>🎬 Funzionamento di IPC e Notifiche</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona il forwarding nel bridge</h3>
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona una pipe con risveglio del lettore</h3>
         
         <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
         <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Pacchetto in Arrivo</div>
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Scrittura nella Pipe</div>
         <div style="font-family: monospace; font-size: 0.9em;">
-        Frame Ethernet:<br>
-        - MAC src: AA:BB:CC:11:22:33<br>
-        - MAC dst: DD:EE:FF:44:55:66<br>
-        - VLAN: 10 (tagged)<br>
-        - Protocollo: IPv4
+        Chiamata write():<br>
+        - Processo: PID 4121 (ls)<br>
+        - fd: 4 (lato scrittura)<br>
+        - Dati: 512 byte<br>
+        - Buffer: anello a 16 slot
         </div>
         </div>
         
         <div style="font-size: 2em; color: #f57c00;">⚡</div>
         
         <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔍 Consultazione FDB</div>
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔍 Risveglio del Lettore</div>
         <div style="font-family: monospace; font-size: 0.9em;">
-        Lookup nella Forwarding DB:<br>
-        - MAC DD:EE:FF:44:55:66 → Porta 3<br>
-        - VLAN 10 → Bridge instance<br>
-        - Aging timer: 300s
+        Wait queue della pipe:<br>
+        - Task in attesa: PID 4122 (grep)<br>
+        - Stato: SLEEPING → RUNNING<br>
+        - Ripresa in pipe_read()
         </div>
         </div>
         </div>
         
         <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <strong>Processo eseguito:</strong> Il bridge riceve il frame, apprende il MAC sorgente, consulta la FDB per il MAC destinazione e inoltra selettivamente solo sulla porta corretta.
+        <strong>Processo eseguito:</strong> Il produttore copia i dati nel buffer della pipe, il kernel risveglia la wait queue del lettore e questo consuma i dati con una read(), senza alcun polling.
         </div>
         
         <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Algoritmo di Forwarding:</h4>
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Algoritmo di Comunicazione:</h4>
         <ol style="line-height: 1.8;">
-        <li><strong>1. Arrivo Frame</strong> - Pacchetto ricevuto su una porta del bridge</li>
-        <li><strong>2. Learning</strong> - MAC sorgente aggiunto alla FDB con porta di ingresso</li>
-        <li><strong>3. Lookup</strong> - Ricerca MAC destinazione nella Forwarding Database</li>
-        <li><strong>4. Forwarding</strong> - Inoltro su porta specifica, flooding o dropping</li>
-        <li><strong>5. Aging</strong> - Aggiornamento timer per evitare entries stantie</li>
+        <li><strong>1. Scrittura</strong> - Il produttore invia i dati con write() sul lato scrittura</li>
+        <li><strong>2. Accodamento</strong> - I dati vengono copiati nel buffer circolare della pipe</li>
+        <li><strong>3. Wake-up</strong> - Il kernel risveglia i task in attesa sulla wait queue</li>
+        <li><strong>4. Lettura</strong> - Il consumatore preleva i dati con read()</li>
+        <li><strong>5. Sincronizzazione</strong> - Buffer pieno: lo scrittore attende; buffer vuoto: attende il lettore</li>
         </ol>
         </div>
         
         <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-        <strong>🎯 Risultato:</strong> Il pacchetto viene inoltrato solo dove necessario, creando segmentazione logica trasparente senza modificare gli indirizzi Layer 2.
+        <strong>🎯 Risultato:</strong> I dati passano da un processo all'altro e il destinatario viene avvisato solo quando serve, senza consumare CPU in attesa.
         </div>
         </div>
 
-<h2>🧪 Laboratorio Pratico: Esplora i Bridge</h2>
+<h2>🧪 Laboratorio Pratico: Esplora IPC e Notifiche</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌉 Crea un Bridge</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌉 Crea una Named Pipe</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ sudo ip link add br0 type bridge<br>
-                        $ sudo ip link set br0 up<br>
-                        $ ip link show br0
+                        $ mkfifo /tmp/demo_fifo<br>
+                        $ cat /tmp/demo_fifo &amp;<br>
+                        $ echo "ciao" &gt; /tmp/demo_fifo
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Crea e attiva un bridge device virtuale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Fai comunicare due processi tramite una FIFO</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Aggiungi Interfacce</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Invia un Segnale</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ sudo ip link set eth0 master br0<br>
-                        $ sudo ip link set eth1 master br0<br>
-                        $ bridge link show
+                        $ sleep 300 &amp;<br>
+                        $ kill -STOP $!<br>
+                        $ grep -E 'State|SigPnd' /proc/$!/status
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Collega interfacce fisiche al bridge</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva lo stato del processo dopo il segnale</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📋 Mostra Forwarding DB</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📋 Mostra Risorse IPC</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ bridge fdb show<br>
-                        $ brctl showmacs br0<br>
-                        52:54:00:12:34:56 dev eth0<br>
-                        aa:bb:cc:dd:ee:ff dev eth1
+                        $ ipcs -a<br>
+                        $ ipcs -m -l<br>
+                        $ ls /dev/mqueue<br>
+                        $ cat /proc/sysvipc/shm
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quali MAC sono appresi su quali porte</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Elenca code, memoria condivisa e semafori attivi</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora il Traffico</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora gli Eventi</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ bridge -s link show<br>
-                        $ cat /sys/class/net/br0/statistics/rx_packets<br>
-                        $ cat /sys/class/net/br0/statistics/tx_packets
+                        $ inotifywait -m /tmp &amp;<br>
+                        $ touch /tmp/prova.txt<br>
+                        $ udevadm monitor
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva statistiche di traffico del bridge</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le notifiche di filesystem e kernel in tempo reale</em></p>
                 </div>
             </div>
         </div>
@@ -407,33 +407,33 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌉</div>
-        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Trasparenza Layer 2</h4>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Comunicazione Trasversale</h4>
         <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-        I dispositivi collegati al bridge non sanno di essere connessi attraverso un bridge. Tutto funziona come se fossero sulla stessa rete fisica.
+        I moduli IPC collegano processi e sottosistemi diversi. Ogni meccanismo offre un compromesso tra semplicità, velocità e controllo.
         </p>
         </div>
         
         <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🧠</div>
-        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Auto-Learning</h4>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Notifica Asincrona</h4>
         <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-        Il bridge apprende dinamicamente la topologia di rete osservando il traffico. Non richiede configurazione manuale delle tabelle di forwarding.
+        Invece del polling, il kernel avvisa solo quando accade un evento (segnale, inotify, uevent), risparmiando CPU.
         </p>
         </div>
         
         <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
-        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Forwarding Selettivo</h4>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Dati e Sincronizzazione</h4>
         <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-        Ogni pacchetto viene inoltrato solo sulla porta necessaria, riducendo il traffico broadcast e migliorando le prestazioni della rete.
+        Pipe, code e memoria condivisa spostano i dati; futex e semafori coordinano l'accesso. Spesso si usano insieme.
         </p>
         </div>
         
         <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
-        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">STP Protection</h4>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Isolamento e Permessi</h4>
         <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-        Spanning Tree Protocol previene i loop di rete, BPDU Guard protegge da bridge non autorizzati, garantendo stabilità.
+        Permessi, capabilities e IPC namespace controllano chi può comunicare, garantendo sicurezza anche nei container.
         </p>
         </div>
         </div>
@@ -448,7 +448,7 @@
         <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
         <div style="text-align: center;">
             <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sui Bridge
+                📝 Fai il Quiz su IPC e Notifiche
             </button>
             <div id="quizContainer" style="display: none; margin-bottom: 20px;">
                 <div id="quizContent"></div>
@@ -463,64 +463,64 @@
     // Quiz functionality
     const quizQuestions = [
         {
-            question: "Cosa fa un bridge di rete?",
-            options: ["Connette reti diverse al livello fisico", "Inoltra pacchetti al livello Data Link", "Instrada pacchetti IP", "Fornisce indirizzi IP"],
+            question: "Quale meccanismo IPC offre un flusso di byte unidirezionale tra due processi?",
+            options: ["Memoria condivisa", "Pipe", "Semaforo", "Segnale"],
             correct: 1,
-            explanation: "Il bridge opera al livello Data Link (Layer 2) del modello OSI, inoltrando pacchetti Ethernet basandosi sugli indirizzi MAC."
+            explanation: "La pipe è un buffer circolare nel kernel: un processo scrive a un'estremità e l'altro legge dall'altra, in un'unica direzione."
         },
         {
-            question: "Cosa contiene la Forwarding Database (FDB)?",
-            options: ["Indirizzi IP e porte", "MAC address e porte associate", "Route IP", "Configurazioni VLAN"],
-            correct: 1,
-            explanation: "La FDB mappa gli indirizzi MAC alle porte del bridge, permettendo il forwarding selettivo dei pacchetti."
-        },
-        {
-            question: "Cosa significa 'auto-learning' in un bridge?",
-            options: ["Il bridge apprende automaticamente la configurazione", "Il bridge apprende dinamicamente gli indirizzi MAC", "Il bridge impara a riconoscere i protocolli", "Il bridge ottimizza automaticamente le prestazioni"],
-            correct: 1,
-            explanation: "L'auto-learning permette al bridge di apprendere dinamicamente quali MAC address sono raggiungibili su quali porte osservando il traffico."
-        },
-        {
-            question: "Quale protocollo previene i loop di rete nei bridge?",
-            options: ["DHCP", "NAT", "STP (Spanning Tree Protocol)", "VLAN"],
+            question: "Qual è il vantaggio principale della memoria condivisa?",
+            options: ["Isola completamente i processi", "Cifra i dati scambiati", "Evita la copia dei dati tra i processi", "Garantisce l'ordine dei messaggi"],
             correct: 2,
-            explanation: "STP identifica e disabilita percorsi ridondanti per prevenire loop di rete che causerebbero broadcast storm."
+            explanation: "Più processi mappano la stessa regione di memoria fisica, quindi i dati non vengono copiati attraverso il kernel. Serve però una sincronizzazione esplicita."
         },
         {
-            question: "Cosa succede quando un bridge riceve un pacchetto con MAC destinazione sconosciuto?",
-            options: ["Lo scarta", "Lo inoltra su tutte le porte (flooding)", "Lo tiene in coda", "Lo invia al gateway"],
-            correct: 1,
-            explanation: "Quando il MAC destinazione non è nella FDB, il bridge fa flooding inviando il pacchetto su tutte le porte eccetto quella di ingresso."
-        },
-        {
-            question: "Quale comando mostra la Forwarding Database di un bridge?",
-            options: ["ip route show", "bridge fdb show", "netstat -r", "arp -a"],
-            correct: 1,
-            explanation: "bridge fdb show visualizza la Forwarding Database del bridge, mostrando le associazioni MAC-porta."
-        },
-        {
-            question: "Cosa garantisce la 'trasparenza' di un bridge?",
-            options: ["I dispositivi non sanno di essere su un bridge", "Il bridge è invisibile al livello IP", "Il bridge nasconde gli indirizzi MAC", "Il bridge modifica i pacchetti"],
+            question: "Quale chiamata di sistema invia un segnale a un processo?",
+            options: ["kill()", "pipe()", "mmap()", "epoll_create()"],
             correct: 0,
-            explanation: "La trasparenza significa che i dispositivi collegati non sanno di essere connessi attraverso un bridge; tutto funziona come una rete fisica unica."
+            explanation: "kill() invia un segnale al processo indicato; nonostante il nome, può trasportare qualsiasi segnale, non solo quelli che terminano il processo."
         },
         {
-            question: "Quale struttura dati rappresenta una porta del bridge?",
-            options: ["net_bridge", "net_bridge_port", "net_bridge_fdb_entry", "br_config"],
-            correct: 1,
-            explanation: "net_bridge_port rappresenta una singola porta del bridge, collegando l'interfaccia fisica al bridge logico."
+            question: "A cosa serve un futex?",
+            options: ["Montare filesystem", "Inviare pacchetti di rete", "Allocare memoria", "Sincronizzare thread entrando nel kernel solo in caso di contesa"],
+            correct: 3,
+            explanation: "Il futex (fast userspace mutex) funziona in user space se non c'è contesa e chiama il kernel solo per mettere in attesa o risvegliare i thread."
         },
         {
-            question: "Cosa permette il supporto VLAN nei bridge?",
-            options: ["Segmentazione logica della rete", "Instradamento IP avanzato", "Crittografia dei pacchetti", "Compressione dei dati"],
+            question: "Quale sottosistema genera gli eventi consegnati da inotify?",
+            options: ["fsnotify", "netfilter", "kswapd", "cgroups"],
             correct: 0,
-            explanation: "Il supporto VLAN permette di creare segmenti logici separati all'interno della stessa infrastruttura fisica."
+            explanation: "fsnotify intercetta le operazioni sui file nel VFS e consegna gli eventi ai gruppi inotify e fanotify registrati."
         },
         {
-            question: "Quale comando crea un bridge device in Linux?",
-            options: ["brctl addbr br0", "ip link add br0 type ethernet", "ip link add br0 type bridge", "ifconfig br0 create"],
+            question: "Cosa succede quando una pipe è piena e uno scrittore bloccante tenta di scrivere?",
+            options: ["I dati vengono scartati", "Lo scrittore viene messo in attesa", "Il kernel ingrandisce la pipe all'infinito", "Il processo riceve SIGKILL"],
+            correct: 1,
+            explanation: "Lo scrittore dorme sulla wait queue finché un lettore libera spazio. SIGPIPE arriva invece quando non esistono più lettori."
+        },
+        {
+            question: "Quale struttura rappresenta un callback registrato in una notifier chain?",
+            options: ["pipe_inode_info", "kern_ipc_perm", "notifier_block", "fsnotify_group"],
             correct: 2,
-            explanation: "ip link add br0 type bridge crea un nuovo bridge device virtuale nel kernel Linux."
+            explanation: "notifier_block contiene il puntatore al callback e la priorità; i blocchi sono collegati in una lista e invocati con notifier_call_chain."
+        },
+        {
+            question: "Quale comando elenca code di messaggi, memoria condivisa e semafori System V?",
+            options: ["lsmod", "dmesg", "ss", "ipcs"],
+            correct: 3,
+            explanation: "ipcs legge i dati esposti dal kernel (ad esempio /proc/sysvipc/) e mostra gli oggetti IPC System V attivi."
+        },
+        {
+            question: "Cosa isola un IPC namespace?",
+            options: ["Le interfacce di rete", "Gli oggetti System V e le code POSIX", "Gli ID dei processi", "I punti di mount"],
+            correct: 1,
+            explanation: "Ogni IPC namespace ha i propri oggetti System V e le proprie code POSIX, quindi i container non vedono quelli degli altri."
+        },
+        {
+            question: "Quale meccanismo porta in user space gli uevent usati da udev?",
+            options: ["Netlink", "Pipe anonime", "Semafori", "Segnali real-time"],
+            correct: 0,
+            explanation: "kobject_uevent() invia i messaggi tramite socket Netlink; udev li riceve e crea o rimuove i nodi dei dispositivi."
         }
     ];
 
@@ -636,13 +636,13 @@
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione dei bridge! 🎉";
+            message = "Eccellente! Hai una buona comprensione di IPC e notifiche! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare i bridge! 👍";
+            message = "Buon lavoro! Continua a studiare IPC e notifiche! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! I bridge sono fondamentali per le reti! 📚";
+            message = "Continua a studiare! IPC e notifiche sono fondamentali nel kernel! 📚";
             color = "#d32f2f";
         }
 

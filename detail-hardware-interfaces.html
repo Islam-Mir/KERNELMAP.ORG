@@ -15,7 +15,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HARDWARE INTERFACES - Dettagli</title>
+    <title>OPERAZIONI DI I/O E GESTIONE IRQ</title>
     
     
      
@@ -29,179 +29,179 @@
     </button>
     
     <div class="header">
-        <h1>HARDWARE INTERFACES</h1>
-        <p class="subtitle">Interfacce hardware</p>
+        <h1>OPERAZIONI DI I/O E GESTIONE IRQ</h1>
+        <p class="subtitle">Driver: registri e interrupt (I/O ops • IRQ)</p>
     </div>
 
     <div class="content">
-        <span class="badge">🔌 INTERFACCE HW</span>
+        <span class="badge">🔌 REGISTRI E INTERRUPT</span>
         <h2>DESCRIZIONE:</h2>
-<p><strong>Le Hardware Interfaces gestiscono la comunicazione diretta tra il kernel Linux e i dispositivi hardware del sistema, fornendo astrazione e controllo per periferiche esterne e interne.</strong></p>
+<p><strong>Registri e interrupt sono i due canali con cui un driver parla con l'hardware: le operazioni di I/O (letture e scritture sui registri del dispositivo, in memoria mappata o su porte) permettono al driver di comandare la periferica, mentre gli interrupt (IRQ) permettono alla periferica di avvisare il kernel quando ha completato un'operazione o ha un evento da segnalare.</strong></p>
 
 <h2>CONFRONTO:</h2>
-<p>Come un sistema di traduzione simultanea in una conferenza internazionale: ogni dispositivo hardware "parla" una lingua diversa (protocolli diversi), ma le hardware interfaces forniscono un interprete universale che rende tutto comprensibile al kernel.</p>
+<p>Come un negoziante e il suo fornitore: il negoziante compila moduli e li invia (scrive nei registri), poi può controllare di continuo se l'ordine è arrivato (polling) oppure aspettare il campanello del fattorino (interrupt) e dedicarsi ad altro nel frattempo.</p>
 
 <h2>🔍 Descrizione Tecnica</h2>
-<p><strong>Le Hardware Interfaces sono il ponte fisico tra il mondo digitale del software e il mondo analogico dell'elettronica.</strong> Immagina un'orchestra dove ogni strumento elettronico (stampanti, mouse, schede di rete, dischi) ha il suo modo di "suonare", e le hardware interfaces sono i direttori d'orchestra che coordinano tutto.</p>
+<p><strong>Un dispositivo espone al software un insieme di registri: piccole celle di controllo e di stato, accessibili tramite indirizzi di memoria (MMIO) o porte di I/O.</strong> Immagina il cruscotto di un macchinario: leve e interruttori (registri di controllo) per comandarlo e spie luminose (registri di stato) per leggere come sta andando; quando succede qualcosa di importante suona un allarme (interrupt) che richiama l'attenzione dell'operatore (la CPU).</p>
 
-<p>• <strong>Astrazione hardware universale</strong> - Interfacce standardizzate per tutti i tipi di dispositivi hardware</p>
-<p>• <strong>Protocolli di comunicazione</strong> - Supporto per USB, PCI, Ethernet, Serial, e altri bus standard</p>
-<p>• <strong>Device discovery dinamico</strong> - Rilevamento automatico di dispositivi connessi/disonnessi</p>
-<p>• <strong>Resource management</strong> - Allocazione intelligente di interrupt, memoria e I/O ports</p>
-<p><em>• Interazione: Riceve richieste dal device manager e coordina l'accesso diretto all'hardware attraverso driver specifici</em></p>
+<p>• <strong>Registri mappati in memoria (MMIO)</strong> - Il dispositivo appare come un intervallo di indirizzi fisici, mappato con ioremap() e usato con readl() e writel()</p>
+<p>• <strong>Porte di I/O</strong> - Spazio di indirizzamento separato (x86), accessibile con inb() e outb()</p>
+<p>• <strong>Interrupt (IRQ)</strong> - Segnale con cui il dispositivo interrompe la CPU per segnalare un evento</p>
+<p>• <strong>Handler a due livelli</strong> - Top half veloce nell'handler, lavoro pesante differito a softirq, tasklet o workqueue</p>
+<p><em>• Interazione: Il driver configura il dispositivo con scritture sui registri e registra un handler con request_irq() per essere avvisato degli eventi</em></p>
 
 <h2>⚙️ Operazioni Principali</h2>
-<p><strong>Le Hardware Interfaces gestiscono quattro categorie principali di operazioni per l'interazione con dispositivi hardware:</strong></p>
+<p><strong>Le operazioni su registri e interrupt si dividono in quattro categorie principali:</strong></p>
 
-<h3>🔍 Device Discovery & Enumeration</h3>
-<p>• <strong>pci_scan_bus()</strong> - Scansiona il bus PCI per trovare dispositivi connessi</p>
-<p>• <strong>usb_hcd_submit_urb()</strong> - Invia richieste USB ai dispositivi host controller</p>
-<p>• <strong>eth_hw_addr_set()</strong> - Configura indirizzi MAC per interfacce di rete</p>
+<h3>🔍 Mappatura dei Registri</h3>
+<p>• <strong>ioremap()</strong> - Mappa l'intervallo fisico dei registri nello spazio virtuale del kernel</p>
+<p>• <strong>request_mem_region()</strong> - Riserva in modo esclusivo la regione di memoria del dispositivo</p>
+<p>• <strong>iounmap()</strong> - Rilascia la mappatura quando il driver termina</p>
 
-<h3>📡 Data Transfer Operations</h3>
-<p>• <strong>readl/writel()</strong> - Trasferimenti di dati attraverso porte I/O mappate in memoria</p>
-<p>• <strong>dma_map_single()</strong> - Configurazione DMA per trasferimenti ad alta velocità</p>
-<p>• <strong>ioread32/iowrite32()</strong> - Accesso diretto a registri hardware</p>
+<h3>📡 Letture e Scritture (I/O ops)</h3>
+<p>• <strong>readl()/writel()</strong> - Leggono e scrivono registri a 32 bit in memoria mappata</p>
+<p>• <strong>ioread32()/iowrite32()</strong> - Accesso uniforme a registri MMIO o a porte di I/O</p>
+<p>• <strong>inb()/outb()</strong> - Accesso a una porta di I/O a 8 bit</p>
 
-<h3>⚡ Interrupt & Event Handling</h3>
-<p>• <strong>request_irq()</strong> - Registrazione di handler per interrupt hardware</p>
-<p>• <strong>tasklet_schedule()</strong> - Scheduling di task leggeri per gestione eventi</p>
-<p>• <strong>workqueue_queue_work()</strong> - Accodamento di lavoro per elaborazione differita</p>
+<h3>⚡ Interrupt e IRQ</h3>
+<p>• <strong>request_irq()</strong> - Registra l'handler per una linea di interrupt</p>
+<p>• <strong>free_irq()</strong> - Rilascia l'handler e la linea IRQ</p>
+<p>• <strong>request_threaded_irq()</strong> - Registra un handler rapido e uno thread per il lavoro differito</p>
 
-<h3>🔧 Configuration & Control</h3>
-<p>• <strong>pci_enable_device()</strong> - Abilitazione e configurazione dispositivi PCI</p>
-<p>• <strong>usb_set_interface()</strong> - Configurazione interfacce USB alternative</p>
-<p>• <strong>regulator_set_voltage()</strong> - Controllo alimentazione dispositivi</p>
+<h3>🔧 Lavoro Differito e Controllo</h3>
+<p>• <strong>tasklet_schedule()</strong> - Pianifica un tasklet per la parte differita dell'interrupt</p>
+<p>• <strong>schedule_work()</strong> - Accoda lavoro eseguito in contesto processo, dove si può dormire</p>
+<p>• <strong>disable_irq()</strong> - Disabilita una linea IRQ e attende la fine degli handler in corso</p>
 
 <h2>📋 Esempi Pratici</h2>
-<p><strong>Quando colleghi una stampante USB al tuo computer, ecco cosa succede nelle Hardware Interfaces:</strong></p>
+<p><strong>Quando arriva un pacchetto di rete, ecco cosa succede tra registri e interrupt:</strong></p>
 
-<h3>🔍 Connessione Dispositivo USB</h3>
-<p>1. Il kernel rileva l'evento di connessione attraverso l'USB Host Controller</p>
-<p>2. Le hardware interfaces interrogano il dispositivo per ottenere descriptor e capabilities</p>
-<p>3. Viene allocato un indirizzo USB e configurata l'interfaccia appropriata</p>
-<p>4. Il dispositivo diventa accessibile attraverso /dev/usblp0 per l'applicazione di stampa</p>
+<h3>🔍 Pacchetto Ricevuto da una Scheda di Rete</h3>
+<p>1. Il driver ha mappato i registri con ioremap() e abilitato gli interrupt scrivendo nel registro di controllo</p>
+<p>2. La scheda riceve un pacchetto e lo copia in memoria tramite DMA</p>
+<p>3. La scheda attiva la linea IRQ e la CPU esegue l'handler registrato con request_irq()</p>
+<p>4. L'handler legge il registro di stato, conferma l'interrupt e pianifica il lavoro differito che elabora il pacchetto</p>
 
 <h3>📄 Strutture Dati Chiave</h3>
 <ul>
-<li><strong>struct pci_dev</strong> - Rappresenta un dispositivo PCI con BAR, interrupt e configurazione</li>
-<li><strong>struct usb_device</strong> - Contiene tutte le informazioni su un dispositivo USB connesso</li>
-<li><strong>struct net_device</strong> - Descrive un'interfaccia di rete con indirizzo MAC e capabilities</li>
-<li><strong>struct resource</strong> - Definisce risorse hardware allocate (I/O, memoria, IRQ)</li>
+<li><strong>struct resource</strong> - Intervallo di indirizzi o numero di IRQ assegnato al dispositivo</li>
+<li><strong>struct irq_desc</strong> - Descrittore del kernel per ogni linea di interrupt</li>
+<li><strong>struct irqaction</strong> - Handler registrato su una linea IRQ, con flag e nome</li>
+<li><strong>struct pt_regs</strong> - Stato della CPU salvato all'ingresso nell'interrupt</li>
 </ul>
 
 <h3>💻 Comandi Linux per Esplorare</h3>
 <ul>
-<li><code>lspci -v</code> - Mostra dispositivi PCI con dettagli sui driver e risorse</li>
-<li><code>lsusb -v</code> - Elenca dispositivi USB con configurazioni complete</li>
-<li><code>ip link show</code> - Visualizza interfacce di rete e loro stato</li>
-<li><code>dmesg | grep usb</code> - Mostra messaggi del kernel relativi a dispositivi USB</li>
+<li><code>cat /proc/interrupts</code> - Mostra gli interrupt per linea e per CPU, con i driver registrati</li>
+<li><code>cat /proc/ioports</code> - Elenca le porte di I/O assegnate ai dispositivi</li>
+<li><code>cat /proc/iomem</code> - Elenca le regioni di memoria dei registri mappati</li>
+<li><code>cat /proc/irq/N/smp_affinity</code> - Mostra su quali CPU può arrivare l'interrupt N</li>
 </ul>
 
-<h3>🎯 Caso Reale: Accesso Disco SATA</h3>
-<p>Quando fai <code>dd if=/dev/sda of=backup.img</code>:</p>
+<h3>🎯 Caso Reale: Pressione di un Tasto</h3>
+<p>Quando premi un tasto sulla tastiera:</p>
 <ol>
-<li>Le hardware interfaces accedono direttamente al controller SATA</li>
-<li>Configurano DMA per trasferimenti ad alta velocità</li>
-<li>Il kernel coordina con l'hardware per lettura/scrittura blocchi</li>
-<li>I dati vengono trasferiti direttamente dalla memoria del disco a RAM</li>
+<li>Il controller della tastiera scrive lo scancode in un registro e attiva la linea IRQ</li>
+<li>La CPU salta all'handler del driver, che legge il registro dati con inb()</li>
+<li>L'handler conferma l'interrupt e pianifica il lavoro differito</li>
+<li>La parte differita passa il carattere al livello input e quindi all'applicazione</li>
 </ol>
 
-<h2>💾 Interfacce Hardware Supportate</h2>
+<h2>💾 Meccanismi di I/O e Interrupt Supportati</h2>
         <ul>
-            <li><strong>PCI/PCIe</strong> - Bus ad alte prestazioni per schede interne (GPU, NIC, SSD)</li>
-            <li><strong>USB</strong> - Universal Serial Bus per dispositivi esterni (mouse, tastiere, storage)</li>
-            <li><strong>Ethernet</strong> - Interfacce di rete wired (RJ45, fibra ottica)</li>
-            <li><strong>SATA/SAS</strong> - Serial Attached SCSI per dischi e storage</li>
-            <li><strong>SPI/I2C</strong> - Bus seriali per comunicazione con componenti integrati</li>
+            <li><strong>MMIO</strong> - Registri mappati in memoria con ioremap(), accessibili con readl() e writel()</li>
+            <li><strong>Port I/O</strong> - Porte x86 accessibili con inb() e outb()</li>
+            <li><strong>IRQ classici</strong> - Linee dedicate o condivise tra più dispositivi (IRQF_SHARED)</li>
+            <li><strong>MSI/MSI-X</strong> - Interrupt a messaggio per PCIe, con più vettori per dispositivo</li>
+            <li><strong>DMA</strong> - Il dispositivo scrive in memoria e segnala il completamento con un interrupt</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
 <ul>
-<li><strong>Hot-plug support</strong> - Dispositivi possono essere connessi/disonnessi a runtime</li>
-<li><strong>Power management</strong> - Controllo energetico intelligente per risparmio batteria</li>
-<li><strong>DMA support</strong> - Trasferimenti diretti memoria-hardware per alte prestazioni</li>
-<li><strong>Interrupt handling</strong> - Gestione efficiente di interrupt da dispositivi hardware</li>
+<li><strong>Handler a due livelli</strong> - Top half minimo e bottom half differito</li>
+<li><strong>Interrupt condivisi</strong> - Più dispositivi sulla stessa linea con IRQF_SHARED</li>
+<li><strong>Affinità IRQ</strong> - Assegnazione degli interrupt a CPU specifiche</li>
+<li><strong>Ordinamento degli accessi</strong> - readl() e writel() garantiscono dimensione e ordine corretti</li>
 </ul>
 
 <h2>🔗 Interazioni Chiave</h2>
-<p><strong>Le Hardware Interfaces sono il livello più basso del kernel, interagendo direttamente con l'hardware e fornendo servizi a tutti gli altri sottosistemi:</strong></p>
+<p><strong>Registri e interrupt collegano i driver agli altri sottosistemi del kernel:</strong></p>
 
 <h3>🔌 Device Drivers</h3>
-<p>• <strong>Hardware abstraction</strong> - I driver utilizzano le hardware interfaces per accedere ai registri e alla memoria dei dispositivi</p>
-<p>• <strong>Interrupt handling</strong> - Coordinano la gestione degli interrupt provenienti dall'hardware</p>
+<p>• <strong>Accesso ai registri</strong> - I driver configurano e controllano la periferica con letture e scritture MMIO o su porte</p>
+<p>• <strong>Handler IRQ</strong> - Ogni driver registra il proprio handler con request_irq()</p>
 
 <h3>⚡ Memory Management</h3>
-<p>• <strong>I/O mapping</strong> - Mappano indirizzi I/O fisici nello spazio di memoria virtuale del kernel</p>
-<p>• <strong>DMA coordination</strong> - Gestiscono trasferimenti diretti memoria-dispositivo</p>
+<p>• <strong>ioremap</strong> - Mappa gli indirizzi fisici dei registri nello spazio virtuale del kernel senza cache</p>
+<p>• <strong>DMA</strong> - Al termine del trasferimento il dispositivo segnala il completamento con un interrupt</p>
 
 <h3>🕒 Interrupt Subsystem</h3>
-<p>• <strong>IRQ allocation</strong> - Assegnano linee di interrupt ai dispositivi hardware</p>
-<p>• <strong>ISR registration</strong> - Registrano interrupt service routine per gestire eventi hardware</p>
+<p>• <strong>irq_desc e irq_chip</strong> - Il kernel astrae i controller di interrupt (APIC, GIC) dietro un'interfaccia comune</p>
+<p>• <strong>Flow handler</strong> - handle_edge_irq() e handle_level_irq() gestiscono i diversi tipi di segnale</p>
 
-<h3>🔋 Power Management</h3>
-<p>• <strong>Device power states</strong> - Controllano gli stati di alimentazione dei dispositivi</p>
-<p>• <strong>Wake-up sources</strong> - Gestiscono dispositivi che possono risvegliare il sistema dalla sospensione</p>
+<h3>🔄 Lavoro Differito</h3>
+<p>• <strong>Softirq e tasklet</strong> - Eseguiti subito dopo l'handler, in contesto interrupt</p>
+<p>• <strong>Workqueue e thread IRQ</strong> - Eseguiti in contesto processo, possono dormire</p>
 
 <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni chiave che i driver utilizzano per interagire direttamente con l'hardware:</strong></p>
+        <p><strong>Queste sono le funzioni chiave che i driver usano per accedere ai registri e gestire gli interrupt:</strong></p>
 
-        <h3>🔌 PCI Device Management</h3>
+        <h3>🔌 Accesso ai Registri (I/O ops)</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int pci_enable_device(struct pci_dev *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Abilita un dispositivo PCI e configura le sue risorse base.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">void __iomem *ioremap(resource_size_t offset, unsigned long size);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mappa i registri fisici del dispositivo nello spazio virtuale del kernel.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">void *pci_ioremap_bar(struct pci_dev *dev, int bar);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Mappa una Base Address Register del dispositivo PCI nella memoria virtuale.</span><br><br>
+            <code style="color: #2e7d32; font-weight: bold;">u32 readl(const volatile void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge un registro a 32 bit in memoria mappata.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">int pci_request_regions(struct pci_dev *dev, const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Richiede l'accesso esclusivo alle regioni I/O del dispositivo PCI.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">void writel(u32 value, volatile void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive un registro a 32 bit in memoria mappata.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int pci_register_driver(struct pci_driver *driver);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Registra un driver PCI nel sistema per gestire dispositivi specifici.</span>
+            <code style="color: #9c27b0; font-weight: bold;">void iounmap(volatile void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rilascia la mappatura dei registri.</span>
         </div>
 
-        <h3>⚡ USB Operations</h3>
+        <h3>⚡ Interrupt (IRQ)</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int usb_register_driver(struct usb_driver *driver, struct module *owner, const char *mod_name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Registra un driver USB per gestire dispositivi USB specifici.</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">int request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags, const char *name, void *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra un handler per la linea IRQ indicata.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">int usb_submit_urb(struct urb *urb, gfp_t mem_flags);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Invia una USB Request Block al controller host per trasferimento dati.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">void free_irq(unsigned int irq, void *dev_id);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove l'handler e libera la linea IRQ.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">void usb_kill_urb(struct urb *urb);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Cancella una richiesta USB in corso e libera le risorse associate.</span>
+            <code style="color: #2e7d32; font-weight: bold;">void disable_irq(unsigned int irq);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Disabilita la linea e attende la fine degli handler in esecuzione.</span>
         </div>
 
-        <h3>🌐 Network Interface</h3>
+        <h3>🌐 Lavoro Differito</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int register_netdev(struct net_device *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Registra un'interfaccia di rete nel sistema.</span><br><br>
+            <code style="color: #f57c00; font-weight: bold;">int request_threaded_irq(unsigned int irq, irq_handler_t handler, irq_handler_t thread_fn, unsigned long irqflags, const char *devname, void *dev_id);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra un handler rapido e una funzione eseguita in un thread del kernel.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">void netif_start_queue(struct net_device *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Abilita la trasmissione di pacchetti attraverso l'interfaccia di rete.</span>
+            <code style="color: #9c27b0; font-weight: bold;">bool schedule_work(struct work_struct *work);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Accoda lavoro differito eseguito da un worker in contesto processo.</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando usi dispositivi hardware esterni, ecco cosa succede dietro le quinte:</strong></p>
+        <p><strong>Come un driver usa registri e interrupt in pratica:</strong></p>
         <ol>
-        <li><code>lspci -nn</code> - Mostra dispositivi PCI con ID vendor/device per identificare l'hardware</li>
-        <li><code>lsusb -t</code> - Visualizza la topologia USB con velocità di connessione</li>
-        <li><code>ethtool eth0</code> - Mostra informazioni dettagliate su un'interfaccia di rete</li>
+        <li><code>regs = ioremap(addr, size)</code> - Mappa i registri del dispositivo</li>
+        <li><code>writel(CTRL_ENABLE, regs + CTRL)</code> - Abilita il dispositivo scrivendo il registro di controllo</li>
+        <li><code>request_irq(irq, handler, IRQF_SHARED, "mydev", dev)</code> - Registra l'handler dell'interrupt</li>
         </ol>
-        <p><em>Il risultato è che dispositivi hardware complessi diventano accessibili attraverso interfacce standard del kernel</em></p>
+        <p><em>Il driver comanda con le scritture sui registri e viene avvisato dagli interrupt, senza polling continuo</em></p>
 
-<h2>🗺️ Architettura delle Hardware Interfaces</h2>
+<h2>🗺️ Architettura di Registri e Interrupt</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Hardware Interfaces</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura di Registri e Interrupt</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ DRIVER DEL DISPOSITIVO</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Programmi (lspci, lsusb)<br>
-                    • Librerie (libusb, pciutils)<br>
-                    • System Calls (ioctl, open)
+                    • probe() e configurazione<br>
+                    • Handler IRQ (top half)<br>
+                    • Bottom half (workqueue)
                 </div>
             </div>
 
@@ -210,12 +210,12 @@
 
             <!-- Device Drivers Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 DEVICE DRIVERS</div>
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 API DI I/O E IRQ</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • PCI drivers (ahci, e1000)<br>
-                    • USB drivers (usb-storage, usbhid)<br>
-                    • Network drivers (eth0, wlan0)<br>
-                    • Hardware abstraction
+                    • ioremap, readl, writel<br>
+                    • inb, outb (port I/O)<br>
+                    • request_irq, free_irq<br>
+                    • tasklet, workqueue
                 </div>
             </div>
 
@@ -224,30 +224,30 @@
 
             <!-- Hardware Interfaces Core -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🔌 HARDWARE INTERFACES CORE</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🔌 REGISTRI &amp; INTERRUPT CORE</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">🚌</div>
-                        <div style="font-size: 0.8em;">Bus<br>Management</div>
+                        <div style="font-size: 0.8em;">Registri<br>MMIO</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
-                        <div style="font-size: 0.8em;">Interrupt<br>Handling</div>
+                        <div style="font-size: 0.8em;">IRQ<br>Handler</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">I/O<br>Mapping</div>
+                        <div style="font-size: 0.8em;">Port<br>I/O</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
-                        <div style="font-size: 0.8em;">DMA<br>Controller</div>
+                        <div style="font-size: 0.8em;">Bottom<br>Half</div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Resource allocation<br>
-                    • Protocol abstraction<br>
-                    • Power management<br>
-                    • Hot-plug support
+                    • Mappatura dei registri<br>
+                    • Dispatch degli IRQ<br>
+                    • Flow handler (edge/level)<br>
+                    • Lavoro differito
                 </div>
             </div>
 
@@ -257,20 +257,20 @@
             <!-- Bus Interfaces -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🚌 PCI/PCIe</div>
-                    <div style="font-size: 0.8em; color: #666;">High-speed internal</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🚌 MMIO</div>
+                    <div style="font-size: 0.8em; color: #666;">Registri in memoria</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🔌 USB</div>
-                    <div style="font-size: 0.8em; color: #666;">Universal serial bus</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🔌 PORT I/O</div>
+                    <div style="font-size: 0.8em; color: #666;">inb / outb</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🌐 Ethernet</div>
-                    <div style="font-size: 0.8em; color: #666;">Network interfaces</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🌐 IRQ</div>
+                    <div style="font-size: 0.8em; color: #666;">Linee classiche</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">💽 SATA/SAS</div>
-                    <div style="font-size: 0.8em; color: #666;">Storage controllers</div>
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">💽 MSI/MSI-X</div>
+                    <div style="font-size: 0.8em; color: #666;">Interrupt a messaggio</div>
                 </div>
             </div>
 
@@ -281,119 +281,119 @@
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE FISICO</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Motherboard & Chipset<br>
-                    • Peripheral Devices<br>
-                    • Firmware & BIOS<br>
-                    • Physical Interfaces
+                    • Controller di interrupt (APIC, GIC)<br>
+                    • Registri del dispositivo<br>
+                    • Bus (PCIe, platform)<br>
+                    • Linee IRQ e messaggi MSI
                 </div>
             </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste hardware<br>
-                • Ogni layer astrae i dettagli del bus sottostante<br>
-                • Le hardware interfaces sono il "traduttore universale" per dispositivi<br>
-                • Gli stessi driver funzionano su hardware diverso
+                • Le frecce mostrano il flusso dei comandi (scritture) e degli interrupt (eventi)<br>
+                • I registri servono per comandare, gli IRQ per essere avvisati<br>
+                • L'handler fa poco in fretta, il resto è differito<br>
+                • Gli stessi driver funzionano con APIC, GIC e MSI
             </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Accesso a Dispositivo PCI</h2>
+        <h2>🎬 Demo Interattiva: Interrupt di una Scheda di Rete</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Inizializzazione di una scheda di rete PCI</h3>
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Ricezione di un pacchetto con interrupt</h3>
         
         <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
         <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
         <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔌 Evento Hardware</div>
         <div style="font-family: monospace; font-size: 0.9em;">
-        Sistema avviato<br>
-        <span style="color: #666;">(PCI bus scan richiesto)</span>
+        Pacchetto ricevuto<br>
+        <span style="color: #666;">(la scheda attiva la linea IRQ)</span>
         </div>
         </div>
         
         <div style="font-size: 2em; color: #f57c00;">⚡</div>
         
         <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔌 Hardware Interfaces</div>
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔌 Handler IRQ</div>
         <div style="font-family: monospace; font-size: 0.9em;">
-        Configurazione PCI<br>
-        <span style="color: #666;">(Resource allocation)</span>
+        Handler eseguito<br>
+        <span style="color: #666;">(legge status, ack, pianifica)</span>
         </div>
         </div>
         </div>
         
         <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <strong>Comando osservato:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">lspci -v</code>
+        <strong>Registro osservato:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">readl(regs + STATUS)</code>
         </div>
         
         <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza di inizializzazione PCI:</h4>
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza di gestione dell'interrupt:</h4>
         <ol style="line-height: 1.8;">
-        <li><strong>1. PCI bus scan</strong> - Le hardware interfaces scansionano tutti i dispositivi sul bus PCI</li>
-        <li><strong>2. Device enumeration</strong> - Ogni dispositivo viene identificato tramite vendor/device ID</li>
-        <li><strong>3. Resource allocation</strong> - Vengono assegnati indirizzi I/O, memoria e interrupt line</li>
-        <li><strong>4. Driver matching</strong> - Il kernel associa il driver appropriato al dispositivo</li>
-        <li><strong>5. Device enable</strong> - Il dispositivo viene abilitato e diventa operativo</li>
+        <li><strong>1. Segnale IRQ</strong> - La scheda attiva la linea o invia un messaggio MSI alla CPU</li>
+        <li><strong>2. Salto all'handler</strong> - La CPU salva il contesto e il kernel chiama l'handler registrato</li>
+        <li><strong>3. Lettura registri</strong> - L'handler legge il registro di stato per capire la causa</li>
+        <li><strong>4. Acknowledge</strong> - Scrive il registro di conferma, così il dispositivo abbassa la linea</li>
+        <li><strong>5. Lavoro differito</strong> - Pianifica il bottom half che elabora il pacchetto</li>
         </ol>
         </div>
         
         <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-        <strong>🎯 Risultato:</strong> La scheda di rete PCI diventa accessibile al sistema operativo attraverso interfacce standard, pronta per la configurazione di rete.
+        <strong>🎯 Risultato:</strong> La CPU resta nell'handler solo per pochi microsecondi, mentre il resto del lavoro avviene fuori dal contesto di interrupt, mantenendo il sistema reattivo.
         </div>
         </div>
 
-<h2>🧪 Laboratorio Pratico: Esplora le Hardware Interfaces</h2>
+<h2>🧪 Laboratorio Pratico: Esplora Registri e Interrupt</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
             <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🚌 Esplora dispositivi PCI</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🚌 Osserva gli interrupt</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ lspci -v<br>
-                        00:1f.2 SATA controller: Intel Corporation<br>
-                        Kernel driver in use: ahci<br>
-                        Kernel modules: ahci<br><br>
-                        $ lspci -t<br>
-                        -[0000:00]-+-00.0
-                                  +-1f.2
+                        $ cat /proc/interrupts<br>
+                        CPU0 CPU1<br>
+                        1: 1234 0 IO-APIC 1-edge i8042<br>
+                        24: 0 8190 PCI-MSI 524288-edge eth0<br><br>
+                        $ grep eth0 /proc/interrupts<br>
+                        24: 0 8305 PCI-MSI 524288-edge eth0<br>
+                        (il contatore è aumentato)
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi dispositivi PCI e i driver associati</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanti interrupt ha ricevuto ogni driver, per CPU</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Scopri dispositivi USB</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Esplora le porte di I/O</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ lsusb<br>
-                        Bus 001 Device 001: ID 1d6b:0002<br>
-                        Bus 001 Device 002: ID 046d:c077<br><br>
-                        $ lsusb -t<br>
-                        /:  Bus 01.Port 1: Dev 1, Class=root_hub
+                        $ cat /proc/ioports | head -n 4<br>
+                        0000-0cf7 : PCI Bus 0000:00<br>
+                        0060-0060 : keyboard<br><br>
+                        $ cat /proc/iomem | head -n 3<br>
+                        00000000-00000fff : Reserved
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Elenca tutti i dispositivi USB connessi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Elenca porte di I/O e regioni di memoria assegnate ai dispositivi</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Analizza interfacce di rete</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Controlla l'affinità IRQ</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ip link show<br>
-                        1: lo: <LOOPBACK,UP,LOWER_UP><br>
-                        2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP><br><br>
-                        $ ethtool eth0
+                        $ cat /proc/irq/24/smp_affinity_list<br>
+                        0-3<br>
+                        $ echo 2 | sudo tee /proc/irq/24/smp_affinity_list<br><br>
+                        $ grep eth0 /proc/interrupts
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina le interfacce di rete e le loro proprietà</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla e cambia su quali CPU arrivano gli interrupt</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Monitora dispositivi a blocchi</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Misura il carico di interrupt</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ lsblk<br>
-                        NAME MAJ:MIN RM SIZE RO TYPE MOUNTPOINT<br>
-                        sda 8:0 0 465.8G 0 disk<br>
-                        └─sda1 8:1 0 465.8G 0 part /<br><br>
-                        $ hdparm -I /dev/sda | head -20
+                        $ vmstat 1 3<br>
+                        r b ... in cs us sy id<br>
+                        1 0 ... 412 689 3 1 96<br>
+                        (la colonna in = interrupt al secondo)<br><br>
+                        $ cat /proc/softirqs | head -n 3
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza dispositivi di storage e le loro informazioni</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Misura il carico di interrupt e softirq del sistema</em></p>
                 </div>
             </div>
         </div>
@@ -402,33 +402,33 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
-        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Direct Hardware Access</h4>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Registri e I/O Ops</h4>
         <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-        Le hardware interfaces permettono l'accesso diretto ai registri e alla memoria dei dispositivi. È come avere una linea telefonica diretta con ogni componente elettronico.
+        I driver comandano il dispositivo scrivendo nei registri e ne leggono lo stato. Gli accessi con readl() e writel() garantiscono dimensione e ordine corretti, a differenza di un normale puntatore.
         </p>
         </div>
         
         <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
-        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Interrupt Handling</h4>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Interrupt (IRQ)</h4>
         <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-        Gli interrupt sono il meccanismo attraverso cui i dispositivi "interrompono" la CPU per segnalare eventi. Le hardware interfaces gestiscono questo flusso bidirezionale di comunicazione.
+        Un interrupt è il segnale con cui il dispositivo avvisa la CPU di un evento. Evita il polling continuo e permette alla CPU di fare altro finché serve.
         </p>
         </div>
         
         <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚌</div>
-        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Bus Abstraction</h4>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Top Half e Bottom Half</h4>
         <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-        Ogni bus (PCI, USB, Ethernet) ha il suo protocollo, ma le hardware interfaces forniscono un'interfaccia uniforme. È come tradurre automaticamente tra lingue diverse.
+        L'handler deve essere brevissimo: legge lo stato, conferma e differisce il resto a softirq, tasklet, workqueue o thread IRQ.
         </p>
         </div>
         
         <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Resource Management</h4>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Condivisione e Affinità</h4>
         <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-        Indirizzi I/O, memoria, interrupt: le hardware interfaces assegnano e gestiscono queste risorse critiche, evitando conflitti tra dispositivi concorrenti.
+        Più dispositivi possono condividere una linea (IRQF_SHARED) e gli interrupt possono essere assegnati a CPU diverse per bilanciare il carico.
         </p>
         </div>
         </div>
@@ -437,7 +437,7 @@
         <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
         <div style="text-align: center;">
             <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sul HARDWARE INTERFACES
+                📝 Fai il Quiz su Registri e Interrupt
             </button>
             <div id="quizContainer" style="display: none; margin-bottom: 20px;">
                 <div id="quizContent"></div>
@@ -455,65 +455,66 @@
     // Quiz functionality
     const quizQuestions = [
         {
-            question: "Cosa gestiscono le Hardware Interfaces nel kernel Linux?",
-            options: ["Solo dispositivi USB", "Comunicazione diretta con dispositivi hardware", "Solo filesystem di rete", "Gestione della memoria RAM"],
+            question: "A cosa serve un interrupt (IRQ)?",
+            options: ["A formattare un disco", "A permettere al dispositivo di avvisare la CPU di un evento", "A caricare un modulo", "A mappare la memoria"],
             correct: 1,
-            explanation: "Le Hardware Interfaces gestiscono la comunicazione diretta tra il kernel e i dispositivi hardware fisici."
+            explanation: "L'interrupt è il segnale con cui un dispositivo avvisa la CPU che ha completato un'operazione o ha un evento da gestire, evitando il polling continuo."
         },
         {
-            question: "Quale funzione abilita un dispositivo PCI?",
-            options: ["pci_scan_bus()", "pci_enable_device()", "pci_register_driver()", "pci_request_regions()"],
-            correct: 1,
-            explanation: "pci_enable_device() abilita un dispositivo PCI e configura le sue risorse base necessarie per l'operazione."
-        },
-        {
-            question: "Cosa fa lspci?",
-            options: ["Mostra dispositivi USB", "Elenca dispositivi PCI", "Configura interfacce di rete", "Gestisce dispositivi SATA"],
-            correct: 1,
-            explanation: "lspci mostra tutti i dispositivi connessi al bus PCI, inclusi vendor ID, device ID e driver associati."
-        },
-        {
-            question: "Quale bus è ottimizzato per dispositivi ad alta velocità interni?",
-            options: ["USB 2.0", "PCI/PCIe", "I2C", "SPI"],
-            correct: 1,
-            explanation: "PCI/PCIe è il bus standard per dispositivi interni ad alta velocità come schede grafiche e controller di storage."
-        },
-        {
-            question: "Cosa rappresenta una Base Address Register (BAR) in PCI?",
-            options: ["Un indirizzo MAC", "Una regione di memoria o I/O del dispositivo", "Un numero di serie", "Un indirizzo IP"],
-            correct: 1,
-            explanation: "Una BAR definisce le regioni di memoria o porte I/O che il dispositivo PCI utilizza per comunicare."
-        },
-        {
-            question: "Quale comando mostra dispositivi USB?",
-            options: ["lspci", "lsusb", "ip link", "lsblk"],
-            correct: 1,
-            explanation: "lsusb mostra tutti i dispositivi connessi ai bus USB con i loro ID vendor/device e informazioni sulla topologia."
-        },
-        {
-            question: "Cosa fa pci_request_regions()?",
-            options: ["Registra un driver PCI", "Richiede accesso esclusivo alle regioni I/O del dispositivo", "Abilita il dispositivo", "Scansiona il bus"],
-            correct: 1,
-            explanation: "pci_request_regions() richiede l'accesso esclusivo alle regioni di memoria e I/O allocate al dispositivo PCI."
-        },
-        {
-            question: "Quale funzione registra un driver USB?",
-            options: ["usb_enable_device()", "usb_register_driver()", "usb_submit_urb()", "usb_kill_urb()"],
-            correct: 1,
-            explanation: "usb_register_driver() registra un driver USB nel sistema per gestire dispositivi USB specifici."
-        },
-        {
-            question: "Cosa rappresenta un URB in USB?",
-            options: ["Un indirizzo USB", "Una richiesta di trasferimento USB", "Un tipo di dispositivo", "Un bus USB"],
-            correct: 1,
-            explanation: "URB (USB Request Block) rappresenta una richiesta di trasferimento dati tra host e dispositivo USB."
-        },
-        {
-            question: "Quale comando mostra interfacce di rete?",
-            options: ["lsusb", "lspci", "ip link show", "lsblk"],
+            question: "Quale funzione registra un handler per una linea di interrupt?",
+            options: ["ioremap()", "free_irq()", "request_irq()", "readl()"],
             correct: 2,
-            explanation: "ip link show visualizza tutte le interfacce di rete con il loro stato operativo e configurazioni."
+            explanation: "request_irq() associa un handler alla linea IRQ indicata; free_irq() esegue l'operazione opposta."
+        },
+        {
+            question: "Quale funzione legge un registro a 32 bit in memoria mappata?",
+            options: ["inb()", "outb()", "iounmap()", "readl()"],
+            correct: 3,
+            explanation: "readl() legge un registro a 32 bit mappato in memoria; la scrittura corrispondente è writel()."
+        },
+        {
+            question: "Cosa fa ioremap()?",
+            options: ["Mappa i registri fisici del dispositivo nello spazio virtuale del kernel", "Alloca memoria RAM", "Disabilita una linea IRQ", "Crea un thread del kernel"],
+            correct: 0,
+            explanation: "ioremap() rende accessibili al kernel gli indirizzi fisici dei registri del dispositivo, senza passare dalla cache."
+        },
+        {
+            question: "Perché un handler IRQ deve essere breve?",
+            options: ["Perché occupa troppa RAM", "Perché esegue in contesto interrupt: il lavoro pesante va differito", "Perché non può leggere i registri", "Perché gira in user space"],
+            correct: 1,
+            explanation: "Mentre l'handler è in esecuzione si ritarda altro lavoro e non si può dormire: per questo il resto passa a softirq, tasklet, workqueue o thread IRQ."
+        },
+        {
+            question: "Quale file mostra gli interrupt ricevuti per ogni CPU?",
+            options: ["/proc/interrupts", "/proc/cpuinfo", "/proc/meminfo", "/etc/fstab"],
+            correct: 0,
+            explanation: "/proc/interrupts elenca ogni linea IRQ con i contatori per CPU, il tipo di controller e il driver registrato."
+        },
+        {
+            question: "Quale flag permette a più dispositivi di condividere una linea IRQ?",
+            options: ["IRQF_TIMER", "IRQF_ONESHOT", "IRQF_SHARED", "IRQF_NO_THREAD"],
+            correct: 2,
+            explanation: "Con IRQF_SHARED più driver registrano il proprio handler sulla stessa linea; ogni handler deve verificare se l'interrupt è del proprio dispositivo."
+        },
+        {
+            question: "Quale meccanismo può dormire perché esegue in contesto processo?",
+            options: ["Softirq", "Tasklet", "L'handler top half", "Workqueue"],
+            correct: 3,
+            explanation: "La workqueue esegue il lavoro in un thread del kernel, quindi può usare funzioni bloccanti; softirq, tasklet e handler non possono dormire."
+        },
+        {
+            question: "Quale coppia di funzioni accede a una porta di I/O a 8 bit su x86?",
+            options: ["readl() e writel()", "inb() e outb()", "ioremap() e iounmap()", "request_irq() e free_irq()"],
+            correct: 1,
+            explanation: "inb() legge e outb() scrive un byte su una porta dello spazio di I/O separato dell'architettura x86."
+        },
+        {
+            question: "Cosa sono gli interrupt MSI e MSI-X?",
+            options: ["Interrupt segnalati con una scrittura in memoria invece che con una linea fisica", "Un tipo di filesystem", "Un algoritmo di scheduling", "Un protocollo di rete"],
+            correct: 0,
+            explanation: "Nei dispositivi PCIe il segnale di interrupt è un messaggio (una scrittura in memoria): permette molti vettori per dispositivo e una gestione più efficiente."
         }
+        
     ];
 
     let currentQuestionIndex = 0;
@@ -628,13 +629,13 @@
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione delle Hardware Interfaces! 🎉";
+            message = "Eccellente! Hai una buona comprensione di registri e interrupt! 🎉";
             color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare le Hardware Interfaces! 👍";
+            message = "Buon lavoro! Continua a studiare registri e interrupt! 👍";
             color = "#f57c00";
         } else {
-            message = "Continua a studiare! Le hardware interfaces sono cruciali! 📚";
+            message = "Continua a studiare! Registri e interrupt sono il cuore dei driver! 📚";
             color = "#d32f2f";
         }
 

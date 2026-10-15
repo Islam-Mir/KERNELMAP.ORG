@@ -17,24 +17,24 @@ const sectionData = {
         page: 'detail-virtual.html'
     },
     'bridges': {
-        title: 'Bridges',
-        description: 'Moduli che collegano diverse aree del kernel per permettere comunicazione e riuso di funzionalità tra sottosistemi.',
-        page: 'detail-bridges.html'
+        title: 'Interazione Sottosistemi',
+        description: 'Meccanismi cross-functional del kernel. Gestione dei moduli, IPC e catene di notifica.',
+        page: 'detail-subsystems-interaction.html'
     },
     'logical': {
-        title: 'Logical',
-        description: 'Livello che astrae l\'hardware in servizi logici: gestione dei processi, file, memoria e rete, presentati in modo ordinato ai programmi.',
-        page: 'detail-logical.html'
+        title: 'Syscall & VFS Ops',
+        description: 'Funzioni e implementazioni core per lo smistamento delle chiamate di sistema e le operazioni VFS.',
+        page: 'detail-syscall-vfs-ops.html'
     },
     'device-control': {
-        title: 'Device Control',
-        description: 'La parte che controlla direttamente l\'hardware: contiene i driver, le funzioni di I/O e il codice che interagisce fisicamente con i dispositivi.',
-        page: 'detail-device-control.html'
+        title: 'Registrazione Dispositivi',
+        description: 'Integrazione nel Linux Device Model tramite funzioni fondamentali come device_add e device_register.',
+        page: 'detail-device-registration.html'
     },
     'hardware-interfaces': {
-        title: 'Hardware Interfaces',
-        description: 'Punti di contatto tra hardware e software: registri, interrupt e porte I/O che permettono al software di comunicare con l\'hardware.',
-        page: 'detail-hardware-interfaces.html'
+        title: 'I/O & Interruzioni',
+        description: 'Gestione dell\'hardware a basso livello. Operazioni sui registri di I/O e gestione delle richieste di IRQ.',
+        page: 'detail-io-ops-irq.html'
     },
     'electronics': {
         title: 'Electronics',
