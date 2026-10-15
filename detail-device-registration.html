@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GW3S1CKY7Q');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
+     crossorigin="anonymous"></script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REGISTRAZIONE E ATTIVAZIONE DISPOSITIVI</title>
+    
+     
+    <!--Libreria css per pagine-->
+    <link rel="stylesheet" href="style_pages.css">
+    
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>REGISTRAZIONE E ATTIVAZIONE DISPOSITIVI</h1>
+        <p class="subtitle">Driver: device_register • device_add</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🎛️ REGISTRAZIONE DISPOSITIVI</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>device_register() e device_add() sono le funzioni del driver model che inseriscono un nuovo dispositivo nel kernel: lo collegano alla gerarchia dei dispositivi, lo espongono in sysfs, avvisano lo user space con un uevent e avviano la ricerca di un driver compatibile. Sono il momento in cui una struct device smette di essere una semplice struttura in memoria e diventa un dispositivo visibile al sistema.</strong></p>
+        
+        <h2>CONFRONTO:</h2>
+        <p>Come la registrazione di un nuovo inquilino in un condominio: device_initialize() prepara la scheda, device_add() scrive il nome sul citofono (sysfs), lo comunica all'amministratore (l'uevent per udev) e fa cercare il tecnico giusto (il driver) che sappia occuparsene (probe).</p>
+        
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>device_register() è un wrapper: chiama device_initialize() e poi device_add(), ed è quest'ultima a svolgere il lavoro vero di inserimento nel device model.</strong> Il chiamante deve aver compilato prima la struct device (nome, bus o classe, parent e release) e, dopo la registrazione, non può più liberarla direttamente: la vita della struttura è governata dal conteggio dei riferimenti del kobject incorporato.</p>
+        <p>• <strong>Inizializzazione</strong> - device_initialize() prepara kobject, liste e mutex della struct device</p>
+        <p>• <strong>Inserimento nel device model</strong> - device_add() collega il dispositivo a parent, bus e classe tramite kobject_add()</p>
+        <p>• <strong>Notifica e binding</strong> - L'uevent avvisa udev e bus_probe_device() cerca il driver adatto</p>
+        <p><em>• Interfaccia principale tra i driver dei bus (PCI, USB, platform) e il device model del kernel</em></p>
+
+<h2>⚙️ Operazioni Principali</h2>
+<p><strong>La registrazione di un dispositivo si articola in tre gruppi di funzioni:</strong></p>
+
+<h3>⚙️ Registrazione e Inizializzazione</h3>
+<p>• <strong>device_register()</strong> - Inizializza e aggiunge un dispositivo (device_initialize + device_add)</p>
+<p>• <strong>device_add()</strong> - Inserisce nel device model un dispositivo già inizializzato</p>
+
+<h3>⚙️ Rimozione e Riferimenti</h3>
+<p>• <strong>device_unregister()</strong> - Rimuove il dispositivo e rilascia il riferimento (device_del + put_device)</p>
+<p>• <strong>put_device()</strong> - Decrementa il contatore e chiama release() quando arriva a zero</p>
+
+<h3>⚙️ Binding con il Driver</h3>
+<p>• <strong>bus_probe_device()</strong> - Avvia la ricerca di un driver compatibile per il nuovo dispositivo</p>
+<p>• <strong>device_attach()</strong> - Tenta di associare il dispositivo a un driver disponibile</p>
+
+<h2>📋 Esempi Pratici</h2>
+<p><strong>Un driver di bus registra i propri dispositivi con device_register() o device_add() quando li scopre:</strong></p>
+
+<h3>🔍 Registrazione di un Dispositivo</h3>
+<p>1. Il driver alloca la struct device e imposta nome (dev_set_name), parent, bus e release()</p>
+<p>2. Chiama device_register(), che esegue device_initialize() e poi device_add()</p>
+<p>3. device_add() crea la directory in /sys/devices e invia l'uevent add</p>
+<p>4. bus_probe_device() cerca il driver e chiama il suo probe()</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>struct device</strong> - Rappresentazione del dispositivo, con parent, bus, driver e release</li>
+<li><strong>struct kobject</strong> - Oggetto incorporato: directory sysfs e conteggio riferimenti</li>
+<li><strong>struct bus_type</strong> - Bus a cui appartiene il dispositivo e regole di match</li>
+<li><strong>struct device_driver</strong> - Driver associato dopo il probe</li>
+</ul>
+
+<h3>💻 Comandi Linux Essenziali</h3>
+<ul>
+<li><code>$ ls /sys/devices/</code> - Mostra la gerarchia creata da device_add()</li>
+<li><code>$ udevadm monitor</code> - Osserva gli uevent add e remove in tempo reale</li>
+<li><code>$ ls /sys/bus/pci/devices/</code> - Elenca i dispositivi registrati sul bus PCI</li>
+<li><code>$ ls /sys/bus/pci/drivers/</code> - Elenca i driver registrati sul bus PCI</li>
+</ul>
+
+<h3>🎯 Caso Reale: Inserimento USB</h3>
+<p>Quando inserisci una chiavetta USB:</p>
+<ol>
+<li>usb-core rileva il nuovo dispositivo e prepara la sua struct usb_device</li>
+<li>usb_new_device() chiama device_add() sulla struct device incorporata</li>
+<li>device_add() crea la directory in /sys/devices e invia l'uevent add</li>
+<li>Il bus cerca un driver compatibile per l'interfaccia (es. usb-storage)</li>
+<li>Il driver completa il probe e compare il device node (/dev/sdb)</li>
+</ol>
+
+<h2>💾 Bus e Sottosistemi che la Usano</h2>
+        <ul>
+            <li><strong>PCI/PCIe</strong> - pci_device_add() chiama device_add() dopo la scansione del bus</li>
+            <li><strong>USB</strong> - usb_new_device() registra i dispositivi USB nel device model</li>
+            <li><strong>Platform</strong> - platform_device_add() registra i dispositivi descritti da Device Tree o ACPI</li>
+            <li><strong>I2C/SPI</strong> - i2c_new_client_device() e spi_add_device() registrano i dispositivi sul bus</li>
+            <li><strong>Classi</strong> - device_create() registra i nodi di classe visibili in /sys/class e /dev</li>
+        </ul>
+
+        <h2>✨ Caratteristiche Avanzate</h2>
+<ul>
+<li><strong>Sysfs automatico</strong> - Directory, link e attributi creati senza codice aggiuntivo</li>
+<li><strong>Uevent</strong> - L'evento KOBJ_ADD avvisa udev, che crea i device node</li>
+<li><strong>Reference counting</strong> - get_device() e put_device() governano la vita della struttura</li>
+<li><strong>Gestione errori</strong> - Se device_register() fallisce si chiama put_device(), non kfree()</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave</h2>
+<p><strong>device_add() è il punto di incontro tra il driver di bus e molti sottosistemi del kernel:</strong></p>
+
+<h3>💾 Driver Core</h3>
+<p>• <strong>Bus matching</strong> - bus_add_device() e bus_probe_device() collegano il dispositivo al bus e ai suoi driver</p>
+<p>• <strong>Probe</strong> - Se un driver combacia viene chiamato il suo metodo probe()</p>
+
+<h3>🌐 Sysfs e Kobject</h3>
+<p>• <strong>kobject_add()</strong> - Crea la directory del dispositivo sotto il parent in /sys/devices</p>
+<p>• <strong>device_create_file()</strong> - Aggiunge attributi che compaiono come file in sysfs</p>
+
+<h3>🧠 Userspace e Power Management</h3>
+<p>• <strong>kobject_uevent()</strong> - Invia l'evento add a udev, che crea il nodo in /dev</p>
+<p>• <strong>device_pm_add()</strong> - Inserisce il dispositivo nella lista del power management</p>
+
+<h2>🛠️ API di device_register e device_add</h2>
+        <p><strong>Queste sono le funzioni principali per registrare e rimuovere dispositivi nel device model:</strong></p>
+
+        <h3>📂 Device Registration</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">int device_register(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Inizializza il dispositivo e lo aggiunge al device model (device_initialize + device_add).</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int device_add(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Crea la voce in sysfs, notifica udev e avvia il probe del driver.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">void device_initialize(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Prepara kobject, liste e mutex senza rendere ancora visibile il dispositivo.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void device_unregister(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove il dispositivo (device_del) e rilascia il riferimento (put_device).</span>
+        </div>
+
+        <h3>📊 Nome e Riferimenti</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int dev_set_name(struct device *dev, const char *name, ...);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Imposta il nome del dispositivo, che diventa la directory in sysfs.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">struct device *get_device(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Incrementa il contatore di riferimenti del dispositivo.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void put_device(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Decrementa il contatore e chiama release() quando arriva a zero.</span>
+        </div>
+
+        <h3>💽 Rimozione e Binding</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">void device_del(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove il dispositivo dal sistema senza rilasciare il riferimento finale.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int device_attach(struct device *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Cerca un driver compatibile e lo associa al dispositivo.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Pratico</h3>
+<p><strong>Come registrare un dispositivo in un driver di bus:</strong></p>
+<ol>
+<li><code>dev_set_name(&amp;my_dev->dev, "my_dev%d", id)</code> - Imposta il nome</li>
+<li><code>my_dev->dev.release = my_release</code> - Obbligatoria: libera la struttura</li>
+<li><code>device_register(&amp;my_dev->dev)</code> - Inserisce il dispositivo nel kernel</li>
+<li><code>put_device(&amp;my_dev->dev)</code> - In caso di errore, rilascia il riferimento</li>
+</ol>
+<p><em>Se device_register() fallisce non usare kfree(): chiama sempre put_device(), così la release() libera la memoria.</em></p>
+
+<h2>🗺️ Architettura di device_register e device_add</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura della Registrazione dei Dispositivi</h3>
+
+            <!-- Hardware Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 DRIVER DI BUS</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • PCI, USB, platform<br>
+                    • I2C, SPI<br>
+                    • device_create() delle classi
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Device Control Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🎛️ DEVICE CORE: device_add()</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔍</div>
+                        <div style="font-size: 0.8em;">initialize</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                        <div style="font-size: 0.8em;">kobject_add</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔗</div>
+                        <div style="font-size: 0.8em;">bus_add_device</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📊</div>
+                        <div style="font-size: 0.8em;">uevent/probe</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Inizializza kobject e liste<br>
+                    • Crea la directory in sysfs<br>
+                    • Notifica udev e avvia il probe
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Device Drivers Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🌐 SYSFS</div>
+                    <div style="font-size: 0.8em; color: #666;">/sys/devices</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾 BUS</div>
+                    <div style="font-size: 0.8em; color: #666;">/sys/bus/*/devices</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🎵 UEVENT</div>
+                    <div style="font-size: 0.8em; color: #666;">KOBJ_ADD → udev</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🖥️ DRIVER</div>
+                    <div style="font-size: 0.8em; color: #666;">probe() e bind</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Userspace Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ USERSPACE</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • /sys/devices/ (gerarchia)<br>
+                    • udev (riceve gli uevent)<br>
+                    • /dev/ (device node)<br>
+                    • Applicazioni userspace
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Il flusso va dal driver di bus fino alla visibilità in userspace<br>
+                • device_register() = device_initialize() + device_add()<br>
+                • device_add() crea sysfs, uevent e avvia il probe<br>
+                • Ogni dispositivo registrato compare in /sys/devices
+            </div>
+        </div>
+
+        <h2>🎬 Funzionamento di device_add()</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona la registrazione di un dispositivo</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Chiamata del Driver</div>
+        <div style="font-family: monospace; font-size: 0.9em;">device_register() chiamata da un driver di bus</div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Dentro device_add()</div>
+        <div style="font-family: monospace; font-size: 0.9em;">kobject, sysfs, bus, uevent e probe</div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Processo eseguito:</strong> device_register() inizializza la struct device e chiama device_add(), che inserisce il dispositivo sotto il suo parent, crea directory e attributi in sysfs, lo collega a bus e classe, invia l'uevent add a udev e chiede al bus di cercare un driver compatibile.
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Passi di device_add():</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Preparazione</strong> - device_initialize() imposta kobject, liste e mutex (la fa device_register)</li>
+        <li><strong>2. Nome e parent</strong> - Verifica del nome e scelta del parent in /sys/devices</li>
+        <li><strong>3. Sysfs</strong> - kobject_add() crea la directory; si aggiungono attributi e link</li>
+        <li><strong>4. Bus e PM</strong> - bus_add_device() collega il dispositivo al bus, il PM lo registra</li>
+        <li><strong>5. Notifica</strong> - kobject_uevent(KOBJ_ADD) avvisa udev; devtmpfs crea il nodo se serve</li>
+        <li><strong>6. Probe</strong> - bus_probe_device() cerca un driver compatibile e chiama probe()</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> Il dispositivo è visibile in sysfs, udev crea il nodo in /dev e, se esiste un driver compatibile, il probe lo rende operativo.
+        </div>
+        </div>
+
+<h2>🧪 Utilizzo Pratico di device_register e device_add</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esplora la gerarchia dei dispositivi</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls /sys/devices/<br>
+                        pci0000:00 platform system virtual<br>
+                        $ ls /sys/devices/pci0000:00/<br>
+                        0000:00:00.0 0000:00:1f.2 ...<br><br>
+                        $ ls /sys/bus/<br>
+                        pci platform usb<br>
+                        i2c spi scsi
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi i dispositivi che device_add() ha inserito nel device model</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Osserva gli uevent</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ udevadm monitor --kernel --subsystem-match=usb<br>
+                        KERNEL[123.456] add /devices/pci0000:00/.../usb1/1-1 (usb)<br>
+                        KERNEL[123.457] add /devices/pci0000:00/.../1-1:1.0 (usb)<br>
+                        KERNEL[123.460] bind /devices/pci0000:00/.../1-1:1.0 (usb)<br><br>
+                        $ udevadm info -q path -n /dev/sdb<br>
+                        /devices/pci0000:00/.../block/sdb
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva gli uevent inviati da device_add() quando colleghi un dispositivo USB</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Ispeziona un dispositivo</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls -l /sys/bus/pci/devices/ | head -n 3<br>
+                        0000:00:1f.2 -&gt; ../../../devices/pci0000:00/0000:00:1f.2<br><br>
+                        $ cat /sys/bus/pci/devices/0000:00:1f.2/class<br>
+                        0x010601<br><br>
+                        $ cat /sys/bus/pci/devices/0000:00:1f.2/uevent
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Segui i collegamenti creati da device_add() tra bus e gerarchia</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Dispositivi e driver</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ ls /sys/bus/pci/drivers/ | head -n 3<br>
+                        ahci e1000e pcieport<br>
+                        (driver registrati sul bus)<br><br>
+                        $ ls /sys/bus/pci/drivers/ahci/<br>
+                        0000:00:1f.2 bind unbind uevent
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi i driver del bus e i dispositivi a cui sono associati</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave di device_register e device_add</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔍</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Initialize + Add</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">device_register() equivale a device_initialize() seguita da device_add(). Si possono chiamare separatamente quando serve più controllo.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚙️</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Visibilità in Sysfs</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">device_add() crea la directory del dispositivo in /sys/devices, i link nel bus e nella classe e gli attributi.</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔗</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Probe del Driver</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">Dopo l'inserimento, bus_probe_device() cerca un driver compatibile. Se il match riesce viene chiamata la sua funzione probe().</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌉</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Vita e Rilascio</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Il kobject conta i riferimenti: con put_device() la release() libera la struttura. Dopo un errore di device_register() non si usa kfree().</p>
+        </div>
+        </div>
+    </div>
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz su device_register e device_add
+            </button>
+            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa fa device_register()?",
+            options: ["Rimuove un dispositivo", "Inizializza il dispositivo e lo aggiunge al device model", "Carica un modulo del kernel", "Alloca memoria DMA"],
+            correct: 1,
+            explanation: "device_register() chiama device_initialize() e poi device_add(), rendendo il dispositivo parte del device model."
+        },
+        {
+            question: "Qual è la differenza tra device_register() e device_add()?",
+            options: ["Nessuna differenza", "device_add() funziona solo con i dispositivi PCI", "device_register() include anche device_initialize(), mentre device_add() richiede che sia già stata chiamata", "device_register() lavora solo in user space"],
+            correct: 2,
+            explanation: "device_add() presuppone una struct device già inizializzata con device_initialize(); device_register() esegue entrambi i passaggi in sequenza."
+        },
+        {
+            question: "Cosa si deve fare se device_register() restituisce un errore?",
+            options: ["Chiamare kfree() sulla struttura", "Riavviare il sistema", "Non serve fare nulla", "Chiamare put_device() per rilasciare il riferimento"],
+            correct: 3,
+            explanation: "Dopo l'inizializzazione la struttura è governata dal conteggio dei riferimenti del kobject: va rilasciata con put_device(), che chiama release()."
+        },
+        {
+            question: "Quale evento uevent invia device_add() a udev?",
+            options: ["KOBJ_ADD", "KOBJ_REMOVE", "KOBJ_CHANGE", "KOBJ_MOVE"],
+            correct: 0,
+            explanation: "device_add() chiama kobject_uevent() con KOBJ_ADD; udev lo riceve e può creare il device node e applicare le sue regole."
+        },
+        {
+            question: "Quale funzione imposta il nome del dispositivo che compare in sysfs?",
+            options: ["get_device()", "dev_set_name()", "device_del()", "request_irq()"],
+            correct: 1,
+            explanation: "dev_set_name() assegna il nome del dispositivo, usato da device_add() per la directory in /sys/devices."
+        },
+        {
+            question: "Cosa avvia device_add() dopo aver collegato il dispositivo al bus?",
+            options: ["La ricerca di un driver con bus_probe_device()", "La formattazione del disco", "Lo scheduling di un processo", "La compressione della memoria"],
+            correct: 0,
+            explanation: "bus_probe_device() cerca un driver compatibile tra quelli registrati sul bus e, se trova un match, chiama il suo probe()."
+        },
+        {
+            question: "Cosa deve impostare il driver nella struct device prima di registrarla?",
+            options: ["Il campo irq_flags", "Un file in /dev", "Il metodo release() che libera la struttura", "Il puntatore al kernel stack"],
+            correct: 2,
+            explanation: "Senza release() il kernel segnala un avviso, perché non saprebbe come liberare la struttura quando il contatore di riferimenti arriva a zero."
+        },
+        {
+            question: "Quale funzione rimuove un dispositivo e rilascia anche il riferimento?",
+            options: ["device_add()", "device_initialize()", "dev_set_name()", "device_unregister()"],
+            correct: 3,
+            explanation: "device_unregister() chiama device_del() per togliere il dispositivo dal sistema e poi put_device() per rilasciare il riferimento."
+        },
+        {
+            question: "Dove compare il dispositivo dopo device_add()?",
+            options: ["In /proc/cmdline", "In /sys/devices", "In /boot", "In /etc/fstab"],
+            correct: 1,
+            explanation: "kobject_add() crea la directory del dispositivo sotto il suo parent in /sys/devices, con link nel bus e nella classe."
+        },
+        {
+            question: "Quale funzione usa il core USB per registrare un nuovo dispositivo nel device model?",
+            options: ["usb_submit_urb()", "usb_clear_halt()", "usb_new_device()", "usb_reset_device()"],
+            correct: 2,
+            explanation: "usb_new_device() configura il dispositivo e chiama device_add() sulla struct device incorporata in struct usb_device."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione di device_register e device_add! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare device_register e device_add! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Il driver model è complesso ma importante! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
+                    ⬆️ Torna all'Inizio della Pagina
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

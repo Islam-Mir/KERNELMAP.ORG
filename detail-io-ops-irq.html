@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GW3S1CKY7Q');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
+     crossorigin="anonymous"></script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPERAZIONI DI I/O E GESTIONE IRQ</title>
+    
+    
+     
+    <!--Libreria css per pagine-->
+    <link rel="stylesheet" href="style_pages.css">
+    
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+    
+    <div class="header">
+        <h1>OPERAZIONI DI I/O E GESTIONE IRQ</h1>
+        <p class="subtitle">Driver: registri e interrupt (I/O ops • IRQ)</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">🔌 REGISTRI E INTERRUPT</span>
+        <h2>DESCRIZIONE:</h2>
+<p><strong>Registri e interrupt sono i due canali con cui un driver parla con l'hardware: le operazioni di I/O (letture e scritture sui registri del dispositivo, in memoria mappata o su porte) permettono al driver di comandare la periferica, mentre gli interrupt (IRQ) permettono alla periferica di avvisare il kernel quando ha completato un'operazione o ha un evento da segnalare.</strong></p>
+
+<h2>CONFRONTO:</h2>
+<p>Come un negoziante e il suo fornitore: il negoziante compila moduli e li invia (scrive nei registri), poi può controllare di continuo se l'ordine è arrivato (polling) oppure aspettare il campanello del fattorino (interrupt) e dedicarsi ad altro nel frattempo.</p>
+
+<h2>🔍 Descrizione Tecnica</h2>
+<p><strong>Un dispositivo espone al software un insieme di registri: piccole celle di controllo e di stato, accessibili tramite indirizzi di memoria (MMIO) o porte di I/O.</strong> Immagina il cruscotto di un macchinario: leve e interruttori (registri di controllo) per comandarlo e spie luminose (registri di stato) per leggere come sta andando; quando succede qualcosa di importante suona un allarme (interrupt) che richiama l'attenzione dell'operatore (la CPU).</p>
+
+<p>• <strong>Registri mappati in memoria (MMIO)</strong> - Il dispositivo appare come un intervallo di indirizzi fisici, mappato con ioremap() e usato con readl() e writel()</p>
+<p>• <strong>Porte di I/O</strong> - Spazio di indirizzamento separato (x86), accessibile con inb() e outb()</p>
+<p>• <strong>Interrupt (IRQ)</strong> - Segnale con cui il dispositivo interrompe la CPU per segnalare un evento</p>
+<p>• <strong>Handler a due livelli</strong> - Top half veloce nell'handler, lavoro pesante differito a softirq, tasklet o workqueue</p>
+<p><em>• Interazione: Il driver configura il dispositivo con scritture sui registri e registra un handler con request_irq() per essere avvisato degli eventi</em></p>
+
+<h2>⚙️ Operazioni Principali</h2>
+<p><strong>Le operazioni su registri e interrupt si dividono in quattro categorie principali:</strong></p>
+
+<h3>🔍 Mappatura dei Registri</h3>
+<p>• <strong>ioremap()</strong> - Mappa l'intervallo fisico dei registri nello spazio virtuale del kernel</p>
+<p>• <strong>request_mem_region()</strong> - Riserva in modo esclusivo la regione di memoria del dispositivo</p>
+<p>• <strong>iounmap()</strong> - Rilascia la mappatura quando il driver termina</p>
+
+<h3>📡 Letture e Scritture (I/O ops)</h3>
+<p>• <strong>readl()/writel()</strong> - Leggono e scrivono registri a 32 bit in memoria mappata</p>
+<p>• <strong>ioread32()/iowrite32()</strong> - Accesso uniforme a registri MMIO o a porte di I/O</p>
+<p>• <strong>inb()/outb()</strong> - Accesso a una porta di I/O a 8 bit</p>
+
+<h3>⚡ Interrupt e IRQ</h3>
+<p>• <strong>request_irq()</strong> - Registra l'handler per una linea di interrupt</p>
+<p>• <strong>free_irq()</strong> - Rilascia l'handler e la linea IRQ</p>
+<p>• <strong>request_threaded_irq()</strong> - Registra un handler rapido e uno thread per il lavoro differito</p>
+
+<h3>🔧 Lavoro Differito e Controllo</h3>
+<p>• <strong>tasklet_schedule()</strong> - Pianifica un tasklet per la parte differita dell'interrupt</p>
+<p>• <strong>schedule_work()</strong> - Accoda lavoro eseguito in contesto processo, dove si può dormire</p>
+<p>• <strong>disable_irq()</strong> - Disabilita una linea IRQ e attende la fine degli handler in corso</p>
+
+<h2>📋 Esempi Pratici</h2>
+<p><strong>Quando arriva un pacchetto di rete, ecco cosa succede tra registri e interrupt:</strong></p>
+
+<h3>🔍 Pacchetto Ricevuto da una Scheda di Rete</h3>
+<p>1. Il driver ha mappato i registri con ioremap() e abilitato gli interrupt scrivendo nel registro di controllo</p>
+<p>2. La scheda riceve un pacchetto e lo copia in memoria tramite DMA</p>
+<p>3. La scheda attiva la linea IRQ e la CPU esegue l'handler registrato con request_irq()</p>
+<p>4. L'handler legge il registro di stato, conferma l'interrupt e pianifica il lavoro differito che elabora il pacchetto</p>
+
+<h3>📄 Strutture Dati Chiave</h3>
+<ul>
+<li><strong>struct resource</strong> - Intervallo di indirizzi o numero di IRQ assegnato al dispositivo</li>
+<li><strong>struct irq_desc</strong> - Descrittore del kernel per ogni linea di interrupt</li>
+<li><strong>struct irqaction</strong> - Handler registrato su una linea IRQ, con flag e nome</li>
+<li><strong>struct pt_regs</strong> - Stato della CPU salvato all'ingresso nell'interrupt</li>
+</ul>
+
+<h3>💻 Comandi Linux per Esplorare</h3>
+<ul>
+<li><code>cat /proc/interrupts</code> - Mostra gli interrupt per linea e per CPU, con i driver registrati</li>
+<li><code>cat /proc/ioports</code> - Elenca le porte di I/O assegnate ai dispositivi</li>
+<li><code>cat /proc/iomem</code> - Elenca le regioni di memoria dei registri mappati</li>
+<li><code>cat /proc/irq/N/smp_affinity</code> - Mostra su quali CPU può arrivare l'interrupt N</li>
+</ul>
+
+<h3>🎯 Caso Reale: Pressione di un Tasto</h3>
+<p>Quando premi un tasto sulla tastiera:</p>
+<ol>
+<li>Il controller della tastiera scrive lo scancode in un registro e attiva la linea IRQ</li>
+<li>La CPU salta all'handler del driver, che legge il registro dati con inb()</li>
+<li>L'handler conferma l'interrupt e pianifica il lavoro differito</li>
+<li>La parte differita passa il carattere al livello input e quindi all'applicazione</li>
+</ol>
+
+<h2>💾 Meccanismi di I/O e Interrupt Supportati</h2>
+        <ul>
+            <li><strong>MMIO</strong> - Registri mappati in memoria con ioremap(), accessibili con readl() e writel()</li>
+            <li><strong>Port I/O</strong> - Porte x86 accessibili con inb() e outb()</li>
+            <li><strong>IRQ classici</strong> - Linee dedicate o condivise tra più dispositivi (IRQF_SHARED)</li>
+            <li><strong>MSI/MSI-X</strong> - Interrupt a messaggio per PCIe, con più vettori per dispositivo</li>
+            <li><strong>DMA</strong> - Il dispositivo scrive in memoria e segnala il completamento con un interrupt</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+<ul>
+<li><strong>Handler a due livelli</strong> - Top half minimo e bottom half differito</li>
+<li><strong>Interrupt condivisi</strong> - Più dispositivi sulla stessa linea con IRQF_SHARED</li>
+<li><strong>Affinità IRQ</strong> - Assegnazione degli interrupt a CPU specifiche</li>
+<li><strong>Ordinamento degli accessi</strong> - readl() e writel() garantiscono dimensione e ordine corretti</li>
+</ul>
+
+<h2>🔗 Interazioni Chiave</h2>
+<p><strong>Registri e interrupt collegano i driver agli altri sottosistemi del kernel:</strong></p>
+
+<h3>🔌 Device Drivers</h3>
+<p>• <strong>Accesso ai registri</strong> - I driver configurano e controllano la periferica con letture e scritture MMIO o su porte</p>
+<p>• <strong>Handler IRQ</strong> - Ogni driver registra il proprio handler con request_irq()</p>
+
+<h3>⚡ Memory Management</h3>
+<p>• <strong>ioremap</strong> - Mappa gli indirizzi fisici dei registri nello spazio virtuale del kernel senza cache</p>
+<p>• <strong>DMA</strong> - Al termine del trasferimento il dispositivo segnala il completamento con un interrupt</p>
+
+<h3>🕒 Interrupt Subsystem</h3>
+<p>• <strong>irq_desc e irq_chip</strong> - Il kernel astrae i controller di interrupt (APIC, GIC) dietro un'interfaccia comune</p>
+<p>• <strong>Flow handler</strong> - handle_edge_irq() e handle_level_irq() gestiscono i diversi tipi di segnale</p>
+
+<h3>🔄 Lavoro Differito</h3>
+<p>• <strong>Softirq e tasklet</strong> - Eseguiti subito dopo l'handler, in contesto interrupt</p>
+<p>• <strong>Workqueue e thread IRQ</strong> - Eseguiti in contesto processo, possono dormire</p>
+
+<h2>🛠️ API Principali</h2>
+        <p><strong>Queste sono le funzioni chiave che i driver usano per accedere ai registri e gestire gli interrupt:</strong></p>
+
+        <h3>🔌 Accesso ai Registri (I/O ops)</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">void __iomem *ioremap(resource_size_t offset, unsigned long size);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Mappa i registri fisici del dispositivo nello spazio virtuale del kernel.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">u32 readl(const volatile void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge un registro a 32 bit in memoria mappata.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">void writel(u32 value, volatile void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scrive un registro a 32 bit in memoria mappata.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">void iounmap(volatile void __iomem *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rilascia la mappatura dei registri.</span>
+        </div>
+
+        <h3>⚡ Interrupt (IRQ)</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">int request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags, const char *name, void *dev);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra un handler per la linea IRQ indicata.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">void free_irq(unsigned int irq, void *dev_id);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Rimuove l'handler e libera la linea IRQ.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void disable_irq(unsigned int irq);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Disabilita la linea e attende la fine degli handler in esecuzione.</span>
+        </div>
+
+        <h3>🌐 Lavoro Differito</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int request_threaded_irq(unsigned int irq, irq_handler_t handler, irq_handler_t thread_fn, unsigned long irqflags, const char *devname, void *dev_id);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra un handler rapido e una funzione eseguita in un thread del kernel.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">bool schedule_work(struct work_struct *work);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Accoda lavoro differito eseguito da un worker in contesto processo.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Come un driver usa registri e interrupt in pratica:</strong></p>
+        <ol>
+        <li><code>regs = ioremap(addr, size)</code> - Mappa i registri del dispositivo</li>
+        <li><code>writel(CTRL_ENABLE, regs + CTRL)</code> - Abilita il dispositivo scrivendo il registro di controllo</li>
+        <li><code>request_irq(irq, handler, IRQF_SHARED, "mydev", dev)</code> - Registra l'handler dell'interrupt</li>
+        </ol>
+        <p><em>Il driver comanda con le scritture sui registri e viene avvisato dagli interrupt, senza polling continuo</em></p>
+
+<h2>🗺️ Architettura di Registri e Interrupt</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura di Registri e Interrupt</h3>
+
+            <!-- User Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ DRIVER DEL DISPOSITIVO</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • probe() e configurazione<br>
+                    • Handler IRQ (top half)<br>
+                    • Bottom half (workqueue)
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Device Drivers Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 API DI I/O E IRQ</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • ioremap, readl, writel<br>
+                    • inb, outb (port I/O)<br>
+                    • request_irq, free_irq<br>
+                    • tasklet, workqueue
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Hardware Interfaces Core -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🔌 REGISTRI &amp; INTERRUPT CORE</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🚌</div>
+                        <div style="font-size: 0.8em;">Registri<br>MMIO</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">IRQ<br>Handler</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
+                        <div style="font-size: 0.8em;">Port<br>I/O</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">Bottom<br>Half</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Mappatura dei registri<br>
+                    • Dispatch degli IRQ<br>
+                    • Flow handler (edge/level)<br>
+                    • Lavoro differito
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Bus Interfaces -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🚌 MMIO</div>
+                    <div style="font-size: 0.8em; color: #666;">Registri in memoria</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🔌 PORT I/O</div>
+                    <div style="font-size: 0.8em; color: #666;">inb / outb</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🌐 IRQ</div>
+                    <div style="font-size: 0.8em; color: #666;">Linee classiche</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">💽 MSI/MSI-X</div>
+                    <div style="font-size: 0.8em; color: #666;">Interrupt a messaggio</div>
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Physical Hardware -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE FISICO</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Controller di interrupt (APIC, GIC)<br>
+                    • Registri del dispositivo<br>
+                    • Bus (PCIe, platform)<br>
+                    • Linee IRQ e messaggi MSI
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dei comandi (scritture) e degli interrupt (eventi)<br>
+                • I registri servono per comandare, gli IRQ per essere avvisati<br>
+                • L'handler fa poco in fretta, il resto è differito<br>
+                • Gli stessi driver funzionano con APIC, GIC e MSI
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Interrupt di una Scheda di Rete</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Ricezione di un pacchetto con interrupt</h3>
+        
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔌 Evento Hardware</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        Pacchetto ricevuto<br>
+        <span style="color: #666;">(la scheda attiva la linea IRQ)</span>
+        </div>
+        </div>
+        
+        <div style="font-size: 2em; color: #f57c00;">⚡</div>
+        
+        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔌 Handler IRQ</div>
+        <div style="font-family: monospace; font-size: 0.9em;">
+        Handler eseguito<br>
+        <span style="color: #666;">(legge status, ack, pianifica)</span>
+        </div>
+        </div>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <strong>Registro osservato:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">readl(regs + STATUS)</code>
+        </div>
+        
+        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza di gestione dell'interrupt:</h4>
+        <ol style="line-height: 1.8;">
+        <li><strong>1. Segnale IRQ</strong> - La scheda attiva la linea o invia un messaggio MSI alla CPU</li>
+        <li><strong>2. Salto all'handler</strong> - La CPU salva il contesto e il kernel chiama l'handler registrato</li>
+        <li><strong>3. Lettura registri</strong> - L'handler legge il registro di stato per capire la causa</li>
+        <li><strong>4. Acknowledge</strong> - Scrive il registro di conferma, così il dispositivo abbassa la linea</li>
+        <li><strong>5. Lavoro differito</strong> - Pianifica il bottom half che elabora il pacchetto</li>
+        </ol>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+        <strong>🎯 Risultato:</strong> La CPU resta nell'handler solo per pochi microsecondi, mentre il resto del lavoro avviene fuori dal contesto di interrupt, mantenendo il sistema reattivo.
+        </div>
+        </div>
+
+<h2>🧪 Laboratorio Pratico: Esplora Registri e Interrupt</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🚌 Osserva gli interrupt</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/interrupts<br>
+                        CPU0 CPU1<br>
+                        1: 1234 0 IO-APIC 1-edge i8042<br>
+                        24: 0 8190 PCI-MSI 524288-edge eth0<br><br>
+                        $ grep eth0 /proc/interrupts<br>
+                        24: 0 8305 PCI-MSI 524288-edge eth0<br>
+                        (il contatore è aumentato)
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanti interrupt ha ricevuto ogni driver, per CPU</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔌 Esplora le porte di I/O</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/ioports | head -n 4<br>
+                        0000-0cf7 : PCI Bus 0000:00<br>
+                        0060-0060 : keyboard<br><br>
+                        $ cat /proc/iomem | head -n 3<br>
+                        00000000-00000fff : Reserved
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Elenca porte di I/O e regioni di memoria assegnate ai dispositivi</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Controlla l'affinità IRQ</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/irq/24/smp_affinity_list<br>
+                        0-3<br>
+                        $ echo 2 | sudo tee /proc/irq/24/smp_affinity_list<br><br>
+                        $ grep eth0 /proc/interrupts
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Controlla e cambia su quali CPU arrivano gli interrupt</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Misura il carico di interrupt</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ vmstat 1 3<br>
+                        r b ... in cs us sy id<br>
+                        1 0 ... 412 689 3 1 96<br>
+                        (la colonna in = interrupt al secondo)<br><br>
+                        $ cat /proc/softirqs | head -n 3
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Misura il carico di interrupt e softirq del sistema</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Registri e I/O Ops</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+        I driver comandano il dispositivo scrivendo nei registri e ne leggono lo stato. Gli accessi con readl() e writel() garantiscono dimensione e ordine corretti, a differenza di un normale puntatore.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
+        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Interrupt (IRQ)</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+        Un interrupt è il segnale con cui il dispositivo avvisa la CPU di un evento. Evita il polling continuo e permette alla CPU di fare altro finché serve.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚌</div>
+        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Top Half e Bottom Half</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+        L'handler deve essere brevissimo: legge lo stato, conferma e differisce il resto a softirq, tasklet, workqueue o thread IRQ.
+        </p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
+        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Condivisione e Affinità</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+        Più dispositivi possono condividere una linea (IRQF_SHARED) e gli interrupt possono essere assegnati a CPU diverse per bilanciare il carico.
+        </p>
+        </div>
+        </div>
+</div>
+<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz su Registri e Interrupt
+            </button>
+            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "A cosa serve un interrupt (IRQ)?",
+            options: ["A formattare un disco", "A permettere al dispositivo di avvisare la CPU di un evento", "A caricare un modulo", "A mappare la memoria"],
+            correct: 1,
+            explanation: "L'interrupt è il segnale con cui un dispositivo avvisa la CPU che ha completato un'operazione o ha un evento da gestire, evitando il polling continuo."
+        },
+        {
+            question: "Quale funzione registra un handler per una linea di interrupt?",
+            options: ["ioremap()", "free_irq()", "request_irq()", "readl()"],
+            correct: 2,
+            explanation: "request_irq() associa un handler alla linea IRQ indicata; free_irq() esegue l'operazione opposta."
+        },
+        {
+            question: "Quale funzione legge un registro a 32 bit in memoria mappata?",
+            options: ["inb()", "outb()", "iounmap()", "readl()"],
+            correct: 3,
+            explanation: "readl() legge un registro a 32 bit mappato in memoria; la scrittura corrispondente è writel()."
+        },
+        {
+            question: "Cosa fa ioremap()?",
+            options: ["Mappa i registri fisici del dispositivo nello spazio virtuale del kernel", "Alloca memoria RAM", "Disabilita una linea IRQ", "Crea un thread del kernel"],
+            correct: 0,
+            explanation: "ioremap() rende accessibili al kernel gli indirizzi fisici dei registri del dispositivo, senza passare dalla cache."
+        },
+        {
+            question: "Perché un handler IRQ deve essere breve?",
+            options: ["Perché occupa troppa RAM", "Perché esegue in contesto interrupt: il lavoro pesante va differito", "Perché non può leggere i registri", "Perché gira in user space"],
+            correct: 1,
+            explanation: "Mentre l'handler è in esecuzione si ritarda altro lavoro e non si può dormire: per questo il resto passa a softirq, tasklet, workqueue o thread IRQ."
+        },
+        {
+            question: "Quale file mostra gli interrupt ricevuti per ogni CPU?",
+            options: ["/proc/interrupts", "/proc/cpuinfo", "/proc/meminfo", "/etc/fstab"],
+            correct: 0,
+            explanation: "/proc/interrupts elenca ogni linea IRQ con i contatori per CPU, il tipo di controller e il driver registrato."
+        },
+        {
+            question: "Quale flag permette a più dispositivi di condividere una linea IRQ?",
+            options: ["IRQF_TIMER", "IRQF_ONESHOT", "IRQF_SHARED", "IRQF_NO_THREAD"],
+            correct: 2,
+            explanation: "Con IRQF_SHARED più driver registrano il proprio handler sulla stessa linea; ogni handler deve verificare se l'interrupt è del proprio dispositivo."
+        },
+        {
+            question: "Quale meccanismo può dormire perché esegue in contesto processo?",
+            options: ["Softirq", "Tasklet", "L'handler top half", "Workqueue"],
+            correct: 3,
+            explanation: "La workqueue esegue il lavoro in un thread del kernel, quindi può usare funzioni bloccanti; softirq, tasklet e handler non possono dormire."
+        },
+        {
+            question: "Quale coppia di funzioni accede a una porta di I/O a 8 bit su x86?",
+            options: ["readl() e writel()", "inb() e outb()", "ioremap() e iounmap()", "request_irq() e free_irq()"],
+            correct: 1,
+            explanation: "inb() legge e outb() scrive un byte su una porta dello spazio di I/O separato dell'architettura x86."
+        },
+        {
+            question: "Cosa sono gli interrupt MSI e MSI-X?",
+            options: ["Interrupt segnalati con una scrittura in memoria invece che con una linea fisica", "Un tipo di filesystem", "Un algoritmo di scheduling", "Un protocollo di rete"],
+            correct: 0,
+            explanation: "Nei dispositivi PCIe il segnale di interrupt è un messaggio (una scrittura in memoria): permette molti vettori per dispositivo e una gestione più efficiente."
+        }
+        
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione di registri e interrupt! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare registri e interrupt! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Registri e interrupt sono il cuore dei driver! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
+                    ⬆️ Torna all'Inizio della Pagina
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

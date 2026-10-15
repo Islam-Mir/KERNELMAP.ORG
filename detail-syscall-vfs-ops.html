@@ -1,0 +1,691 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GW3S1CKY7Q');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
+     crossorigin="anonymous"></script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funzioni e implementazioni</title>
+    
+     
+    <!--Libreria css per pagine-->
+    <link rel="stylesheet" href="style_pages.css">
+    
+</head>
+<body>
+    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
+        ← Torna alla Kernel Map
+    </button>
+
+    <div class="header">
+        <h1>Funzioni e implementazioni</h1>
+        <p class="subtitle">• syscall dispatch • VFS ops</p>
+    </div>
+
+    <div class="content">
+        <span class="badge">💾 FUNZIONI E IMPLEMENTAZIONI</span>
+        <h2>DESCRIZIONE:</h2>
+        <p><strong>Le funzioni di implementazione del kernel sono il codice che esegue davvero ciò che le applicazioni richiedono tramite system call: il syscall dispatch instrada ogni richiesta dallo user space alla funzione giusta, mentre le VFS operations traducono le operazioni sui file in chiamate al filesystem specifico.</strong></p>
+
+        <h2>CONFRONTO:</h2>
+        <p>Come il centralino di un'azienda: la chiamata arriva a un unico numero (syscall dispatch), il centralinista la smista all'interno giusto in base al numero composto, e l'ufficio competente (il filesystem, tramite le VFS ops) svolge il lavoro richiesto.</p>
+
+        <h2>🔍 Descrizione Tecnica</h2>
+        <p><strong>Una system call è l'unico ingresso controllato dallo user space verso il kernel.</strong> Immagina un edificio con un'unica reception: ogni visitatore (applicazione) dichiara cosa vuole tramite un numero di servizio, la reception (dispatcher) consulta l'elenco e lo accompagna all'ufficio giusto, che a sua volta può delegare a specialisti diversi (ext4, XFS, procfs...).</p>
+
+        <p>• <strong>Syscall entry</strong> - Il punto di ingresso in assembly (entry_SYSCALL_64) salva i registri e passa al codice C</p>
+        <p>• <strong>Syscall dispatch</strong> - Il numero della syscall indicizza la sys_call_table per trovare la funzione da eseguire</p>
+        <p>• <strong>Implementazioni SYSCALL_DEFINE</strong> - Ogni syscall è una funzione C che valida gli argomenti e chiama il sottosistema</p>
+        <p>• <strong>VFS ops</strong> - Tabelle di puntatori a funzione (file_operations, inode_operations) che nascondono le differenze tra filesystem</p>
+        <p>• <strong>Polimorfismo in C</strong> - Lo stesso read() funziona su file, pipe, socket e dispositivi</p>
+        <p>• <strong>Ritorno allo user space</strong> - Risultato o errore (-errno) tornano al chiamante con sysret</p>
+        <p><em>• Interazione: Il dispatcher chiama la funzione della syscall, che a sua volta usa le VFS ops del filesystem su cui risiede il file</em></p>
+
+        <h2>⚙️ Componenti di Dispatch e VFS</h2>
+        <p><strong>Syscall dispatch e VFS sono i due livelli attraverso cui una richiesta raggiunge l'implementazione concreta:</strong></p>
+
+        <h3>🏗️ Syscall Entry</h3>
+        <p>• <strong>entry_SYSCALL_64</strong> - Punto di ingresso dell'istruzione SYSCALL su x86-64</p>
+        <p>• <strong>Registri</strong> - Numero in RAX, argomenti in RDI, RSI, RDX, R10, R8, R9</p>
+        <p>• <strong>pt_regs</strong> - Struttura che salva lo stato dello user space</p>
+        <p>• <strong>Controlli preliminari</strong> - Seccomp, audit e tracing prima del dispatch</p>
+
+        <h3>📦 Dispatch Table</h3>
+        <p>• <strong>sys_call_table</strong> - Array di puntatori a funzione indicizzato dal numero di syscall</p>
+        <p>• <strong>do_syscall_64()</strong> - Funzione C che legge il numero e invoca l'handler</p>
+        <p>• <strong>syscall_64.tbl</strong> - File che associa numeri e nomi delle syscall</p>
+        <p>• <strong>Numero non valido</strong> - Il dispatcher restituisce -ENOSYS</p>
+
+        <h3>💾 VFS Operations</h3>
+        <p>• <strong>file_operations</strong> - read, write, open, mmap, ioctl, poll per ogni tipo di file</p>
+        <p>• <strong>inode_operations</strong> - lookup, create, mkdir, unlink sui nodi del filesystem</p>
+        <p>• <strong>super_operations</strong> - Gestione del superblock: alloc_inode, sync_fs, statfs</p>
+        <p>• <strong>dentry_operations</strong> - Comportamento della cache dei nomi (revalidate, hash)</p>
+
+        <h2>📋 Esempi Pratici</h2>
+        <p><strong>Quando un programma chiama read() su un file, ecco cosa succede:</strong></p>
+
+        <h3>🔍 Percorso di una read()</h3>
+        <p>1. La libc carica il numero 0 in RAX ed esegue l'istruzione SYSCALL</p>
+        <p>2. entry_SYSCALL_64 salva i registri e chiama do_syscall_64()</p>
+        <p>3. Il dispatcher usa sys_call_table per raggiungere ksys_read()</p>
+        <p>4. vfs_read() chiama il metodo read_iter delle file_operations del filesystem</p>
+        <p>5. I dati tornano in user space con copy_to_user() e sysret</p>
+
+        <h3>📄 Strutture Dati Chiave</h3>
+        <ul>
+            <li><strong>file</strong> - Istanza di file aperto con f_op, posizione e flag</li>
+            <li><strong>inode</strong> - Metadati del file e puntatore a inode_operations</li>
+            <li><strong>pt_regs</strong> - Registri salvati all'ingresso nel kernel</li>
+            <li><strong>file_operations</strong> - Tabella di puntatori alle funzioni di I/O</li>
+        </ul>
+
+        <h3>💻 Nel Computer: Come Vederlo?</h3>
+        <p><strong>Comandi Linux per osservare syscall e VFS:</strong></p>
+        <ul>
+            <li><code>strace ls</code> - Mostra le syscall eseguite da un programma</li>
+            <li><code>ausyscall --dump</code> - Elenca numeri e nomi delle syscall</li>
+            <li><code>cat /proc/PID/syscall</code> - Mostra la syscall in corso di un processo</li>
+            <li><code>cat /proc/filesystems</code> - Elenca i filesystem registrati nel VFS</li>
+            <li><code>perf trace ls</code> - Traccia le syscall con basso overhead</li>
+        </ul>
+
+        <h3>🎯 Caso Reale: Apertura di un file</h3>
+        <p>Quando un'applicazione esegue open():</p>
+        <ol>
+            <li>do_sys_open() risolve il percorso con il path walk, usando lookup di inode_operations</li>
+            <li>Il VFS trova o crea il dentry e l'inode del file</li>
+            <li>Viene allocata una struct file con f_op copiato dall'inode</li>
+            <li>Il VFS chiama il metodo open delle file_operations</li>
+            <li>Il file descriptor viene installato nella tabella del processo e restituito</li>
+        </ol>
+
+        <h2>🔧 Famiglie di Syscall</h2>
+        <ul>
+            <li><strong>File I/O</strong> - read, write, open, close, lseek</li>
+            <li><strong>Processi</strong> - fork, execve, exit, wait4</li>
+            <li><strong>Memoria</strong> - mmap, brk, munmap, mprotect</li>
+            <li><strong>Directory</strong> - mkdir, rmdir, getdents64, rename</li>
+            <li><strong>Socket e IPC</strong> - socket, pipe2, futex</li>
+        </ul>
+
+        <h2>✨ Caratteristiche</h2>
+        <ul>
+            <li><strong>Uniformità</strong> - Un'unica interfaccia per file, pipe, socket e dispositivi</li>
+            <li><strong>Estensibilità</strong> - Nuovi filesystem si registrano fornendo le proprie ops</li>
+            <li><strong>Sicurezza</strong> - Argomenti validati, accessi controllati con LSM</li>
+            <li><strong>Prestazioni</strong> - Ingresso rapido con SYSCALL e vDSO</li>
+            <li><strong>Compatibilità</strong> - ABI stabile verso lo user space</li>
+        </ul>
+
+        <h2>🔗 Interazioni Chiave</h2>
+        <p><strong>Syscall dispatch e VFS ops interagiscono con molteplici componenti del sistema:</strong></p>
+
+        <h3>🛡️ Sicurezza e Tracing</h3>
+        <p>• <strong>seccomp</strong> - Filtra le syscall consentite a un processo</p>
+        <p>• <strong>Audit</strong> - Registra le syscall rilevanti</p>
+        <p>• <strong>ptrace/strace</strong> - Intercetta le syscall per il debug</p>
+
+        <h3>🗂️ Filesystem</h3>
+        <p>• <strong>Registrazione</strong> - register_filesystem() associa il nome del filesystem alle sue operazioni</p>
+        <p>• <strong>Page cache</strong> - Le read_iter leggono dalla cache delle pagine</p>
+        <p>• <strong>Block layer</strong> - I filesystem inviano l'I/O al livello a blocchi</p>
+
+        <h3>🔄 Processi e Memoria</h3>
+        <p>• <strong>Tabella dei descriptor</strong> - files_struct associa fd e struct file</p>
+        <p>• <strong>copy_to_user/copy_from_user</strong> - Trasferimento sicuro dei dati</p>
+        <p>• <strong>Scheduler</strong> - Una syscall bloccante mette il task a dormire</p>
+
+        <h2>🛠️ API e Funzioni Principali</h2>
+        <p><strong>Queste sono le funzioni principali di syscall dispatch e VFS:</strong></p>
+
+        <h3>🏗️ Syscall Dispatch</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #d32f2f; font-weight: bold;">SYSCALL_DEFINE3(read, unsigned int, fd, char __user *, buf, size_t, count)</code><br>
+            <span style="color: #666; font-size: 0.9em;">Macro che definisce l'implementazione della syscall read.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">void do_syscall_64(struct pt_regs *regs, int nr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Legge il numero e invoca la funzione in sys_call_table.</span><br><br>
+
+            <code style="color: #f57c00; font-weight: bold;">ssize_t ksys_read(unsigned int fd, char __user *buf, size_t count);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Implementazione interna di read, riutilizzabile dal kernel.</span>
+        </div>
+
+        <h3>📦 VFS: Lettura e Scrittura</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #0288d1; font-weight: bold;">ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Controlla i permessi e chiama il metodo read del file.</span><br><br>
+
+            <code style="color: #d32f2f; font-weight: bold;">ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_t *pos);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Controlla i permessi e chiama il metodo write del file.</span><br><br>
+
+            <code style="color: #2e7d32; font-weight: bold;">int vfs_fsync(struct file *file, int datasync);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Forza la scrittura su disco dei dati del file.</span>
+        </div>
+
+        <h3>💾 VFS: File e Filesystem</h3>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+            <code style="color: #f57c00; font-weight: bold;">int vfs_open(const struct path *path, struct file *file);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Apre il file e invoca il metodo open delle file_operations.</span><br><br>
+
+            <code style="color: #9c27b0; font-weight: bold;">int vfs_getattr(const struct path *path, struct kstat *stat, u32 request_mask, unsigned int query_flags);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Ottiene gli attributi del file (usata da stat).</span><br><br>
+
+            <code style="color: #0288d1; font-weight: bold;">int register_filesystem(struct file_system_type *fs);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Registra un nuovo filesystem nel VFS.</span>
+        </div>
+
+        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+        <p><strong>Quando osservi cosa fa un programma:</strong></p>
+        <ol>
+            <li><code>strace -e trace=openat,read cat /etc/hostname</code> - Segui open e read</li>
+            <li><code>strace -c ls /usr</code> - Riepiloga le syscall per tipo</li>
+            <li><code>ls -l /proc/self/fd</code> - Vedi i file descriptor aperti</li>
+            <li><code>cat /proc/mounts</code> - Vedi i filesystem montati</li>
+            <li>Ogni richiesta attraversa dispatch e VFS prima di arrivare al disco</li>
+        </ol>
+        <p><em>Tutto questo avviene a ogni accesso a un file, migliaia di volte al secondo!</em></p>
+
+
+        <h2>🗺️ Mappa Concettuale di Syscall Dispatch e VFS</h2>
+        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura Syscall e VFS</h3>
+
+            <!-- Applications Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI & LIBC</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • Programmi utente<br>
+                    • glibc (read, open)<br>
+                    • vDSO<br>
+                    • strace
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Logical Volumes Layer -->
+            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">💾 SYSCALL ENTRY</div>
+                <div style="font-size: 0.9em; color: #666;">
+                    • entry_SYSCALL_64<br>
+                    • pt_regs salvato<br>
+                    • seccomp / audit<br>
+                    • Ritorno con sysret
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- Syscall Dispatch Layer -->
+            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 SYSCALL DISPATCH</div>
+                <div style="display: flex; justify-content: space-around; color: white;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📏</div>
+                        <div style="font-size: 0.8em;">sys_call_table</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">do_syscall_64</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
+                        <div style="font-size: 0.8em;">ksys_*</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📸</div>
+                        <div style="font-size: 0.8em;">SYSCALL_DEFINE</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
+                    • Lookup per numero<br>
+                    • Validazione argomenti<br>
+                    • Chiamata dell'handler<br>
+                    • Errori come -errno
+                </div>
+            </div>
+
+            <!-- Arrows -->
+            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+
+            <!-- VFS Layer -->
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">📦 VFS CORE</div>
+                    <div style="font-size: 0.8em; color: #666;">Livello comune</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🏗️ VFS OPS</div>
+                    <div style="font-size: 0.8em; color: #666;">file/inode/super ops</div>
+                </div>
+                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">💽 FILESYSTEM</div>
+                    <div style="font-size: 0.8em; color: #666;">ext4, XFS, procfs</div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
+                <strong>💡 Come leggere la mappa:</strong><br>
+                • Le frecce mostrano il flusso dalla chiamata in user space all'implementazione<br>
+                • Ogni layer aggiunge un livello di indirezione<br>
+                • Il dispatch sceglie la funzione, le VFS ops scelgono il filesystem<br>
+                • Un nuovo filesystem si aggiunge senza modificare le syscall
+            </div>
+        </div>
+
+        <h2>🎬 Demo Interattiva: Percorso di una read()</h2>
+        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: read() su un file ext4</h3>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Chiamata Utente</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        read(3, buf, 4096)<br>
+                        <span style="color: #666;">(syscall n. 0 su x86-64)</span>
+                    </div>
+                </div>
+
+                <div style="font-size: 2em; color: #f57c00;">⚡</div>
+
+                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔍 Funzione Eseguita</div>
+                    <div style="font-family: monospace; font-size: 0.9em;">
+                        ksys_read → vfs_read<br>
+                        <span style="color: #666;">(ext4_file_read_iter)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <strong>Percorso eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">SYSCALL → do_syscall_64() → sys_call_table[0] → ksys_read()</code>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
+                <ol style="line-height: 1.8;">
+                    <li><strong>1. Ingresso:</strong> SYSCALL passa al kernel e entry_SYSCALL_64 salva i registri in pt_regs</li>
+                    <li><strong>2. Dispatch:</strong> do_syscall_64 usa il numero in RAX per indicizzare sys_call_table</li>
+                    <li><strong>3. Implementazione:</strong> ksys_read risolve il descriptor 3 nella struct file</li>
+                    <li><strong>4. VFS ops:</strong> vfs_read invoca f_op->read_iter, qui implementato da ext4</li>
+                    <li><strong>5. Ritorno:</strong> copy_to_user trasferisce i dati e sysret torna in user space con i byte letti</li>
+                </ol>
+            </div>
+
+            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
+                <strong>🎯 Risultato:</strong> Lo stesso read() funzionerebbe identico su pipe, socket o dispositivi: cambia solo la tabella di ops puntata da f_op, non il codice del chiamante!
+            </div>
+        </div>
+
+        <h2>🧪 Laboratorio Pratico: Esplora Syscall e VFS</h2>
+        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Traccia le syscall</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ strace -e trace=openat,read cat /etc/hostname<br>
+                        openat(AT_FDCWD, "/etc/hostname", O_RDONLY) = 3<br>
+                        read(3, "myhost\n", 131072) = 7<br><br>
+                        $ strace -c ls /usr<br>
+                        % time     seconds  usecs/call     calls  syscall<br>
+                        100.00    0.000412           7        58         total
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le syscall di un programma e il loro costo</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Ispeziona un processo</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ sleep 100 &amp;<br>
+                        $ cat /proc/$!/syscall<br>
+                        230 0x0 0x0 0x7ffc3a2b1d40 0x0 ...<br>
+                        $ ausyscall 230<br>
+                        clock_nanosleep
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Scopri in quale syscall è bloccato un processo</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Esplora il VFS</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ cat /proc/filesystems<br>
+                        nodev sysfs<br>
+                        nodev proc<br>
+                        ext4<br><br>
+                        $ mount | head -n 1<br>
+                        /dev/sda2 on / type ext4 (rw,relatime)
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi i filesystem registrati e montati nel VFS</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💾 Conta le syscall</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ strace -c cat /etc/hostname<br>
+                        % time     seconds  usecs/call     calls  syscall<br>
+                        42.10    0.000120          20         6         mmap<br>
+                        18.30    0.000052          10         5         openat<br>
+                        12.00    0.000034           6         5         read
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Misura quante syscall esegue un programma e dove spende tempo</em></p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🎯 Concetti Chiave da Ricordare</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚪</div>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Un Solo Ingresso</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
+                    Ogni richiesta dello user space passa da un unico punto di ingresso controllato. Il numero della syscall sceglie la funzione da eseguire e gli argomenti vengono validati prima dell'uso.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Tabelle di Puntatori</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
+                    La sys_call_table indirizza alla syscall giusta, le VFS ops indirizzano al filesystem giusto. È polimorfismo in C: stessa chiamata, implementazioni diverse.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏗️</div>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">VFS Uniforme</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
+                    Il VFS offre la stessa interfaccia per ogni filesystem. ext4, XFS, procfs e le pipe implementano le stesse ops, quindi il codice utente non cambia.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
+                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
+                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Costo e Sicurezza</h4>
+                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
+                    Passare al kernel ha un costo, quindi si riducono le chiamate (vDSO, buffering). Ogni accesso è controllato da permessi, seccomp e LSM.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
+        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
+        <div style="text-align: center;">
+            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
+                📝 Fai il Quiz su Syscall e VFS
+            </button>
+            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
+                <div id="quizContent"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+</div>
+
+<script>
+    // Quiz functionality
+    const quizQuestions = [
+        {
+            question: "Cosa fa il syscall dispatch?",
+            options: ["Carica i moduli del kernel", "Instrada la richiesta alla funzione giusta usando il numero della syscall", "Monta i filesystem", "Pianifica i processi"],
+            correct: 1,
+            explanation: "Il dispatcher legge il numero della syscall (in RAX su x86-64) e lo usa per indicizzare la sys_call_table e chiamare la funzione di implementazione."
+        },
+        {
+            question: "Quale tabella contiene i puntatori alle implementazioni delle syscall?",
+            options: ["page_table", "inode_cache", "sys_call_table", "dentry_hash"],
+            correct: 2,
+            explanation: "La sys_call_table è un array di puntatori a funzione indicizzato dal numero di syscall: ogni voce porta all'implementazione corrispondente."
+        },
+        {
+            question: "Quale errore restituisce il kernel per un numero di syscall inesistente?",
+            options: ["EPERM", "EBADF", "EINVAL", "ENOSYS"],
+            correct: 3,
+            explanation: "ENOSYS (function not implemented) indica che il numero richiesto non corrisponde ad alcuna syscall implementata."
+        },
+        {
+            question: "Cosa contiene la struttura file_operations?",
+            options: ["I puntatori alle funzioni di I/O come read, write e open", "Gli indirizzi MAC delle schede di rete", "I parametri dello scheduler", "Le tabelle delle pagine"],
+            correct: 0,
+            explanation: "file_operations è una tabella di puntatori a funzione (read, write, open, mmap, ioctl...) che ogni filesystem o driver compila con le proprie implementazioni."
+        },
+        {
+            question: "Quale funzione del VFS esegue la lettura chiamando il metodo del filesystem?",
+            options: ["schedule()", "vfs_read()", "kmalloc()", "do_exit()"],
+            correct: 1,
+            explanation: "vfs_read() controlla i permessi e poi invoca il metodo di lettura delle file_operations (ad esempio read_iter) del filesystem su cui risiede il file."
+        },
+        {
+            question: "Come vengono passati gli argomenti di una syscall su x86-64?",
+            options: ["Sullo stack utente", "Nei registri (RDI, RSI, RDX, R10, R8, R9)", "In un file temporaneo", "Tramite socket"],
+            correct: 1,
+            explanation: "Il numero della syscall va in RAX e i primi sei argomenti nei registri RDI, RSI, RDX, R10, R8 e R9; il kernel li salva in pt_regs."
+        },
+        {
+            question: "Quale funzione copia in modo sicuro dati dal kernel allo user space?",
+            options: ["memcpy()", "strcpy()", "copy_to_user()", "memmove()"],
+            correct: 2,
+            explanation: "copy_to_user() verifica che l'indirizzo di destinazione sia valido per lo user space e gestisce eventuali errori di accesso senza mandare in crash il kernel."
+        },
+        {
+            question: "Quale macro definisce l'implementazione di una syscall con 3 argomenti?",
+            options: ["SYSCALL_DEFINE3", "DEFINE_MUTEX", "EXPORT_SYMBOL", "MODULE_LICENSE"],
+            correct: 0,
+            explanation: "SYSCALL_DEFINEn dichiara la funzione di implementazione di una syscall con n argomenti, gestendo anche la conversione dei tipi."
+        },
+        {
+            question: "Cosa permette il polimorfismo delle VFS ops?",
+            options: ["Cifrare automaticamente i file", "Usare la stessa syscall su filesystem e tipi di file diversi", "Aumentare la RAM disponibile", "Evitare il passaggio al kernel"],
+            correct: 1,
+            explanation: "Poiché ogni file punta alla propria tabella di operazioni, read() e write() funzionano allo stesso modo su ext4, XFS, procfs, pipe e dispositivi."
+        },
+        {
+            question: "Quale comando mostra le syscall eseguite da un programma?",
+            options: ["lsblk", "ip addr", "strace", "free"],
+            correct: 2,
+            explanation: "strace intercetta e stampa le syscall di un processo con argomenti e valori di ritorno, usando ptrace."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function toggleQuiz() {
+        const container = document.getElementById('quizContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            startQuiz();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const container = document.getElementById('quizContent');
+        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+            showResults();
+            return;
+        }
+
+        const question = quizQuestions[currentQuestionIndex];
+        container.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
+                <div style="display: grid; gap: 10px;">
+                    ${question.options.map((option, index) => `
+                        <button onclick="answerQuestion(${index})" id="option${index}"
+                                style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
+                            ${String.fromCharCode(65 + index)}) ${option}
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    let answered = false;
+
+    function answerQuestion(selectedIndex) {
+        if (answered) return; // Prevent multiple answers
+        answered = true;
+
+        const question = quizQuestions[currentQuestionIndex];
+        const container = document.getElementById('quizContent');
+
+        // Disable all option buttons
+        for (let i = 0; i < 4; i++) {
+            const button = document.getElementById(`option${i}`);
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+            }
+        }
+
+        if (selectedIndex === question.correct) {
+            score++;
+            container.innerHTML += `
+                <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
+                    <p style="color: #1b5e20;">${question.explanation}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML += `
+                <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
+                    <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
+                    <p style="color: #b71c1c;">${question.explanation}</p>
+                </div>
+            `;
+        }
+
+        // Auto-advance to next question immediately after showing feedback
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= 5) {
+                showResults();
+            } else {
+                answered = false; // Reset for next question
+                showQuestion();
+            }
+        }, 1000); // Very fast delay to show feedback
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        answered = false; // Reset for next question
+
+        // Hide the next button before showing new question
+        const nextButtonContainer = document.getElementById('nextButtonContainer');
+        nextButtonContainer.style.display = 'none';
+
+        if (currentQuestionIndex >= 5) {
+            showResults();
+        } else {
+            showQuestion();
+        }
+    }
+
+    function showResults() {
+        const container = document.getElementById('quizContent');
+        const percentage = Math.round((score / 5) * 100);
+
+        let message, color;
+        if (percentage >= 80) {
+            message = "Eccellente! Hai una buona comprensione di syscall dispatch e VFS! 🎉";
+            color = "#2e7d32";
+        } else if (percentage >= 60) {
+            message = "Buon lavoro! Continua a studiare syscall dispatch e VFS! 👍";
+            color = "#f57c00";
+        } else {
+            message = "Continua a studiare! Syscall e VFS sono il cuore del kernel! 📚";
+            color = "#d32f2f";
+        }
+
+        container.innerHTML = `
+            <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
+                <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
+                <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
+                    ⬆️ Torna all'Inizio della Pagina
+                </button>
+            </div>
+        `;
+    }
+</script>
+
+
+    <div class="nav-buttons-right">
+        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
+        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+    </div>
+
+    <script>
+    const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+
+        function getCurrentPageIndex() {
+            const currentPage = window.location.pathname.split('/').pop();
+            return pageOrder.indexOf(currentPage);
+        }
+
+        function navigateToPage(direction) {
+            const currentIndex = getCurrentPageIndex();
+            const newIndex = currentIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < pageOrder.length) {
+                window.location.href = pageOrder[newIndex];
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const currentIndex = getCurrentPageIndex();
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (prevBtn) prevBtn.disabled = currentIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
