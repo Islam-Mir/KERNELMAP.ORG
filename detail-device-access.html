@@ -356,12 +356,12 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora /dev</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -la /dev | head -10<br>
-                        crw------- 1 root root 5, 1 Jan 1 10:00 console<br>
-                        brw-rw---- 1 root disk 8, 0 Jan 1 10:00 sda<br>
-                        crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null
-                    </div>
+                    <div style="background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+    <pre style="margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre-wrap;"><code>$ ls -la /dev | head -10
+crw------- 1 root root 5, 1 Jan 1 10:00 console
+brw-rw---- 1 root disk 8, 0 Jan 1 10:00 sda
+crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
+</div>
                     <p style="font-size: 0.9em; color: #666;"><em>Vedi i device files con major/minor numbers</em></p>
                 </div>
 

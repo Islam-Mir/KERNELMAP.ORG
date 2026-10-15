@@ -155,7 +155,7 @@
 
         <h3>📂 File Transfer Zero-Copy</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">#include <fcntl.h></code><br>
+            <code style="color: #d32f2f; font-weight: bold;">#include &lt;fcntl.h&gt;</code><br>
             <code style="color: #2e7d32; font-weight: bold;">int pipefd[2];</code><br>
             <code style="color: #f57c00; font-weight: bold;">pipe(pipefd);</code><br>
             <code style="color: #9c27b0; font-weight: bold;">splice(file_fd, NULL, pipefd[1], NULL, 4096, SPLICE_F_MOVE);</code><br>

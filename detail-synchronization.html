@@ -429,11 +429,11 @@
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza memoria mutex</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep mutex<br>
-                        mutex 125 125 256 16 1 : tunables [...]<br>
-                        $ cat /proc/slabinfo | grep semaphore
-                    </div>
+                    <div style="background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+    <pre style="margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre-wrap;"><code>$ cat /proc/slabinfo | grep mutex
+mutex 125 125 256 16 1 : tunables [...]
+$ cat /proc/slabinfo | grep semaphore</code></pre>
+</div>
                     <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usano strutture di sincronizzazione</em></p>
                 </div>
 

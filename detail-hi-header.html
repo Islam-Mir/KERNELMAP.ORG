@@ -103,9 +103,9 @@
         <h3>🎯 Caso Reale: Scrivere un Device Driver</h3>
         <p>Quando scrivi un driver per un dispositivo USB:</p>
         <ol>
-            <li>#include <linux/module.h> - Per registrazione moduli</li>
-            <li>#include <linux/usb.h> - Per framework USB</li>
-            <li>#include <linux/device.h> - Per device model</li>
+            <li>#include &lt;linux/module.h&gt; - Per registrazione moduli</li>
+            <li>#include &lt;linux/usb.h&gt; - Per framework USB</li>
+            <li>#include &lt;linux/device.&gt; - Per device model</li>
             <li>Usi struct usb_driver dal header</li>
             <li>Implementi le callback definite negli header</li>
         </ol>
@@ -150,36 +150,36 @@
 
         <h3>🏗️ Header Fondamentali</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">#include <linux/module.h></code><br>
+            <code style="color: #d32f2f; font-weight: bold;">#include &lt;linux/module.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Macro per registrazione moduli kernel (MODULE_LICENSE, module_init)</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">#include <linux/kernel.h></code><br>
+            <code style="color: #2e7d32; font-weight: bold;">#include &lt;linux/kernel.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Funzioni core del kernel (printk, kmalloc, kfree)</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">#include <linux/sched.h></code><br>
+            <code style="color: #f57c00; font-weight: bold;">#include &lt;linux/sched.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Strutture scheduler e processi (task_struct, current)</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">#include <linux/fs.h></code><br>
+            <code style="color: #9c27b0; font-weight: bold;">#include &lt;linux/fs.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Filesystem e VFS (inode, file_operations, super_block)</span>
         </div>
 
         <h3>📡 Header Device-Specific</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">#include <linux/pci.h></code><br>
+            <code style="color: #0288d1; font-weight: bold;">#include &lt;linux/pci.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Supporto dispositivi PCI (pci_device_id, pci_driver)</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">#include <linux/usb.h></code><br>
+            <code style="color: #d32f2f; font-weight: bold;">#include &lt;inux/usb.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Framework USB (usb_driver, urb, endpoint)</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">#include <linux/netdevice.h></code><br>
+            <code style="color: #2e7d32; font-weight: bold;">#include &lt;linux/netdevice.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Dispositivi di rete (net_device, sk_buff)</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
         <p><strong>Quando compili il kernel o un modulo esterno:</strong></p>
         <ol>
-            <li><code>#include <linux/module.h></code> - Abilita registrazione modulo</li>
-            <li><code>#include <linux/kernel.h></code> - Fornisce funzioni base</li>
+            <li><code>#include &lt;linux/module.h&gt;</code> - Abilita registrazione modulo</li>
+            <li><code>#include &lt;linux/kernel.h&gt;</code> - Fornisce funzioni base</li>
             <li>Header specifici per il sottosistema usato</li>
             <li>Il preprocessore espande tutte le inclusioni</li>
             <li>GCC compila il codice con type checking</li>
@@ -209,7 +209,7 @@
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">⚙️ PREPROCESSORE C</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • #include <...><br>
+                    • #include &lt;...&gt;<br>
                     • #define<br>
                     • #ifdef/#endif<br>
                     • Espansione macro
@@ -303,9 +303,9 @@
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
                     <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📝 Codice Sorgente</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        #include <linux/module.h><br>
-                        #include <linux/kernel.h><br>
-                        #include <linux/fs.h><br>
+                        #include &lt;linux/module.h&gt;<br>
+                        #include &lt;linux/kernel.h&gt;<br>
+                        #include &lt;linux/fs.h&gt;<br>
                         <span style="color: #666;">// Definizioni da header</span>
                     </div>
                 </div>
@@ -385,9 +385,9 @@
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">🏗️ Controlla dipendenze</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ grep "#include" /usr/include/linux/fs.h | head -5<br>
-                        #include <linux/linkage.h><br>
-                        #include <linux/wait.h><br>
-                        #include <linux/rbtree.h>
+                        #include &lt;linux/linkage.h&gt;<br>
+                        #include &lt;linux/wait.h&gt;<br>
+                        #include &lt;linux/rbtree.h&gt;
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Vedi quali altri header sono inclusi da fs.h</em></p>
                 </div>
@@ -463,7 +463,7 @@
             explanation: "sched.h contiene la definizione della struttura task_struct che rappresenta un processo o thread nel kernel."
         },
         {
-            question: "Cosa significa #include <linux/module.h>?",
+            question: "Cosa significa #include &lt;linux/module.h&gt;?",
             options: ["Include codice eseguibile", "Include definizioni per moduli kernel", "Include dati di configurazione", "Include file di testo"],
             correct: 1,
             explanation: "linux/module.h fornisce le macro e strutture necessarie per scrivere moduli kernel caricabili dinamicamente."

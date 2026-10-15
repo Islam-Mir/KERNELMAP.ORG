@@ -169,8 +169,8 @@
 
         <h3>📂 File Operations</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">#include <unistd.h></code><br>
-            <code style="color: #d32f2f; font-weight: bold;">#include <fcntl.h></code><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">#include &lt;unistd.h&gt;</code><br>
+            <code style="color: #d32f2f; font-weight: bold;">#include &lt;fcntl.h&gt;</code><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">int open(const char *pathname, int flags, mode_t mode);</code><br>
             <span style="color: #666; font-size: 0.9em;">Apre file e restituisce file descriptor.</span><br><br>
@@ -184,8 +184,8 @@
 
         <h3>👥 Process Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">#include <unistd.h></code><br>
-            <code style="color: #0288d1; font-weight: bold;">#include <sys/wait.h></code><br><br>
+            <code style="color: #0288d1; font-weight: bold;">#include &lt;unistd.h&gt;</code><br>
+            <code style="color: #0288d1; font-weight: bold;">#include &lt;sys/wait.h&gt;</code><br><br>
 
             <code style="color: #d32f2f; font-weight: bold;">pid_t fork(void);</code><br>
             <span style="color: #666; font-size: 0.9em;">Crea nuovo processo duplicando quello corrente.</span><br><br>
@@ -199,8 +199,8 @@
 
         <h3>🌐 Network Programming</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #9c27b0; font-weight: bold;">#include <sys/socket.h></code><br>
-            <code style="color: #9c27b0; font-weight: bold;">#include <netinet/in.h></code><br><br>
+            <code style="color: #9c27b0; font-weight: bold;">#include &lt;sys/socket.h&gt;</code><br>
+            <code style="color: #9c27b0; font-weight: bold;">#include &lt;netinet/in.h&gt;</code><br><br>
 
             <code style="color: #0288d1; font-weight: bold;">int socket(int domain, int type, int protocol);</code><br>
             <span style="color: #666; font-size: 0.9em;">Crea endpoint per comunicazione.</span><br><br>
@@ -215,8 +215,8 @@
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
         <p><strong>Quando scrivi un programma C che usa file:</strong></p>
         <ol>
-            <li><code>#include <unistd.h></code> - Include prototipi read/write</li>
-            <li><code>#include <fcntl.h></code> - Include costanti O_RDONLY, etc.</li>
+            <li><code>#include &lt;unistd.h&gt;</code> - Include prototipi read/write</li>
+            <li><code>#include &lt;fcntl.h&gt;</code> - Include costanti O_RDONLY, etc.</li>
             <li>Compilatore verifica firme funzioni</li>
             <li>Linker collega con glibc</li>
             <li>Programma chiama system calls del kernel</li>
@@ -322,8 +322,8 @@
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
                     <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📝 Codice Sorgente</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        #include <unistd.h><br>
-                        #include <fcntl.h><br>
+                        #include &lt;unistd.h&gt;<br>
+                        #include &lt;fcntl.h&gt;<br>
                         int main() {<br>
                         &nbsp;&nbsp;int fd = open("file.txt", O_RDONLY);<br>
                         &nbsp;&nbsp;return 0;<br>
@@ -335,11 +335,11 @@
 
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
                     <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔧 Compilazione</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        $ gcc -o program program.c<br>
-                        Linking with glibc...<br>
-                        <span style="color: #666;">Success!</span>
-                    </div>
+                    <div style="background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+    <pre style="margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre-wrap;"><code>$ gcc -o program program.c
+Linking with glibc...
+<span style="color: #666;">Success!</span></code></pre>
+</div>
                 </div>
             </div>
 
@@ -388,7 +388,7 @@
                         /* Copyright (C) 1991-2018 Free Software Foundation, Inc.<br>
                         #ifndef _UNISTD_H<br>
                         #define _UNISTD_H 1<br>
-                        #include <features.h>
+                        #include &lt;features.h&gt;
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Guarda contenuto effettivo degli header</em></p>
                 </div>
@@ -398,7 +398,7 @@
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ grep -n "struct stat" /usr/include/*.h<br>
                         /usr/include/bits/stat.h:26:struct stat<br>
-                        /usr/include/sys/stat.h:1:#include <bits/stat.h>
+                        /usr/include/sys/stat.h:1:#include <bits/stat.h&gt;
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Trova dove sono definite strutture dati</em></p>
                 </div>
@@ -406,7 +406,7 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Test compilazione</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ echo '#include <stdio.h>' > test.c<br>
+                        $ echo '#include &lt;stdio.h&gt;' > test.c<br>
                         $ echo 'int main() { printf("Hello\\n"); }' >> test.c<br>
                         $ gcc -E test.c | head -20<br>
                         # 1 "test.c"<br>
