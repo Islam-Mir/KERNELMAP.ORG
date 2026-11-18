@@ -63,7 +63,7 @@
 
         <h3>📶 Wireless Drivers</h3>
         <p>• <strong>iwlwifi</strong> - Intel Wireless (Centrino, AX200, AX210)</p>
-        <p>• <strong>ath9k</strong> - Atheros 802.11n USB</p>
+        <p>• <strong>ath9k</strong> - Atheros 802.11n (PCI/PCIe)</p>
         <p>• <strong>rt2800usb</strong> - Ralink RT2800 USB</p>
         <p>• <strong>brcmfmac</strong> - Broadcom FullMAC wireless</p>
         <p>• <strong>mt76</strong> - MediaTek MT7615/MT7915</p>
@@ -138,7 +138,7 @@
         <h3>💾 Memory Manager</h3>
         <p>• <strong>DMA</strong> - Direct Memory Access</p>
         <p>• <strong>Page allocation</strong> - Buffer per pacchetti</p>
-        <p>• <strong>SLAB allocator</strong> - Strutture dati</p>
+        <p>• <strong>SLUB allocator</strong> - Allocazione degli sk_buff e delle strutture dati del driver</p>
 
         <h3>⚡ Interrupt System</h3>
         <p>• <strong>IRQ handling</strong> - Interrupt dal controller</p>
@@ -166,10 +166,11 @@
             <span style="color: #666; font-size: 0.9em;">Trasmette pacchetto sul mezzo fisico.</span><br><br>
 
             <code style="color: #d32f2f; font-weight: bold;">int ndo_open(struct net_device *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre interfaccia (ifconfig up).</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Apre interfaccia (ip link set dev eth0 up).</span><br><br>
+
 
             <code style="color: #2e7d32; font-weight: bold;">int ndo_stop(struct net_device *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Chiude interfaccia (ifconfig down).</span>
+            <span style="color: #666; font-size: 0.9em;">Chiude interfaccia (ip link set dev eth0 down).</span>
         </div>
 
         <h3>⚡ Interrupt e NAPI</h3>
@@ -177,10 +178,10 @@
             <code style="color: #f57c00; font-weight: bold;">irqreturn_t interrupt_handler(int irq, void *dev_id);</code><br>
             <span style="color: #666; font-size: 0.9em;">Gestisce interrupt dal controller hardware.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">int napi_schedule_prep(struct napi_struct *n);</code><br>
+            <code style="color: #9c27b0; font-weight: bold;">bool napi_schedule_prep(struct napi_struct *n);</code><br>
             <span style="color: #666; font-size: 0.9em;">Prepara polling NAPI per pacchetti.</span><br><br>
 
-            <code style="color: #0288d1; font-weight: bold;">int napi_complete(struct napi_struct *n);</code><br>
+            <code style="color: #0288d1; font-weight: bold;">bool napi_complete_done(struct napi_struct *n, int work_done);</code><br>
             <span style="color: #666; font-size: 0.9em;">Completa polling NAPI.</span>
         </div>
 
@@ -327,13 +328,13 @@
                     <li><strong>4. Buffer management:</strong> Ring buffer RX gestito con DMA</li>
                     <li><strong>5. Large Receive Offload:</strong> Pacchetti aggregati per ridurre CPU</li>
                     <li><strong>6. TCP acknowledgment:</strong> ACK generati con delayed ACK</li>
-                    <li><strong>7. Scrittura disco:</strong> Dati trasferiti direttamente da NIC a disco</li>
+                    <li><strong>7. Scrittura disco:</strong> Il processo wget scrive i dati ricevuti sul disco (tramite page cache)</li>
                     <li><strong>8. Statistiche:</strong> Contatori pacchetti aggiornati per monitoraggio</li>
                 </ol>
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Il file viene scaricato alla velocità massima possibile grazie alle ottimizzazioni del driver: offloading riduce l'uso CPU, DMA elimina copie memoria, e NAPI gestisce alta velocità senza sovraccarico interrupt.
+                <strong>🎯 Risultato:</strong> Il file viene scaricato alla velocità massima possibile grazie alle ottimizzazioni del driver: offloading riduce l'uso CPU, il DMA evita che la CPU copi i dati dal controller alla memoria, e NAPI gestisce alta velocità senza sovraccarico interrupt.
             </div>
         </div>
 
@@ -451,13 +452,13 @@
     const quizQuestions = [
         {
             question: "Cosa fa NAPI nei network driver?",
-            options: ["Gestisce memoria", "Riduce interrupt ad alta velocità", "Configura IP", "Gestisce processi"],
-            correct: 1,
+            options: ["Gestisce memoria", "Configura IP", "Gestisce processi", "Riduce interrupt ad alta velocità"],
+            correct: 3,
             explanation: "NAPI (New API for Packet I/O) usa polling invece di interrupt per gestire alta velocità, riducendo overhead CPU."
         },
         {
             question: "Quale struttura rappresenta un'interfaccia di rete?",
-            options: ["struct file", "struct net_device", "struct inode", "struct task_struct"],
+            options: ["struct task_struct", "struct net_device", "struct inode", "struct file"],
             correct: 1,
             explanation: "struct net_device rappresenta un'interfaccia di rete nel kernel, contenente configurazione e operazioni."
         },
@@ -468,45 +469,45 @@
             explanation: "TSO (TCP Segmentation Offload) permette al controller di dividere pacchetti TCP grandi, scaricando lavoro dalla CPU."
         },
         {
-            question: "Quale comando mostra statistiche rete?",
-            options: ["ifconfig", "ip -s link show", "route", "netstat"],
-            correct: 1,
-            explanation: "ip -s link show mostra statistiche dettagliate RX/TX per interfaccia, incluse dal driver."
+            question: "Quale comando mostra le statistiche RX/TX di un'interfaccia (pacchetti, errori, drop)?",
+            options: ["uname -r", "lsmod", "ip -s link show", "df -h"],
+            correct: 2,
+            explanation: "ip -s link show mostra i contatori RX/TX per interfaccia, compresi errori e pacchetti scartati, aggiornati dal driver."
         },
         {
             question: "Cosa gestiscono i ring buffer?",
-            options: ["Solo memoria", "Code pacchetti TX/RX", "Solo processi", "Solo file"],
-            correct: 1,
+            options: ["Solo processi", "Solo memoria", "Solo file", "Code pacchetti TX/RX"],
+            correct: 3,
             explanation: "TX e RX ring buffers sono code circolari che gestiscono pacchetti tra stack rete e hardware."
         },
         {
             question: "Quale funzione trasmette pacchetti?",
-            options: ["ndo_open", "ndo_stop", "ndo_start_xmit", "ndo_close"],
+            options: ["ndo_close", "ndo_open", "ndo_start_xmit", "ndo_stop"],
             correct: 2,
             explanation: "ndo_start_xmit è la funzione che trasmette pacchetti dal network stack all'hardware."
         },
         {
             question: "Cosa fa ethtool -i?",
-            options: ["Configura velocità", "Mostra info driver", "Testa connessione", "Mostra route"],
-            correct: 1,
+            options: ["Configura velocità", "Mostra route", "Testa connessione", "Mostra info driver"],
+            correct: 3,
             explanation: "ethtool -i mostra informazioni sul driver e firmware dell'interfaccia di rete."
         },
         {
-            question: "Quale tecnica riduce latenza?",
-            options: ["Jumbo frames", "Interrupt coalescing", "Solo polling", "Solo interrupt"],
-            correct: 1,
-            explanation: "Interrupt coalescing raggruppa multiple interrupt in uno singolo, riducendo latenza per applicazioni real-time."
+            question: "Quale tecnica riduce il carico di interrupt raggruppando più eventi di ricezione in un solo interrupt?",
+            options: ["Interrupt coalescing", "Jumbo frames", "VLAN tagging", "Promiscuous mode"],
+            correct: 0,
+            explanation: "L'interrupt coalescing riduce il numero di interrupt (e quindi il carico sulla CPU) a costo di una latenza leggermente maggiore, regolabile con ethtool -C."
         },
         {
             question: "Cosa rappresenta sk_buff?",
-            options: ["Socket buffer", "Kernel buffer", "Network buffer", "Memory buffer"],
+            options: ["Socket buffer", "Network buffer", "Kernel buffer", "Memory buffer"],
             correct: 0,
             explanation: "sk_buff (socket buffer) è la struttura dati che rappresenta pacchetti nel network stack Linux."
         },
         {
             question: "Quale driver supporta Intel wireless?",
-            options: ["ath9k", "rt2800usb", "iwlwifi", "brcmfmac"],
-            correct: 2,
+            options: ["iwlwifi", "ath9k", "brcmfmac", "rt2800usb"],
+            correct: 0,
             explanation: "iwlwifi è il driver per dispositivi wireless Intel, supportando varie generazioni da Centrino a AX210."
         }
     ];
@@ -532,7 +533,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -540,7 +541,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -593,7 +594,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -608,9 +609,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -619,7 +620,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -636,7 +637,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -654,7 +655,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

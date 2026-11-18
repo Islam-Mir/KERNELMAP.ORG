@@ -34,14 +34,14 @@
     <div class="content">
         <span class="badge">🔌 INTERFACCE HI</span>
         <h2>DESCRIZIONE:</h2>
-        <p><strong>Le HI Hardware Interfaces (High-Level Hardware Interfaces) sono il livello più elevato del sottosistema di gestione dispositivi nel kernel Linux. Questo layer fornisce interfacce astratte e di alto livello per l'interazione con dispositivi hardware, nascondendo completamente i dettagli implementativi specifici e fornendo API uniformi per diverse categorie di dispositivi.</strong></p>
+        <p><strong>Le HI Hardware Interfaces (Human Interfaces) sono il livello più elevato del sottosistema di gestione dispositivi nel kernel Linux. Questo layer fornisce interfacce astratte e di alto livello per l'interazione con dispositivi hardware, nascondendo completamente i dettagli implementativi specifici e fornendo API uniformi per diverse categorie di dispositivi.</strong></p>
         
         <h2>CONFRONTO:</h2>
         <p>Immagina le HI Hardware Interfaces come un ristorante stellato: i clienti (programmi) ordinano da un menu elegante senza sapere nulla della cucina (hardware specifico). Il maître (HI layer) coordina tutto, i camerieri (driver di medio livello) preparano i piatti, e i cuochi (driver low-level) cucinano, ma l'esperienza finale è sempre raffinata e uniforme.</p>
         
         <h2>🔍 Descrizione Tecnica</h2>
         <p><strong>Le HI Hardware Interfaces implementano un'architettura a strati che separa completamente l'applicazione dal dispositivo fisico. Utilizza pattern di design orientati agli oggetti, callback asincroni, e meccanismi di notifica per fornire un'interfaccia elegante e potente per l'accesso hardware.</strong></p>
-        <p>• <strong>Object-Oriented Design</strong> - Interfacce basate su oggetti con ereditarietà e polimorfismo</p>
+        <p>• <strong>Object-Oriented Design</strong> - Il kernel usa tabelle di puntatori a funzione (es. file_operations) per ottenere un comportamento polimorfico in C</p>
         <p>• <strong>Asynchronous Operations</strong> - Operazioni non bloccanti con callback e completion handlers</p>
         <p>• <strong>Event-Driven Architecture</strong> - Sistema di eventi e notifiche per cambiamenti di stato</p>
         <p><em>• Interfaccia principale tra applicazioni userspace e dispositivi hardware attraverso driver</em></p>
@@ -50,32 +50,32 @@
 <p><strong>Le HI Hardware Interfaces gestiscono operazioni di alto livello che astraggono completamente l'hardware sottostante:</strong></p>
 
 <h3>⚙️ Device Management</h3>
-<p>• <strong>device_open()</strong> - Apre un dispositivo per l'uso esclusivo</p>
-<p>• <strong>device_close()</strong> - Chiude il dispositivo e rilascia risorse</p>
+<p>• <strong>open()</strong> - Apre il device node e restituisce un file descriptor</p>
+<p>• <strong>close()</strong> - Chiude il file descriptor e rilascia le risorse</p>
 
 <h3>⚙️ Asynchronous I/O</h3>
-<p>• <strong>device_async_read()</strong> - Lettura asincrona con callback</p>
-<p>• <strong>device_async_write()</strong> - Scrittura asincrona con completion handler</p>
+<p>• <strong>aio_read()</strong> - Lettura asincrona con callback</p>
+<p>• <strong>aio_write()</strong> - Scrittura asincrona con completion handler</p>
 
 <h3>⚙️ Event Handling</h3>
-<p>• <strong>device_register_event()</strong> - Registra handler per eventi dispositivo</p>
-<p>• <strong>device_unregister_event()</strong> - Rimuove handler eventi</p>
+<p>• <strong>udev_monitor_new_from_netlink()</strong> - Si mette in ascolto degli uevent dei dispositivi tramite libudev</p>
+<p>• <strong>udev_monitor_unref()</strong> - Rilascia il monitor degli eventi</p>
 
 <h2>📋 Esempi Pratici delle HI Hardware Interfaces</h2>
 <p><strong>Le HI Hardware Interfaces rendono l'accesso ai dispositivi semplice e uniforme attraverso API di alto livello:</strong></p>
 
 <h3>🔍 Accesso a Dispositivo Audio</h3>
-<p>1. Applicazione chiama device_open("/dev/snd/pcmC0D0")</p>
+<p>1. Applicazione chiama open("/dev/snd/pcmC0D0")</p>
 <p>2. HI layer valida permessi e configura parametri audio</p>
 <p>3. Operazioni di lettura/scrittura usano buffer di alto livello</p>
 <p>4. Sistema gestisce automaticamente DMA e interrupt</p>
 
 <h3>📄 Strutture Dati Chiave</h3>
 <ul>
-<li><strong>device_interface</strong> - Interfaccia astratta per dispositivi generici</li>
-<li><strong>async_operation</strong> - Struttura per operazioni I/O asincrone</li>
-<li><strong>event_handler</strong> - Callback per gestione eventi dispositivo</li>
-<li><strong>device_context</strong> - Contesto di stato per istanza dispositivo</li>
+<li><strong>file_operations</strong> - Tabella di funzioni (open, read, write, ioctl) implementata da ogni driver</li>
+<li><strong>aiocb</strong> - Struttura POSIX AIO che descrive un'operazione di I/O asincrona</li>
+<li><strong>input_event</strong> - Evento generato da un dispositivo di input (tipo, codice, valore)</li>
+<li><strong>struct device</strong> - Rappresenta un'istanza di dispositivo nel driver model</li>
 </ul>
 
 <h3>💻 Comandi Linux Essenziali</h3>
@@ -170,7 +170,7 @@
 <p><strong>Come utilizzare le HI Hardware Interfaces nelle applicazioni:</strong></p>
 <ol>
 <li><code>fd = open("/dev/snd/pcmC0D0", O_RDWR)</code> - Apri dispositivo audio</li>
-<li><code>ioctl(fd, SNDCTL_DSP_SETFMT, &format)</code> - Configura formato audio</li>
+<li><code>ioctl(fd, SNDRV_PCM_IOCTL_HW_PARAMS, &params)</code> - Configura formato audio</li>
 <li><code>write(fd, buffer, size)</code> - Invia dati audio al dispositivo</li>
 <li><code>close(fd)</code> - Chiudi dispositivo e rilascia risorse</li>
 </ol>
@@ -178,7 +178,7 @@
 
 <h2>🗺️ Architettura delle HI Hardware Interfaces</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle High-Level Hardware Interfaces</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Hardware Interfaces Human Interfaces</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -404,63 +404,63 @@
     const quizQuestions = [
         {
             question: "Cosa significa ALSA?",
-            options: ["Advanced Linux Sound Architecture", "Automatic Linux System Audio", "Application Layer Sound API", "Audio Linux Standard Access"],
-            correct: 0,
+            options: ["Automatic Linux System Audio", "Audio Linux Standard Access", "Application Layer Sound API", "Advanced Linux Sound Architecture"],
+            correct: 3,
             explanation: "ALSA è Advanced Linux Sound Architecture, il sottosistema audio di alto livello che fornisce interfacce uniformi per dispositivi audio."
         },
         {
             question: "Quale comando elenca dispositivi audio ALSA?",
-            options: ["lsaudio", "aplay -l", "alsamixer", "pulseaudio"],
-            correct: 1,
+            options: ["lsaudio", "pulseaudio", "alsamixer", "aplay -l"],
+            correct: 3,
             explanation: "aplay -l elenca tutti i dispositivi audio di playback disponibili nel sistema ALSA."
         },
         {
             question: "Cosa gestisce V4L2?",
-            options: ["Dispositivi di rete", "Dispositivi video", "Dispositivi audio", "Dispositivi di storage"],
-            correct: 1,
+            options: ["Dispositivi video", "Dispositivi di rete", "Dispositivi audio", "Dispositivi di storage"],
+            correct: 0,
             explanation: "V4L2 (Video for Linux 2) gestisce dispositivi video come webcam, TV tuner e dispositivi di cattura video."
         },
         {
             question: "Quale comando monitora eventi dispositivi?",
-            options: ["lsusb", "udevadm monitor", "lspci", "dmesg"],
-            correct: 1,
+            options: ["lspci", "dmesg", "udevadm monitor", "lsusb"],
+            correct: 2,
             explanation: "udevadm monitor mostra in tempo reale gli eventi di connessione/disconnessione dispositivi nel sistema."
         },
         {
             question: "Cosa permette l'I/O asincrono?",
-            options: ["Solo operazioni sincrone", "Operazioni non bloccanti con callback", "Solo dispositivi locali", "Solo file di testo"],
+            options: ["Solo dispositivi locali", "Operazioni non bloccanti con callback", "Solo file di testo", "Solo operazioni sincrone"],
             correct: 1,
             explanation: "L'I/O asincrono permette operazioni non bloccanti dove l'applicazione continua l'esecuzione mentre l'I/O avviene in background."
         },
         {
             question: "Quale comando testa dispositivi input?",
-            options: ["input-test", "evtest", "device-test", "input-monitor"],
-            correct: 1,
+            options: ["device-test", "input-monitor", "input-test", "evtest"],
+            correct: 3,
             explanation: "evtest permette di monitorare e testare eventi da dispositivi input come tastiere e mouse."
         },
         {
             question: "Cosa significa hotplug?",
-            options: ["Dispositivi sempre connessi", "Connessione/disconnessione a caldo", "Solo dispositivi USB", "Dispositivi wireless"],
-            correct: 1,
+            options: ["Connessione/disconnessione a caldo", "Dispositivi sempre connessi", "Dispositivi wireless", "Solo dispositivi USB"],
+            correct: 0,
             explanation: "Hotplug si riferisce alla capacità di connettere/disconnettere dispositivi mentre il sistema è in esecuzione."
         },
         {
             question: "Quale comando elenca dispositivi video?",
-            options: ["lsvideo", "v4l2-ctl --list-devices", "cameratest", "videoctl"],
+            options: ["cameratest", "v4l2-ctl --list-devices", "lsvideo", "videoctl"],
             correct: 1,
             explanation: "v4l2-ctl --list-devices elenca tutti i dispositivi video V4L2 disponibili nel sistema."
         },
         {
-            question: "Cosa gestisce il sottosistema Input?",
-            options: ["Solo tastiere", "Tastiere, mouse, touchscreen, joystick", "Solo dispositivi USB", "Solo dispositivi wireless"],
-            correct: 1,
-            explanation: "Il sottosistema Input gestisce tutti i dispositivi di input: tastiere, mouse, touchscreen, joystick, ecc."
+            question: "Come vengono esposti all'applicazione gli eventi di un dispositivo di input?",
+            options: ["Come file di testo in /etc", "Come pagine di memoria condivisa", "Come struct input_event letti da /dev/input/event*", "Come pacchetti di rete"],
+            correct: 2,
+            explanation: "Il sottosistema Input genera eventi (tipo, codice, valore) rappresentati da struct input_event, che le applicazioni leggono dai device node /dev/input/event*."
         },
         {
-            question: "Quale comando mostra dispositivi PCI?",
-            options: ["lspci", "lsusb", "lsdev", "pcitest"],
-            correct: 0,
-            explanation: "lspci mostra informazioni dettagliate su tutti i dispositivi PCI connessi al sistema."
+            question: "Quale comando mostra l'elenco dei dispositivi a caratteri e a blocchi con i rispettivi numeri major?",
+            options: ["df -h", "uname -r", "cat /proc/devices", "lsmod"],
+            correct: 2,
+            explanation: "/proc/devices elenca i dispositivi a caratteri e a blocchi registrati nel kernel con il numero major assegnato a ciascun driver."
         }
     ];
 
@@ -485,7 +485,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -493,7 +493,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -546,7 +546,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -561,9 +561,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -572,7 +572,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -589,7 +589,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -607,7 +607,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

@@ -440,7 +440,6 @@
 
 
 
-    </ul>
     </div>
 
 
@@ -464,20 +463,20 @@
     const quizQuestions = [
         {
             question: "Quale meccanismo IPC offre un flusso di byte unidirezionale tra due processi?",
-            options: ["Memoria condivisa", "Pipe", "Semaforo", "Segnale"],
-            correct: 1,
+            options: ["Segnale", "Memoria condivisa", "Semaforo", "Pipe"],
+            correct: 3,
             explanation: "La pipe è un buffer circolare nel kernel: un processo scrive a un'estremità e l'altro legge dall'altra, in un'unica direzione."
         },
         {
             question: "Qual è il vantaggio principale della memoria condivisa?",
-            options: ["Isola completamente i processi", "Cifra i dati scambiati", "Evita la copia dei dati tra i processi", "Garantisce l'ordine dei messaggi"],
-            correct: 2,
+            options: ["Isola completamente i processi", "Evita la copia dei dati tra i processi", "Cifra i dati scambiati", "Garantisce l'ordine dei messaggi"],
+            correct: 1,
             explanation: "Più processi mappano la stessa regione di memoria fisica, quindi i dati non vengono copiati attraverso il kernel. Serve però una sincronizzazione esplicita."
         },
         {
             question: "Quale chiamata di sistema invia un segnale a un processo?",
-            options: ["kill()", "pipe()", "mmap()", "epoll_create()"],
-            correct: 0,
+            options: ["epoll_create()", "kill()", "mmap()", "pipe()"],
+            correct: 1,
             explanation: "kill() invia un segnale al processo indicato; nonostante il nome, può trasportare qualsiasi segnale, non solo quelli che terminano il processo."
         },
         {
@@ -488,38 +487,38 @@
         },
         {
             question: "Quale sottosistema genera gli eventi consegnati da inotify?",
-            options: ["fsnotify", "netfilter", "kswapd", "cgroups"],
-            correct: 0,
+            options: ["kswapd", "netfilter", "fsnotify", "cgroups"],
+            correct: 2,
             explanation: "fsnotify intercetta le operazioni sui file nel VFS e consegna gli eventi ai gruppi inotify e fanotify registrati."
         },
         {
             question: "Cosa succede quando una pipe è piena e uno scrittore bloccante tenta di scrivere?",
-            options: ["I dati vengono scartati", "Lo scrittore viene messo in attesa", "Il kernel ingrandisce la pipe all'infinito", "Il processo riceve SIGKILL"],
-            correct: 1,
+            options: ["Lo scrittore viene messo in attesa", "I dati vengono scartati", "Il processo riceve SIGKILL", "Il kernel ingrandisce la pipe all'infinito"],
+            correct: 0,
             explanation: "Lo scrittore dorme sulla wait queue finché un lettore libera spazio. SIGPIPE arriva invece quando non esistono più lettori."
         },
         {
             question: "Quale struttura rappresenta un callback registrato in una notifier chain?",
-            options: ["pipe_inode_info", "kern_ipc_perm", "notifier_block", "fsnotify_group"],
-            correct: 2,
+            options: ["notifier_block", "kern_ipc_perm", "pipe_inode_info", "fsnotify_group"],
+            correct: 0,
             explanation: "notifier_block contiene il puntatore al callback e la priorità; i blocchi sono collegati in una lista e invocati con notifier_call_chain."
         },
         {
             question: "Quale comando elenca code di messaggi, memoria condivisa e semafori System V?",
-            options: ["lsmod", "dmesg", "ss", "ipcs"],
-            correct: 3,
+            options: ["ipcs", "dmesg", "lsmod", "ss"],
+            correct: 0,
             explanation: "ipcs legge i dati esposti dal kernel (ad esempio /proc/sysvipc/) e mostra gli oggetti IPC System V attivi."
         },
         {
             question: "Cosa isola un IPC namespace?",
-            options: ["Le interfacce di rete", "Gli oggetti System V e le code POSIX", "Gli ID dei processi", "I punti di mount"],
-            correct: 1,
+            options: ["Gli ID dei processi", "Le interfacce di rete", "I punti di mount", "Gli oggetti System V e le code POSIX"],
+            correct: 3,
             explanation: "Ogni IPC namespace ha i propri oggetti System V e le proprie code POSIX, quindi i container non vedono quelli degli altri."
         },
         {
             question: "Quale meccanismo porta in user space gli uevent usati da udev?",
-            options: ["Netlink", "Pipe anonime", "Semafori", "Segnali real-time"],
-            correct: 0,
+            options: ["Segnali real-time", "Pipe anonime", "Netlink", "Semafori"],
+            correct: 2,
             explanation: "kobject_uevent() invia i messaggi tramite socket Netlink; udev li riceve e crea o rimuove i nodi dei dispositivi."
         }
     ];
@@ -545,7 +544,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -553,7 +552,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -606,7 +605,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -621,9 +620,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -632,7 +631,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -649,7 +648,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -667,7 +666,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

@@ -98,7 +98,7 @@
 <h2>💾 Supporto e Compatibilità</h2>
         <ul>
             <li><strong>AF_INET</strong> - IPv4 (4.2BSD, RFC 791)</li>
-            <li><strong>AF_INET6</strong> - IPv6 (RFC 2460)</li>
+            <li><strong>AF_INET6</strong> - IPv6 (RFC 8200)</li>
             <li><strong>AF_UNIX</strong> - Unix domain sockets</li>
             <li><strong>AF_NETLINK</strong> - Comunicazione kernel-userspace</li>
             <li><strong>AF_PACKET</strong> - Accesso diretto a livello link</li>
@@ -400,7 +400,6 @@
         </div>
     </div>
 
-    </ul>
 
     <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
         © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
@@ -411,62 +410,62 @@
     const quizQuestions = [
         {
             question: "Quale famiglia di indirizzi viene utilizzata per IPv4?",
-            options: ["AF_INET6", "AF_UNIX", "AF_INET", "AF_NETLINK"],
+            options: ["AF_INET6", "AF_NETLINK", "AF_INET", "AF_UNIX"],
             correct: 2,
             explanation: "AF_INET è la famiglia di indirizzi utilizzata per IPv4, che supporta indirizzi a 32 bit."
         },
         {
             question: "Cosa permette AF_UNIX?",
-            options: ["Comunicazione su Internet", "Comunicazione tra processi locali", "Accesso a dispositivi hardware", "Risoluzione DNS"],
-            correct: 1,
+            options: ["Comunicazione su Internet", "Accesso a dispositivi hardware", "Comunicazione tra processi locali", "Risoluzione DNS"],
+            correct: 2,
             explanation: "AF_UNIX permette la comunicazione tra processi sulla stessa macchina utilizzando path del filesystem."
         },
         {
             question: "Quale funzione converte un indirizzo IP binario in stringa?",
-            options: ["getaddrinfo", "inet_pton", "inet_ntop", "getnameinfo"],
-            correct: 2,
+            options: ["getaddrinfo", "inet_ntop", "inet_pton", "getnameinfo"],
+            correct: 1,
             explanation: "inet_ntop converte un indirizzo IP binario (network byte order) in una stringa leggibile dall'uomo."
         },
         {
             question: "Cosa rappresenta una struttura sockaddr_in?",
-            options: ["Indirizzo IPv6", "Indirizzo IPv4 con porta", "Path Unix socket", "Indirizzo MAC"],
-            correct: 1,
+            options: ["Path Unix socket", "Indirizzo MAC", "Indirizzo IPv6", "Indirizzo IPv4 con porta"],
+            correct: 3,
             explanation: "struct sockaddr_in contiene un indirizzo IPv4 (32 bit) e un numero di porta (16 bit)."
         },
         {
-            question: "Quale comando mostra gli indirizzi IP configurati?",
-            options: ["ifconfig", "ip addr show", "netstat -i", "route -n"],
-            correct: 1,
-            explanation: "ip addr show mostra tutti gli indirizzi IPv4 e IPv6 configurati sulle interfacce di rete."
+            question: "Quale comando moderno (iproute2) mostra gli indirizzi IP configurati sulle interfacce?",
+            options: ["ls /dev", "df -h", "ps aux", "ip addr show"],
+            correct: 3,
+            explanation: "ip addr show (iproute2) elenca gli indirizzi IPv4 e IPv6 configurati sulle interfacce di rete."
         },
         {
             question: "Cosa significa 'dual stack' nel contesto delle address families?",
-            options: ["Due processori", "Supporto IPv4 e IPv6 simultaneo", "Due schede di rete", "Due protocolli di trasporto"],
-            correct: 1,
+            options: ["Due processori", "Due protocolli di trasporto", "Supporto IPv4 e IPv6 simultaneo", "Due schede di rete"],
+            correct: 2,
             explanation: "Dual stack significa che il sistema supporta sia IPv4 che IPv6 contemporaneamente sulla stessa interfaccia."
         },
         {
             question: "Quale famiglia viene utilizzata per la comunicazione kernel-userspace?",
-            options: ["AF_INET", "AF_UNIX", "AF_NETLINK", "AF_INET6"],
-            correct: 2,
+            options: ["AF_NETLINK", "AF_INET", "AF_INET6", "AF_UNIX"],
+            correct: 0,
             explanation: "AF_NETLINK è utilizzata per la comunicazione bidirezionale tra kernel e userspace, spesso per netlink sockets."
         },
         {
             question: "Cosa fa la funzione getaddrinfo()?",
-            options: ["Converte IP in nome host", "Risolve nome host in indirizzi IP", "Crea un socket", "Chiude una connessione"],
+            options: ["Converte IP in nome host", "Risolve nome host in indirizzi IP", "Chiude una connessione", "Crea un socket"],
             correct: 1,
             explanation: "getaddrinfo() risolve un nome host (o indirizzo IP) in una lista di strutture addrinfo contenenti indirizzi utilizzabili."
         },
         {
-            question: "Quale comando mostra i socket TCP/UDP in ascolto?",
-            options: ["netstat -tuln", "ss -tuln", "lsof -i", "ps aux"],
-            correct: 1,
-            explanation: "ss -tuln mostra tutti i socket TCP e UDP in stato LISTEN (listening) con numeri di porta."
+            question: "Quale comando di iproute2 mostra i socket TCP/UDP in ascolto?",
+            options: ["ss -tuln", "df -h", "ps aux", "ip route show"],
+            correct: 0,
+            explanation: "ss -tuln mostra i socket TCP e UDP in stato LISTEN con i numeri di porta."
         },
         {
             question: "Cosa caratterizza gli indirizzi IPv6 rispetto a IPv4?",
-            options: ["32 bit invece di 128", "Stessa dimensione", "128 bit invece di 32", "Utilizzo di porte diverse"],
-            correct: 2,
+            options: ["32 bit invece di 128", "Stessa dimensione", "Utilizzo di porte diverse", "128 bit invece di 32"],
+            correct: 3,
             explanation: "IPv6 utilizza indirizzi a 128 bit invece dei 32 bit di IPv4, permettendo molti più indirizzi unici."
         }
     ];
@@ -492,7 +491,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -500,7 +499,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -553,7 +552,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -568,9 +567,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -579,7 +578,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -596,7 +595,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -614,7 +613,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+          const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

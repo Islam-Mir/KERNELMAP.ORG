@@ -64,7 +64,7 @@
 
         <h3>📋 Dispositivi di Memoria</h3>
         <p>• <strong>/dev/mem</strong> - Accesso diretto alla memoria fisica (per debugging)</p>
-        <p>• <strong>/dev/kmem</strong> - Accesso alla memoria del kernel (privilegiato)</p>
+        <p>• <strong>/dev/kmem</strong> - Accesso alla memoria del kernel (privilegiato) (rimosso dal 5.13)</p>
         <p>• <strong>/dev/port</strong> - Accesso diretto alle porte I/O</p>
 
         <h3>🔊 Dispositivi Audio Virtuali</h3>
@@ -96,7 +96,7 @@
         <ol>
             <li><code>openssl rand -base64 32</code> - Genera chiavi sicure</li>
             <li><code>dd if=/dev/random of=keyfile bs=32 count=1</code> - File chiave</li>
-            <li><code>gpg --gen-random 2 1024</code> - Generazione chiavi GPG</li>
+            <li><code>gpg --gen-random 2 1024</code> - Genera 1024 byte casuali di qualità crittografica</li>
         </ol>
 
         <h3>💻 Nel Computer: Come Vederli?</h3>
@@ -318,12 +318,12 @@
                     <li><strong>2. Generazione dati</strong> - Il kernel produce byte zero on-demand</li>
                     <li><strong>3. Scrittura file</strong> - dd scrive gli zeri nel file di destinazione</li>
                     <li><strong>4. Chiusura</strong> - Risorse liberate (non ce ne sono!)</li>
-                    <li><strong>5. Risultato</strong> - File da 100MB creato istantaneamente!</li>
+                    <li><strong>5. Risultato</strong> - File da 100 MB creato in una frazione di secondo.</li>
                 </ol>
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Hai creato un file di 100MB in pochi secondi senza usare spazio disco reale. Perfetto per testing prestazioni I/O o creazione filesystem virtuali!
+                <strong>🎯 Risultato:</strong> Hai creato in pochi secondi un file di 100MB pieno di zeri (che occupa davvero 100MB su disco). Perfetto per testing prestazioni I/O o creazione filesystem virtuali!
             </div>
         </div>
 
@@ -390,7 +390,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Performance Immediata</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Nessun accesso hardware significa velocità estreme. /dev/zero può generare terabyte di dati al secondo senza storage fisico.
+                    Nessun accesso hardware significa velocità estreme. /dev/zero può generare decine di GB di dati al secondo senza leggere alcun hardware.
                 </p>
             </div>
 
@@ -433,63 +433,63 @@
     const quizQuestions = [
         {
             question: "Cosa sono i dispositivi astratti nel kernel Linux?",
-            options: ["Driver per hardware fisico", "Interfacce virtuali che non corrispondono a hardware reale", "Parte del sistema di boot", "Gestori di memoria"],
-            correct: 1,
+            options: ["Gestori di memoria", "Parte del sistema di boot", "Interfacce virtuali che non corrispondono a hardware reale", "Driver per hardware fisico"],
+            correct: 2,
             explanation: "I dispositivi astratti sono interfacce virtuali implementate in software che appaiono come dispositivi hardware ma non hanno componenti fisiche corrispondenti."
         },
         {
             question: "Quale dispositivo scarta tutti i dati che gli vengono scritti?",
-            options: ["/dev/zero", "/dev/random", "/dev/null", "/dev/full"],
+            options: ["/dev/full", "/dev/random", "/dev/null", "/dev/zero"],
             correct: 2,
             explanation: "/dev/null è il 'buco nero' del sistema Linux che scarta silenziosamente tutti i dati che riceve, utile per sopprimere output indesiderato."
         },
         {
             question: "Cosa genera /dev/zero?",
-            options: ["Numeri casuali", "Byte vuoti (zeri)", "Dati dal disco", "Errori di sistema"],
-            correct: 1,
+            options: ["Errori di sistema", "Dati dal disco", "Byte vuoti (zeri)", "Numeri casuali"],
+            correct: 2,
             explanation: "/dev/zero genera un flusso infinito di byte nulli (zeri), utile per creare file di test o inizializzare memoria."
         },
         {
             question: "Quale dispositivo fornisce numeri casuali crittograficamente sicuri?",
-            options: ["/dev/null", "/dev/zero", "/dev/random", "/dev/full"],
-            correct: 2,
-            explanation: "/dev/random genera numeri casuali crittograficamente sicuri usando l'entropia del sistema, bloccando se non c'è abbastanza entropia."
+            options: ["/dev/random", "/dev/null", "/dev/zero", "/dev/full"],
+            correct: 0,
+            explanation: "/dev/random fornisce numeri casuali crittograficamente sicuri prelevati dal generatore del kernel. Sui kernel moderni (dal 5.6) si blocca solo finché il generatore non è stato inizializzato all'avvio."
         },
         {
             question: "Cosa succede quando scrivi su /dev/full?",
-            options: ["I dati vengono salvati", "Viene restituito un errore 'disco pieno'", "I dati vengono compressi", "Vengono generati dati casuali"],
+            options: ["I dati vengono compressi", "Viene restituito un errore 'disco pieno'", "Vengono generati dati casuali", "I dati vengono salvati"],
             correct: 1,
             explanation: "/dev/full simula un dispositivo sempre pieno, rifiutando le scritture con errore ENOSPC (No space left on device)."
         },
         {
             question: "Quale comando mostra tutti i dispositivi in /dev/?",
-            options: ["ls -l /dev", "ps aux", "df -h", "free"],
-            correct: 0,
+            options: ["ps aux", "free", "df -h", "ls -l /dev"],
+            correct: 3,
             explanation: "ls -l /dev mostra tutti i dispositivi speciali, inclusi quelli astratti come /dev/null, /dev/zero, etc."
         },
         {
             question: "Cosa permette di fare /dev/mem?",
-            options: ["Accesso alla memoria del kernel", "Accesso diretto alla memoria fisica", "Gestione file di swap", "Controllo dispositivi USB"],
+            options: ["Gestione file di swap", "Accesso diretto alla memoria fisica", "Accesso alla memoria del kernel", "Controllo dispositivi USB"],
             correct: 1,
             explanation: "/dev/mem permette l'accesso diretto alla memoria fisica del sistema, utile per debugging ma richiede privilegi root."
         },
         {
             question: "Quale dispositivo è più veloce per generare dati di test?",
-            options: ["/dev/random", "/dev/urandom", "/dev/zero", "/dev/null"],
-            correct: 2,
+            options: ["/dev/random", "/dev/null", "/dev/urandom", "/dev/zero"],
+            correct: 3,
             explanation: "/dev/zero è il più veloce perché genera semplicemente zeri senza calcoli complessi, a differenza dei dispositivi random che richiedono entropia."
         },
         {
-            question: "Cosa rappresenta /dev/kmem?",
-            options: ["Memoria del kernel", "Memoria fisica", "Memoria virtuale", "Cache del processore"],
-            correct: 0,
-            explanation: "/dev/kmem permette l'accesso alla memoria del kernel, utile per debugging avanzato ma estremamente pericoloso se usato impropriamente."
+            question: "Che fine ha fatto /dev/kmem nei kernel moderni?",
+            options: ["È stato sostituito da /dev/zero", "È stato rimosso dal kernel (dal 5.13)", "È stato rinominato /dev/mem", "È diventato accessibile a tutti gli utenti"],
+            correct: 1,
+            explanation: "/dev/kmem dava accesso alla memoria del kernel ed era estremamente pericoloso: è stato eliminato dal kernel a partire dalla versione 5.13. /dev/mem esiste ancora, ma con restrizioni."
         },
         {
             question: "Quale dispositivo è utile per sopprimere l'output di comandi?",
-            options: ["/dev/zero", "/dev/random", "/dev/full", "/dev/null"],
-            correct: 3,
-            explanation: "/dev/null è comunemente usato per reindirizzare output indesiderato: comando > /dev/null sopprime stdout, comando 2> /dev/null sopprime stderr."
+            options: ["/dev/null", "/dev/random", "/dev/full", "/dev/zero"],
+            correct: 0,
+            explanation: "/dev/null è comunemente usato per reindirizzare output indesiderato: comando &gt; /dev/null sopprime stdout, comando 2&gt; /dev/null sopprime stderr."
         }
     ];
 
@@ -514,7 +514,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -522,7 +522,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -575,7 +575,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -590,9 +590,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -601,7 +601,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -618,7 +618,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -636,7 +636,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

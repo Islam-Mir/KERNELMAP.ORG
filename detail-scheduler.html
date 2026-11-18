@@ -42,7 +42,7 @@
         <h2>🔍 Descrizione Tecnica</h2>
         <p><strong>Lo Scheduler è il cervello del multitasking in Linux, implementando algoritmi complessi per distribuire equamente il tempo CPU tra processi concorrenti, bilanciando responsiveness e throughput.</strong> Immagina un direttore d'orchestra digitale che coordina centinaia di musicisti virtuali: ognuno ha il suo spartito (codice), strumento (CPU), e ritmo (priorità), ma il direttore garantisce che la sinfonia (sistema) suoni armoniosa.</p>
 
-        <p>• <strong>CFS (Completely Fair Scheduler)</strong> - Algoritmo principale basato su fairness e virtual runtime</p>
+        <p>• <strong>CFS (Completely Fair Scheduler)</strong> - Algoritmo principale (CFS fino al kernel 6.5, EEVDF dal 6.6) basato su fairness e virtual runtime</p>
         <p>• <strong>Real-time scheduling</strong> - Classi SCHED_FIFO e SCHED_RR per processi tempo-reale</p>
         <p>• <strong>Priority management</strong> - Sistema di priorità nice da -20 a +19 per controllo utente</p>
         <p>• <strong>Load balancing</strong> - Distribuzione processi tra CPU in sistemi multi-core</p>
@@ -62,21 +62,21 @@
 
         <h3>⚖️ Fairness Management</h3>
         <p>• <strong>update_curr()</strong> - Aggiorna virtual runtime processo corrente</p>
-        <p>• <strong>check_preempt_curr()</strong> - Verifica se processo corrente deve essere preemptato</p>
+        <p>• <strong>check_preempt_curr() (wakeup_preempt() dal 6.9)</strong> - Verifica se processo corrente deve essere preemptato</p>
         <p>• <strong>resched_curr()</strong> - Marca processo per rischedulazione</p>
         <p>• <strong>yield_to()</strong> - Cede CPU a processo specifico</p>
-        <p>• <strong>setscheduler()</strong> - Cambia politica scheduling processo</p>
+        <p>• <strong>sched_setscheduler()</strong> - Cambia politica scheduling processo</p>
 
         <h3>🔄 Load Balancing</h3>
         <p>• <strong>load_balance()</strong> - Bilancia carico tra CPU in sistemi multi-core</p>
         <p>• <strong>find_busiest_queue()</strong> - Trova coda runqueue più carica</p>
         <p>• <strong>detach_tasks()</strong> - Sposta task da CPU sovraccarica</p>
         <p>• <strong>attach_tasks()</strong> - Attacca task a CPU target</p>
-        <p>• <strong>migrate_task()</strong> - Migra processo tra CPU</p>
+        <p>• <strong>migrate_task_to()</strong> - Migra processo tra CPU</p>
 
         <h3>⏰ Timer Integration</h3>
         <p>• <strong>scheduler_tick()</strong> - Chiamata periodica dal timer per aggiornamenti</p>
-        <p>• <strong>task_tick_fair()</strong> - Aggiornamento contatori CFS</p>
+        <p>• <strong>task_tick_fair()</strong> - Aggiornamento contatori della classe fair</p>
         <p>• <strong>task_tick_rt()</strong> - Gestione tick per processi real-time</p>
         <p>• <strong>trigger_load_balance()</strong> - Avvia bilanciamento carico periodico</p>
         <p>• <strong>account_process_tick()</strong> - Conteggia tempo CPU utilizzato</p>
@@ -87,15 +87,15 @@
         <h3>🔍 Scheduling di Processi Interattivi vs Batch</h3>
         <p>1. Processo interattivo (editor) ottiene priorità dinamica più alta quando riceve input</p>
         <p>2. Processo batch (compilazione) lavora in background con priorità più bassa</p>
-        <p>3. CFS bilancia automaticamente fairness moltiplicando tempo CPU per priorità</p>
-        <p>4. Context switch avviene ogni ~6-12ms per mantenere responsiveness</p>
+        <p>3. La classe fair (CFS/EEVDF) bilancia automaticamente la fairness pesando il tempo CPU in base alla priorità</p>
+        <p>4. La preemption avviene quando serve (es. al risveglio di un task più meritevole o a fine slice), senza un intervallo fisso</p>
 
         <h3>📄 Strutture Dati Chiave dello Scheduler</h3>
         <ul>
             <li><strong>task_struct</strong> - Contiene tutte le informazioni di un processo: stato, priorità, virtual runtime, puntatori alla runqueue</li>
-            <li><strong>runqueue (rq)</strong> - Coda dei processi pronti per esecuzione, organizzata per priorità</li>
+            <li><strong>runqueue (rq)</strong> - Coda per CPU dei processi pronti, con una sottocoda per ogni classe di scheduling</li>
             <li><strong>sched_entity</strong> - Entità di scheduling con virtual runtime e load weight</li>
-            <li><strong>cfs_rq</strong> - Runqueue specifica del CFS con red-black tree per ordinamento</li>
+            <li><strong>cfs_rq</strong> - Runqueue della classe fair (CFS/EEVDF) con red-black tree per ordinamento</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
@@ -112,9 +112,9 @@
         <p>Quando fai <code>vim documento.txt & gcc programma.c &</code>:</p>
         <ol>
             <li>Entrambi processi entrano nella runqueue con priorità normale (nice=0)</li>
-            <li>Vim ottiene boost dinamico quando digiti (I/O bound)</li>
+            <li>Vim, che dorme spesso in attesa di input (I/O bound), viene favorito perché consuma poco virtual runtime</li>
             <li>GCC lavora steady con virtual runtime che cresce regolarmente</li>
-            <li>Timer interrupt chiama scheduler_tick() ogni millisecondo</li>
+            <li>Timer interrupt chiama scheduler_tick() a ogni tick (HZ, tipicamente 250-1000 volte al secondo)</li>
             <li>Context switch mantiene vim responsive mentre gcc compila</li>
         </ol>
 
@@ -123,7 +123,7 @@
             <li><strong>SCHED_NORMAL/CFS</strong> - Scheduling fair per processi normali (default)</li>
             <li><strong>SCHED_BATCH</strong> - Per processi CPU-intensive senza interazione</li>
             <li><strong>SCHED_IDLE</strong> - Priorità minima, eseguiti solo quando CPU idle</li>
-            <li><strong>SCHED_FIFO</strong> - Real-time first-in-first-out senza preemption</li>
+            <li><strong>SCHED_FIFO</strong> - Real-time first-in-first-out senza time slice (può essere interrotto solo da una priorità RT maggiore)</li>
             <li><strong>SCHED_RR</strong> - Real-time round-robin con time slice</li>
             <li><strong>SCHED_DEADLINE</strong> - Real-time basato su deadline temporali</li>
         </ul>
@@ -203,7 +203,7 @@
         <p><strong>Quando lanci un processo in background:</strong></p>
         <ol>
             <li><code>nice(10)</code> - Abbassa priorità per non interferire con processi interattivi</li>
-            <li>Il CFS assegna automaticamente virtual runtime basato sulla priorità</li>
+            <li>Lo scheduler fair pesa automaticamente il virtual runtime in base alla priorità</li>
             <li>Altri processi ottengono più tempo CPU relativamente</li>
             <li>Il processo lavora senza disturbare l'esperienza utente</li>
         </ol>
@@ -308,7 +308,7 @@
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
                 • Le frecce mostrano il flusso delle decisioni di scheduling<br>
-                • CFS gestisce processi normali, RT per real-time<br>
+                • La classe fair (CFS/EEVDF) gestisce i processi normali, RT quelli real-time<br>
                 • Load balancing distribuisce lavoro tra CPU<br>
                 • Priorità determinano chi ottiene CPU quando
             </div>
@@ -347,7 +347,7 @@
                 <ol style="line-height: 1.8;">
                     <li><strong>1. CFS calcola virtual runtime:</strong> Entrambi processi ottengono tempo CPU proporzionale</li>
                     <li><strong>2. Priorità dinamica:</strong> Editor ottiene boost quando utente digita (I/O bound)</li>
-                    <li><strong>3. Time slicing:</strong> Entrambi ottengono slice di tempo (default ~6-12ms)</li>
+                    <li><strong>3. Time slicing:</strong> Entrambi ottengono slice di tempo calcolate dallo scheduler (dell'ordine dei millisecondi)</li>
                     <li><strong>4. Preemption:</strong> Editor può interrompere compilazione se diventa interattivo</li>
                     <li><strong>5. Bilanciamento:</strong> Entrambi mantengono fairness nonostante priorità diverse</li>
                 </ol>
@@ -391,7 +391,7 @@
                         $ perf sched record -- sleep 10<br>
                         $ perf sched latency<br>
                         $ cat /proc/schedstat<br>
-                        $ cat /proc/sched_debug | head -20
+                        $ sudo cat /sys/kernel/debug/sched/debug | head -20
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Analizza latenze e statistiche dello scheduler</em></p>
                 </div>
@@ -423,7 +423,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⏰</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Virtual Runtime</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Tempo CPU pesato per priorità. Processo con VR più basso ottiene CPU. Nice +10 = metà tempo CPU relativo.
+                    Tempo CPU pesato per priorità. Processo con VR più basso ottiene CPU. Nice +10 = circa un decimo del tempo CPU relativo rispetto a nice 0.
                 </p>
             </div>
 
@@ -449,7 +449,7 @@
         <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
         <div style="text-align: center;">
             <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sul Scheduler
+                📝 Fai il Quiz sullo Scheduler
             </button>
             <div id="quizContainer" style="display: none; margin-bottom: 20px;">
                 <div id="quizContent"></div>
@@ -467,56 +467,56 @@
     const quizQuestions = [
         {
             question: "Cosa fa principalmente lo scheduler in Linux?",
-            options: ["Gestisce la memoria", "Decide quale processo eseguire", "Controlla i dispositivi hardware", "Gestisce i file"],
-            correct: 1,
+            options: ["Decide quale processo eseguire", "Controlla i dispositivi hardware", "Gestisce la memoria", "Gestisce i file"],
+            correct: 0,
             explanation: "Lo scheduler decide quale processo deve essere eseguito in ogni istante, allocando il tempo CPU tra tutti i processi attivi."
         },
         {
             question: "Qual è l'algoritmo di scheduling principale in Linux moderno?",
-            options: ["Round Robin", "Priority Scheduling", "Completely Fair Scheduler (CFS)", "First Come First Served"],
-            correct: 2,
-            explanation: "Il CFS (Completely Fair Scheduler) è l'algoritmo principale di scheduling in Linux, basato su fairness e virtual runtime."
+            options: ["Priority Scheduling", "EEVDF (dal kernel 6.6; prima CFS)", "Round Robin", "First Come First Served"],
+            correct: 1,
+            explanation: "Fino al kernel 6.5 la classe fair usava il CFS (Completely Fair Scheduler); dal 6.6 usa EEVDF. Entrambi si basano su fairness e virtual runtime."
         },
         {
-            question: "Cosa misura il virtual runtime nel CFS?",
+            question: "Cosa misura il virtual runtime nello scheduler fair (CFS/EEVDF)?",
             options: ["Tempo CPU effettivo", "Tempo CPU pesato per priorità", "Tempo di attesa", "Tempo di esecuzione totale"],
             correct: 1,
             explanation: "Il virtual runtime misura il tempo CPU pesato per la priorità del processo, permettendo scheduling fair tra processi con priorità diverse."
         },
         {
-            question: "Quale comando permette di vedere la priorità nice di un processo?",
-            options: ["ps -l", "top", "nice", "chrt"],
-            correct: 1,
-            explanation: "Il comando top mostra la colonna NI (nice) che indica la priorità di scheduling dei processi."
+            question: "Quale comando mostra in tempo reale la colonna NI (nice) dei processi?",
+            options: ["top", "free", "mount", "df"],
+            correct: 0,
+            explanation: "top mostra la colonna NI (nice), che indica la priorità di scheduling dei processi."
         },
         {
             question: "Cosa succede durante un context switch?",
-            options: ["Un processo termina", "La CPU cambia da un processo all'altro", "La memoria viene liberata", "Un nuovo processo viene creato"],
-            correct: 1,
+            options: ["Un nuovo processo viene creato", "Un processo termina", "La CPU cambia da un processo all'altro", "La memoria viene liberata"],
+            correct: 2,
             explanation: "Durante un context switch, la CPU salva lo stato del processo corrente e carica lo stato del nuovo processo da eseguire."
         },
         {
             question: "Quale classe di scheduling è usata per processi real-time?",
-            options: ["CFS", "SCHED_FIFO", "SCHED_IDLE", "SCHED_BATCH"],
-            correct: 1,
-            explanation: "SCHED_FIFO è una classe di scheduling real-time che esegue processi fino al completamento senza preemption."
+            options: ["SCHED_BATCH", "SCHED_NORMAL", "SCHED_FIFO", "SCHED_IDLE"],
+            correct: 2,
+            explanation: "SCHED_FIFO è una classe real-time senza time slice: il processo gira finché non si blocca, cede la CPU o arriva un task RT con priorità maggiore."
         },
         {
             question: "Cosa fa il comando 'nice -n 10 program'?",
-            options: ["Esegue program con priorità massima", "Esegue program con priorità minima", "Uccide program dopo 10 secondi", "Limita CPU al 10%"],
-            correct: 1,
+            options: ["Uccide program dopo 10 secondi", "Esegue program con priorità massima", "Limita CPU al 10%", "Esegue program con priorità più bassa del normale"],
+            correct: 3,
             explanation: "nice -n 10 abbassa la priorità del processo (valori nice più alti = priorità più bassa)."
         },
         {
             question: "Quale struttura dati contiene i processi ready per l'esecuzione?",
-            options: ["Process table", "Run queue", "Task struct", "Memory map"],
-            correct: 1,
-            explanation: "La run queue contiene tutti i processi pronti per l'esecuzione, organizzati per priorità."
+            options: ["Task struct", "Process table", "Memory map", "Run queue"],
+            correct: 3,
+            explanation: "La run queue (una per CPU) contiene i processi pronti per l'esecuzione; per la classe fair è un red-black tree ordinato per virtual runtime."
         },
         {
             question: "Cosa permette il load balancing dello scheduler?",
-            options: ["Bilanciare memoria tra processi", "Distribuire processi tra CPU", "Bilanciare I/O", "Gestire la cache"],
-            correct: 1,
+            options: ["Distribuire processi tra CPU", "Bilanciare memoria tra processi", "Bilanciare I/O", "Gestire la cache"],
+            correct: 0,
             explanation: "Il load balancing distribuisce i processi tra le diverse CPU in sistemi multi-core per ottimizzare le prestazioni."
         },
         {
@@ -548,7 +548,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -556,7 +556,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -609,7 +609,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -624,9 +624,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -635,7 +635,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -652,7 +652,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -670,7 +670,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

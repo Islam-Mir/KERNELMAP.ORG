@@ -55,17 +55,17 @@
 
         <h3>💾 Block Device Management</h3>
         <p>• <strong>register_blkdev()</strong> - Registra un nuovo dispositivo a blocchi</p>
-        <p>• <strong>blkdev_get()</strong> - Ottiene riferimento a dispositivo a blocchi</p>
+        <p>• <strong>blkdev_get_by_path()</strong> - Ottiene riferimento a dispositivo a blocchi</p>
         <p>• <strong>blkdev_put()</strong> - Rilascia riferimento dispositivo</p>
         <p>• <strong>submit_bio()</strong> - Invia richiesta I/O al dispositivo</p>
         <p>• <strong>blk_queue_max_hw_sectors()</strong> - Configura limiti settore dispositivo</p>
 
         <h3>📊 Partition Handling</h3>
         <p>• <strong>check_partition()</strong> - Verifica validità tabella partizioni</p>
-        <p>• <strong>add_partition()</strong> - Aggiunge partizione al sistema</p>
-        <p>• <strong>delete_partition()</strong> - Rimuove partizione</p>
-        <p>• <strong>rescan_partitions()</strong> - Rilegge tabella partizioni</p>
-        <p>• <strong>hd_struct_init()</strong> - Inizializza struttura partizione</p>
+        <p>• <strong>bdev_add_partition()</strong> - Aggiunge partizione al sistema</p>
+        <p>• <strong>bdev_del_partition()</strong> - Rimuove partizione</p>
+        <p>• <strong>bdev_disk_changed()</strong> - Rilegge tabella partizioni</p>
+        <p>• <strong>disk_scan_partitions()</strong> - Scansiona le partizioni di un disco</p>
 
         <h3>🗂️ Filesystem Metadata</h3>
         <p>• <strong>alloc_super()</strong> - Alloca struttura superblock</p>
@@ -93,7 +93,7 @@
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
             <li><strong>struct block_device</strong> - Rappresenta un dispositivo a blocchi con geometria, dimensione e parametri operativi</li>
-            <li><strong>struct hd_struct</strong> - Descrive una partizione con inizio, dimensione e numero di settore</li>
+            <li><strong>struct block_device (partizione)</strong> - Dal kernel 5.11 anche le partizioni sono rappresentate da block_device (prima si usava hd_struct): inizio, dimensione e numero di settore</li>
             <li><strong>struct super_block</strong> - Contiene metadati globali del filesystem: dimensione, blocchi liberi, parametri di mount</li>
             <li><strong>struct inode</strong> - Rappresenta file e directory con metadati, permessi e puntatori ai dati</li>
         </ul>
@@ -176,13 +176,13 @@
 
         <h3>📊 Partition Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int rescan_partitions(struct gendisk *disk, struct block_device *bdev);</code><br>
+            <code style="color: #0288d1; font-weight: bold;">int bdev_disk_changed(struct gendisk *disk, bool invalidate);</code><br>
             <span style="color: #666; font-size: 0.9em;">Rilegge la tabella partizioni di un disco.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">struct hd_struct *add_partition(struct gendisk *disk, int partno, sector_t start, sector_t len, int flags, struct partition_meta_info *info);</code><br>
+            <code style="color: #d32f2f; font-weight: bold;">int bdev_add_partition(struct gendisk *disk, int partno, sector_t start, sector_t length);</code><br>
             <span style="color: #666; font-size: 0.9em;">Aggiunge una nuova partizione al sistema.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">void delete_partition(struct gendisk *disk, int partno);</code><br>
+            <code style="color: #2e7d32; font-weight: bold;">int bdev_del_partition(struct gendisk *disk, int partno);</code><br>
             <span style="color: #666; font-size: 0.9em;">Rimuove una partizione dal sistema.</span>
         </div>
 
@@ -201,8 +201,8 @@
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
         <p><strong>Quando colleghi un nuovo disco USB:</strong></p>
         <ol>
-            <li><code>register_blkdev()</code> - Registra il nuovo dispositivo a blocchi</li>
-            <li><code>rescan_partitions()</code> - Scansiona la tabella partizioni</li>
+            <li><code>register_blkdev()</code> - Riserva il major number (il disco vero e proprio si registra con add_disk())</li>
+            <li><code>bdev_disk_changed()</code> - Scansiona la tabella partizioni</li>
             <li><code>alloc_super()</code> - Crea superblock per ogni partizione</li>
             <li><code>alloc_inode()</code> - Alloca inode per la radice del filesystem</li>
             <li>Il disco diventa accessibile nel sistema</li>
@@ -345,7 +345,7 @@
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Rilevamento dispositivo:</strong> Kernel registra il nuovo block device con register_blkdev()</li>
+                    <li><strong>1. Rilevamento dispositivo:</strong> Il driver registra il nuovo disco con add_disk() (register_blkdev() riserva solo il major number)</li>
                     <li><strong>2. Creazione partizione:</strong> fdisk scrive la tabella partizioni (MBR/GPT) sul disco</li>
                     <li><strong>3. Formattazione:</strong> mkfs.ext4 crea superblock, inode table, e strutture dati ext4</li>
                     <li><strong>4. Montaggio:</strong> mount() legge superblock, valida filesystem, crea punto di mount</li>
@@ -392,7 +392,7 @@
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ tune2fs -l /dev/sda1 | head -20<br>
                         tune2fs 1.46.5<br>
-                        Filesystem volume name: <none><br>
+                        Filesystem volume name: &lt;none&gt;<br>
                         Last mounted on: /<br>
                         Filesystem UUID: 12345678-abcd<br>
                         Filesystem magic number: 0xEF53
@@ -471,63 +471,63 @@
                 const quizQuestions = [
         {
             question: "Quale è il ruolo principale del sottosistema di storage nel kernel?",
-            options: ["Gestire I/O su disco e dispositivi storage", "Gestire la CPU", "Gestire la rete", "Gestire la memoria"],
+            options: ["Gestire I/O su disco e dispositivi storage", "Gestire la rete", "Gestire la memoria", "Gestire la CPU"],
             correct: 0,
             explanation: "Lo storage subsystem gestisce tutte le operazioni di input/output su dischi e dispositivi."
         },
         {
-            question: "Come si chiama la coda di richieste I/O nel kernel?",
-            options: ["I/O queue", "block device queue", "request queue", "disk queue"],
-            correct: 2,
-            explanation: "La request queue accoda le richieste I/O per i dispositivi block."
+            question: "Quale comando mostra il superblock di un filesystem ext2/3/4?",
+            options: ["tune2fs -l", "lsof", "iostat", "mkfs.ext4"],
+            correct: 0,
+            explanation: "tune2fs -l legge e mostra il superblock di un filesystem ext (volume name, UUID, magic number 0xEF53, contatori di inode e blocchi)."
         },
         {
             question: "Quale è la differenza tra block device e character device?",
-            options: ["Block accede a blocchi, character a byte", "Block è più veloce", "Character non supporta cache", "Nessuna differenza"],
-            correct: 0,
+            options: ["Nessuna differenza", "Block è più veloce", "Character non supporta cache", "Block accede a blocchi, character a byte"],
+            correct: 3,
             explanation: "Block device accede dati in blocchi, character device accede a byte individuali."
         },
         {
-            question: "Quale algoritmo di scheduling I/O è ampiamente usato in Linux?",
-            options: ["FCFS", "CFQ", "NOOP", "Deadline"],
+            question: "Quale tipo di tabella delle partizioni ha il limite dei 2TB?",
+            options: ["GPT", "MBR", "ext4", "XFS"],
             correct: 1,
-            explanation: "CFQ (Completely Fair Queuing) è uno degli schedulers I/O più usati in Linux."
+            explanation: "L'MBR usa indirizzi di settore a 32 bit e quindi gestisce dischi fino a circa 2TB; il GPT supera questo limite."
         },
         {
-            question: "Cosa rappresenta una 'bio' nel kernel Linux?",
-            options: ["Biologico", "Blocco di informazioni I/O", "Byte I/O Operation", "Buffer I/O"],
+            question: "Quale struttura del kernel descrive un dispositivo a blocchi come un disco?",
+            options: ["struct inode", "struct super_block", "struct dentry", "struct block_device"],
+            correct: 3,
+            explanation: "struct block_device rappresenta un dispositivo a blocchi con la sua geometria e i suoi parametri; super_block descrive invece un filesystem e inode un file."
+        },
+        {
+            question: "Quale filesystem tra questi usa copy-on-write e snapshot?",
+            options: ["XFS", "ext4", "BTRFS", "ext2"],
             correct: 2,
-            explanation: "Una bio (I/O operation) rappresenta una singola operazione di I/O nel kernel."
-        },
-        {
-            question: "Quale filesystem è il default in molte distribuzioni Linux moderne?",
-            options: ["ext3", "ext4", "XFS", "BTRFS"],
-            correct: 1,
-            explanation: "ext4 è il filesystem default in molte distribuzioni Linux odierne."
+            explanation: "BTRFS è un filesystem moderno basato su copy-on-write, con snapshot e checksum dei dati e dei metadati."
         },
         {
             question: "Cosa fa il writeback subsystem nello storage?",
-            options: ["Legge dati da disco", "Scrive dati modificati su disco", "Gestisce la cache", "Compatta il disco"],
-            correct: 1,
+            options: ["Legge dati da disco", "Gestisce la cache", "Compatta il disco", "Scrive dati modificati su disco"],
+            correct: 3,
             explanation: "Il writeback subsystem gestisce la sincronizzazione dei dati modificati su disco."
         },
         {
-            question: "Quale è la struttura dati che rappresenta una richiesta I/O nel kernel?",
-            options: ["struct request", "struct io_request", "struct bio_request", "struct disk_io"],
+            question: "Quale struttura rappresenta un file o una directory con metadati, permessi e puntatori ai dati?",
+            options: ["struct inode", "struct page", "struct block_device", "struct super_block"],
             correct: 0,
-            explanation: "struct request rappresenta una singola richiesta I/O nel kernel."
+            explanation: "struct inode contiene i metadati di un file o directory (permessi, proprietario, dimensioni) e i riferimenti ai dati; super_block descrive il filesystem nel suo insieme."
         },
         {
             question: "Cosa rappresenta una 'sector' nel storage?",
-            options: ["Un settore del disco (512 byte tipicamente)", "Un'area di memoria", "Un buffer cache", "Un'operazione"],
-            correct: 0,
+            options: ["Un'area di memoria", "Un'operazione", "Un settore del disco (512 byte tipicamente)", "Un buffer cache"],
+            correct: 2,
             explanation: "Un settore è l'unità atomica di lettura/scrittura su disco (tipicamente 512 byte)."
         },
         {
-            question: "Quale componente gestisce l'accesso ai dispositivi storage fisici?",
-            options: ["Device driver", "Block layer", "Filesystem layer", "VFS"],
+            question: "Quale comando elenca i dispositivi a blocchi con filesystem, UUID e LABEL?",
+            options: ["ps aux", "lsblk -f", "ip addr", "free -h"],
             correct: 1,
-            explanation: "Il block layer (block device layer) è l'intermediario tra filesystem e driver."
+            explanation: "lsblk -f mostra l'albero dei dispositivi a blocchi con tipo di filesystem, label, UUID e punto di mount."
         }
     ];
 
@@ -552,7 +552,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -560,7 +560,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -613,7 +613,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -628,9 +628,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -639,7 +639,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -656,7 +656,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -674,7 +674,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

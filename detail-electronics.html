@@ -54,32 +54,32 @@
 <p><strong>Il sottosistema Electronics gestisce quattro categorie principali di operazioni per l'interazione con componenti elettronici:</strong></p>
 
 <h3>📥 Input Acquisition</h3>
-<p>• <strong>adc_read()</strong> - Lettura valori analogici da sensori attraverso convertitori A/D</p>
+<p>• <strong>iio_read_channel_raw()</strong> - Lettura di valori analogici da sensori attraverso convertitori A/D (framework IIO)</p>
 <p>• <strong>gpio_get_value()</strong> - Lettura stati digitali da pin GPIO</p>
-<p>• <strong>i2c_read()</strong> - Ricezione dati da dispositivi I2C (sensori, EEPROM)</p>
+<p>• <strong>i2c_smbus_read_byte_data()</strong> - Ricezione dati da dispositivi I2C (sensori, EEPROM)</p>
 
 <h3>📤 Output Control</h3>
 <p>• <strong>gpio_set_value()</strong> - Impostazione stati digitali per controllo attuatori</p>
 <p>• <strong>pwm_config()</strong> - Configurazione segnali PWM per controllo motori/LED</p>
-<p>• <strong>dac_write()</strong> - Scrittura valori analogici per controllo preciso</p>
+<p>• <strong>iio_write_channel_raw()</strong> - Scrittura valori analogici per controllo preciso</p>
 
 <h3>🔄 Signal Processing</h3>
-<p>• <strong>interrupt_handler()</strong> - Gestione interrupt da dispositivi elettronici</p>
-<p>• <strong>dma_transfer()</strong> - Trasferimento dati ad alta velocità senza intervento CPU</p>
+<p>• <strong>request_irq()</strong> - Registrazione dell'handler di interrupt dei dispositivi elettronici</p>
+<p>• <strong>dmaengine_submit()</strong> - Sottomette un trasferimento DMA: i dati si spostano senza intervento della CPU</p>
 <p>• <strong>timer_setup()</strong> - Configurazione timer per operazioni periodiche</p>
 
 <h3>⚡ Power Management</h3>
 <p>• <strong>regulator_enable()</strong> - Attivazione/disattivazione alimentazioni elettroniche</p>
-<p>• <strong>clock_enable()</strong> - Controllo clock per risparmio energetico</p>
+<p>• <strong>clk_prepare_enable()</strong> - Controllo clock per risparmio energetico</p>
 <p>• <strong>wakeup_source_register()</strong> - Gestione wake-up da dispositivi elettronici</p>
 
 <h2>📋 Esempi Pratici</h2>
 <p><strong>Quando usi un dispositivo embedded con sensori, ecco cosa succede nel sottosistema Electronics:</strong></p>
 
 <h3>🔍 Lettura Temperatura da Sensore</h3>
-<p>1. Il kernel configura il pin GPIO come input analogico</p>
+<p>1. Il sensore produce un segnale analogico proporzionale alla temperatura</p>
 <p>2. Il driver ADC converte il segnale analogico in digitale</p>
-<p>3. I dati vengono trasferiti via I2C al microcontroller</p>
+<p>3. Il valore digitale viene letto dal driver (es. via I2C o SPI) ed esposto dal framework IIO</p>
 <p>4. L'applicazione riceve il valore di temperatura elaborato</p>
 
 <h3>📄 Strutture Dati Chiave</h3>
@@ -94,7 +94,7 @@
 <ul>
 <li><code>gpioinfo</code> - Mostra stato e configurazione pin GPIO</li>
 <li><code>iio_info</code> - Elenca dispositivi Industrial I/O disponibili</li>
-<li><code>cat /sys/class/gpio/</code> - Esplora interfaccia GPIO via sysfs</li>
+<li><code>ls /sys/class/gpio/</code> - Esplora interfaccia GPIO via sysfs</li>
 <li><code>dmesg | grep gpio</code> - Mostra messaggi kernel relativi a GPIO</li>
 </ul>
 
@@ -103,7 +103,7 @@
 <ol>
 <li>Il kernel configura tre pin PWM per i colori R/G/B</li>
 <li>I driver PWM generano segnali a duty cycle variabile</li>
-<li>Il mixer colore combina i tre canali per il colore desiderato</li>
+<li>L'occhio umano fonde i tre canali nel colore desiderato</li>
 <li>L'effetto è un LED che cambia colore dinamicamente</li>
 </ol>
 
@@ -149,7 +149,7 @@
         <h3>📌 GPIO Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
             <code style="color: #d32f2f; font-weight: bold;">int gpio_request(unsigned gpio, const char *label);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Richiede l'uso esclusivo di un pin GPIO.</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Richiede l'uso esclusivo di un pin GPIO (API legacy: oggi si preferisce l'API a descrittori gpiod_*).</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">int gpio_direction_input(unsigned gpio);</code><br>
             <span style="color: #666; font-size: 0.9em;">Configura un GPIO come input digitale.</span><br><br>
@@ -185,7 +185,7 @@
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
         <p><strong>Quando usi dispositivi elettronici embedded, ecco cosa succede dietro le quinte:</strong></p>
         <ol>
-        <li><code>echo 17 > /sys/class/gpio/export</code> - Esporta un pin GPIO per l'uso</li>
+        <li><code>echo 17 > /sys/class/gpio/export (deprecato, oggi si usa libgpiod: gpioset gpiochip0 17=1)</code> - Esporta un pin GPIO per l'uso</li>
         <li><code>echo out > /sys/class/gpio/gpio17/direction</code> - Configura come output</li>
         <li><code>echo 1 > /sys/class/gpio/gpio17/value</code> - Accende un LED connesso</li>
         </ol>
@@ -279,7 +279,7 @@
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 COMPONENTI ELETTRONICI FISICI</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Microcontroller (Arduino, Raspberry Pi)<br>
+                    • Microcontroller e schede embedded (Arduino, Raspberry Pi)<br>
                     • SoC embedded (ARM, AVR)<br>
                     • FPGA e ASIC personalizzati
                 </div>
@@ -347,7 +347,7 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">📌 Controllo GPIO</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ echo 17 > /sys/class/gpio/export<br>
+                        $ echo 17 > /sys/class/gpio/export (deprecato, oggi si usa libgpiod: gpioset gpiochip0 17=1)<br>
                         $ echo out > /sys/class/gpio/gpio17/direction<br>
                         $ echo 1 > /sys/class/gpio/gpio17/value<br>
                         $ echo 0 > /sys/class/gpio/gpio17/value
@@ -446,63 +446,63 @@
     const quizQuestions = [
         {
             question: "Cosa gestisce il sottosistema Electronics del kernel Linux?",
-            options: ["Solo dispositivi USB", "Interfaccia con componenti elettronici hardware", "Solo filesystem di rete", "Gestione della memoria RAM"],
-            correct: 1,
+            options: ["Solo filesystem di rete", "Solo dispositivi USB", "Interfaccia con componenti elettronici hardware", "Gestione della memoria RAM"],
+            correct: 2,
             explanation: "Il sottosistema Electronics gestisce l'interfaccia tra il kernel e componenti elettronici come sensori, attuatori, GPIO, PWM, etc."
         },
         {
             question: "Cosa significa GPIO?",
-            options: ["General Power Output", "General Purpose Input/Output", "Graphics Processing Unit", "Global Positioning System"],
-            correct: 1,
+            options: ["General Purpose Input/Output", "Graphics Processing Unit", "General Power Output", "Global Positioning System"],
+            correct: 0,
             explanation: "GPIO sta per General Purpose Input/Output, pin digitali programmabili per controllare dispositivi elettronici."
         },
         {
-            question: "Quale protocollo è ottimizzato per sensori a basso consumo?",
-            options: ["USB 3.0", "PCIe", "I2C", "SATA"],
-            correct: 2,
-            explanation: "I2C è progettato per comunicazione a basso consumo con sensori, RTC, e piccoli dispositivi embedded."
+            question: "Quale di questi bus seriali è tipicamente usato per comunicare con sensori ed EEPROM?",
+            options: ["PCIe", "USB 3.0", "SATA", "I2C"],
+            correct: 3,
+            explanation: "I2C è un bus seriale a pochi fili, molto diffuso per collegare sensori, EEPROM e piccoli dispositivi; in Linux è gestito tramite i2c_adapter e i2c_transfer()."
         },
         {
             question: "Cosa permette il PWM?",
-            options: ["Controllo digitale semplice", "Controllo analogico preciso usando segnali digitali", "Comunicazione wireless", "Gestione della memoria"],
-            correct: 1,
+            options: ["Comunicazione wireless", "Controllo digitale semplice", "Controllo analogico preciso usando segnali digitali", "Gestione della memoria"],
+            correct: 2,
             explanation: "PWM (Pulse Width Modulation) permette controllo analogico simulando segnali continui attraverso modulazione della larghezza degli impulsi."
         },
         {
-            question: "Quale comando esporta un pin GPIO per l'uso?",
-            options: ["gpio export 17", "echo 17 > /sys/class/gpio/export", "gpio_request(17)", "export gpio17"],
-            correct: 1,
-            explanation: "echo 17 > /sys/class/gpio/export esporta il pin GPIO 17 rendendolo disponibile per l'uso tramite sysfs."
+            question: "Quale libreria e interfaccia sostituiscono la vecchia interfaccia sysfs GPIO (/sys/class/gpio) nel kernel Linux moderno?",
+            options: ["La libreria libgpiod tramite il chardev /dev/gpiochipN", "La libreria spidev tramite il file /dev/spi", "La libreria wirepi tramite l'interfaccia ioctl", "La libreria libsysfs tramite il modulo bcm2835"],
+            correct: 0,
+            explanation: "L'interfaccia sysfs per i GPIO è deprecata dal kernel 4.8. Oggi si usa l'interfaccia a caratteri /dev/gpiochipN supportata dalla libreria e utility libgpiod (gpioset, gpioget, gpiodetect)."
         },
         {
             question: "Cosa rappresenta un duty cycle del 50% in PWM?",
-            options: ["Segnale sempre acceso", "Segnale acceso metà del tempo", "Segnale sempre spento", "Segnale a massima frequenza"],
+            options: ["Segnale sempre spento", "Segnale acceso metà del tempo", "Segnale a massima frequenza", "Segnale sempre acceso"],
             correct: 1,
             explanation: "Un duty cycle del 50% significa che il segnale è attivo per metà del periodo, spento per l'altra metà."
         },
         {
-            question: "Quale bus permette comunicazione full-duplex ad alta velocità?",
-            options: ["I2C", "SPI", "GPIO", "PWM"],
-            correct: 1,
-            explanation: "SPI permette comunicazione full-duplex sincrona ad alta velocità, ideale per display e dispositivi che richiedono throughput elevato."
+            question: "Quale framework gestisce le alimentazioni (tensione e corrente) dei componenti elettronici?",
+            options: ["Regulator framework", "Device Tree", "Clock framework", "IIO (Industrial I/O)"],
+            correct: 0,
+            explanation: "Il regulator framework controlla le linee di alimentazione (regulator_enable() ecc.); il clock framework gestisce invece i clock, il Device Tree descrive l'hardware e IIO espone sensori e convertitori."
         },
         {
             question: "Cosa converte un segnale analogico in digitale?",
-            options: ["DAC", "PWM", "ADC", "GPIO"],
-            correct: 2,
+            options: ["PWM", "GPIO", "DAC", "ADC"],
+            correct: 3,
             explanation: "ADC (Analog-to-Digital Converter) converte segnali analogici continui in valori digitali discreti."
         },
         {
             question: "Quale framework Linux gestisce dispositivi industriali?",
-            options: ["GPIO", "PWM", "Industrial I/O (IIO)", "USB"],
-            correct: 2,
+            options: ["GPIO", "Industrial I/O (IIO)", "USB", "PWM"],
+            correct: 1,
             explanation: "IIO (Industrial I/O) è il framework Linux per dispositivi industriali come sensori, ADC, DAC, e altri dispositivi di misura."
         },
         {
-            question: "Cosa permette l'hot-plug nei dispositivi elettronici?",
-            options: ["Riavvio del sistema", "Connessione/disconnessione a runtime", "Solo dispositivi interni", "Comunicazione wireless"],
-            correct: 1,
-            explanation: "L'hot-plug permette di collegare e scollegare dispositivi elettronici mentre il sistema è in esecuzione, senza riavvio."
+            question: "Cosa descrive il Device Tree?",
+            options: ["L'elenco dei processi attivi", "La gerarchia delle directory di /sys", "Il filesystem radice del sistema", "In modo dichiarativo, l'hardware presente (pin, bus, dispositivi) senza codificarlo nel kernel"],
+            correct: 3,
+            explanation: "Il Device Tree è una descrizione dichiarativa dell'hardware (specialmente su ARM ed embedded): il kernel la legge all'avvio e configura di conseguenza driver e dispositivi."
         }
     ];
 
@@ -527,7 +527,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -535,7 +535,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -588,7 +588,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -603,9 +603,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -614,7 +614,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -631,7 +631,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -649,7 +649,7 @@
     </div>
 
     <script>
-      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

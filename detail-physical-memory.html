@@ -65,7 +65,7 @@
 
         <h3>HIGHMEM Zone (32-bit)</h3>
         <p>• <strong>Oltre 896MB</strong> - Memoria non direttamente mappabile su sistemi 32-bit</p>
-        <p>• <strong>Permanent mapping</strong> - Mapping temporaneo per accesso kernel</p>
+        <p>• <strong>Permanent mapping</strong> - Mapping permanente di un numero limitato di pagine high memory (persistent kmap)</p>
         <p>• <strong>Fixmap area</strong> - Mapping fissi per strutture critiche</p>
 
         <h2>📋 Strutture Dati Chiave</h2>
@@ -184,8 +184,8 @@
             <code style="color: #f57c00; font-weight: bold;">}</code><br>
             <span style="color: #666; font-size: 0.9em;">Itera attraverso tutte le zone di memoria.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">unsigned long totalram_pages;</code><br>
-            <span style="color: #666; font-size: 0.9em;">Variabile globale con totale pagine RAM.</span><br><br>
+            <code style="color: #9c27b0; font-weight: bold;">unsigned long totalram_pages();</code><br>
+            <span style="color: #666; font-size: 0.9em;">Funzione che restituisce il totale delle pagine RAM.</span><br><br>
 
             <code style="color: #0288d1; font-weight: bold;">extern unsigned long max_mapnr;</code><br>
             <span style="color: #666; font-size: 0.9em;">Massimo numero PFN utilizzabile.</span>
@@ -463,51 +463,63 @@
     const quizQuestions = [
         {
             question: "Cosa rappresentano i PFN?",
-            options: ["Page Frame Numbers", "Process File Nodes", "Physical Frame Nodes", "Page Fault Numbers"],
+            options: ["Page Frame Numbers", "Physical Frame Nodes", "Process File Nodes", "Page Fault Numbers"],
             correct: 0,
             explanation: "PFN (Page Frame Numbers) sono identificatori univoci per ogni pagina fisica di memoria."
         },
         {
             question: "Quale zona memoria è limitata a 16MB?",
-            options: ["NORMAL", "HIGHMEM", "DMA", "KERNEL"],
-            correct: 2,
+            options: ["HIGHMEM", "NORMAL", "KERNEL", "DMA"],
+            correct: 3,
             explanation: "La zona DMA è limitata ai primi 16MB per dispositivi legacy che non possono indirizzare oltre questo limite."
         },
         {
             question: "Cosa fa il buddy system?",
-            options: ["Comprime memoria", "Gestisce allocazione pagine contigue", "Crittografa dati", "Sincronizza processi"],
-            correct: 1,
+            options: ["Crittografa dati", "Comprime memoria", "Gestisce allocazione pagine contigue", "Sincronizza processi"],
+            correct: 2,
             explanation: "Il buddy system mantiene liste di blocchi liberi di dimensioni potenze di 2 per allocazioni efficienti."
         },
         {
             question: "Quale comando mostra lo stato buddy allocator?",
-            options: ["free -h", "cat /proc/meminfo", "cat /proc/buddyinfo", "vmstat"],
-            correct: 2,
+            options: ["cat /proc/meminfo", "cat /proc/buddyinfo", "free -h", "vmstat"],
+            correct: 1,
             explanation: "cat /proc/buddyinfo mostra il numero di blocchi liberi per ogni ordine del buddy allocator."
         },
         {
             question: "Cosa contiene la zona HIGHMEM?",
-            options: ["Primi 16MB", "Area principale memoria", "Memoria oltre 896MB su 32-bit", "Solo memoria kernel"],
-            correct: 2,
+            options: ["Primi 16MB", "Area principale memoria", "Solo memoria kernel", "Memoria oltre 896MB su 32-bit"],
+            correct: 3,
             explanation: "HIGHMEM contiene memoria oltre 896MB che non può essere mappata direttamente su sistemi 32-bit."
         },
         {
             question: "Quale funzione alloca pagine fisiche?",
-            options: ["malloc()", "kmalloc()", "alloc_pages()", "vmalloc()"],
-            correct: 2,
+            options: ["kmalloc()", "alloc_pages()", "vmalloc()", "malloc()"],
+            correct: 1,
             explanation: "alloc_pages() è la funzione del kernel per allocare pagine fisiche contigue."
         },
         {
             question: "Cosa significa NUMA?",
-            options: ["Network User Memory Access", "Non-Uniform Memory Access", "New Universal Memory Architecture", "Numeric User Memory Allocation"],
-            correct: 1,
+            options: ["Network User Memory Access", "Numeric User Memory Allocation", "Non-Uniform Memory Access", "New Universal Memory Architecture"],
+            correct: 2,
             explanation: "NUMA (Non-Uniform Memory Access) indica architetture dove l'accesso alla memoria varia per posizione relativa CPU."
         },
         {
             question: "Quale comando mostra informazioni memoria totali?",
-            options: ["df -h", "cat /proc/meminfo", "ps aux", "top"],
+            options: ["ps aux", "cat /proc/meminfo", "df -h", "top"],
             correct: 1,
             explanation: "cat /proc/meminfo fornisce informazioni dettagliate su memoria totale, libera, buffer, cache, etc."
+        },
+        {
+            question: "Quale funzione converte un numero di page frame (PFN) nella corrispondente struct page?",
+            options: ["pfn_to_page()", "page_to_pfn()", "kmap()", "alloc_pages()"],
+            correct: 0,
+            explanation: "pfn_to_page() converte un PFN in struct page; page_to_pfn() fa la conversione inversa."
+        },
+        {
+            question: "Quale operazione ricombina i blocchi liberi adiacenti nel buddy system?",
+            options: ["Prefetching", "Swapping", "Merging (fusione dei buddy)", "Splitting"],
+            correct: 2,
+            explanation: "Quando un blocco viene liberato e il suo buddy è libero, i due vengono fusi in un blocco di ordine superiore (merging); lo splitting fa l'operazione opposta."
         }
     ];
 
@@ -532,7 +544,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -540,7 +552,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -593,7 +605,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -608,9 +620,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -619,7 +631,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -636,7 +648,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -654,7 +666,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

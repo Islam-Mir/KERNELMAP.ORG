@@ -60,8 +60,8 @@
 <p>• <strong>load_cr3()</strong> - Carica il registro del page table root (x86)</p>
 
 <h3>⚡ Interrupt Handling</h3>
-<p>• <strong>do_IRQ()</strong> - Gestore principale delle interruzioni</p>
-<p>• <strong>handle_IRQ()</strong> - Elaborazione specifica dell'interruzione</p>
+<p>• <strong>common_interrupt()</strong> - Punto d'ingresso principale delle interruzioni su x86</p>
+<p>• <strong>generic_handle_irq()</strong> - Elaborazione specifica dell'interruzione</p>
 <p>• <strong>irq_enter()/irq_exit()</strong> - Ingresso/uscita dal contesto interrupt</p>
 <p>• <strong>local_irq_save()/restore()</strong> - Salvataggio/ripristino dello stato interrupt</p>
 
@@ -69,12 +69,12 @@
 <p>• <strong>prefetch()</strong> - Istruzioni di prefetch dei dati in cache</p>
 <p>• <strong>cpu_relax()</strong> - Pausa ottimizzata per busy waiting</p>
 <p>• <strong>barrier()</strong> - Barriere di memoria per ordinamento istruzioni</p>
-<p>• <strong>cpu_has_feature()</strong> - Controllo supporto istruzioni specifiche</p>
+<p>• <strong>cpu_feature_enabled()</strong> - Controllo supporto istruzioni specifiche</p>
 
 <h3>🔋 Power Management</h3>
-<p>• <strong>cpu_idle()</strong> - Gestione stati di idle della CPU</p>
-<p>• <strong>cpu_freq_change()</strong> - Cambiamento frequenza di clock</p>
-<p>• <strong>cpu_hotplug()</strong> - Attivazione/disattivazione CPU in sistemi multi-core</p>
+<p>• <strong>do_idle()</strong> - Gestione stati di idle della CPU</p>
+<p>• <strong>cpufreq_driver_target()</strong> - Cambiamento frequenza di clock</p>
+<p>• <strong>cpu_up()/cpu_down()</strong> - Attivazione/disattivazione CPU in sistemi multi-core</p>
 <p>• <strong>acpi_processor_idle()</strong> - Idle states ACPI-specifici</p>
 
 <h2>📋 Esempi Pratici</h2>
@@ -85,7 +85,7 @@
 <p>1. Salva i registri generali (EAX, EBX, ECX, EDX) nello stack del kernel</p>
 <p>2. Salva ESP (stack pointer) e EIP (instruction pointer) nella struttura task</p>
 <p>3. Carica CR3 (page table base) del nuovo processo</p>
-<p>4. Invalida TLB con flush del nuovo address space</p>
+<p>4. Gestisce la TLB (flush o uso di ASID/PCID) per il nuovo address space</p>
 <p>5. Ripristina i registri del nuovo processo e riprende l'esecuzione</p>
 
 <h3>📄 Strutture Dati Chiave</h3>
@@ -108,7 +108,7 @@
 <p>Quando arriva un interrupt hardware (es. da scheda di rete):</p>
 <ol>
 <li>L'hardware salva automaticamente alcuni registri critici</li>
-<li>Il kernel chiama do_IRQ() specifico per l'architettura</li>
+<li>Il gestore di ingresso dell'interrupt specifico dell'architettura (es. common_interrupt() su x86)</li>
 <li>Si determina il numero dell'interrupt e si chiama l'handler appropriato</li>
 <li>Si eseguono le operazioni richieste (es. elaborazione pacchetto di rete)</li>
 <li>Si ripristina lo stato precedente e si torna all'esecuzione normale</li>
@@ -175,8 +175,8 @@
 
 <h3>⚡ Interrupt Handling</h3>
 <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-<code style="color: #0288d1; font-weight: bold;">void do_IRQ(struct pt_regs *regs);</code><br>
-<span style="color: #666; font-size: 0.9em;">Gestore principale delle interruzioni che identifica e instrada l'interrupt appropriato.</span><br><br>
+<code style="color: #0288d1; font-weight: bold;">void generic_handle_irq(unsigned int irq);</code><br>
+<span style="color: #666; font-size: 0.9em;">Richiama l'handler registrato per la linea di interrupt indicata (il punto d'ingresso su x86 è common_interrupt()).</span><br><br>
 
 <code style="color: #d32f2f; font-weight: bold;">void local_irq_disable(void);</code><br>
 <span style="color: #666; font-size: 0.9em;">Disabilita gli interrupt locali su questa CPU.</span><br><br>
@@ -202,7 +202,7 @@
 <ol>
 <li><code>$ grep -r "__switch_to" /usr/src/linux/arch/</code> - Trova implementazioni specifiche per ogni architettura</li>
 <li><code>$ objdump -d vmlinux | grep -A 10 "switch_to"</code> - Esamina il codice assembly generato</li>
-<li><code>$ perf record -e cycles -a -- sleep 1</code> - Monitora l'efficienza del context switching</li>
+<li><code>$ perf record -e cycles -a -- sleep 1</code> - Campiona i cicli CPU su tutte le CPU per 1 secondo</li>
 <li><code>$ cat /sys/kernel/debug/tracing/available_events | grep sched</code> - Eventi di tracing disponibili per lo scheduler</li>
 </ol>
 <p><em>Queste funzioni forniscono l'astrazione necessaria perché il resto del kernel funzioni su qualsiasi architettura supportata.</em></p>
@@ -466,7 +466,6 @@
         </div>
     </div>
 
-    </ul>
 
     <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
         © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
@@ -476,63 +475,63 @@
     // Quiz functionality
     const quizQuestions = [
         {
-            question: "Quale funzione gestisce il cambio di contesto tra processi?",
-            options: ["do_IRQ()", "__switch_to()", "schedule()", "cpu_idle()"],
+            question: "Quale funzione architettura-specifica salva e ripristina i registri durante il cambio di contesto?",
+            options: ["local_irq_save()", "__switch_to()", "cpu_relax()", "prefetch()"],
             correct: 1,
-            explanation: "__switch_to() è la funzione architettura-specifica che salva e ripristina i registri durante il context switching."
+            explanation: "__switch_to() è la funzione dipendente dall'architettura chiamata da context_switch(): salva e ripristina lo stato dei registri del task."
         },
         {
             question: "Cosa contiene la struttura cpuinfo_x86?",
-            options: ["Codice assembly del kernel", "Informazioni dettagliate sulla CPU x86", "Configurazione della memoria", "Lista dei processi attivi"],
-            correct: 1,
+            options: ["Informazioni dettagliate sulla CPU x86", "Codice assembly del kernel", "Lista dei processi attivi", "Configurazione della memoria"],
+            correct: 0,
             explanation: "cpuinfo_x86 contiene informazioni dettagliate sulla CPU come famiglia, modello, stepping e feature flags."
         },
         {
             question: "Quale architettura è tipicamente usata nei dispositivi mobili?",
-            options: ["x86", "ARM", "PowerPC", "s390"],
-            correct: 1,
+            options: ["x86", "s390", "ARM", "PowerPC"],
+            correct: 2,
             explanation: "ARM è l'architettura più comune nei dispositivi mobili grazie alla sua efficienza energetica."
         },
         {
             question: "Cosa fa la funzione flush_tlb_all()?",
-            options: ["Svuota la cache L1", "Invalida la Translation Lookaside Buffer", "Ricarica i registri della CPU", "Cambia la frequenza di clock"],
-            correct: 1,
+            options: ["Invalida la Translation Lookaside Buffer", "Svuota la cache L1", "Ricarica i registri della CPU", "Cambia la frequenza di clock"],
+            correct: 0,
             explanation: "flush_tlb_all() invalida tutte le Translation Lookaside Buffer per garantire coerenza degli indirizzi virtuali."
         },
         {
             question: "Quale registro contiene il puntatore alla page table corrente su x86?",
-            options: ["CR0", "CR2", "CR3", "CR4"],
-            correct: 2,
+            options: ["CR0", "CR4", "CR2", "CR3"],
+            correct: 3,
             explanation: "CR3 contiene l'indirizzo fisico della page table corrente su architetture x86."
         },
         {
             question: "Cosa permette il codice CPU-specific?",
-            options: ["Solo esecuzione su una singola architettura", "Portabilità del kernel su architetture diverse", "Limitazione delle prestazioni", "Aumento del consumo energetico"],
+            options: ["Limitazione delle prestazioni", "Portabilità del kernel su architetture diverse", "Solo esecuzione su una singola architettura", "Aumento del consumo energetico"],
             correct: 1,
             explanation: "Il codice CPU-specific permette al kernel Linux di funzionare su architetture diverse mantenendo prestazioni ottimali."
         },
         {
-            question: "Quale funzione viene chiamata per gestire un interrupt hardware?",
-            options: ["schedule()", "do_IRQ()", "cpu_relax()", "prefetch()"],
-            correct: 1,
-            explanation: "do_IRQ() è la funzione principale che gestisce gli interrupt hardware identificando e instradando l'interrupt appropriato."
+            question: "Quale funzione generica richiama l'handler registrato per una linea di interrupt?",
+            options: ["prefetch()", "schedule()", "generic_handle_irq()", "cpu_relax()"],
+            correct: 2,
+            explanation: "Il codice d'ingresso dell'architettura (es. common_interrupt() su x86) chiama generic_handle_irq(), che invoca l'handler registrato con request_irq()."
         },
         {
             question: "Cosa rappresenta la struttura pt_regs?",
-            options: ["Configurazione dei timer", "Stato dei registri durante system call", "Lista delle interruzioni attive", "Informazioni sui dispositivi PCI"],
-            correct: 1,
+            options: ["Informazioni sui dispositivi PCI", "Lista delle interruzioni attive", "Configurazione dei timer", "Stato dei registri durante system call"],
+            correct: 3,
             explanation: "pt_regs contiene lo stato di tutti i registri della CPU al momento di una system call o interrupt."
         },
         {
-            question: "Quale architettura è completamente open-source?",
-            options: ["x86", "ARM", "RISC-V", "PowerPC"],
-            correct: 2,
-            explanation: "RISC-V è un'architettura completamente open-source, progettata per essere libera da brevetti."
+            question: "Quale di queste architetture è un'ISA aperta (standard libero da licenze per l'uso)?",
+            options: ["ARM", "RISC-V", "s390", "x86"],
+            correct: 1,
+            explanation: "RISC-V è un'ISA aperta: chiunque può implementarla senza pagare licenze per il set di istruzioni."
         },
         {
             question: "Cosa ottimizza la funzione cpu_relax()?",
-            options: ["Accesso al disco", "Busy waiting in spinlock", "Allocazione di memoria", "Context switching"],
-            correct: 1,
+            options: ["Context switching", "Accesso al disco", "Busy waiting in spinlock", "Allocazione di memoria"],
+            correct: 2,
             explanation: "cpu_relax() fornisce un'istruzione di pausa ottimizzata per ridurre il consumo energetico durante busy waiting in spinlock."
         }
     ];
@@ -558,7 +557,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -566,7 +565,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -619,7 +618,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -634,9 +633,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -645,7 +644,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -662,7 +661,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -680,7 +679,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

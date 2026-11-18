@@ -61,7 +61,7 @@
 
         <h3>💾 Memory Management Headers</h3>
         <p>• <strong>sys/mman.h</strong> - Memory mapping e shared memory</p>
-        <p>• <strong>malloc.h</strong> - Allocazione memoria dinamica</p>
+        <p>• <strong>malloc.h</strong> - Allocazione memoria dinamica (malloc/free sono dichiarate in stdlib.h; malloc.h è specifico di glibc)</p>
         <p>• <strong>sys/shm.h</strong> - Shared memory segments</p>
 
         <h3>🌐 Network Headers</h3>
@@ -134,7 +134,7 @@
             <li><strong>glibc</strong> - GNU C Library, implementazione standard C/POSIX</li>
             <li><strong>musl</strong> - Lightweight alternative C library</li>
             <li><strong>uClibc</strong> - Embedded systems C library</li>
-            <li><strong>systemd</strong> - Modern init system con proprie interfacce</li>
+            <li><strong>bionic</strong> - C library usata da Android</li>
         </ul>
 
         <h2>✨ Caratteristiche Avanzate</h2>
@@ -410,8 +410,8 @@ Linking with glibc...
                         $ echo 'int main() { printf("Hello\\n"); }' >> test.c<br>
                         $ gcc -E test.c | head -20<br>
                         # 1 "test.c"<br>
-                        # 1 "<built-in>"<br>
-                        # 1 "<command-line>"
+                        # 1 "&lt;built-in&gt;"<br>
+                        # 1 "&lt;command-line&gt;"
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Vedi output del preprocessore con header espansi</em></p>
                 </div>
@@ -476,26 +476,26 @@ Linking with glibc...
     const quizQuestions = [
         {
             question: "Cosa contengono gli header di sistema?",
-            options: ["Codice eseguibile", "Dichiarazioni funzioni e strutture dati", "File di configurazione", "Documentazione utente"],
-            correct: 1,
+            options: ["Documentazione utente", "File di configurazione", "Codice eseguibile", "Dichiarazioni funzioni e strutture dati"],
+            correct: 3,
             explanation: "Gli header (.h) contengono prototipi di funzioni, strutture dati, costanti e macro che definiscono l'interfaccia tra programmi e kernel."
         },
         {
             question: "Quale header contiene le funzioni base POSIX?",
-            options: ["stdlib.h", "unistd.h", "stdio.h", "string.h"],
-            correct: 1,
+            options: ["stdlib.h", "stdio.h", "unistd.h", "string.h"],
+            correct: 2,
             explanation: "unistd.h contiene le dichiarazioni delle funzioni POSIX fondamentali come read(), write(), fork(), exec()."
         },
         {
             question: "Cosa permette il preprocessing degli header?",
-            options: ["Eseguire il programma", "Includere dichiarazioni esterne", "Compilare il codice", "Linkare le librerie"],
-            correct: 1,
+            options: ["Includere dichiarazioni esterne", "Eseguire il programma", "Compilare il codice", "Linkare le librerie"],
+            correct: 0,
             explanation: "Il preprocessore (#include) inserisce il contenuto degli header nel codice sorgente prima della compilazione."
         },
         {
             question: "Quale struttura è definita in sys/stat.h?",
-            options: ["struct sockaddr", "struct stat", "struct dirent", "struct tm"],
-            correct: 1,
+            options: ["struct stat", "struct dirent", "struct sockaddr", "struct tm"],
+            correct: 0,
             explanation: "struct stat, definita in sys/stat.h, contiene tutte le informazioni sui metadati di un file."
         },
         {
@@ -506,21 +506,33 @@ Linking with glibc...
         },
         {
             question: "Quale comando mostra gli header disponibili?",
-            options: ["ls /usr/include", "find /usr/lib", "cat /etc/headers", "man headers"],
+            options: ["ls /usr/include", "cat /etc/headers", "man headers", "find /usr/lib"],
             correct: 0,
             explanation: "ls /usr/include mostra tutti gli header file installati nel sistema."
         },
         {
             question: "Cosa sono le feature test macro?",
-            options: ["Macro per testing delle prestazioni", "Macro per controllare funzionalità disponibili", "Macro per debugging", "Macro per ottimizzazione"],
-            correct: 1,
+            options: ["Macro per testing delle prestazioni", "Macro per debugging", "Macro per ottimizzazione", "Macro per controllare funzionalità disponibili"],
+            correct: 3,
             explanation: "Le feature test macro (_POSIX_C_SOURCE, _GNU_SOURCE) permettono di controllare quali dichiarazioni includere dagli header."
         },
         {
             question: "Quale header è necessario per socket programming?",
-            options: ["sys/socket.h", "netinet/tcp.h", "arpa/ftp.h", "sys/net.h"],
-            correct: 0,
+            options: ["netinet/tcp.h", "sys/socket.h", "sys/net.h", "arpa/ftp.h"],
+            correct: 1,
             explanation: "sys/socket.h contiene le dichiarazioni per la programmazione socket: socket(), bind(), listen(), accept()."
+        },
+        {
+            question: "Quale header definisce le costanti O_RDONLY e O_WRONLY usate con open()?",
+            options: ["sys/stat.h", "netdb.h", "fcntl.h", "signal.h"],
+            correct: 2,
+            explanation: "fcntl.h definisce le costanti dei flag di apertura (O_RDONLY, O_WRONLY, O_CREAT...) e le funzioni di controllo dei file descriptor come fcntl()."
+        },
+        {
+            question: "Quale header dichiara mmap() per il memory mapping?",
+            options: ["sys/wait.h", "sys/mman.h", "signal.h", "sys/socket.h"],
+            correct: 1,
+            explanation: "sys/mman.h dichiara mmap(), munmap() e le costanti correlate (PROT_*, MAP_*)."
         }
     ];
 
@@ -545,7 +557,7 @@ Linking with glibc...
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -553,7 +565,7 @@ Linking with glibc...
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -606,7 +618,7 @@ Linking with glibc...
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -621,9 +633,9 @@ Linking with glibc...
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -632,7 +644,7 @@ Linking with glibc...
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -649,7 +661,7 @@ Linking with glibc...
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -667,7 +679,7 @@ Linking with glibc...
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

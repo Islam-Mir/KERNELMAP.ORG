@@ -73,9 +73,9 @@
 <h3>📄 Strutture Dati Chiave</h3>
 <ul>
 <li><strong>resource</strong> - Rappresenta regioni di risorse hardware (memoria, porte I/O)</li>
-<li><strong>ioremap_cookie</strong> - Gestisce mapping di indirizzi virtuali</li>
-<li><strong>hw_regs</strong> - Strutture per accesso sicuro a registri hardware</li>
-<li><strong>mmio_addr</strong> - Indirizzi memory-mapped per dispositivi</li>
+<li><strong>void __iomem *</strong> - Puntatore restituito da ioremap(), usato con readl() e writel()</li>
+<li><strong>struct pci_dev</strong> - Dispositivo PCI con le sue regioni di I/O e di memoria (BAR)</li>
+<li><strong>phys_addr_t</strong> - Indirizzo fisico dei registri del dispositivo, da passare a ioremap()</li>
 </ul>
 
 <h3>💻 Comandi Linux Essenziali</h3>
@@ -83,7 +83,7 @@
 <li><code>$ cat /proc/ioports</code> - Mostra porte I/O allocate</li>
 <li><code>$ cat /proc/iomem</code> - Mostra regioni memoria I/O</li>
 <li><code>$ lspci -v</code> - Dettagli dispositivi PCI e risorse</li>
-<li><code>$ dmesg | grep ioremap</code> - Log operazioni di mapping</li>
+<li><code>$ sudo grep ioremap /proc/vmallocinfo</code> - Mostra le aree mappate con ioremap()</li>
 </ul>
 
 <h3>🎯 Caso Reale: Lettura Disco</h3>
@@ -99,8 +99,8 @@
         <ul>
             <li><strong>x86/x86_64</strong> - Port I/O e Memory-Mapped I/O</li>
             <li><strong>ARM</strong> - Solo Memory-Mapped I/O</li>
-            <li><strong>RISC-V</strong> - Memory-Mapped I/O con estensioni</li>
-            <li><strong>PowerPC</strong> - Mixed I/O model</li>
+            <li><strong>RISC-V</strong> - Solo Memory-Mapped I/O</li>
+            <li><strong>PowerPC</strong> - Solo MMIO (le porte I/O sono emulate tramite MMIO)</li>
             <li><strong>MIPS</strong> - Memory-Mapped I/O</li>
         </ul>
 
@@ -236,11 +236,11 @@
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">RISC-V</div>
-                    <div style="font-size: 0.8em; color: #666;">MMIO + Extensions</div>
+                    <div style="font-size: 0.8em; color: #666;">MMIO</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">PowerPC</div>
-                    <div style="font-size: 0.8em; color: #666;">Mixed I/O Model</div>
+                    <div style="font-size: 0.8em; color: #666;">MMIO (port I/O emulato)</div>
                 </div>
             </div>
 
@@ -414,14 +414,14 @@
     const quizQuestions = [
         {
             question: "Cosa fa la funzione ioremap()?",
-            options: ["Legge da una porta I/O", "Mappa memoria fisica in virtuale", "Carica un driver", "Crea un device node"],
-            correct: 1,
+            options: ["Legge da una porta I/O", "Carica un driver", "Mappa memoria fisica in virtuale", "Crea un device node"],
+            correct: 2,
             explanation: "ioremap() mappa indirizzi di memoria fisica (usati da dispositivi) in spazio di indirizzamento virtuale del kernel."
         },
         {
             question: "Quale comando mostra le porte I/O allocate?",
-            options: ["lspci", "lsusb", "cat /proc/ioports", "dmesg"],
-            correct: 2,
+            options: ["cat /proc/ioports", "lspci", "dmesg", "lsusb"],
+            correct: 0,
             explanation: "/proc/ioports mostra tutte le regioni di porte I/O allocate ai dispositivi nel sistema."
         },
         {
@@ -432,43 +432,43 @@
         },
         {
             question: "Quale funzione scrive in un registro mappato?",
-            options: ["inb()", "readl()", "writel()", "request_region()"],
-            correct: 2,
+            options: ["inb()", "writel()", "request_region()", "readl()"],
+            correct: 1,
             explanation: "writel() scrive un valore a 32 bit in un indirizzo di memoria mappato con ioremap()."
         },
         {
             question: "Cosa contiene /proc/iomem?",
-            options: ["File di log", "Regioni memoria I/O allocate", "Processi attivi", "Configurazione rete"],
-            correct: 1,
+            options: ["Regioni memoria I/O allocate", "Configurazione rete", "Processi attivi", "File di log"],
+            correct: 0,
             explanation: "/proc/iomem mostra tutte le regioni di memoria allocate per I/O memory-mapped dei dispositivi."
         },
         {
-            question: "Quale architettura usa solo MMIO?",
-            options: ["x86", "ARM", "PowerPC", "Tutte le precedenti"],
-            correct: 1,
-            explanation: "ARM usa esclusivamente Memory-Mapped I/O, senza istruzioni dedicate per porte I/O come x86."
+            question: "Quale di queste architetture dispone di istruzioni dedicate per l'I/O su porte (port I/O)?",
+            options: ["MIPS", "RISC-V", "ARM", "x86"],
+            correct: 3,
+            explanation: "x86 ha istruzioni dedicate (in/out) per uno spazio di indirizzi di porte I/O separato; ARM, MIPS e RISC-V accedono ai dispositivi solo tramite memory-mapped I/O."
         },
         {
             question: "Cosa fa request_mem_region()?",
-            options: ["Carica memoria RAM", "Riserva regione memoria per dispositivo", "Crea file device", "Avvia interrupt"],
-            correct: 1,
+            options: ["Carica memoria RAM", "Crea file device", "Riserva regione memoria per dispositivo", "Avvia interrupt"],
+            correct: 2,
             explanation: "request_mem_region() riserva una regione di memoria fisica per uso esclusivo di un dispositivo."
         },
         {
             question: "Quale funzione legge da una porta I/O?",
-            options: ["ioremap()", "inb()", "readl()", "request_region()"],
-            correct: 1,
+            options: ["request_region()", "readl()", "ioremap()", "inb()"],
+            correct: 3,
             explanation: "inb() legge un byte da una porta I/O specificata, usata principalmente su architetture x86."
         },
         {
             question: "Cosa garantisce l'Hardware Abstraction Layer?",
-            options: ["Solo prestazioni", "Codice portabile tra CPU", "Solo dispositivi wireless", "Solo memoria virtuale"],
-            correct: 1,
+            options: ["Codice portabile tra CPU", "Solo dispositivi wireless", "Solo prestazioni", "Solo memoria virtuale"],
+            correct: 0,
             explanation: "L'Hardware Abstraction Layer permette di scrivere driver che funzionano su diverse architetture CPU."
         },
         {
             question: "Quale comando mostra interrupt attivi?",
-            options: ["lspci -v", "cat /proc/interrupts", "lsmod", "ps aux"],
+            options: ["lsmod", "cat /proc/interrupts", "ps aux", "lspci -v"],
             correct: 1,
             explanation: "/proc/interrupts mostra tutte le linee di interrupt, quanti interrupt ha gestito ciascuna e quali dispositivi le usano."
         }
@@ -495,7 +495,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -503,7 +503,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -556,7 +556,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -571,9 +571,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -582,7 +582,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -599,7 +599,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -617,7 +617,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

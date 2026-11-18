@@ -48,7 +48,7 @@
         <p>• <strong>Demand paging</strong> - Caricamento pagine su richiesta</p>
         <p>• <strong>Shared memory</strong> - Condivisione efficiente tra processi</p>
         <p>• <strong>Memory overcommit</strong> - Allocazione oltre RAM fisica disponibile</p>
-        <p><em>• Interazione: Fornisce API per malloc/free e gestisce automaticamente swapping e paging</em></p>
+        <p><em>• Interazione: Fornisce l'infrastruttura (brk, mmap) su cui si basano malloc/free e gestisce automaticamente swapping e paging</em></p>
 
         <h2>⚙️ Componenti Principali</h2>
         <p><strong>Il sottosistema gestisce quattro livelli principali di astrazione:</strong></p>
@@ -70,7 +70,7 @@
 
         <h3>🔒 Memory Protection</h3>
         <p>• <strong>Page permissions</strong> - Read, Write, Execute flags per pagina</p>
-        <p>• <strong>Segmentation</strong> - Protezione basata su segmenti di memoria</p>
+        <p>• <strong>Segmentation</strong> - Su x86 Linux usa un modello flat: la protezione si basa sul paging, non sui segmenti</p>
         <p>• <strong>ASLR</strong> - Address Space Layout Randomization per sicurezza</p>
 
         <h2>📋 Struttura della Virtual Memory</h2>
@@ -88,7 +88,7 @@
 
         <h3>📊 Page Table Architecture</h3>
         <ul>
-            <li><strong>Multi-level page tables</strong> - PGD → PMD → PTE per efficienza</li>
+            <li><strong>Multi-level page tables</strong> - PGD → PUD → PMD → PTE per efficienza</li>
             <li><strong>Huge pages</strong> - Pagine grandi (2MB, 1GB) per prestazioni</li>
             <li><strong>Page table isolation</strong> - Separazione kernel/userspace</li>
             <li><strong>Page table locks</strong> - Sincronizzazione accessi concorrenti</li>
@@ -202,7 +202,7 @@
         <p><strong>Quando apri un file di grandi dimensioni:</strong></p>
         <ol>
             <li><code>mmap()</code> mappa porzioni del file in memoria virtuale</li>
-            <li>Accessi alla memoria triggers page faults su richiesta</li>
+            <li>Gli accessi alla memoria provocano page fault su richiesta</li>
             <li>Kernel carica pagine dal disco attraverso page cache</li>
             <li>TLB accelera traduzioni indirizzi per accessi successivi</li>
         </ol>
@@ -358,7 +358,7 @@
                     <li><strong>T=2.0μs: Page allocation</strong> - Buddy allocator trova pagina fisica libera (4KB)</li>
                     <li><strong>T=3.0μs: Zero filling</strong> - Pagina viene azzerata per sicurezza (demand zero)</li>
                     <li><strong>T=4.0μs: Page table update</strong> - PTE viene aggiornato con indirizzo fisico e permessi</li>
-                    <li><strong>T=5.0μs: TLB flush</strong> - Invalida TLB entry per garantire coerenza</li>
+                    <li><strong>T=5.0μs: TLB</strong> - La nuova traduzione entra nel TLB al primo accesso (per una pagina nuova non serve alcun flush)</li>
                     <li><strong>T=6.0μs: Return to user</strong> - Processo riprende esecuzione dall'istruzione che causò il fault</li>
                 </ol>
             </div>
@@ -403,7 +403,7 @@
                         $ cat /proc/meminfo | grep Huge<br>
                         AnonHugePages:    4096 kB<br>
                         HugePages_Total:     0<br>
-                        $ echo 1 > /sys/kernel/mm/transparent_hugepage/enabled
+                        $ echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Configura e monitora huge pages trasparenti</em></p>
                 </div>
@@ -478,40 +478,64 @@
     // Quiz functionality
     const quizQuestions = [
         {
-            question: "Cosa permette la memoria virtuale?",
-            options: ["Accesso diretto alla RAM fisica", "Spazi di indirizzamento isolati per processi", "Condivisione memoria tra tutti i processi", "Eliminazione del bisogno di RAM"],
+            question: "Quale componente hardware traduce gli indirizzi virtuali in indirizzi fisici?",
+            options: ["Cache L1 dei dati", "MMU (Memory Management Unit)", "ALU", "Controller DMA"],
             correct: 1,
-            explanation: "La memoria virtuale permette a ogni processo di avere il suo spazio di indirizzamento privato, isolato dagli altri processi."
+            explanation: "La MMU traduce gli indirizzi virtuali in fisici consultando le page table (con l'aiuto del TLB) e controlla i permessi di accesso."
         },
         {
             question: "Cosa sono le page tables?",
-            options: ["File di configurazione del sistema", "Strutture dati per traduzione indirizzi virtuali in fisici", "Cache per dati frequentemente usati", "Lista di processi attivi"],
-            correct: 1,
+            options: ["Lista di processi attivi", "Cache per dati frequentemente usati", "File di configurazione del sistema", "Strutture dati per traduzione indirizzi virtuali in fisici"],
+            correct: 3,
             explanation: "Le page tables sono strutture dati gerarchiche che mappano indirizzi virtuali agli indirizzi fisici corrispondenti."
         },
         {
             question: "Cosa causa un page fault?",
-            options: ["Errore di programmazione", "Accesso a pagina non residente in memoria", "Mancanza di permessi su file", "Overflow dello stack"],
-            correct: 1,
+            options: ["Accesso a pagina non residente in memoria", "Errore di programmazione", "Overflow dello stack", "Mancanza di permessi su file"],
+            correct: 0,
             explanation: "Un page fault si verifica quando si accede a una pagina virtuale che non è attualmente mappata in memoria fisica."
         },
         {
             question: "Cosa fa il TLB?",
-            options: ["Gestisce la memoria swap", "Cache le traduzioni di indirizzi virtuali", "Controlla i permessi di accesso", "Alloca memoria dinamica"],
-            correct: 1,
+            options: ["Gestisce la memoria swap", "Controlla i permessi di accesso", "Cache le traduzioni di indirizzi virtuali", "Alloca memoria dinamica"],
+            correct: 2,
             explanation: "Il TLB (Translation Lookaside Buffer) è una cache hardware che accelera la traduzione di indirizzi virtuali in fisici memorizzando le traduzioni più recenti."
         },
         {
             question: "Cosa permette il memory overcommit?",
-            options: ["Allocazione memoria oltre la RAM fisica", "Riduzione consumo memoria", "Eliminazione della memoria virtuale", "Blocco allocazioni fallite"],
+            options: ["Allocazione memoria oltre la RAM fisica", "Eliminazione della memoria virtuale", "Blocco allocazioni fallite", "Riduzione consumo memoria"],
             correct: 0,
             explanation: "Il memory overcommit permette di allocare più memoria virtuale di quanta RAM fisica sia disponibile, affidandosi al fatto che non tutta sarà usata contemporaneamente."
         },
         {
             question: "Quale comando mostra la mappa memoria di un processo?",
-            options: ["ps aux", "top", "cat /proc/PID/maps", "free -h"],
-            correct: 2,
+            options: ["ps aux", "free -h", "top", "cat /proc/PID/maps"],
+            correct: 3,
             explanation: "cat /proc/PID/maps mostra la mappa completa della memoria virtuale di un processo, inclusi segmenti, librerie e regioni mappate."
+        },
+        {
+            question: "Quale intervallo di indirizzi è riservato allo spazio utente su Linux a 32 bit (divisione 3G/1G)?",
+            options: ["0x00000000 - 0xBFFFFFFF (3 GB)", "0xC0000000 - 0xFFFFFFFF (1 GB)", "0x00000000 - 0xFFFFFFFF (4 GB)", "0x00000000 - 0x7FFFFFFF (2 GB)"],
+            correct: 0,
+            explanation: "Con la divisione 3G/1G lo spazio utente occupa i primi 3 GB (fino a 0xBFFFFFFF) e il kernel l'ultimo GB (da 0xC0000000)."
+        },
+        {
+            question: "In quale regione risiedono, di norma, i dati allocati dinamicamente con malloc()?",
+            options: ["BSS", "Text segment", "Stack", "Heap"],
+            correct: 3,
+            explanation: "L'heap contiene la memoria allocata dinamicamente; per richieste molto grandi malloc() può usare anche mmap()."
+        },
+        {
+            question: "Che cosa fa l'OOM killer?",
+            options: ["Aumenta la dimensione dello swap", "Termina uno o più processi quando la memoria è insufficiente", "Comprime i processi in RAM", "Libera la page cache senza mai terminare processi"],
+            correct: 1,
+            explanation: "Quando la memoria è esaurita e non si riesce a recuperarne, l'OOM killer sceglie e termina uno o più processi per liberarla."
+        },
+        {
+            question: "Che cosa fanno le Transparent Huge Pages (THP)?",
+            options: ["Cifrano la memoria dei processi", "Duplicano le pagine per sicurezza", "Usano automaticamente pagine grandi (es. 2MB) per ridurre i TLB miss", "Comprimono le pagine in RAM"],
+            correct: 2,
+            explanation: "Le THP permettono al kernel di usare pagine grandi in modo trasparente per le applicazioni, riducendo i TLB miss e il costo di gestione delle page table."
         }
     ];
 
@@ -536,7 +560,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -544,7 +568,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -597,7 +621,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -612,9 +636,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -623,7 +647,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -640,7 +664,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -658,7 +682,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

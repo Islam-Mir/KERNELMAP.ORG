@@ -55,10 +55,10 @@
 
         <h3>🔗 Connection Management</h3>
         <p>• <strong>tcp_connect()</strong> - Stabilisce connessione TCP con three-way handshake</p>
-        <p>• <strong>tcp_accept()</strong> - Accetta connessioni in entrata</p>
+        <p>• <strong>inet_csk_accept()</strong> - Accetta connessioni in entrata</p>
         <p>• <strong>tcp_close()</strong> - Chiude connessione con four-way handshake</p>
         <p>• <strong>tcp_abort()</strong> - Termina connessione forzatamente</p>
-        <p>• <strong>tcp_listen()</strong> - Mette socket in ascolto per connessioni</p>
+        <p>• <strong>inet_listen()</strong> - Mette socket in ascolto per connessioni</p>
 
         <h3>📦 Data Transmission</h3>
         <p>• <strong>tcp_sendmsg()</strong> - Invia dati con controllo flusso e ritrasmissione</p>
@@ -68,18 +68,18 @@
         <p>• <strong>ip_forward()</strong> - Inoltra pacchetti IP tra interfacce</p>
 
         <h3>🛡️ Error Control</h3>
-        <p>• <strong>tcp_retransmit()</strong> - Ritrasmette pacchetti persi</p>
+        <p>• <strong>tcp_retransmit_skb()</strong> - Ritrasmette pacchetti persi</p>
         <p>• <strong>tcp_ack()</strong> - Invia acknowledgment di ricezione</p>
         <p>• <strong>tcp_reset()</strong> - Invia segmento RST per errori</p>
         <p>• <strong>icmp_send()</strong> - Invia messaggi ICMP (ping, errori)</p>
-        <p>• <strong>tcp_keepalive()</strong> - Mantiene connessioni attive</p>
+        <p>• <strong>tcp_keepalive_timer()</strong> - Mantiene connessioni attive</p>
 
         <h3>⚡ Performance Optimization</h3>
-        <p>• <strong>tcp_congestion_control()</strong> - Gestisce controllo congestione TCP</p>
-        <p>• <strong>tcp_window_update()</strong> - Aggiorna finestra di ricezione</p>
-        <p>• <strong>tcp_fast_retransmit()</strong> - Ritrasmissione veloce su duplicate ACK</p>
+        <p>• <strong>tcp_cong_control()</strong> - Gestisce controllo congestione TCP</p>
+        <p>• <strong>tcp_ack_update_window()</strong> - Aggiorna finestra di ricezione</p>
+        <p>• <strong>tcp_fastretrans_alert()</strong> - Ritrasmissione veloce su duplicate ACK</p>
         <p>• <strong>tcp_slow_start()</strong> - Algoritmo slow start per evitare congestione</p>
-        <p>• <strong>tcp_nagle()</strong> - Algoritmo Nagle per ridurre piccoli pacchetti</p>
+        <p>• <strong>tcp_nagle_check()</strong> - Algoritmo Nagle per ridurre piccoli pacchetti</p>
 
         <h2>📋 Esempi Pratici</h2>
         <p><strong>Quando navighi su un sito web, ecco cosa succede nei protocolli di rete:</strong></p>
@@ -132,9 +132,9 @@
         <ul>
             <li><strong>Reliability</strong> - TCP garantisce consegna affidabile con ritrasmissione</li>
             <li><strong>Flow Control</strong> - Gestione congestione e controllo flusso adattivo</li>
-            <li><strong>Error Detection</strong> - Checksum e correzione errori integrata</li>
+            <li><strong>Error Detection</strong> - Checksum per rilevare gli errori (la correzione avviene tramite ritrasmissione)</li>
             <li><strong>Connection Management</strong> - Handshake e teardown strutturato</li>
-            <li><strong>Performance Optimization</strong> - Algoritmi slow-start, congestion avoidance</li>
+            <li><strong>Performance Optimization</strong> - Algoritmi slow-start e congestion avoidance (CUBIC è l'algoritmo predefinito in Linux)</li>
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
@@ -171,7 +171,7 @@
             <code style="color: #2e7d32; font-weight: bold;">int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);</code><br>
             <span style="color: #666; font-size: 0.9em;">Associa un indirizzo locale al socket.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">int tcp_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len);</code><br>
+            <code style="color: #f57c00; font-weight: bold;">int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len);</code><br>
             <span style="color: #666; font-size: 0.9em;">Stabilisce connessione TCP con three-way handshake.</span>
         </div>
 
@@ -192,7 +192,7 @@
             <code style="color: #f57c00; font-weight: bold;">void tcp_retransmit_timer(struct sock *sk);</code><br>
             <span style="color: #666; font-size: 0.9em;">Gestisce ritrasmissione pacchetti TCP persi.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">void tcp_congestion_control(struct sock *sk);</code><br>
+            <code style="color: #9c27b0; font-weight: bold;">void tcp_cong_control(struct sock *sk, u32 ack, u32 acked_sacked, int flag, const struct rate_sample *rs);</code><br>
             <span style="color: #666; font-size: 0.9em;">Applica algoritmi controllo congestione TCP.</span><br><br>
 
             <code style="color: #0288d1; font-weight: bold;">int icmp_send(struct sk_buff *skb, int type, int code);</code><br>
@@ -371,7 +371,7 @@
                         $ ss -t<br>
                         State      Recv-Q Send-Q Local Address:Port<br>
                         ESTAB      0      0      192.168.1.100:ssh<br><br>
-                        $ netstat -ant | grep ESTABLISHED
+                        $ ss -ant | grep ESTAB
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Vedi connessioni TCP attive e stati</em></p>
                 </div>
@@ -469,62 +469,62 @@
                 const quizQuestions = [
         {
             question: "Quale è il ruolo principale di TCP nel networking?",
-            options: ["Consegnare dati velocemente", "Garantire consegna ordinata e affidabile", "Effettuare routing", "Gestire indirizzi IP"],
+            options: ["Effettuare routing", "Garantire consegna ordinata e affidabile", "Gestire indirizzi IP", "Consegnare dati velocemente"],
             correct: 1,
             explanation: "TCP (Transmission Control Protocol) garantisce consegna ordinata e affidabile dei dati."
         },
         {
             question: "Come viene stabilita una connessione TCP?",
-            options: ["One-way handshake", "Three-way handshake (SYN, SYN-ACK, ACK)", "Four-way handshake", "No handshake"],
-            correct: 1,
+            options: ["Three-way handshake (SYN, SYN-ACK, ACK)", "No handshake", "One-way handshake", "Four-way handshake"],
+            correct: 0,
             explanation: "TCP usa un three-way handshake: SYN, SYN-ACK, ACK per stabilire connessioni."
         },
         {
-            question: "Quale è la differenza principale tra TCP e UDP?",
-            options: ["TCP è veloce, UDP lento", "TCP garantisce consegna, UDP no", "UDP ha meno overhead", "Tutte le precedenti"],
-            correct: 3,
-            explanation: "TCP garantisce consegna ordinata, UDP è connectionless; UDP ha meno overhead."
+            question: "Qual è la differenza principale tra TCP e UDP?",
+            options: ["UDP garantisce la ritrasmissione e TCP no", "TCP è orientato alla connessione e garantisce consegna ordinata; UDP è senza connessione e senza garanzie", "Non c'è alcuna differenza sostanziale", "TCP è senza connessione e UDP orientato alla connessione"],
+            correct: 1,
+            explanation: "TCP stabilisce una connessione e garantisce consegna affidabile e ordinata (ack, ritrasmissioni, controllo di flusso); UDP invia datagrammi indipendenti con meno overhead e senza garanzie."
         },
         {
-            question: "Quale protocollo usa ICMP?",
-            options: ["IPv4", "TCP", "UDP", "HTTP"],
-            correct: 0,
-            explanation: "ICMP (Internet Control Message Protocol) è un protocollo IP per diagnostica (ping, traceroute)."
+            question: "Quale comando usa i messaggi ICMP Echo per verificare la raggiungibilità di un host?",
+            options: ["ip route", "netstat", "ss", "ping"],
+            correct: 3,
+            explanation: "ping invia ICMP Echo Request e attende l'Echo Reply; traceroute usa invece la scadenza del TTL e i messaggi ICMP Time Exceeded."
         },
         {
             question: "Cosa fa l'algoritmo di congestione di TCP?",
-            options: ["Comprime i dati", "Adatta la velocità di trasmissione", "Cripta i pacchetti", "Ordina i dati"],
-            correct: 1,
+            options: ["Comprime i dati", "Cripta i pacchetti", "Adatta la velocità di trasmissione", "Ordina i dati"],
+            correct: 2,
             explanation: "Il controllo di congestione riduce la velocità quando il network è saturo."
         },
         {
             question: "Quale è l'algoritmo di controllo congestione default in Linux?",
-            options: ["Reno", "NewReno", "CUBIC", "Vegas"],
-            correct: 2,
+            options: ["Vegas", "Reno", "NewReno", "CUBIC"],
+            correct: 3,
             explanation: "CUBIC è l'algoritmo di controllo congestione predefinito in Linux moderno."
         },
         {
             question: "Come identifica TCP i pacchetti in arrivo?",
-            options: ["Indirizzo IP", "Porta TCP", "Combinazione IP:porta", "Sequence number"],
-            correct: 2,
+            options: ["Combinazione IP:porta", "Sequence number", "Porta TCP", "Indirizzo IP"],
+            correct: 0,
             explanation: "TCP usa la combinazione di IP sorgente/destinazione e porte per identificare flussi."
         },
         {
-            question: "Quale è il meccanismo ACK (acknowledgment) in TCP?",
-            options: ["Conferma di ricezione pacchetto", "Conferma di spazio buffer", "Conferma di consegna", "Tutte le precedenti"],
-            correct: 3,
-            explanation: "ACK conferma ricezione, comunica spazio disponibile e garantisce consegna."
+            question: "Quale funzione ha l'acknowledgment (ACK) in TCP?",
+            options: ["Cifra i dati", "Conferma al mittente la ricezione dei dati", "Risolve i nomi host", "Instrada i pacchetti"],
+            correct: 1,
+            explanation: "L'ACK conferma al mittente fino a quale byte i dati sono stati ricevuti; i dati non confermati vengono ritrasmessi. Lo spazio disponibile nel buffer è comunicato dalla finestra (window)."
         },
         {
             question: "Cosa rappresenta il window size in TCP?",
-            options: ["Dimensione dello schermo", "Spazio disponibile nel buffer ricevente", "Numero di pacchetti", "Timeout"],
-            correct: 1,
+            options: ["Dimensione dello schermo", "Numero di pacchetti", "Spazio disponibile nel buffer ricevente", "Timeout"],
+            correct: 2,
             explanation: "Il window size comunica quanto spazio è disponibile nel buffer ricevente."
         },
         {
             question: "Come gestisce UDP la perdita di pacchetti?",
-            options: ["Ritenta automaticamente", "Non garantisce consegna", "Usa ritrasmissione", "Usa TCP fallback"],
-            correct: 1,
+            options: ["Usa ritrasmissione", "Ritenta automaticamente", "Non garantisce consegna", "Usa TCP fallback"],
+            correct: 2,
             explanation: "UDP è connectionless e non garantisce consegna; la gestione errori spetta all'applicazione."
         }
     ];
@@ -550,7 +550,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -558,7 +558,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -611,7 +611,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -626,9 +626,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -637,7 +637,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -654,7 +654,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -672,7 +672,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

@@ -54,7 +54,7 @@
         <p><strong>Il sottosistema I/O organizza le operazioni attraverso quattro layer principali:</strong></p>
 
         <h3>📦 Block Layer</h3>
-        <p>• <strong>I/O Scheduler</strong> - Ottimizza ordine richieste (CFQ, Deadline, Noop)</p>
+        <p>• <strong>I/O Scheduler</strong> - Ottimizza ordine richieste (mq-deadline, BFQ, Kyber, none)</p>
         <p>• <strong>Page Cache</strong> - Bufferizzazione intelligente per file system</p>
         <p>• <strong>Block Devices</strong> - Interfaccia unificata per storage devices</p>
 
@@ -71,7 +71,7 @@
         <h3>⚡ Advanced I/O</h3>
         <p>• <strong>AIO (Async I/O)</strong> - Operazioni non bloccanti</p>
         <p>• <strong>Vectored I/O</strong> - Trasferimenti multi-buffer (readv/writev)</p>
-        <p>• <strong>Memory-mapped I/O</strong> - Accesso dispositivi come memoria</p>
+        <p>• <strong>Memory-mapped I/O</strong> - Accesso a file e dispositivi come se fossero memoria (mmap)</p>
 
         <h2>📋 Architettura I/O</h2>
         <p><strong>Il sistema I/O Linux è organizzato in layer gerarchici per massima flessibilità:</strong></p>
@@ -92,7 +92,7 @@
             <li><strong>Synchronous I/O</strong> - Processo bloccato fino al completamento</li>
             <li><strong>Asynchronous I/O</strong> - Processo continua, notifica al completamento</li>
             <li><strong>Direct I/O</strong> - Bypass page cache per prestazioni</li>
-            <li><strong>Memory-mapped I/O</strong> - Accesso dispositivi come memoria</li>
+            <li><strong>Memory-mapped I/O</strong> - Accesso a file e dispositivi come se fossero memoria (mmap)</li>
             <li><strong>Vectored I/O</strong> - Multiple buffer in singola operazione</li>
         </ul>
 
@@ -128,10 +128,10 @@
 
         <h2>🔧 I/O Schedulers</h2>
         <ul>
-            <li><strong>CFQ (Completely Fair Queuing)</strong> - Fairness tra processi</li>
-            <li><strong>Deadline</strong> - Garanzie latenza per richieste real-time</li>
-            <li><strong>Noop</strong> - Scheduler semplice per dispositivi smart</li>
-            <li><strong>BFQ (Budget Fair Queuing)</strong> - Ottimizzato per desktop</li>
+            <li><strong>none</strong> - Nessun riordino: ideale per SSD NVMe molto veloci</li>
+            <li><strong>mq-deadline</strong> - Garantisce latenze limitate ed evita la starvation</li>
+            <li><strong>Kyber</strong> - Controlla la latenza su dispositivi veloci (SSD/NVMe)</li>
+            <li><strong>BFQ (Budget Fair Queuing)</strong> - Fairness tra processi, adatto a desktop e dispositivi lenti</li>
         </ul>
 
         <h2>✨ Caratteristiche Avanzate</h2>
@@ -209,7 +209,7 @@
             <li><code>open()</code> entrambi file sorgente e destinazione</li>
             <li>Page cache ottimizza letture con read-ahead</li>
             <li>I/O scheduler raggruppa scritture per efficienza</li>
-            <li>DMA trasferisce dati direttamente da disco a disco</li>
+            <li>DMA trasferisce i dati tra disco e RAM senza impegnare la CPU</li>
             <li>Progress report mostra avanzamento trasferimento</li>
         </ol>
         <p><em>Il kernel ottimizza automaticamente il flusso dati senza intervento dell'utente</em></p>
@@ -363,7 +363,7 @@
                     <li><strong>T=0.001ms: System call</strong> - read() arriva al VFS layer</li>
                     <li><strong>T=0.002ms: Cache lookup</strong> - Page cache verifica presenza dati</li>
                     <li><strong>T=0.003ms: Cache miss</strong> - Dati non in memoria, richiesta I/O</li>
-                    <li><strong>T=0.005ms: I/O scheduling</strong> - CFQ scheduler ottimizza ordine richieste</li>
+                    <li><strong>T=0.005ms: I/O scheduling</strong> - Lo scheduler I/O (es. mq-deadline) ottimizza l'ordine delle richieste</li>
                     <li><strong>T=0.008ms: Read-ahead</strong> - Kernel anticipa lettura blocchi successivi</li>
                     <li><strong>T=0.010ms: DMA setup</strong> - Controller configura trasferimento diretto</li>
                     <li><strong>T=0.050ms: Transfer complete</strong> - Dati in memoria dopo ~40μs</li>
@@ -406,8 +406,8 @@
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Configura I/O Scheduler</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ cat /sys/block/sda/queue/scheduler<br>
-                        noop deadline [cfq] <br>
-                        $ echo deadline > /sys/block/sda/queue/scheduler<br>
+                        [mq-deadline] kyber bfq none <br>
+                        $ echo bfq | sudo tee /sys/block/sda/queue/scheduler<br>
                         $ cat /sys/block/sda/queue/scheduler
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Cambia scheduler I/O per ottimizzare prestazioni</em></p>
@@ -484,45 +484,63 @@
     const quizQuestions = [
         {
             question: "Cosa ottimizza un I/O scheduler?",
-            options: ["Velocità CPU", "Ordine richieste disco", "Consumo memoria", "Velocità rete"],
+            options: ["Velocità rete", "Ordine richieste disco", "Consumo memoria", "Velocità CPU"],
             correct: 1,
             explanation: "Gli I/O scheduler ottimizzano l'ordine delle richieste per ridurre seek time e migliorare throughput dei dischi."
         },
         {
             question: "Cosa fa la page cache?",
-            options: ["Archivia programmi", "Bufferizza accessi file", "Gestisce memoria virtuale", "Ottimizza CPU"],
-            correct: 1,
+            options: ["Ottimizza CPU", "Gestisce memoria virtuale", "Archivia programmi", "Bufferizza accessi file"],
+            correct: 3,
             explanation: "La page cache mantiene in RAM i dati dei file più usati per ridurre accessi al disco e migliorare prestazioni."
         },
         {
             question: "Quale comando monitora prestazioni I/O?",
-            options: ["top", "iostat", "ps aux", "free"],
-            correct: 1,
+            options: ["top", "free", "ps aux", "iostat"],
+            correct: 3,
             explanation: "iostat fornisce statistiche dettagliate sulle prestazioni di input/output dei dispositivi di storage."
         },
         {
-            question: "Cosa permette il DMA?",
-            options: ["Accesso diretto CPU", "Trasferimenti diretti memoria-dispositivo", "Gestione memoria virtuale", "Ottimizzazione cache"],
-            correct: 1,
-            explanation: "Il DMA (Direct Memory Access) permette ai dispositivi di trasferire dati direttamente dalla/da memoria senza intervento della CPU."
+            question: "Quale vantaggio offre il DMA durante un trasferimento da disco?",
+            options: ["Riduce la dimensione dei file", "Cifra i dati trasferiti", "La CPU non deve copiare i dati byte per byte", "Aumenta la RAM disponibile"],
+            correct: 2,
+            explanation: "Con il DMA il controller trasferisce i dati direttamente tra dispositivo e memoria: la CPU imposta il trasferimento e viene avvisata alla fine con un interrupt."
         },
         {
-            question: "Quale è un I/O scheduler di Linux?",
-            options: ["Round Robin", "Completely Fair Queuing", "First Come First Served", "Priority Scheduling"],
-            correct: 1,
-            explanation: "CFQ (Completely Fair Queuing) è uno degli I/O scheduler di Linux che garantisce fairness tra processi concorrenti."
+            question: "Quale di questi è uno scheduler I/O del kernel Linux moderno (block layer multi-queue)?",
+            options: ["Priority Scheduling", "Round Robin", "mq-deadline", "First Come First Served"],
+            correct: 2,
+            explanation: "Con il block layer multi-queue gli scheduler disponibili sono none, mq-deadline, kyber e bfq; CFQ è stato rimosso dal kernel 5.0."
         },
         {
-            question: "Cosa permette il memory-mapped I/O?",
-            options: ["Accesso diretto CPU", "Trattare file come memoria", "Gestione interrupt", "Ottimizzazione rete"],
+            question: "Cosa permette il memory mapping di un file con mmap()?",
+            options: ["Cambiare lo scheduler I/O", "Accedere al contenuto del file come se fosse memoria", "Aumentare la dimensione della page cache", "Cifrare i dati del file"],
             correct: 1,
-            explanation: "Il memory-mapped I/O permette di accedere a file come se fossero memoria, semplificando la programmazione e migliorando prestazioni."
+            explanation: "mmap() mappa un file (o un dispositivo) nello spazio di indirizzi del processo: si legge e si scrive con normali accessi alla memoria e il kernel gestisce il caricamento delle pagine."
         },
         {
             question: "Quale comando traccia system calls I/O?",
-            options: ["gdb", "strace", "ltrace", "perf"],
-            correct: 1,
+            options: ["gdb", "ltrace", "strace", "perf"],
+            correct: 2,
             explanation: "strace traccia le system calls effettuate da un programma, utile per analizzare comportamento I/O."
+        },
+        {
+            question: "Come si può aprire un file bypassando la page cache?",
+            options: ["Con fcntl() e F_GETFL", "Con mmap() e MAP_SHARED", "Con open() e il flag O_NONBLOCK", "Con open() e il flag O_DIRECT"],
+            correct: 3,
+            explanation: "O_DIRECT (Direct I/O) fa trasferire i dati direttamente tra il buffer dell'applicazione e il dispositivo, senza passare dalla page cache."
+        },
+        {
+            question: "Cosa fa il read-ahead?",
+            options: ["Pre-carica in anticipo i blocchi successivi che probabilmente verranno letti", "Combina richieste di scrittura adiacenti", "Scrive subito su disco i dati modificati", "Cifra i dati letti dal disco"],
+            correct: 0,
+            explanation: "Con il read-ahead il kernel anticipa la lettura dei blocchi successivi di un file letto in modo sequenziale, così le richieste seguenti trovano i dati già in page cache."
+        },
+        {
+            question: "Cosa significa write-back per la page cache?",
+            options: ["Le scritture vengono differite: i dati modificati sono scritti su disco più tardi, in gruppo", "I dati restano solo in RAM per sempre", "Le scritture vengono scartate", "Ogni scrittura va subito su disco"],
+            correct: 0,
+            explanation: "Nel write-back le pagine modificate (dirty) restano in cache e vengono scritte su disco in un secondo momento, raggruppando le richieste per migliorare le prestazioni."
         }
     ];
 
@@ -547,7 +565,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -555,7 +573,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -608,7 +626,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -623,9 +641,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -634,7 +652,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -651,7 +669,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -669,7 +687,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

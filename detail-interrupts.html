@@ -179,7 +179,7 @@
             <span style="color: #666; font-size: 0.9em;">Permette condivisione della linea interrupt tra più dispositivi.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">IRQF_ONESHOT</code><br>
-            <span style="color: #666; font-size: 0.9em;">L'interrupt rimane mascherato fino al completamento dell'handler.</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">L'interrupt rimane mascherato fino al completamento dell'handler threaded.</span><br><br>
 
             <code style="color: #0288d1; font-weight: bold;">IRQF_TRIGGER_*</code><br>
             <span style="color: #666; font-size: 0.9em;">Specifica se l'interrupt è edge o level triggered.</span>
@@ -340,7 +340,7 @@
                     <li><strong>2. Controller tastiera:</strong> Rileva la pressione e genera scan code</li>
                     <li><strong>3. Interrupt hardware:</strong> Il controller USB genera interrupt sulla linea IRQ</li>
                     <li><strong>4. APIC routing:</strong> L'interrupt viene instradato alla CPU corretta</li>
-                    <li><strong>5. Context switch:</strong> CPU salva stato corrente e chiama handler</li>
+                    <li><strong>5. Ingresso in interrupt:</strong> CPU salva stato corrente e chiama handler</li>
                     <li><strong>6. Top-half:</strong> Handler riconosce interrupt e ack al controller</li>
                     <li><strong>7. Bottom-half:</strong> Tasklet elabora scan code e genera evento input</li>
                     <li><strong>8. Userspace:</strong> X11 o Wayland riceve l'evento e visualizza 'A'</li>
@@ -373,7 +373,7 @@
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ cat /proc/irq/16/smp_affinity<br>
                         ffffffff<br><br>
-                        $ echo 1 > /proc/irq/16/smp_affinity<br>
+                        $ echo 1 | sudo tee /proc/irq/16/smp_affinity<br>
                         $ cat /proc/irq/16/smp_affinity<br>
                         1
                     </div>
@@ -462,62 +462,62 @@
     const quizQuestions = [
         {
             question: "Cosa sono gli interrupt?",
-            options: ["Programmi che girano in background", "Segnali elettrici per richiedere attenzione immediata", "File di configurazione del sistema", "Parte del filesystem"],
-            correct: 1,
+            options: ["Segnali elettrici per richiedere attenzione immediata", "File di configurazione del sistema", "Parte del filesystem", "Programmi che girano in background"],
+            correct: 0,
             explanation: "Gli interrupt sono segnali elettrici che i dispositivi hardware inviano al processore per richiedere attenzione immediata e asincrona."
         },
         {
             question: "Qual è la differenza tra top-half e bottom-half?",
-            options: ["Top-half è più lento", "Top-half risponde immediatamente, bottom-half elabora differito", "Bottom-half ha priorità più alta", "Non c'è differenza"],
+            options: ["Bottom-half ha priorità più alta", "Top-half risponde immediatamente, bottom-half elabora differito", "Non c'è differenza", "Top-half è più lento"],
             correct: 1,
             explanation: "Il top-half risponde immediatamente all'interrupt con operazioni critiche, mentre il bottom-half elabora i dati in modo differito per non bloccare il sistema."
         },
         {
             question: "Cosa significa IRQ?",
-            options: ["Interrupt Request Queue", "Interrupt Request", "Internal Request Queue", "Interrupt Random Queue"],
+            options: ["Internal Request Queue", "Interrupt Request", "Interrupt Request Queue", "Interrupt Random Queue"],
             correct: 1,
             explanation: "IRQ sta per Interrupt Request, riferendosi alle linee dedicate per segnali di interrupt hardware."
         },
         {
             question: "Quale comando mostra le statistiche degli interrupt?",
-            options: ["ps aux", "top", "cat /proc/interrupts", "free -h"],
+            options: ["top", "free -h", "cat /proc/interrupts", "ps aux"],
             correct: 2,
             explanation: "cat /proc/interrupts mostra quante volte ogni linea di interrupt è stata attivata per ogni CPU."
         },
         {
             question: "Cosa fa l'APIC?",
-            options: ["Gestisce la memoria", "Instrada gli interrupt nelle macchine moderne", "Controlla i processi", "Gestisce il filesystem"],
-            correct: 1,
+            options: ["Controlla i processi", "Gestisce il filesystem", "Gestisce la memoria", "Instrada gli interrupt nelle macchine moderne"],
+            correct: 3,
             explanation: "L'APIC (Advanced Programmable Interrupt Controller) gestisce l'instradamento degli interrupt nei sistemi multiprocessore moderni."
         },
         {
             question: "Perché gli interrupt vengono mascherati?",
-            options: ["Per velocizzare il sistema", "Per proteggere sezioni critiche di codice", "Per salvare energia", "Per migliorare la grafica"],
+            options: ["Per migliorare la grafica", "Per proteggere sezioni critiche di codice", "Per velocizzare il sistema", "Per salvare energia"],
             correct: 1,
             explanation: "Gli interrupt vengono temporaneamente disabilitati per proteggere sezioni critiche di codice da race condition."
         },
         {
             question: "Cosa permette IRQF_SHARED?",
-            options: ["Solo un dispositivo per interrupt", "Più dispositivi condividono la stessa linea", "Interrupt più veloci", "Meno memoria usata"],
-            correct: 1,
+            options: ["Più dispositivi condividono la stessa linea", "Meno memoria usata", "Interrupt più veloci", "Solo un dispositivo per interrupt"],
+            correct: 0,
             explanation: "IRQF_SHARED permette a più dispositivi di condividere la stessa linea di interrupt, utile quando le linee sono limitate."
         },
         {
-            question: "Quale struttura contiene gli handler degli interrupt?",
+            question: "Quale struttura x86 associa ogni numero di interrupt al relativo punto d'ingresso?",
             options: ["IDT (Interrupt Descriptor Table)", "GDT (Global Descriptor Table)", "TLB (Translation Lookaside Buffer)", "PCB (Process Control Block)"],
             correct: 0,
-            explanation: "L'IDT (Interrupt Descriptor Table) contiene i puntatori agli handler per ogni tipo di interrupt."
+            explanation: "L'IDT associa ogni vettore di interrupt o eccezione al suo punto d'ingresso; a livello di kernel, i driver registrano poi i propri handler con request_irq() (strutture irq_desc/irqaction)."
         },
         {
             question: "Cosa sono gli IPI?",
-            options: ["Interrupt Processor Interrupts", "Inter-Processor Interrupts", "Internal Process Interrupts", "Interrupt Priority Interrupts"],
-            correct: 1,
+            options: ["Internal Process Interrupts", "Interrupt Priority Interrupts", "Inter-Processor Interrupts", "Interrupt Processor Interrupts"],
+            correct: 2,
             explanation: "IPI significa Inter-Processor Interrupts, usati per comunicazione e sincronizzazione tra CPU in sistemi multiprocessore."
         },
         {
             question: "Cosa permette l'interrupt affinity?",
-            options: ["Solo interrupt più veloci", "Assegnare interrupt a CPU specifiche", "Disabilitare interrupt", "Cambiare priorità"],
-            correct: 1,
+            options: ["Solo interrupt più veloci", "Disabilitare interrupt", "Cambiare priorità", "Assegnare interrupt a CPU specifiche"],
+            correct: 3,
             explanation: "L'interrupt affinity permette di assegnare linee di interrupt a CPU specifiche per ottimizzare le prestazioni nei sistemi SMP."
         }
     ];
@@ -543,7 +543,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -551,7 +551,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -604,7 +604,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -619,9 +619,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -630,7 +630,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -647,7 +647,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -665,7 +665,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

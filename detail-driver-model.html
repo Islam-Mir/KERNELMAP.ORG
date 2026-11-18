@@ -55,7 +55,7 @@
 
 <h3>⚙️ Driver Management</h3>
 <p>• <strong>driver_register()</strong> - Registra driver nel sistema</p>
-<p>• <strong>driver_probe()</strong> - Verifica compatibilità driver-dispositivo</p>
+<p>• <strong>driver_probe_device()</strong> - Verifica compatibilità driver-dispositivo</p>
 
 <h3>⚙️ Binding Operations</h3>
 <p>• <strong>device_bind_driver()</strong> - Associa driver a dispositivo</p>
@@ -65,7 +65,7 @@
 <p><strong>Il Driver Model è essenziale per l'inizializzazione e gestione dispositivi nel sistema Linux:</strong></p>
 
 <h3>🔍 Caricamento Driver USB</h3>
-<p>1. BIOS rileva dispositivo USB e segnala al kernel</p>
+<p>1. Il controller/hub USB rileva il dispositivo e lo segnala al kernel (USB core)</p>
 <p>2. Driver Model crea struct device per il dispositivo</p>
 <p>3. Sistema cerca driver compatibile (usb-storage)</p>
 <p>4. Driver viene caricato e inizializzato</p>
@@ -101,7 +101,7 @@
             <li><strong>USB</strong> - Universal Serial Bus framework</li>
             <li><strong>Platform Devices</strong> - Dispositivi integrati SoC</li>
             <li><strong>Device Tree</strong> - Descrizione hardware embedded</li>
-            <li><strong>ACPI</strong> - Advanced Configuration and Power</li>
+            <li><strong>ACPI</strong> - Advanced Configuration and Power Interface</li>
         </ul>
 
         <h2>✨ Caratteristiche Avanzate</h2>
@@ -142,7 +142,7 @@
             <span style="color: #666; font-size: 0.9em;">Rimuove dispositivo dal sistema e rilascia risorse.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">int device_bind_driver(struct device *dev);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Associa il driver migliore disponibile al dispositivo.</span>
+            <span style="color: #666; font-size: 0.9em;">Associa al dispositivo il driver già scelto (dev->driver); la ricerca del driver adatto è fatta da device_attach().</span>
         </div>
 
         <h3>📊 Driver Management</h3>
@@ -275,7 +275,7 @@
         <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
         <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
         <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Hardware Detection</div>
-        <div style="font-family: monospace; font-size: 0.9em;">BIOS/UEFI segnala nuovo dispositivo PCI al kernel</div>
+        <div style="font-family: monospace; font-size: 0.9em;">Il kernel enumera il bus PCI e scopre il nuovo dispositivo</div>
         </div>
         
         <div style="font-size: 2em; color: #f57c00;">⚡</div>
@@ -413,62 +413,62 @@
     const quizQuestions = [
         {
             question: "Cosa fa il Driver Model nel kernel Linux?",
-            options: ["Gestisce i processi", "Coordina dispositivi e driver", "Amministra la memoria", "Controlla il networking"],
-            correct: 1,
+            options: ["Gestisce i processi", "Amministra la memoria", "Coordina dispositivi e driver", "Controlla il networking"],
+            correct: 2,
             explanation: "Il Driver Model coordina l'interazione tra dispositivi hardware e driver software nel kernel Linux."
         },
         {
             question: "Quale comando mostra dispositivi PCI?",
-            options: ["lsusb", "lspci", "lsmod", "dmesg"],
+            options: ["lsmod", "lspci", "dmesg", "lsusb"],
             correct: 1,
             explanation: "lspci mostra tutti i dispositivi PCI presenti nel sistema con dettagli sulle risorse allocate."
         },
         {
             question: "Cosa rappresenta un device node in /dev?",
-            options: ["Un file normale", "Un dispositivo virtuale", "Un processo in esecuzione", "Una directory"],
-            correct: 1,
-            explanation: "I device node in /dev sono file speciali che rappresentano dispositivi hardware o virtuali."
+            options: ["Un file di testo normale", "Un processo in esecuzione", "Un file speciale che rappresenta un dispositivo (fisico o virtuale)", "Una directory di configurazione"],
+            correct: 2,
+            explanation: "I device node in /dev sono file speciali (a caratteri o a blocchi) che permettono ai programmi di accedere ai dispositivi, fisici o virtuali, con le normali system call."
         },
         {
             question: "Quale funzione registra un driver nel kernel?",
-            options: ["device_register()", "driver_register()", "module_init()", "register_chrdev()"],
-            correct: 1,
+            options: ["driver_register()", "module_init()", "device_register()", "register_chrdev()"],
+            correct: 0,
             explanation: "driver_register() registra un driver nel sistema dei dispositivi del kernel."
         },
         {
             question: "Cosa contiene /sys/devices/?",
-            options: ["File di configurazione", "Device tree virtuale", "Log di sistema", "Driver caricati"],
-            correct: 1,
+            options: ["Driver caricati", "Log di sistema", "Device tree virtuale", "File di configurazione"],
+            correct: 2,
             explanation: "/sys/devices/ contiene il device tree virtuale che rappresenta tutti i dispositivi del sistema."
         },
         {
-            question: "Quale comando monitora eventi dispositivi?",
-            options: ["lspci", "udevadm monitor", "dmesg", "sysctl"],
+            question: "Quale comando mostra le informazioni dettagliate di un dispositivo (attributi sysfs e regole udev)?",
+            options: ["sysctl -a", "udevadm info -a -n /dev/sda", "dmesg", "lsmod"],
             correct: 1,
-            explanation: "udevadm monitor mostra in tempo reale gli eventi di aggiunta/rimozione dispositivi."
+            explanation: "udevadm info interroga il database di udev e risale la gerarchia sysfs del dispositivo, mostrando tutti gli attributi utili per scrivere regole udev."
         },
         {
             question: "Cosa fa udev?",
-            options: ["Carica driver", "Gestisce device nodes", "Configura rete", "Monitora processi"],
-            correct: 1,
+            options: ["Monitora processi", "Configura rete", "Carica driver", "Gestisce device nodes"],
+            correct: 3,
             explanation: "udev è il device manager userspace che crea e gestisce i device nodes in /dev."
         },
         {
             question: "Quale struttura rappresenta un dispositivo?",
-            options: ["struct file", "struct device", "struct inode", "struct task_struct"],
-            correct: 1,
+            options: ["struct task_struct", "struct file", "struct inode", "struct device"],
+            correct: 3,
             explanation: "struct device rappresenta un dispositivo nel device model del kernel."
         },
         {
-            question: "Cosa succede quando si inserisce una USB?",
-            options: ["Il sistema si riavvia", "Driver Model alloca risorse e carica driver", "Viene creato un processo", "La memoria viene liberata"],
-            correct: 1,
-            explanation: "Il Driver Model rileva l'USB, alloca risorse (IRQ, memoria), carica il driver e crea il device node."
+            question: "Cosa fa il Driver Model quando il kernel scopre un nuovo dispositivo?",
+            options: ["Crea sempre un nuovo processo utente", "Libera la memoria della cache", "Riavvia il sistema", "Crea una struct device, cerca un driver compatibile e, se lo trova, ne esegue il probe"],
+            correct: 3,
+            explanation: "Il dispositivo viene registrato nel device model; il bus cerca un driver compatibile e, in caso di match, chiama il suo probe(). Subito dopo udev può creare il device node in /dev."
         },
         {
             question: "Quale filesystem fornisce info sui dispositivi?",
-            options: ["procfs", "sysfs", "tmpfs", "devfs"],
-            correct: 1,
+            options: ["sysfs", "procfs", "devfs", "tmpfs"],
+            correct: 0,
             explanation: "sysfs (/sys) fornisce informazioni sui dispositivi e permette configurazione runtime."
         }
     ];
@@ -494,7 +494,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -502,7 +502,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -555,7 +555,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -570,9 +570,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -581,7 +581,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -598,7 +598,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -616,7 +616,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

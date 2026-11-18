@@ -51,7 +51,7 @@
         <p><em>• Interazione: Scheduler gestisce thread come task indipendenti con priorità e politiche diverse</em></p>
 
         <h2>⚙️ Modelli di Threading</h2>
-        <p><strong>Linux supporta diversi modelli di threading, ciascuno con caratteristiche specifiche:</strong></p>
+        <p><strong>Esistono diversi modelli di threading; Linux (NPTL) usa il modello 1:1, gli altri sono presentati per confronto:</strong></p>
 
         <h3>1:1 Model (Kernel Threads)</h3>
         <p>• <strong>Ogni user thread</strong> corrisponde a un kernel thread</p>
@@ -92,7 +92,7 @@
         <h3>⚡ Context Switching</h3>
         <ul>
             <li><strong>Salvataggio contesto</strong> - Registri, stack pointer, flags</li>
-            <li><strong>Switch stack</strong> - Cambio da kernel stack a user stack</li>
+            <li><strong>Switch stack</strong> - Cambio dal kernel stack del thread uscente a quello del thread entrante</li>
             <li><strong>TLB flush</strong> - Invalida translation cache se necessario</li>
             <li><strong>Cache pollution</strong> - Perdita locality di riferimento</li>
         </ul>
@@ -100,7 +100,7 @@
         <h3>💻 Nel Computer: Come Vederlo?</h3>
         <p><strong>Comandi Linux per esplorare i thread:</strong></p>
         <ul>
-            <li><code>ps -T</code> - Mostra tutti i thread di ogni processo</li>
+            <li><code>ps -T</code> - Mostra i thread (colonna SPID) dei processi selezionati, es. ps -T -p PID oppure ps -eT</li>
             <li><code>top -H</code> - Monitor risorse per thread individuali</li>
             <li><code>cat /proc/PID/task/</code> - Directory con info per ogni thread</li>
             <li><code>pthreads</code> - Libreria per threading in user space</li>
@@ -113,7 +113,7 @@
             <li>Thread main accetta connessioni</li>
             <li>Per ogni richiesta, crea nuovo thread worker</li>
             <li>Thread worker elabora richiesta indipendentemente</li>
-            <li>Condivono pool di connessioni database</li>
+            <li>Condividono pool di connessioni database</li>
             <li>Scheduler bilancia carico tra CPU disponibili</li>
         </ol>
 
@@ -137,7 +137,7 @@
         <p><strong>I thread interagiscono con molti sottosistemi del kernel:</strong></p>
 
         <h3>⚙️ Scheduler</h3>
-        <p>• <strong>CFS (Completely Fair Scheduler)</strong> - Scheduling fair tra thread</p>
+        <p>• <strong>CFS/EEVDF (scheduler fair)</strong> - Scheduling fair tra thread (CFS fino al kernel 6.5, EEVDF dal 6.6)</p>
         <p>• <strong>Load balancing</strong> - Distribuzione thread tra CPU</p>
 
         <h3>🧠 Memory Manager</h3>
@@ -310,7 +310,7 @@
                 • Le frecce mostrano il flusso dalla creazione thread alla esecuzione hardware<br>
                 • Ogni layer astrae i dettagli del layer sottostante<br>
                 • NPTL fornisce API standard mentre il kernel gestisce scheduling<br>
-                • I thread condivono risorse ma vengono schedulati indipendentemente
+                • I thread condividono risorse ma vengono schedulati indipendentemente
             </div>
         </div>
 
@@ -424,7 +424,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🧵</div>
                 <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Concorrenza Leggera</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    I thread condivono memoria e risorse del processo ma vengono schedulati indipendentemente, permettendo concorrenza efficiente senza overhead dei processi.
+                    I thread condividono memoria e risorse del processo ma vengono schedulati indipendentemente, permettendo concorrenza efficiente senza overhead dei processi.
                 </p>
             </div>
 
@@ -476,51 +476,63 @@
     const quizQuestions = [
         {
             question: "Cosa condividono i thread dello stesso processo?",
-            options: ["Solo il codice eseguibile", "Memoria, file descriptors e segnali", "Solo le variabili globali", "Niente, sono completamente indipendenti"],
-            correct: 1,
-            explanation: "I thread dello stesso processo condivono memoria virtuale, file descriptors aperti, handlers di segnale e altre risorse del processo."
+            options: ["Memoria, file descriptors e segnali", "Solo il codice eseguibile", "Niente, sono completamente indipendenti", "Solo le variabili globali"],
+            correct: 0,
+            explanation: "I thread dello stesso processo condividono memoria virtuale, file descriptors aperti, handlers di segnale e altre risorse del processo."
         },
         {
             question: "Qual è il vantaggio principale dei thread rispetto ai processi?",
-            options: ["Maggiore sicurezza", "Creazione e context switch più veloci", "Maggiore isolamento", "Minore consumo memoria"],
-            correct: 1,
+            options: ["Minore consumo memoria", "Maggiore isolamento", "Creazione e context switch più veloci", "Maggiore sicurezza"],
+            correct: 2,
             explanation: "I thread hanno context switch più veloci e creazione meno costosa perché condividono lo stesso spazio di indirizzamento."
         },
         {
             question: "Cosa fa pthread_join()?",
-            options: ["Crea un nuovo thread", "Termina il thread corrente", "Attende la terminazione di un thread", "Sincronizza l'accesso a una risorsa"],
+            options: ["Termina il thread corrente", "Crea un nuovo thread", "Attende la terminazione di un thread", "Sincronizza l'accesso a una risorsa"],
             correct: 2,
             explanation: "pthread_join() blocca il thread chiamante fino a quando il thread specificato non termina, permettendo di ottenere il valore di ritorno."
         },
         {
             question: "Cosa previene le race conditions?",
-            options: ["Thread pools", "Mutex e semafori", "CPU affinity", "Context switching"],
+            options: ["CPU affinity", "Mutex e semafori", "Thread pools", "Context switching"],
             correct: 1,
             explanation: "Mutex, semafori e altre primitive di sincronizzazione prevengono race conditions coordinando l'accesso a risorse condivise."
         },
         {
             question: "Cosa mostra il comando 'ps -T'?",
-            options: ["Solo i processi attivi", "Thread di tutti i processi", "Solo i processi del kernel", "Statistiche di memoria"],
-            correct: 1,
-            explanation: "ps -T mostra tutti i thread di ogni processo, permettendo di vedere la struttura threading dei programmi."
+            options: ["Statistiche di memoria", "Solo i processi attivi", "Solo i processi del kernel", "I thread (SPID) dei processi selezionati"],
+            correct: 3,
+            explanation: "ps -T mostra i thread dei processi selezionati (con -e, di tutti i processi), permettendo di vedere la struttura threading dei programmi."
         },
         {
             question: "Quale modello di threading usa Linux?",
-            options: ["Solo user-level threads", "Solo kernel threads", "1:1 mapping (NPTL)", "N:1 mapping semplice"],
-            correct: 2,
+            options: ["Solo user-level threads", "Solo kernel threads", "N:1 mapping semplice", "1:1 mapping (NPTL)"],
+            correct: 3,
             explanation: "Linux usa NPTL (Native POSIX Thread Library) che implementa un modello 1:1, dove ogni thread user corrisponde a un thread kernel."
         },
         {
             question: "Cosa permette CPU affinity?",
-            options: ["Controllare priorità thread", "Vincolare thread a CPU specifiche", "Sincronizzare thread", "Creare nuovi thread"],
-            correct: 1,
+            options: ["Sincronizzare thread", "Controllare priorità thread", "Vincolare thread a CPU specifiche", "Creare nuovi thread"],
+            correct: 2,
             explanation: "CPU affinity permette di controllare su quali CPU core possono eseguire specifici thread, utile per ottimizzazioni prestazionali e isolamento."
         },
         {
-            question: "Quale libreria implementa threading in Linux?",
-            options: ["glibc", "NPTL", "uClibc", "musl"],
+            question: "Quale implementazione dei thread POSIX usa oggi glibc su Linux?",
+            options: ["Win32 Threads", "NPTL", "Green Threads", "LinuxThreads"],
             correct: 1,
-            explanation: "NPTL (Native POSIX Thread Library) è l'implementazione Linux delle POSIX threads, che fornisce il mapping 1:1 tra thread user e kernel."
+            explanation: "NPTL (Native POSIX Thread Library) è l'implementazione dei POSIX threads in glibc su Linux: fornisce il mapping 1:1 tra thread utente e kernel thread e ha sostituito LinuxThreads."
+        },
+        {
+            question: "Quale meccanismo permette di implementare mutex veloci in user space, chiamando il kernel solo in caso di contesa?",
+            options: ["inotify", "futex", "epoll", "ptrace"],
+            correct: 1,
+            explanation: "Il futex (fast user-space mutex) risolve in user space il caso senza contesa e chiama il kernel solo per far attendere o risvegliare i thread."
+        },
+        {
+            question: "Che cosa identifica il TGID (Thread Group ID)?",
+            options: ["Il gruppo di thread di un processo (coincide con il PID del processo)", "Il numero della CPU usata", "L'ID del processo padre", "Il thread con priorità più alta"],
+            correct: 0,
+            explanation: "Tutti i thread di un processo hanno lo stesso TGID, che è il PID visto dallo user space; ogni thread ha invece un proprio TID."
         }
     ];
 
@@ -545,7 +557,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -553,7 +565,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -606,7 +618,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -621,9 +633,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -632,7 +644,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -649,7 +661,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -667,7 +679,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

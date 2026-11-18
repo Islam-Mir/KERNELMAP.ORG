@@ -54,8 +54,8 @@
         <p><strong>La Memory Mapping gestisce quattro categorie fondamentali di operazioni per la traduzione e gestione degli indirizzi:</strong></p>
 
         <h3>🔄 Traduzione Indirizzi</h3>
-        <p>• <strong>walk_page_table()</strong> - Attraversa la gerarchia delle tabelle di pagine per traduzione</p>
-        <p>• <strong>pte_offset()</strong> - Calcola l'offset nella page table entry</p>
+        <p>• <strong>walk_page_range()</strong> - Attraversa la gerarchia delle tabelle di pagine per traduzione</p>
+        <p>• <strong>pte_offset_map()</strong> - Calcola l'offset nella page table entry</p>
         <p>• <strong>pmd_offset()</strong> - Gestisce il page middle directory level</p>
         <p>• <strong>pud_offset()</strong> - Gestisce il page upper directory level</p>
         <p>• <strong>pgd_offset()</strong> - Accede al page global directory</p>
@@ -63,23 +63,23 @@
         <h3>💾 Gestione Pagine</h3>
         <p>• <strong>alloc_page()</strong> - Alloca una nuova pagina fisica</p>
         <p>• <strong>free_page()</strong> - Rilascia una pagina fisica</p>
-        <p>• <strong>map_page()</strong> - Mappa una pagina virtuale a una fisica</p>
-        <p>• <strong>unmap_page()</strong> - Rimuove il mapping di una pagina</p>
+        <p>• <strong>remap_pfn_range()</strong> - Mappa pagine fisiche (frame) nello spazio virtuale di un processo</p>
+        <p>• <strong>unmap_mapping_range()</strong> - Rimuove i mapping delle pagine di un intervallo di un file</p>
         <p>• <strong>copy_page()</strong> - Copia contenuto tra pagine</p>
 
         <h3>🛡️ Protezione Memoria</h3>
-        <p>• <strong>set_pte_flags()</strong> - Imposta i flag di protezione (RWX)</p>
+        <p>• <strong>set_pte_at()</strong> - Imposta una PTE (indirizzo fisico e flag di protezione)</p>
         <p>• <strong>pte_write()</strong> - Verifica permesso di scrittura</p>
         <p>• <strong>pte_exec()</strong> - Verifica permesso di esecuzione</p>
         <p>• <strong>pte_present()</strong> - Verifica se pagina è presente in RAM</p>
-        <p>• <strong>handle_page_fault()</strong> - Gestisce page fault</p>
+        <p>• <strong>handle_mm_fault()</strong> - Gestisce page fault</p>
 
         <h3>🔄 TLB Management</h3>
-        <p>• <strong>flush_tlb()</strong> - Invalida tutte le entry TLB</p>
+        <p>• <strong>flush_tlb_mm()</strong> - Invalida le entry TLB di un intero address space</p>
         <p>• <strong>flush_tlb_page()</strong> - Invalida una specifica pagina TLB</p>
-        <p>• <strong>tlb_flush_all()</strong> - Flush completo del TLB</p>
+        <p>• <strong>flush_tlb_all()</strong> - Flush completo del TLB su tutte le CPU</p>
         <p>• <strong>update_mmu_cache()</strong> - Aggiorna la cache MMU</p>
-        <p>• <strong>tlb_miss()</strong> - Gestisce miss del TLB</p>
+        <p>• <strong>flush_tlb_range()</strong> - Invalida le entry TLB di un intervallo di indirizzi</p>
 
         <h2>📋 Esempi Pratici</h2>
         <p><strong>Quando usi mmap() per mappare un file in memoria, ecco cosa succede:</strong></p>
@@ -194,8 +194,8 @@
             <code style="color: #9c27b0; font-weight: bold;">void *malloc(size_t size);</code><br>
             <span style="color: #666; font-size: 0.9em;">Allocazione memoria che può usare anonymous mapping internamente.</span><br><br>
 
-            <code style="color: #0288d1; font-weight: bold;">void *brk(void *addr);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Modifica la fine dell'heap del processo (sbrk è il wrapper).</span>
+            <code style="color: #0288d1; font-weight: bold;">int brk(void *addr);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Modifica la fine dell'heap del processo (sbrk è la funzione di libreria corrispondente).</span>
         </div>
 
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
@@ -422,7 +422,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Demand Paging</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Le pagine vengono caricate in memoria solo quando accedute. Page fault triggherano il caricamento lazy dal disco.
+                    Le pagine vengono caricate in memoria solo quando accedute. Page fault innesca il caricamento lazy dal disco.
                 </p>
             </div>
 
@@ -465,63 +465,63 @@
     // Quiz functionality
                 const quizQuestions = [
         {
-            question: "Quale system call crea un mapping di memoria?",
-            options: ["mmap()", "malloc()", "mremap()", "Tutte le precedenti"],
+            question: "Quale system call crea un nuovo mapping di memoria (file-backed o anonimo)?",
+            options: ["mmap()", "mprotect()", "msync()", "munmap()"],
             correct: 0,
-            explanation: "mmap() è la system call principale per mappare file o memoria in spazio di indirizzamento."
+            explanation: "mmap() crea un nuovo mapping nello spazio di indirizzamento del processo; munmap() lo rimuove, msync() lo sincronizza e mprotect() ne cambia i permessi."
         },
         {
-            question: "Cosa indica il flag MAP_PRIVATE in mmap()?",
-            options: ["Accesso privato al processo", "Modifiche visibili agli altri processi", "Pagine copy-on-write", "Memoria condivisa"],
+            question: "Cosa succede alle modifiche fatte su un mapping MAP_PRIVATE?",
+            options: ["Vengono rifiutate dal kernel", "Vengono scritte subito sul file", "Restano private al processo grazie al copy-on-write", "Sono visibili a tutti gli altri processi"],
             correct: 2,
-            explanation: "MAP_PRIVATE usa copy-on-write: le modifiche sono private al processo."
+            explanation: "Con MAP_PRIVATE la prima scrittura su una pagina ne crea una copia privata (copy-on-write): il file originale e gli altri processi non vedono le modifiche."
         },
         {
             question: "Quale struttura vm_area_struct rappresenta nel kernel?",
-            options: ["Un'area di memoria virtuale", "Una pagina fisica", "Un buffer di cache", "Un file descriptor"],
-            correct: 0,
+            options: ["Un buffer di cache", "Un file descriptor", "Una pagina fisica", "Un'area di memoria virtuale"],
+            correct: 3,
             explanation: "vm_area_struct rappresenta una regione contigua di memoria virtuale nel kernel."
         },
         {
             question: "Cosa fa mremap()?",
-            options: ["Crea un nuovo mapping", "Ridimensiona un mapping esistente", "Rimuove un mapping", "Sincronizza i dati"],
+            options: ["Crea un nuovo mapping", "Ridimensiona un mapping esistente", "Sincronizza i dati", "Rimuove un mapping"],
             correct: 1,
             explanation: "mremap() ridimensiona o sposta un mapping di memoria esistente."
         },
         {
-            question: "Quale è il risultato di MAP_FAILED in mmap()?",
-            options: ["NULL", "(void *)-1", "0", "Un numero negativo"],
-            correct: 1,
-            explanation: "mmap() ritorna (void *)-1 (MAP_FAILED) in caso di errore."
+            question: "Quale chiamata verifica quali pagine di un mapping sono presenti in memoria fisica?",
+            options: ["mincore()", "munmap()", "mprotect()", "brk()"],
+            correct: 0,
+            explanation: "mincore() riempie un vettore che indica, pagina per pagina, se le pagine del mapping sono residenti in RAM."
         },
         {
-            question: "Quale flag forza la sincronizzazione immediata in msync()?",
-            options: ["MS_SYNC", "MS_ASYNC", "MS_INVALIDATE", "MS_IMMEDIATE"],
-            correct: 0,
-            explanation: "MS_SYNC sincronizza immediatamente i dati modificati su disco."
+            question: "Quale chiamata sincronizza le modifiche di un mapping con il file sottostante?",
+            options: ["mremap()", "msync()", "mincore()", "madvise()"],
+            correct: 1,
+            explanation: "msync() forza la scrittura delle modifiche della memoria mappata sul file; con MS_SYNC attende il completamento, con MS_ASYNC lo schedula soltanto."
         },
         {
             question: "Cosa rappresenta l'indirizzo virtuale in un mapping?",
-            options: ["Indirizzo fisico di RAM", "Indirizzo nello spazio logico del processo", "Indirizzo su disco", "Indirizzo di cache"],
-            correct: 1,
+            options: ["Indirizzo su disco", "Indirizzo di cache", "Indirizzo fisico di RAM", "Indirizzo nello spazio logico del processo"],
+            correct: 3,
             explanation: "Gli indirizzi virtuali in mmap() sono nell'ambito dello spazio di indirizzamento del processo."
         },
         {
             question: "Quale è l'effetto di munmap()?",
-            options: ["Sincronizza i dati", "Rimuove il mapping dalla memoria virtuale", "Compatta la memoria", "Sblocca il file"],
-            correct: 1,
+            options: ["Compatta la memoria", "Sblocca il file", "Rimuove il mapping dalla memoria virtuale", "Sincronizza i dati"],
+            correct: 2,
             explanation: "munmap() rimuove il mapping e libera le risorse di memoria virtuale."
         },
         {
             question: "Qual è il vantaggio principale di mmap() vs read()?",
-            options: ["Più veloce per file piccoli", "Evita copie aggiuntive tra kernel e user space", "Supporta file compressi", "Fornisce crittografia"],
-            correct: 1,
+            options: ["Supporta file compressi", "Più veloce per file piccoli", "Fornisce crittografia", "Evita copie aggiuntive tra kernel e user space"],
+            correct: 3,
             explanation: "mmap() evita copie buffer aggiuntive accedendo direttamente alla memoria."
         },
         {
             question: "Cosa indica MAP_SHARED in mmap()?",
-            options: ["Accesso esclusivo", "Modifiche visibili ad altri processi", "Pagine di sola lettura", "Memoria privata"],
-            correct: 1,
+            options: ["Accesso esclusivo", "Pagine di sola lettura", "Modifiche visibili ad altri processi", "Memoria privata"],
+            correct: 2,
             explanation: "MAP_SHARED rende le modifiche visibili agli altri processi che mappano lo stesso file."
         }
     ];
@@ -547,7 +547,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -555,7 +555,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -608,7 +608,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -623,9 +623,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -634,7 +634,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -651,7 +651,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -669,7 +669,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

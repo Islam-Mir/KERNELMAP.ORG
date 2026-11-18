@@ -416,62 +416,62 @@
     const quizQuestions = [
         {
             question: "Cosa fa device_register()?",
-            options: ["Rimuove un dispositivo", "Inizializza il dispositivo e lo aggiunge al device model", "Carica un modulo del kernel", "Alloca memoria DMA"],
-            correct: 1,
+            options: ["Alloca memoria DMA", "Rimuove un dispositivo", "Inizializza il dispositivo e lo aggiunge al device model", "Carica un modulo del kernel"],
+            correct: 2,
             explanation: "device_register() chiama device_initialize() e poi device_add(), rendendo il dispositivo parte del device model."
         },
         {
             question: "Qual è la differenza tra device_register() e device_add()?",
-            options: ["Nessuna differenza", "device_add() funziona solo con i dispositivi PCI", "device_register() include anche device_initialize(), mentre device_add() richiede che sia già stata chiamata", "device_register() lavora solo in user space"],
-            correct: 2,
+            options: ["Nessuna differenza", "device_register() include anche device_initialize(), mentre device_add() richiede che sia già stata chiamata", "device_add() funziona solo con i dispositivi PCI", "device_register() lavora solo in user space"],
+            correct: 1,
             explanation: "device_add() presuppone una struct device già inizializzata con device_initialize(); device_register() esegue entrambi i passaggi in sequenza."
         },
         {
             question: "Cosa si deve fare se device_register() restituisce un errore?",
-            options: ["Chiamare kfree() sulla struttura", "Riavviare il sistema", "Non serve fare nulla", "Chiamare put_device() per rilasciare il riferimento"],
-            correct: 3,
+            options: ["Chiamare put_device() per rilasciare il riferimento", "Non serve fare nulla", "Chiamare kfree() sulla struttura", "Riavviare il sistema"],
+            correct: 0,
             explanation: "Dopo l'inizializzazione la struttura è governata dal conteggio dei riferimenti del kobject: va rilasciata con put_device(), che chiama release()."
         },
         {
             question: "Quale evento uevent invia device_add() a udev?",
-            options: ["KOBJ_ADD", "KOBJ_REMOVE", "KOBJ_CHANGE", "KOBJ_MOVE"],
-            correct: 0,
+            options: ["KOBJ_CHANGE", "KOBJ_MOVE", "KOBJ_ADD", "KOBJ_REMOVE"],
+            correct: 2,
             explanation: "device_add() chiama kobject_uevent() con KOBJ_ADD; udev lo riceve e può creare il device node e applicare le sue regole."
         },
         {
             question: "Quale funzione imposta il nome del dispositivo che compare in sysfs?",
-            options: ["get_device()", "dev_set_name()", "device_del()", "request_irq()"],
-            correct: 1,
+            options: ["request_irq()", "get_device()", "device_del()", "dev_set_name()"],
+            correct: 3,
             explanation: "dev_set_name() assegna il nome del dispositivo, usato da device_add() per la directory in /sys/devices."
         },
         {
             question: "Cosa avvia device_add() dopo aver collegato il dispositivo al bus?",
-            options: ["La ricerca di un driver con bus_probe_device()", "La formattazione del disco", "Lo scheduling di un processo", "La compressione della memoria"],
-            correct: 0,
+            options: ["La formattazione del disco", "La compressione della memoria", "La ricerca di un driver con bus_probe_device()", "Lo scheduling di un processo"],
+            correct: 2,
             explanation: "bus_probe_device() cerca un driver compatibile tra quelli registrati sul bus e, se trova un match, chiama il suo probe()."
         },
         {
             question: "Cosa deve impostare il driver nella struct device prima di registrarla?",
-            options: ["Il campo irq_flags", "Un file in /dev", "Il metodo release() che libera la struttura", "Il puntatore al kernel stack"],
-            correct: 2,
+            options: ["Il puntatore al kernel stack", "Il metodo release() che libera la struttura", "Un file in /dev", "Il campo irq_flags"],
+            correct: 1,
             explanation: "Senza release() il kernel segnala un avviso, perché non saprebbe come liberare la struttura quando il contatore di riferimenti arriva a zero."
         },
         {
             question: "Quale funzione rimuove un dispositivo e rilascia anche il riferimento?",
-            options: ["device_add()", "device_initialize()", "dev_set_name()", "device_unregister()"],
-            correct: 3,
+            options: ["device_initialize()", "device_unregister()", "dev_set_name()", "device_add()"],
+            correct: 1,
             explanation: "device_unregister() chiama device_del() per togliere il dispositivo dal sistema e poi put_device() per rilasciare il riferimento."
         },
         {
             question: "Dove compare il dispositivo dopo device_add()?",
-            options: ["In /proc/cmdline", "In /sys/devices", "In /boot", "In /etc/fstab"],
-            correct: 1,
+            options: ["In /etc/fstab", "In /proc/cmdline", "In /boot", "In /sys/devices"],
+            correct: 3,
             explanation: "kobject_add() crea la directory del dispositivo sotto il suo parent in /sys/devices, con link nel bus e nella classe."
         },
         {
             question: "Quale funzione usa il core USB per registrare un nuovo dispositivo nel device model?",
-            options: ["usb_submit_urb()", "usb_clear_halt()", "usb_new_device()", "usb_reset_device()"],
-            correct: 2,
+            options: ["usb_new_device()", "usb_reset_device()", "usb_submit_urb()", "usb_clear_halt()"],
+            correct: 0,
             explanation: "usb_new_device() configura il dispositivo e chiama device_add() sulla struct device incorporata in struct usb_device."
         }
     ];
@@ -497,7 +497,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -505,7 +505,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -558,7 +558,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -573,9 +573,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -584,7 +584,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -601,7 +601,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -619,7 +619,7 @@
     </div>
 
     <script>
-     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+          const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

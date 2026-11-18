@@ -95,7 +95,7 @@
             <li><strong>struct net_device</strong> - Rappresenta un'interfaccia di rete con indirizzo MAC, MTU, flags di stato</li>
             <li><strong>struct sk_buff</strong> - Buffer per pacchetti di rete con headers e payload</li>
             <li><strong>struct net_device_ops</strong> - Operazioni del driver (ndo_start_xmit, ndo_open, ndo_stop)</li>
-            <li><strong>struct netif_queue</strong> - Code di trasmissione per gestire congestione</li>
+            <li><strong>struct netdev_queue</strong> - Code di trasmissione per gestire congestione</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Vederlo?</h3>
@@ -111,7 +111,7 @@
         <h3>🎯 Caso Reale: Download File via HTTP</h3>
         <p>Quando scarichi un file con wget:</p>
         <ol>
-            <li>Browser risolve DNS e stabilisce connessione TCP</li>
+            <li>wget risolve il DNS e stabilisce la connessione TCP</li>
             <li>Invia richiesta HTTP attraverso la network interface</li>
             <li>Il driver hardware trasmette pacchetti sulla rete</li>
             <li>Riceve risposta con dati del file</li>
@@ -183,7 +183,7 @@
             <span style="color: #666; font-size: 0.9em;">Funzione del driver per iniziare trasmissione pacchetto.</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">int netif_rx(struct sk_buff *skb);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Passa pacchetto ricevuto allo stack di rete.</span>
+            <span style="color: #666; font-size: 0.9em;">Passa il pacchetto ricevuto allo stack di rete (i driver moderni usano di solito NAPI, es. napi_gro_receive()).</span>
         </div>
 
         <h3>⚙️ Configuration & Control</h3>
@@ -254,7 +254,7 @@
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
-                        <div style="font-size: 0.8em;">netif_queue</div>
+                        <div style="font-size: 0.8em;">netdev_queue</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">🔧</div>
@@ -469,64 +469,64 @@
     // Quiz functionality
                 const quizQuestions = [
         {
-            question: "Quale è il compito principale di una network interface nel kernel?",
-            options: ["Elaborare fisicamente i pacchetti", "Gestire protocolli di rete", "Interfacciare driver con stack di rete", "Tutto quanto sopra"],
-            correct: 3,
-            explanation: "La network interface gestisce l'interazione tra driver hardware e stack di rete."
+            question: "Qual è il compito principale di una network interface nel kernel?",
+            options: ["Fare da ponte tra lo stack di rete e i driver/hardware di rete", "Eseguire le applicazioni utente", "Allocare la memoria virtuale", "Gestire i file system"],
+            correct: 0,
+            explanation: "La network interface (struct net_device) collega lo stack di rete del kernel ai driver e quindi all'hardware di rete, fornendo un'astrazione uniforme."
         },
         {
             question: "Quale struttura rappresenta una network interface nel kernel?",
-            options: ["struct netif", "struct net_device", "struct interface", "struct nic"],
+            options: ["struct interface", "struct net_device", "struct netif", "struct nic"],
             correct: 1,
             explanation: "struct net_device rappresenta un'interfaccia di rete nel kernel Linux."
         },
         {
-            question: "Quale è la differenza tra loopback e una normale interfaccia?",
-            options: ["Nessuna", "Loopback è software, normale è hardware", "Loopback non ha hardware", "Tutto quanto sopra"],
-            correct: 3,
-            explanation: "Loopback è virtuale e software; interfacce normali collegano driver hardware."
+            question: "Qual è la differenza tra l'interfaccia di loopback (lo) e una normale interfaccia come eth0?",
+            options: ["eth0 non ha un indirizzo IP", "lo è virtuale e non usa hardware; eth0 è legata a un driver e a una scheda di rete", "Non c'è alcuna differenza", "lo è più veloce perché usa la fibra"],
+            correct: 1,
+            explanation: "Il loopback è un'interfaccia puramente software per la comunicazione locale (127.0.0.1); le interfacce normali passano da un driver hardware."
         },
         {
-            question: "Come viene inizializzata una network interface?",
-            options: ["Automaticamente al boot", "Con ifconfig", "Con funzione dev_open()", "Tutte le precedenti"],
+            question: "Quale funzione del kernel attiva un'interfaccia di rete (come 'ip link set dev eth0 up')?",
+            options: ["dev_queue_xmit()", "netif_rx()", "register_netdev()", "dev_open()"],
             correct: 3,
-            explanation: "Le interfacce possono essere inizializzate automaticamente o manualmente."
+            explanation: "dev_open() porta l'interfaccia in stato UP; register_netdev() la registra nel sistema, dev_queue_xmit() accoda pacchetti da trasmettere e netif_rx() passa allo stack i pacchetti ricevuti."
         },
         {
             question: "Quale campo di struct net_device traccia lo stato dell'interfaccia?",
-            options: ["state", "flags", "status", "if_state"],
-            correct: 1,
+            options: ["state", "status", "if_state", "flags"],
+            correct: 3,
             explanation: "Il campo flags traccia lo stato (IFF_UP, IFF_RUNNING, etc.) dell'interfaccia."
         },
         {
-            question: "Come comunica il driver ricevimento di pacchetti al kernel?",
-            options: ["Tramite interrupt", "Tramite polling", "Tramite NAPI", "Tutte le precedenti"],
-            correct: 3,
-            explanation: "I driver moderni usano interrupt, polling, e NAPI (New API) per indicare pacchetti ricevuti."
+            question: "Quale meccanismo permette ai driver moderni di ridurre gli interrupt quando arrivano molti pacchetti?",
+            options: ["DMA scatter-gather", "Promiscuous mode", "NAPI (polling dopo il primo interrupt)", "VLAN tagging"],
+            correct: 2,
+            explanation: "Con NAPI il primo pacchetto genera un interrupt, poi il driver passa al polling finché ci sono pacchetti, evitando una tempesta di interrupt."
         },
         {
             question: "Quale è la funzione di netif_rx()?",
-            options: ["Trasmettere pacchetti", "Ricevere pacchetti nel kernel", "Elaborare pacchetti", "Filtrare pacchetti"],
-            correct: 1,
+            options: ["Ricevere pacchetti nel kernel", "Filtrare pacchetti", "Trasmettere pacchetti", "Elaborare pacchetti"],
+            correct: 0,
             explanation: "netif_rx() passa i pacchetti ricevuti dal driver allo stack di rete."
         },
         {
             question: "Come specifica il driver quale funzione chiamare per trasmettere?",
-            options: ["ndo_start_xmit", "dev_hard_start_xmit", "tx_handler", "xmit_function"],
-            correct: 0,
+            options: ["xmit_function", "tx_handler", "ndo_start_xmit", "dev_hard_start_xmit"],
+            correct: 2,
             explanation: "Il campo ndo_start_xmit in net_device_ops specifica la funzione di trasmissione."
         },
         {
             question: "Quale MTU predefinito ha una tipica interfaccia Ethernet?",
-            options: ["512 bytes", "1024 bytes", "1500 bytes", "9000 bytes"],
+            options: ["1024 bytes", "512 bytes", "1500 bytes", "9000 bytes"],
             correct: 2,
             explanation: "Il default Ethernet MTU è 1500 bytes (9000 per jumbo frames)."
         },
         {
-            question: "Come viene controllata la velocità di una network interface?",
-            options: ["Automaticamente", "tramite ethtool", "tramite mii-tool", "B e C"],
+            question: "Quale strumento permette di vedere e impostare velocità e duplex di un'interfaccia Ethernet?",
+            options: ["ping", "tcpdump", "iperf", "ethtool"],
             correct: 3,
-            explanation: "La velocità può essere controllata automaticamente o con ethtool/mii-tool."
+            explanation: "ethtool mostra e imposta i parametri del link (velocità, duplex, auto-negotiation) e le funzioni di offload."
         }
     ];
 
@@ -551,7 +551,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -559,7 +559,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -612,7 +612,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -627,9 +627,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -638,7 +638,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -655,7 +655,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -673,7 +673,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

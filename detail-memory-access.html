@@ -107,7 +107,7 @@
             <li>Processo accede indirizzo virtuale</li>
             <li>MMU non trova traduzione valida</li>
             <li>Genera page fault exception</li>
-            <li>Kernel handler cerca pagina su swap</li>
+            <li>Kernel handler cerca la pagina (su swap o nel file mappato)</li>
             <li>Carica pagina in memoria fisica</li>
             <li>Aggiorna page table</li>
             <li>Riprende esecuzione processo</li>
@@ -454,62 +454,62 @@
     const quizQuestions = [
         {
             question: "Cosa fa l'MMU?",
-            options: ["Gestisce processi", "Traduce indirizzi virtuali in fisici", "Controlla dispositivi", "Gestisce file"],
-            correct: 1,
+            options: ["Traduce indirizzi virtuali in fisici", "Controlla dispositivi", "Gestisce processi", "Gestisce file"],
+            correct: 0,
             explanation: "L'MMU (Memory Management Unit) traduce indirizzi virtuali usati dai programmi in indirizzi fisici della RAM."
         },
         {
             question: "Cosa è un page fault?",
-            options: ["Errore grave", "Accesso a pagina non in memoria", "Problema hardware", "Fine programma"],
-            correct: 1,
-            explanation: "Un page fault avviene quando si accede a una pagina virtuale non presente in memoria fisica, causando caricamento da swap."
+            options: ["Accesso a pagina non in memoria", "Fine programma", "Problema hardware", "Errore grave"],
+            correct: 0,
+            explanation: "Un page fault è un'eccezione generata quando la CPU non trova una traduzione valida. Il kernel la risolve (es. caricando la pagina da file o swap); se l'accesso è illegale, il processo riceve SIGSEGV."
         },
         {
             question: "Cosa accelera il TLB?",
-            options: ["CPU clock", "Cache traduzioni indirizzi", "RAM speed", "Disco velocità"],
-            correct: 1,
+            options: ["RAM speed", "Disco velocità", "CPU clock", "Cache traduzioni indirizzi"],
+            correct: 3,
             explanation: "Il TLB (Translation Lookaside Buffer) è una cache che memorizza traduzioni recenti di indirizzi, accelerando accessi memoria."
         },
         {
             question: "Cosa permette copy-on-write?",
-            options: ["Scrittura veloce", "Condivisione efficiente memoria fork", "Backup automatico", "Compressione dati"],
+            options: ["Scrittura veloce", "Condivisione efficiente memoria fork", "Compressione dati", "Backup automatico"],
             correct: 1,
             explanation: "Copy-on-write permette a processi fork di condividere memoria fino a quando non modificano dati, ottimizzando fork()."
         },
         {
             question: "Quale comando mostra mappature memoria?",
-            options: ["ps aux", "top", "cat /proc/pid/maps", "free -h"],
+            options: ["free -h", "ps aux", "cat /proc/pid/maps", "top"],
             correct: 2,
             explanation: "cat /proc/pid/maps mostra tutte le regioni di memoria virtuale mappate per un processo specifico."
         },
         {
-            question: "Cosa fa mmap()?",
-            options: ["Chiude file", "Mappa file in memoria", "Crea processi", "Gestisce rete"],
+            question: "Cosa memorizza il TLB?",
+            options: ["I file più usati", "Le traduzioni recenti da indirizzo virtuale a fisico", "Le istruzioni del processore", "I pacchetti di rete"],
             correct: 1,
-            explanation: "mmap() mappa un file o dispositivo direttamente nello spazio di indirizzi virtuali del processo."
+            explanation: "Il TLB è una piccola cache hardware di traduzioni recenti da indirizzo virtuale a fisico: evita di dover percorrere ogni volta le page table."
         },
         {
             question: "Perché la memoria virtuale è utile?",
-            options: ["Solo per sicurezza", "Permette indirizzi più grandi della RAM", "Rallenta programmi", "Complica programmazione"],
-            correct: 1,
+            options: ["Complica programmazione", "Solo per sicurezza", "Rallenta programmi", "Permette indirizzi più grandi della RAM"],
+            correct: 3,
             explanation: "La memoria virtuale permette programmi di usare indirizzi più grandi della RAM fisica disponibile."
         },
         {
             question: "Cosa controlla mprotect()?",
-            options: ["File permessi", "Memoria protezione", "Processi", "Dispositivi"],
+            options: ["Processi", "Memoria protezione", "File permessi", "Dispositivi"],
             correct: 1,
             explanation: "mprotect() cambia i permessi di protezione (lettura, scrittura, esecuzione) per regioni di memoria virtuale."
         },
         {
             question: "Cosa è lo swap?",
-            options: ["RAM extra", "Estensione memoria su disco", "Cache CPU", "Memoria video"],
-            correct: 1,
+            options: ["Estensione memoria su disco", "RAM extra", "Cache CPU", "Memoria video"],
+            correct: 0,
             explanation: "Lo swap è spazio su disco usato come estensione della RAM quando la memoria fisica è insufficiente."
         },
         {
             question: "Perché ASLR è importante?",
-            options: ["Velocità", "Sicurezza contro buffer overflow", "Semplicità", "Compatibilità"],
-            correct: 1,
+            options: ["Velocità", "Compatibilità", "Sicurezza contro buffer overflow", "Semplicità"],
+            correct: 2,
             explanation: "ASLR (Address Space Layout Randomization) randomizza posizioni memoria per rendere più difficili gli exploit."
         }
     ];
@@ -535,7 +535,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -543,7 +543,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -596,7 +596,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -611,9 +611,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -622,7 +622,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -639,7 +639,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -657,7 +657,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

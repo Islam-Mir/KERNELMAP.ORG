@@ -56,7 +56,7 @@
         <h3>📄 Operazioni sui File</h3>
         <p>• <strong>open()</strong> - Apre un file e crea una struttura file object per tracciare l'accesso</p>
         <p>• <strong>read()/write()</strong> - Trasferisce dati tra user space e il dispositivo di storage</p>
-        <p>• <strong>seek()</strong> - Cambia la posizione corrente nel file (offset)</p>
+        <p>• <strong>lseek()</strong> - Cambia la posizione corrente nel file (offset)</p>
         <p>• <strong>close()</strong> - Chiude il file e rilascia le risorse associate</p>
         <p>• <strong>fsync()</strong> - Forza la scrittura dei dati buffered su disco</p>
 
@@ -101,7 +101,7 @@
         <ul>
             <li><code>ls -i file.txt</code> - Mostra il numero inode del file</li>
             <li><code>stat file.txt</code> - Visualizza tutti i metadati dell'inode</li>
-            <li><code>df -h</code> - Mostra i superblock dei filesystem montati</li>
+            <li><code>df -h</code> - Mostra spazio totale, usato e libero dei filesystem montati (dati ottenuti con statfs)</li>
             <li><code>mount</code> - Elenca tutti i filesystem montati</li>
             <li><code>find / -inum 12345</code> - Trova file per numero inode</li>
         </ul>
@@ -176,7 +176,7 @@
             <span style="color: #666; font-size: 0.9em;">Scrive dati nel file. I dati vanno prima nel page cache, poi vengono scritti su disco in background.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">int close(int fd);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Forza la scrittura di dati buffered.</span>
+            <span style="color: #666; font-size: 0.9em;">Chiude il file e rilascia il file descriptor. Non forza la scrittura su disco: per quella serve fsync().</span>
         </div>
 
         <h3>📊 Metadata e Navigazione</h3>
@@ -468,62 +468,62 @@
     const quizQuestions = [
         {
             question: "Cosa significa VFS?",
-            options: ["Virtual File System", "Very Fast Storage", "Variable File Structure", "Virtual Function Set"],
-            correct: 0,
+            options: ["Very Fast Storage", "Virtual File System", "Variable File Structure", "Virtual Function Set"],
+            correct: 1,
             explanation: "VFS sta per Virtual File System, il layer di astrazione che rende uniformi tutti i filesystem in Linux."
         },
         {
             question: "Quale struttura dati contiene i metadati di un file?",
-            options: ["dentry", "inode", "file object", "superblock"],
+            options: ["file object", "inode", "dentry", "superblock"],
             correct: 1,
             explanation: "L'inode contiene tutti i metadati del file: permessi, dimensione, proprietari, puntatori ai blocchi dati."
         },
         {
             question: "Cosa collega un nome di file al suo inode?",
-            options: ["superblock", "file object", "dentry", "inode cache"],
-            correct: 2,
+            options: ["inode cache", "file object", "superblock", "dentry"],
+            correct: 3,
             explanation: "La dentry (directory entry) collega il nome del file (es. 'documento.txt') al suo inode."
         },
         {
             question: "Quale filesystem è nativo di Linux?",
-            options: ["FAT32", "NTFS", "EXT4", "HFS+"],
+            options: ["HFS+", "FAT32", "EXT4", "NTFS"],
             correct: 2,
             explanation: "EXT4 è il filesystem nativo di Linux, evoluzione di EXT3 con journaling e prestazioni migliorate."
         },
         {
             question: "Cosa permette il VFS di fare?",
-            options: ["Montare solo dischi locali", "Usare gli stessi comandi su qualsiasi filesystem", "Vedere solo file di testo", "Limitare l'accesso ai file"],
-            correct: 1,
+            options: ["Limitare l'accesso ai file", "Vedere solo file di testo", "Usare gli stessi comandi su qualsiasi filesystem", "Montare solo dischi locali"],
+            correct: 2,
             explanation: "Il VFS permette di usare gli stessi comandi (open, read, write) su qualsiasi filesystem montato, nascondendo le differenze."
         },
         {
             question: "Quale comando mostra gli inode dei file?",
-            options: ["ls -l", "ls -i", "stat -f", "df -h"],
+            options: ["stat -f", "ls -i", "ls -l", "df -h"],
             correct: 1,
             explanation: "ls -i mostra il numero inode di ogni file nella directory corrente."
         },
         {
             question: "Cosa contiene il superblock?",
-            options: ["Dati dei singoli file", "Informazioni globali del filesystem", "Contenuto dei file di testo", "Permessi degli utenti"],
-            correct: 1,
+            options: ["Informazioni globali del filesystem", "Permessi degli utenti", "Dati dei singoli file", "Contenuto dei file di testo"],
+            correct: 0,
             explanation: "Il superblock contiene metadati globali del filesystem: dimensione totale, blocchi liberi, tipo di filesystem."
         },
         {
             question: "Quale cache accelera la risoluzione dei percorsi?",
-            options: ["page cache", "inode cache", "dentry cache", "buffer cache"],
+            options: ["inode cache", "page cache", "dentry cache", "buffer cache"],
             correct: 2,
             explanation: "La dentry cache mantiene in memoria le associazioni nomefile→inode per evitare ricerche su disco."
         },
         {
             question: "Cosa rappresenta un file object?",
-            options: ["Un file sul disco", "Un file aperto da un processo specifico", "Una directory", "Un dispositivo hardware"],
-            correct: 1,
+            options: ["Una directory", "Un file sul disco", "Un dispositivo hardware", "Un file aperto da un processo specifico"],
+            correct: 3,
             explanation: "Il file object rappresenta un'istanza di file aperto da un processo specifico, con posizione corrente e flags."
         },
         {
             question: "Quale comando mostra tutti i filesystem montati?",
-            options: ["ps aux", "top", "mount", "free"],
-            correct: 2,
+            options: ["mount", "ps aux", "free", "top"],
+            correct: 0,
             explanation: "Il comando mount mostra tutti i filesystem attualmente montati nel sistema."
         }
     ];
@@ -549,7 +549,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -557,7 +557,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -610,7 +610,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -625,9 +625,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -636,7 +636,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -653,7 +653,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -671,7 +671,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

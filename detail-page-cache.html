@@ -55,20 +55,20 @@
 
         <h3>📖 Read Operations</h3>
         <p>• <strong>generic_file_read_iter()</strong> - Lettura file con gestione cache intelligente</p>
-        <p>• <strong>page_cache_read()</strong> - Lettura diretta dalla page cache</p>
-        <p>• <strong>do_generic_file_read()</strong> - Implementazione lettura generica</p>
+        <p>• <strong>page_cache_read()</strong> - Aggiunge e legge una pagina nella page cache (usata nei page fault)</p>
+        <p>• <strong>filemap_read()</strong> - Implementazione lettura generica</p>
         <p>• <strong>read_cache_page()</strong> - Carica pagina in cache se necessario</p>
         <p>• <strong>read_cache_page_gfp()</strong> - Lettura con flags allocazione specifici</p>
 
         <h3>✏️ Write Operations</h3>
         <p>• <strong>generic_file_write_iter()</strong> - Scrittura file con buffering intelligente</p>
-        <p>• <strong>page_cache_write()</strong> - Scrittura diretta nella page cache</p>
+        <p>• <strong>generic_perform_write()</strong> - Scrittura diretta nella page cache</p>
         <p>• <strong>write_cache_pages()</strong> - Scrive pagine dirty in batch</p>
         <p>• <strong>set_page_dirty()</strong> - Marca pagina come modificata</p>
-        <p>• <strong>balance_dirty_pages()</strong> - Controlla limiti pagine dirty</p>
+        <p>• <strong>balance_dirty_pages_ratelimited()</strong> - Controlla limiti pagine dirty</p>
 
         <h3>🔄 Cache Management</h3>
-        <p>• <strong>add_to_page_cache()</strong> - Aggiunge pagina alla cache</p>
+        <p>• <strong>add_to_page_cache_lru()</strong> - Aggiunge pagina alla cache</p>
         <p>• <strong>find_get_page()</strong> - Trova pagina nella cache</p>
         <p>• <strong>delete_from_page_cache()</strong> - Rimuove pagina dalla cache</p>
         <p>• <strong>truncate_inode_pages()</strong> - Tronca pagine cache per file</p>
@@ -77,9 +77,9 @@
         <h3>⚡ Performance Tuning</h3>
         <p>• <strong>page_cache_sync_readahead()</strong> - Read-ahead sincrono intelligente</p>
         <p>• <strong>page_cache_async_readahead()</strong> - Read-ahead asincrono</p>
-        <p>• <strong>do_page_cache_readahead()</strong> - Implementazione read-ahead</p>
+        <p>• <strong>page_cache_ra_unbounded()</strong> - Implementazione read-ahead</p>
         <p>• <strong>pagevec_lookup()</strong> - Ricerca vettorizzata pagine</p>
-        <p>• <strong>shrink_page_cache()</strong> - Riduce cache sotto pressione memoria</p>
+        <p>• <strong>shrink_folio_list()</strong> - Riduce cache sotto pressione memoria</p>
 
         <h2>📋 Esempi Pratici</h2>
         <p><strong>Quando apri un file come /home/user/documento.txt, ecco cosa succede nella page cache:</strong></p>
@@ -87,14 +87,14 @@
         <h3>🔍 Cache Hit vs Cache Miss</h3>
         <p>1. Il kernel cerca la pagina richiesta nella page cache usando l'address_space</p>
         <p>2. Se trova la pagina (cache hit), la restituisce immediatamente dalla RAM</p>
-        <p>3. Se non trova (cache miss), genera un page fault e carica la pagina dal disco</p>
+        <p>3. Se non trova (cache miss), alloca una pagina e la carica dal disco (con mmap questo avviene tramite page fault)</p>
         <p>4. La pagina caricata viene aggiunta alla cache per accessi futuri</p>
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
             <li><strong>struct page</strong> - Rappresenta una singola pagina fisica da 4KB contenente dati dalla cache</li>
             <li><strong>address_space</strong> - Mantiene il mapping tra offset del file e pagine in cache</li>
-            <li><strong>radix_tree</strong> - Struttura dati efficiente per cercare pagine per offset</li>
+            <li><strong>XArray</strong> - Struttura dati efficiente per cercare pagine per offset</li>
             <li><strong>page flags</strong> - Bit che indicano stato (dirty, uptodate, locked, etc.)</li>
         </ul>
 
@@ -105,7 +105,7 @@
             <li><code>vmstat -s | grep "pages"</code> - Pagine in vari stati</li>
             <li><code>free -h</code> - Memoria totale e cached</li>
             <li><code>slabtop | grep page</code> - Uso memoria per strutture page</li>
-            <li><code>perf stat -e cache-misses ./program</code> - Monitora miss della cache</li>
+            <li><code>perf stat -e cache-misses ./program</code> - Conta i miss della cache della CPU (non della page cache)</li>
         </ul>
 
         <h3>🎯 Caso Reale: Lettura File Grande</h3>
@@ -121,10 +121,10 @@
         <h2>💾 Tipi di Page Cache</h2>
         <ul>
             <li><strong>File-backed cache</strong> - Cache per file regolari mappati su disco</li>
-            <li><strong>Anonymous pages</strong> - Pagine di memoria senza file sottostante (heap, stack)</li>
+            <li><strong>Anonymous pages</strong> - Pagine di memoria senza file sottostante (heap, stack): non fanno parte della page cache, ma sono gestite insieme dalle liste LRU</li>
             <li><strong>Shared memory</strong> - Pagine condivise tra processi (System V, POSIX)</li>
             <li><strong>Memory-mapped files</strong> - File mappati direttamente in memoria virtuale</li>
-            <li><strong>Buffer cache</strong> - Cache per metadata del filesystem (deprecata)</li>
+            <li><strong>Buffer cache</strong> - Cache per metadata del filesystem (oggi integrata nella page cache)</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
@@ -156,7 +156,7 @@
         <p>• <strong>Context switching</strong> - Mantiene cache durante cambi processo</p>
 
         <h3>⚡ I/O Subsystem</h3>
-        <p>• <strong>Writeback threads</strong> - Sincronizza pagine dirty su disco</p>
+        <p>• <strong>Writeback threads</strong> - I flusher thread (kworker/flush-…) sincronizzano le pagine dirty su disco</p>
         <p>• <strong>Read-ahead</strong> - Precarica pagine anticipate</p>
 
         <h2>🛠️ API Principali</h2>
@@ -170,7 +170,7 @@
             <code style="color: #2e7d32; font-weight: bold;">struct page *page_cache_alloc(struct address_space *mapping);</code><br>
             <span style="color: #666; font-size: 0.9em;">Alloca una nuova pagina per la cache.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">void add_to_page_cache(struct page *page, struct address_space *mapping, pgoff_t offset);</code><br>
+            <code style="color: #f57c00; font-weight: bold;">int add_to_page_cache_lru(struct page *page, struct address_space *mapping, pgoff_t index, gfp_t gfp_mask);</code><br>
             <span style="color: #666; font-size: 0.9em;">Aggiunge una pagina alla cache per un address space.</span>
         </div>
 
@@ -182,7 +182,7 @@
             <code style="color: #d32f2f; font-weight: bold;">int write_cache_pages(struct address_space *mapping, struct writeback_control *wbc);</code><br>
             <span style="color: #666; font-size: 0.9em;">Scrive pagine dirty della cache su disco.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">int balance_dirty_pages(struct bdi_writeback *wb, unsigned long pages);</code><br>
+            <code style="color: #2e7d32; font-weight: bold;">void balance_dirty_pages_ratelimited(struct address_space *mapping);</code><br>
             <span style="color: #666; font-size: 0.9em;">Controlla e bilancia il numero di pagine dirty.</span>
         </div>
 
@@ -194,7 +194,7 @@
             <code style="color: #9c27b0; font-weight: bold;">void page_cache_async_readahead(struct address_space *mapping, struct file_ra_state *ra, struct file *file, struct page *page, pgoff_t offset, unsigned long req_size);</code><br>
             <span style="color: #666; font-size: 0.9em;">Implementa read-ahead asincrono per prestazioni ottimali.</span><br><br>
 
-            <code style="color: #0288d1; font-weight: bold;">void do_page_cache_readahead(struct address_space *mapping, struct file *file, pgoff_t offset, unsigned long nr_to_read);</code><br>
+            <code style="color: #0288d1; font-weight: bold;">void page_cache_ra_unbounded(struct readahead_control *ractl, unsigned long nr_to_read, unsigned long lookahead_size);</code><br>
             <span style="color: #666; font-size: 0.9em;">Funzione principale per il read-ahead della page cache.</span>
         </div>
 
@@ -204,7 +204,7 @@
             <li><code>find_get_page()</code> - Cerca pagina nella cache</li>
             <li><code>page_cache_read()</code> - Se trovata, restituisce dati da RAM</li>
             <li><code>page_cache_alloc()</code> - Se non trovata, alloca nuova pagina</li>
-            <li><code>add_to_page_cache()</code> - Aggiunge pagina caricata alla cache</li>
+            <li><code>add_to_page_cache_lru()</code> - Aggiunge pagina caricata alla cache</li>
             <li>Accesso successivo sarà cache hit</li>
         </ol>
         <p><em>La page cache rende trasparenti le differenze tra RAM e storage!</em></p>
@@ -254,7 +254,7 @@
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">🌳</div>
-                        <div style="font-size: 0.8em;">radix_tree</div>
+                        <div style="font-size: 0.8em;">XArray</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
@@ -309,7 +309,7 @@
                 <strong>💡 Come leggere la mappa:</strong><br>
                 • Le frecce mostrano il flusso delle richieste I/O<br>
                 • address_space collega file a pagine in cache<br>
-                • radix_tree permette ricerca efficiente per offset<br>
+                • XArray permette ricerca efficiente per offset<br>
                 • LRU gestisce l'evizione delle pagine meno usate
             </div>
         </div>
@@ -346,9 +346,9 @@
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
                 <ol style="line-height: 1.8;">
                     <li><strong>1. Cache lookup:</strong> Kernel cerca pagine 0-3 nell'address_space del file</li>
-                    <li><strong>2. Page fault:</strong> Prime pagine non in cache → genera page fault</li>
+                    <li><strong>2. Cache miss:</strong> Prime pagine non in cache → il kernel avvia la lettura da disco</li>
                     <li><strong>3. I/O request:</strong> Block layer carica pagine dal disco (4KB * 4 = 16KB)</li>
-                    <li><strong>4. Cache population:</strong> Pagine aggiunte alla cache con radix_tree</li>
+                    <li><strong>4. Cache population:</strong> Pagine aggiunte alla cache con XArray</li>
                     <li><strong>5. Read-ahead:</strong> Carica automaticamente pagine successive (predictive)</li>
                     <li><strong>6. Instant access:</strong> Letture successive sono cache hit da RAM</li>
                 </ol>
@@ -402,7 +402,7 @@
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">💾 Forza sincronizzazione</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ sync<br>
-                        $ echo 3 > /proc/sys/vm/drop_caches<br>
+                        $ echo 3 | sudo tee /proc/sys/vm/drop_caches<br>
                         $ free -h<br><br>
                         $ dd if=/dev/zero of=testfile bs=1M count=100
                     </div>
@@ -425,7 +425,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Cache Hit/Miss</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Cache hit: dati in RAM, accesso istantaneo. Cache miss: page fault, caricamento da disco. Il rapporto hit/miss determina le prestazioni.
+                    Cache hit: dati in RAM, accesso istantaneo. Cache miss: caricamento da disco. Il rapporto hit/miss determina le prestazioni.
                 </p>
             </div>
 
@@ -433,7 +433,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
                 <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Write-Back Policy</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Pagine dirty vengono scritte su disco in background. Bilancia prestazioni (scritture differite) con sicurezza dati (sincronizzazione).
+                    Pagine dirty vengono scritte su disco in background. Bilancia prestazioni (scritture differite) con sicurezza dati (sincronizzazione). I limiti si regolano con vm.dirty_background_ratio (inizio del writeback in background) e vm.dirty_ratio (soglia oltre cui i processi devono scrivere).
                 </p>
             </div>
 
@@ -469,61 +469,61 @@
                 const quizQuestions = [
         {
             question: "Qual è lo scopo principale del page cache nel kernel Linux?",
-            options: ["Accelerare le operazioni di I/O su disco", "Gestire la memoria virtuale", "Controllare la CPU frequency", "Sincronizzare i processi"],
+            options: ["Accelerare le operazioni di I/O su disco", "Sincronizzare i processi", "Controllare la CPU frequency", "Gestire la memoria virtuale"],
             correct: 0,
             explanation: "Il page cache memorizza le pagine da disco in RAM per accelerare l'accesso ai dati."
         },
         {
-            question: "Come si chiama la struttura dati che mantiene il mapping tra blocchi disco e pagine?",
-            options: ["page_tree", "radix_tree", "address_space", "Tutte le precedenti"],
-            correct: 3,
-            explanation: "Diverse strutture dati sono usate: address_space, radix_tree, e page_tree."
+            question: "Quale struttura collega gli offset di un file alle pagine in cache?",
+            options: ["vm_area_struct", "task_struct", "address_space", "super_block"],
+            correct: 2,
+            explanation: "Ogni file ha un address_space che associa gli offset del file alle pagine presenti in cache; le pagine sono indicizzate con un XArray (che ha sostituito il radix tree)."
         },
         {
-            question: "Cosa controlla il sottosistema di writeback del page cache?",
-            options: ["Quante pagine dirty scrivere su disco", "Quando scrivere i dati modificati", "Con quale priorità I/O", "Tutte le precedenti"],
+            question: "Cosa fa il sottosistema di writeback della page cache?",
+            options: ["Comprime le pagine in RAM", "Legge in anticipo le pagine dal disco", "Elimina le pagine meno usate", "Scrive su disco le pagine dirty in background, in modo differito"],
             correct: 3,
-            explanation: "Il writeback gestisce frequenza, quantità e priorità della sincronizzazione con disco."
+            explanation: "Il writeback scrive su disco le pagine modificate (dirty) in modo differito, raggruppando le richieste per migliorare le prestazioni."
         },
         {
             question: "Quale comando mostra le statistiche del page cache in Linux?",
-            options: ["vmstat", "iostat", "cat /proc/meminfo", "top"],
-            correct: 2,
+            options: ["vmstat", "iostat", "top", "cat /proc/meminfo"],
+            correct: 3,
             explanation: "/proc/meminfo contiene informazioni sul Cached, Dirty, Writeback, e altri stati di cache."
         },
         {
-            question: "Cosa succede durante un page cache miss?",
-            options: ["Il dato è già in RAM", "Si legge il dato da disco", "Si genera un page fault", "Si alloca nuova memoria"],
+            question: "Cosa succede in caso di cache miss durante una read()?",
+            options: ["La lettura fallisce con un errore", "Il kernel alloca una pagina e legge il dato dal disco nella page cache", "Il dato viene letto direttamente dalla RAM senza I/O", "Il processo viene terminato"],
             correct: 1,
-            explanation: "Un cache miss richiede un I/O da disco per portare il dato in RAM."
+            explanation: "Con un cache miss la pagina non è in RAM: il kernel ne alloca una, avvia la lettura dal disco e la inserisce nella page cache, così gli accessi successivi saranno cache hit."
         },
         {
-            question: "Come vengono evinte le pagine dal page cache?",
-            options: ["FIFO", "LRU", "Random", "Round Robin"],
-            correct: 1,
-            explanation: "Il page cache usa LRU (Least Recently Used) per evincere le pagine meno usate."
+            question: "Quale politica approssima la scelta delle pagine da rimuovere dalla page cache?",
+            options: ["Round Robin", "Casuale", "LRU (Least Recently Used)", "FIFO"],
+            correct: 2,
+            explanation: "Linux usa un'approssimazione dell'LRU, con liste active/inactive (e, nei kernel recenti, MGLRU) per espellere per prime le pagine meno usate di recente."
         },
         {
             question: "Quale evento marca una pagina come 'dirty'?",
-            options: ["Lettura da disco", "Modifica in memoria", "Accesso frequente", "Creazione della pagina"],
-            correct: 1,
+            options: ["Lettura da disco", "Creazione della pagina", "Modifica in memoria", "Accesso frequente"],
+            correct: 2,
             explanation: "Una pagina diventa dirty quando viene modificata ma non ancora scritta su disco."
         },
         {
-            question: "Cosa controlla pdflush nel page cache?",
-            options: ["Allocazione di nuove pagine", "Sincronizzazione dati modificati su disco", "Evizione di pagine", "Deframmentazione RAM"],
-            correct: 1,
-            explanation: "pdflush (o writeback worker threads) sincronizzano le pagine dirty su disco."
+            question: "Quali thread del kernel sincronizzano oggi le pagine dirty della page cache su disco?",
+            options: ["I thread pdflush", "I thread kcompactd", "I thread ksoftirqd", "I thread kworker/flush-… (flusher threads)"],
+            correct: 3,
+            explanation: "Il writeback è affidato ai flusher thread (kworker/flush-…), che hanno sostituito pdflush nei kernel moderni."
         },
         {
-            question: "Quale parametro controlla il limite di pagine dirty in /proc/sys/vm/?",
-            options: ["dirty_ratio", "dirty_bytes", "dirty_expire_centisecs", "Tutti i precedenti"],
-            correct: 3,
-            explanation: "Più parametri controllano il comportamento del writeback e dei dirty pages."
+            question: "Quale parametro di /proc/sys/vm/ imposta la soglia di pagine dirty oltre la quale i processi devono scrivere su disco?",
+            options: ["vm.dirty_ratio", "vm.overcommit_memory", "vm.swappiness", "vm.nr_hugepages"],
+            correct: 0,
+            explanation: "vm.dirty_ratio è la percentuale di memoria dirty oltre la quale chi scrive viene bloccato e costretto al writeback; vm.dirty_background_ratio è la soglia più bassa a cui parte il writeback in background."
         },
         {
             question: "Cosa sono i 'clean' pages nel page cache?",
-            options: ["Pagine appena allocate", "Pagine sincronizzate con disco", "Pagine deframmentate", "Pagine crittografate"],
+            options: ["Pagine deframmentate", "Pagine sincronizzate con disco", "Pagine crittografate", "Pagine appena allocate"],
             correct: 1,
             explanation: "Clean pages sono pagine sincronizzate con disco, senza modifiche pendenti."
         }
@@ -550,7 +550,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -558,7 +558,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -611,7 +611,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -626,9 +626,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -637,7 +637,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -654,7 +654,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -672,7 +672,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

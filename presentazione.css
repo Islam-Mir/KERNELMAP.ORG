@@ -1,0 +1,325 @@
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .title {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: flyIn 1.5s ease-out;
+        }
+        @keyframes flyIn {
+            from {
+                opacity: 0;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(10);
+            }
+            to {
+                opacity: 1;
+                left: 10%;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        .title:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .box {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(21, 101, 192, 0.3);
+            padding: 20px;
+            width: 45vw;
+            max-width: 600px;
+            display: none;
+            z-index: 10;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            display: none;
+            z-index: 11;
+        }
+        .arrow-left {
+            border-width: 15px 20px 15px 0;
+            border-color: transparent rgba(255, 255, 255, 0.95) transparent transparent;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .arrow-up {
+            border-width: 0 15px 20px 15px;
+            border-color: transparent transparent rgba(255, 255, 255, 0.95) transparent;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .button {
+            font-size: 1em;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #42a5f5, #64b5f6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            box-shadow: 0 3px 10px rgba(66, 165, 245, 0.3);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 165, 245, 0.4);
+        }
+        .back-button {
+            font-size: 0.9em;
+            padding: 8px 16px;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            color: #1976d2;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            background: #bbdefb;
+            color: #0d47a1;
+        }
+        h1, h2, h3, h4 {
+            color: #0d47a1;
+            margin-bottom: 15px;
+        }
+        p, li {
+            color: #424242;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        .link {
+            margin-top: 20px;
+            text-align: center;
+            padding: 20px;
+        }
+        .link a {
+            display: inline-block;
+            font-size: 1.5em;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
+        }
+        .link a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            text-decoration: underline;
+        }
+        .nav {
+            position: absolute;
+            left: 5%;
+            font-size: 0.8em;
+            color: #1565c0;
+            display: none;
+            flex-direction: column;
+            z-index: 20;
+        }
+        .nav div {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1976d2;
+            cursor: pointer;
+            margin: 3px 0;
+            padding: 5px 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: inherit;
+        }
+        .nav div:hover {
+            background: #bbdefb;
+            color: #0d47a1;
+        }
+        .nav-kernel {
+            top: 20%;
+        }
+        .nav-kernelmap {
+            top: 60%;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .intro-box {
+            position: fixed;
+            inset: 8% 10% 8% 25%;
+            width: auto;
+            max-width: none;
+            display: none;
+            overflow-y: auto;
+            z-index: 30;
+        }
+        .intro-box h2 { margin-top: 0; }
+        .intro-box .intro-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+        .intro-box .intro-actions .button { margin: 0; }
+        .intro-box a { color: #1565c0; }
+        @media (max-width: 700px) {
+            .intro-box { inset: 5% 4% 5% 4%; padding: 18px; }
+            .nav { left: 3%; max-width: 42%; font-size: 0.72em; }
+            .nav-kernel { top: 2%; }
+            .nav-kernelmap { top: auto; bottom: 2%; }
+            .title { left: 8%; top: 50%; font-size: 2em; }
+        }
+
+        /* Footer fissa: resta in basso senza modificare il layout delle slide */
+        .page-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            min-height: 34px;
+            box-sizing: border-box;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            background: rgba(227, 242, 253, 0.94);
+            border-top: 1px solid #90caf9;
+            color: #1565c0;
+            font-size: 12px;
+            text-align: center;
+            z-index: 5;
+        }
+        .page-footer a {
+            color: #1565c0;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .page-footer a:hover {
+            color: #0d47a1;
+            text-decoration: underline;
+        }
+        @media (max-width: 700px) {
+            .page-footer {
+                gap: 6px 12px;
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+        }
+
+        
+/* Correzione finestre: sempre dentro lo schermo */
+* {
+    box-sizing: border-box;
+}
+
+.box:not(.intro-box) {
+    position: fixed;
+    top: 5%;
+    left: 25%;
+    width: 70%;
+    max-width: none;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+}
+
+/* Schermi piccoli */
+@media (max-width: 700px) {
+    .box:not(.intro-box) {
+        top: 12%;
+        left: 4%;
+        width: 92%;
+        max-height: 70vh;
+        padding: 16px;
+    }
+}
+
+        /* ===== Leggibilità: tutte le finestre restano dentro lo schermo (non escono mai) ===== */
+        /* La posizione delle finestre è gestita solo da qui: niente top/left/width scritti nell'HTML. */
+        .box:not(.intro-box) {
+            top: 5vh;
+            left: 25%;
+            width: 70%;
+            max-width: none;
+            max-height: calc(100vh - 5vh - 56px);   /* sempre sopra la barra in basso */
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .intro-box { bottom: 56px; }
+
+
+        /* Titolo grande a sinistra: non viene più tagliato dal bordo dello schermo */
+        .title { --tl: max(10%, 165px); left: var(--tl); }
+        @keyframes flyIn {
+            from { opacity: 0; left: 50%; transform: translate(-50%, -50%) scale(10); }
+            to   { opacity: 1; left: var(--tl); transform: translate(-50%, -50%) scale(1); }
+        }
+        @media (max-width: 1250px) { .title { --tl: max(10%, 125px); font-size: 2.2em; } }
+
+        /* Menu laterale: ancorato in basso, non esce mai dallo schermo */
+        .nav-kernelmap { top: auto; bottom: 56px; }
+        @media (max-height: 760px) {
+            .nav { font-size: 0.7em; }
+            .nav div { padding: 3px 7px; margin: 2px 0; }
+        }
+
+        /* Schermi medi: menu più stretto e finestre spostate per non sovrapporsi */
+        @media (min-width: 701px) and (max-width: 1100px) {
+            .nav { left: 2%; font-size: 0.7em; }
+            .box:not(.intro-box) { left: 215px; width: calc(100vw - 215px - 3vw); }
+            .intro-box { left: 215px; }
+        }
+
+        /* Telefoni: il menu diventa due barre orizzontali in alto e le finestre stanno sotto */
+        @media (max-width: 700px) {
+            .nav {
+                left: 0; right: 0; max-width: none;
+                flex-direction: row !important;
+                overflow-x: auto; white-space: nowrap;
+                gap: 4px; padding: 0 6px; font-size: 0.7em;
+            }
+            .nav div { flex: 0 0 auto; margin: 2px 0; }
+            .nav-kernel { top: 0; bottom: auto; }
+            .nav-kernelmap { top: 34px; bottom: auto; }
+            .box:not(.intro-box) {
+                top: 78px; left: 3%; width: 94%;
+                max-height: calc(100vh - 78px - 56px);
+            }
+            .intro-box { inset: 78px 3% 56px 3%; }
+            .arrow { display: none !important; }
+            .title { display: none; }
+        }
+    
+
+
+    

@@ -98,8 +98,8 @@
         <ul>
             <li><code>lsof</code> - Lista tutti i file aperti dai processi</li>
             <li><code>fuser -v file.txt</code> - Mostra quali processi stanno usando un file</li>
-            <li><code>ls -l /proc/<pid>/fd/</code> - Vede i file descriptor di un processo</li>
-            <li><code>strace -e open,read,write programma</code> - Traccia le system call di accesso file</li>
+            <li><code>ls -l /proc/&lt;PID&gt;/fd/</code> - Vede i file descriptor di un processo</li>
+            <li><code>strace -e openat,read,write programma</code> - Traccia le system call di accesso file</li>
         </ul>
 
         <h3>🎯 Caso Reale: Lettura di un File</h3>
@@ -365,8 +365,8 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Monitora accessi file</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ strace -e open,read,write ls<br>
-                        open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3<br>
+                        $ strace -e openat,read,write ls<br>
+                        openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3<br>
                         read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0", 832) = 832<br>
                         write(1, "file1.txt  file2.txt\n", 21) = 21
                     </div>
@@ -450,62 +450,62 @@
     const quizQuestions = [
         {
             question: "Cosa rappresenta un file descriptor?",
-            options: ["Il nome del file sul disco", "Un numero che identifica un file aperto", "Il contenuto del file", "I permessi del file"],
-            correct: 1,
+            options: ["I permessi del file", "Il nome del file sul disco", "Il contenuto del file", "Un numero che identifica un file aperto"],
+            correct: 3,
             explanation: "Il file descriptor è un numero intero (tipicamente piccolo) che identifica un file aperto nel contesto di un processo specifico."
         },
         {
             question: "Quale system call chiude un file descriptor?",
-            options: ["open()", "read()", "close()", "write()"],
-            correct: 2,
+            options: ["open()", "close()", "read()", "write()"],
+            correct: 1,
             explanation: "close() chiude il file descriptor e rilascia le risorse associate, permettendo al sistema di riutilizzare quel numero."
         },
         {
             question: "Cosa significa O_RDONLY?",
-            options: ["Solo scrittura", "Lettura e scrittura", "Solo lettura", "Scrittura in append"],
-            correct: 2,
+            options: ["Lettura e scrittura", "Solo lettura", "Solo scrittura", "Scrittura in append"],
+            correct: 1,
             explanation: "O_RDONLY è una flag che specifica apertura del file in sola lettura, impedendo operazioni di scrittura."
         },
         {
             question: "Quale funzione cambia la posizione nel file?",
-            options: ["read()", "write()", "lseek()", "close()"],
-            correct: 2,
+            options: ["lseek()", "close()", "write()", "read()"],
+            correct: 0,
             explanation: "lseek() permette di cambiare la posizione corrente nel file per letture o scritture successive."
         },
         {
             question: "Cosa garantisce l'opzione O_APPEND?",
-            options: ["Lettura veloce", "Scrittura alla fine del file", "Accesso casuale", "Lettura sola"],
-            correct: 1,
+            options: ["Lettura sola", "Accesso casuale", "Scrittura alla fine del file", "Lettura veloce"],
+            correct: 2,
             explanation: "O_APPEND garantisce che tutte le scritture vengano automaticamente fatte alla fine del file, utile per log files."
         },
         {
             question: "Quale comando mostra i file aperti da un processo?",
-            options: ["ps aux", "top", "lsof", "free"],
-            correct: 2,
+            options: ["lsof", "free", "ps aux", "top"],
+            correct: 0,
             explanation: "lsof (list open files) mostra tutti i file descriptor aperti da processi, utile per debugging."
         },
         {
             question: "Cosa fa fsync()?",
-            options: ["Chiude il file", "Sincronizza dati con il disco", "Cambia permessi", "Legge dati"],
+            options: ["Chiude il file", "Sincronizza dati con il disco", "Legge dati", "Cambia permessi"],
             correct: 1,
             explanation: "fsync() forza la scrittura di tutti i dati bufferizzati sul dispositivo di storage, garantendo persistenza."
         },
         {
             question: "Quale flag permette lettura E scrittura?",
-            options: ["O_RDONLY", "O_WRONLY", "O_RDWR", "O_APPEND"],
-            correct: 2,
+            options: ["O_RDONLY", "O_APPEND", "O_WRONLY", "O_RDWR"],
+            correct: 3,
             explanation: "O_RDWR permette sia operazioni di lettura che di scrittura sul file aperto."
         },
         {
             question: "Cosa traccia strace?",
-            options: ["Utilizzo CPU", "System call del processo", "Uso memoria", "File aperti"],
-            correct: 1,
+            options: ["File aperti", "Utilizzo CPU", "System call del processo", "Uso memoria"],
+            correct: 2,
             explanation: "strace traccia tutte le system call eseguite da un processo, utile per debugging e analisi del comportamento."
         },
         {
             question: "Quale funzione permette memory mapping di file?",
-            options: ["read()", "write()", "mmap()", "lseek()"],
-            correct: 2,
+            options: ["mmap()", "read()", "lseek()", "write()"],
+            correct: 0,
             explanation: "mmap() mappa un file nella memoria virtuale del processo, permettendo di trattarlo come un array in memoria."
         }
     ];
@@ -531,7 +531,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -539,7 +539,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -592,7 +592,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -607,9 +607,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -618,7 +618,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -635,7 +635,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -653,7 +653,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

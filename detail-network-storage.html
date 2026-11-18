@@ -52,7 +52,7 @@
 <h3>⚙️ NFS Operations</h3>
 <p>• <strong>nfs_getattr()</strong> - Ottiene attributi file dal server NFS</p>
 <p>• <strong>nfs_lookup()</strong> - Risolve pathname su server remoto</p>
-<p>• <strong>nfs_readpage()</strong> - Legge pagine da file NFS</p>
+<p>• <strong>nfs_read_folio()</strong> - Legge pagine da file NFS</p>
 <p>• <strong>nfs_writepage()</strong> - Scrive pagine su file NFS</p>
 
 <h3>⚙️ CIFS/SMB Operations</h3>
@@ -77,7 +77,7 @@
 <p><strong>Il Network Storage opera in ogni accesso a file remoti:</strong></p>
 
 <h3>🔍 Montaggio NFS</h3>
-<p>1. Client invia richiesta MOUNT al server NFS</p>
+<p>1. Il client contatta il server NFS (con NFSv3 tramite il protocollo MOUNT, con NFSv4 direttamente)</p>
 <p>2. Server risponde con handle del filesystem</p>
 <p>3. Client crea superblock NFS e dentry cache</p>
 <p>4. File remoti diventano accessibili localmente</p>
@@ -125,7 +125,7 @@
         <h2>✨ Caratteristiche Avanzate</h2>
 <ul>
 <li><strong>Transparent Caching</strong> - Cache locale trasparente per prestazioni</li>
-<li><strong>Failover automatico</strong> - Ricovero trasparente su failure</li>
+<li><strong>Failover automatico</strong> - Recupero trasparente in caso di guasto</li>
 <li><strong>Load Balancing</strong> - Distribuzione carico su multiple connessioni</li>
 <li><strong>Security Integration</strong> - Integrazione con Kerberos e autenticazione</li>
 </ul>
@@ -316,33 +316,33 @@
 <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
 <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Input</div>
-<div style="font-family: monospace; font-size: 0.9em;">[DESCRIZIONE INPUT]</div>
+<div style="font-family: monospace; font-size: 0.9em;">cp file su /mnt/nfs</div>
 </div>
 
 <div style="font-size: 2em; color: #f57c00;">⚡</div>
 
 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
 <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Processing</div>
-<div style="font-family: monospace; font-size: 0.9em;">[DESCRIZIONE ELABORAZIONE]</div>
+<div style="font-family: monospace; font-size: 0.9em;">Conversione della richiesta di copia file in chiamate di procedura remota (RPC) per il trasferimento dei blocchi di dati via rete.</div>
 </div>
 </div>
 
 <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-<strong>Processo eseguito:</strong> [DESCRIZIONE PROCESSO]
+<strong>Processo eseguito:</strong> Trasferimento di un file su un filesystem di rete remoto attraverso il sottosistema Network Storage del kernel.
 </div>
 
 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Fasi di elaborazione:</h4>
 <ol style="line-height: 1.8;">
-<li><strong>1. [Fase 1]</strong> - [descrizione]</li>
-<li><strong>2. [Fase 2]</strong> - [descrizione]</li>
-<li><strong>3. [Fase 3]</strong> - [descrizione]</li>
-<li><strong>4. [Fase 4]</strong> - [descrizione]</li>
+<li><strong>1. VFS passa la richiesta al client NFS</strong> - Il sottosistema VFS intercetta la chiamata di scrittura e la inoltra al driver o client del filesystem di rete specifico (es. NFS).</li>
+<li><strong>2. Il client costruisce una RPC READ/WRITE</strong> - Il client NFS incapsula l'operazione di I/O all'interno di una chiamata di procedura remota (RPC).</li>
+<li><strong>3. La RPC viaggia su TCP verso il server</strong> - I pacchetti RPC vengono trasmessi attraverso lo stack di rete utilizzando il protocollo di trasporto TCP.</li>
+<li><strong>4. I dati tornano e vanno nella page cache</strong> - Il server risponde confermando l'operazione e i dati/metadati vengono memorizzati nella page cache locale.</li>
 </ol>
 </div>
 
 <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-<strong>🎯 Risultato:</strong> [DESCRIZIONE RISULTATO]
+<strong>🎯 Risultato:</strong> Il file viene copiato con successo sulla condivisione di rete con l'assistenza della cache locale.
 </div>
 </div>
 
@@ -352,47 +352,52 @@
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Esplora gli export NFS</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        12345678 /etc/passwd<br><br>
-                        $ stat /etc/passwd<br>
-                        File: /etc/passwd<br>
-                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
-                        Inode: 12345678 Links: 1
+                        $ showmount -e server<br>
+                        Export list for server:<br>
+                        /var/nfs/shared 192.168.1.0/24
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza le risorse condivise disponibili su un server NFS</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Monta un filesystem NFS</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ mount<br>
-                        /dev/sda1 on / type ext4<br>
-                        /dev/sdb1 on /home type ext4<br>
-                        server:/share on /mnt/nfs type nfs
+                        $ sudo mount -t nfs server:/share /mnt/nfs<br>$ mount | grep nfs
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monta una condivisione remota e verifica lo stato del mount</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Statistiche del client NFS</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ iostat -x 1<br>
-                        Device r/s w/s rkB/s wkB/s<br>
-                        sda 15.0 25.0 120.0 200.0<br>
-                        nfs 2.0 8.0 16.0 64.0
+                        $ nfsstat -c<br>
+                        Client rpc stats:<br>
+                        calls      badcalls   retrans    authrefresh<br>
+                        1420       0          0          0
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Monitora le chiamate RPC e le statistiche di errore del client NFS</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Gestisci le sessioni iSCSI</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep dentry<br>
-                        $ cat /proc/slabinfo | grep inode
+                        $ sudo iscsiadm -m session<br>
+                        tcp: [1] 192.168.1.50:3260,1 iqn.2003-01.org.linux-iscsi...
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Verifica le sessioni attive per lo storage a blocchi over IP</em></p>
+                </div>
+
+                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💼 Elenca share SMB/CIFS</h4>
+                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        $ smbclient -L //server -U guest<br>
+                        Sharename       Type      Comment<br>
+                        ---------       ----      -------<br>
+                        Public          Disk      Shared folder
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esplora le risorse condivise su server SMB/Windows in rete</em></p>
                 </div>
             </div>
         </div>
@@ -401,26 +406,26 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
 <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
-<h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">[CONCETTO 1]</h4>
-<p style="font-size: 0.9em; text-align: center; color: #1b5e20;">[DESCRIZIONE CONCETTO 1]</p>
+<h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Protocolli di Rete (NFS/SMB/iSCSI)</h4>
+<p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Tecnologie e standard utilizzati per trasportare richieste di file o blocchi attraverso la rete IP tra client e server di storage.</p>
 </div>
 
 <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-<h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">[CONCETTO 2]</h4>
-<p style="font-size: 0.9em; text-align: center; color: #bf360c;">[DESCRIZIONE CONCETTO 2]</p>
+<h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">File-level vs Block-level</h4>
+<p style="font-size: 0.9em; text-align: center; color: #bf360c;">Differenza fondamentale tra storage basato su file (NFS, SMB) in cui il client gestisce file e cartelle, e storage a blocchi (iSCSI) che espone dischi grezzi.</p>
 </div>
 
 <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-<h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">[CONCETTO 3]</h4>
-<p style="font-size: 0.9em; text-align: center; color: #4a148c;">[DESCRIZIONE CONCETTO 3]</p>
+<h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Caching e Coerenza</h4>
+<p style="font-size: 0.9em; text-align: center; color: #4a148c;">Meccanismi locali per accelerare le letture/scritture e protocolli di validazione per mantenere la coerenza dei dati condivisi tra più client.</p>
 </div>
 
 <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-<h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">[CONCETTO 4]</h4>
-<p style="font-size: 0.9em; text-align: center; color: #004d40;">[DESCRIZIONE CONCETTO 4]</p>
+<h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza (Kerberos, TLS)</h4>
+<p style="font-size: 0.9em; text-align: center; color: #004d40;">Sistemi di autenticazione forte e crittografia in transito per proteggere i dati che viaggiano sulle condivisioni di rete.</p>
 </div>
 </div>
     </div>
@@ -444,51 +449,63 @@
     const quizQuestions = [
         {
             question: "Cosa permette NFS?",
-            options: ["Accesso a file locali", "Condivisione file in rete", "Compressione dati", "Crittografia automatica"],
+            options: ["Crittografia automatica", "Condivisione file in rete", "Compressione dati", "Accesso a file locali"],
             correct: 1,
             explanation: "NFS (Network File System) permette di condividere e accedere a file attraverso la rete come se fossero locali."
         },
         {
             question: "Quale protocollo usa CIFS?",
-            options: ["TCP diretto", "SMB (Server Message Block)", "HTTP", "FTP"],
-            correct: 1,
+            options: ["SMB (Server Message Block)", "HTTP", "FTP", "TCP diretto"],
+            correct: 0,
             explanation: "CIFS implementa il protocollo SMB per l'accesso a risorse condivise in reti Windows."
         },
         {
             question: "Cosa trasporta iSCSI?",
-            options: ["File system", "Comandi SCSI via IP", "Database", "Video streaming"],
-            correct: 1,
+            options: ["File system", "Video streaming", "Comandi SCSI via IP", "Database"],
+            correct: 2,
             explanation: "iSCSI trasporta comandi SCSI incapsulati via protocollo IP per accesso remoto a storage a blocchi."
         },
         {
             question: "Quale comando monta un filesystem NFS?",
-            options: ["nfs mount", "mount -t nfs", "iscsiadm", "smbclient"],
+            options: ["smbclient", "mount -t nfs", "nfs mount", "iscsiadm"],
             correct: 1,
             explanation: "mount -t nfs server:/share /mnt monta un export NFS nel punto di mount specificato."
         },
         {
             question: "Cosa significa RPC in NFS?",
-            options: ["Remote Procedure Call", "Rapid Packet Control", "Reliable Protocol Connection", "Resource Pool Cache"],
-            correct: 0,
+            options: ["Rapid Packet Control", "Resource Pool Cache", "Reliable Protocol Connection", "Remote Procedure Call"],
+            correct: 3,
             explanation: "RPC (Remote Procedure Call) è il meccanismo che permette a NFS di eseguire procedure remote attraverso la rete."
         },
         {
             question: "Quale tool esplora share SMB?",
-            options: ["showmount", "iscsiadm", "smbclient -L", "nfsstat"],
-            correct: 2,
+            options: ["smbclient -L", "iscsiadm", "showmount", "nfsstat"],
+            correct: 0,
             explanation: "smbclient -L server elenca tutti gli share disponibili su un server SMB/CIFS."
         },
         {
             question: "Cosa fa iscsiadm?",
-            options: ["Monta NFS", "Gestisce connessioni iSCSI", "Configura Samba", "Monitora rete"],
-            correct: 1,
+            options: ["Monitora rete", "Monta NFS", "Gestisce connessioni iSCSI", "Configura Samba"],
+            correct: 2,
             explanation: "iscsiadm è l'utility per scoprire, gestire e configurare connessioni iSCSI."
         },
         {
-            question: "Quale versione NFS supporta Kerberos?",
-            options: ["NFSv2", "NFSv3", "NFSv4", "Tutte"],
-            correct: 2,
-            explanation: "NFSv4 introduce supporto nativo per Kerberos e altre funzionalità di sicurezza avanzate."
+            question: "Quale sistema di autenticazione forte può essere usato con NFS e CIFS?",
+            options: ["SNMP v1", "Telnet", "Wake-on-LAN", "Kerberos"],
+            correct: 3,
+            explanation: "Kerberos fornisce autenticazione forte per NFS (RPCSEC_GSS) e CIFS/SMB; insieme a TLS o alla cifratura in transito protegge l'accesso alle condivisioni di rete."
+        },
+        {
+            question: "Qual è la differenza tra storage file-level e block-level?",
+            options: ["Il file-level (NFS, SMB) espone file e cartelle; il block-level (iSCSI) espone dischi grezzi", "Il file-level è sempre più veloce", "Il block-level espone solo file di testo", "Non c'è alcuna differenza"],
+            correct: 0,
+            explanation: "Con NFS e SMB il client lavora su file e directory gestiti dal server; con iSCSI il client vede un disco a blocchi e vi crea il proprio filesystem."
+        },
+        {
+            question: "Quale comando mostra le statistiche delle chiamate RPC del client NFS?",
+            options: ["smbclient -L", "showmount -e", "iscsiadm -m session", "nfsstat -c"],
+            correct: 3,
+            explanation: "nfsstat -c riporta le statistiche del client NFS (chiamate RPC, errori, ritrasmissioni)."
         }
     ];
 
@@ -513,7 +530,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -521,13 +538,13 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
-                            ${String.fromCharCode(65 + index)}) ${option}
+                            ${String.fromCharCode(65 + index)})${option}
                         </button>
                     `).join('')}
                 </div>
@@ -574,7 +591,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -589,9 +606,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -600,7 +617,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -617,7 +634,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -635,7 +652,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();
@@ -663,14 +680,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

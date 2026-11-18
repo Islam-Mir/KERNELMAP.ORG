@@ -44,7 +44,7 @@
 
         <p>• <strong>Zero-copy transfers</strong> - Nessuna copia dati tra kernel e user space</p>
         <p>• <strong>Kernel-space bridging</strong> - Trasferimento diretto tra dispositivi</p>
-        <p>• <strong>Memory-mapped efficiency</strong> - Utilizzo pipe come buffer intermedi</p>
+        <p>• <strong>Pipe come buffer in kernel</strong> - Utilizzo pipe come buffer intermedi</p>
         <p>• <strong>High-throughput optimization</strong> - Massima velocità per dati bulk</p>
         <p>• <strong>Socket-to-socket transfers</strong> - Trasferimenti diretti tra connessioni rete</p>
         <p>• <strong>Page remapping</strong> - Riutilizzo pagine memoria senza copia</p>
@@ -54,7 +54,7 @@
         <p><strong>Splice opera attraverso diversi meccanismi ottimizzati per vari scenari:</strong></p>
 
         <h3>📄 Pipe-based Splicing</h3>
-        <p>• <strong>Anonymous pipes</strong> - Buffer circolare in kernel space</p>
+        <p>• <strong>Anonymous pipes</strong> - Buffer circolare in kernel space: almeno uno dei due descrittori di splice() deve essere una pipe</p>
         <p>• <strong>Page remapping</strong> - Trasferimento ownership pagine</p>
         <p>• <strong>Zero-copy bridging</strong> - Connessione diretta sorgente-destinazione</p>
 
@@ -83,8 +83,8 @@
         <h3>🔄 Operational Modes</h3>
         <ul>
             <li><strong>Synchronous mode</strong> - Trasferimento bloccante fino al completamento</li>
-            <li><strong>Asynchronous mode</strong> - Trasferimento non bloccante con notifiche</li>
-            <li><strong>Partial transfers</strong> - Trasferimenti parziali con retry automatico</li>
+            <li><strong>Asynchronous mode</strong> - Trasferimento non bloccante (SPLICE_F_NONBLOCK), da usare con poll/epoll</li>
+            <li><strong>Partial transfers</strong> - Trasferimenti parziali: il chiamante deve riprovare con la parte rimanente</li>
             <li><strong>Error handling</strong> - Gestione interruzioni e condizioni errore</li>
         </ul>
 
@@ -101,7 +101,7 @@
         <ul>
             <li><code>grep splice /proc/kallsyms</code> - Verifica presenza system call</li>
             <li><code>strace -e splice programma</code> - Trace utilizzi splice</li>
-            <li><code>cat /proc/sys/fs/splice-*</code> - Configurazioni splice</li>
+            <li><code>cat /proc/sys/fs/pipe-max-size</code> - Dimensione massima delle pipe usate da splice</li>
             <li><code>perf record -e syscalls:sys_enter_splice</code> - Monitoraggio chiamate</li>
         </ul>
 
@@ -166,7 +166,7 @@
         <h3>🌐 Network Proxy</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
             <code style="color: #d32f2f; font-weight: bold;">while (1) {</code><br>
-            <code style="color: #2e7d32; font-weight: bold;">    ssize_t bytes = splice(client_sock, NULL, server_sock, NULL, 65536, SPLICE_F_MOVE);</code><br>
+            <code style="color: #2e7d32; font-weight: bold;">    ssize_t bytes = splice(client_sock, NULL, pipefd[1], NULL, 65536, SPLICE_F_MOVE); splice(pipefd[0], NULL, server_sock, NULL, bytes, SPLICE_F_MOVE);</code><br>
             <code style="color: #f57c00; font-weight: bold;">    if (bytes <= 0) break;</code><br>
             <code style="color: #9c27b0; font-weight: bold;">}</code><br>
             <span style="color: #666; font-size: 0.9em;">Proxy TCP ad alta velocità che trasferisce dati direttamente tra connessioni.</span>
@@ -339,7 +339,7 @@
             </div>
 
             <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Trasferimento 2MB in ~50μs invece di millisecondi. CPU utilizzata solo per setup, non per copia dati. Throughput aumentato del 300%!
+                <strong>🎯 Risultato:</strong> Il file viene inviato senza copie in user space: la CPU è usata soprattutto per il setup e non per copiare i dati (il risparmio effettivo dipende dal carico).
             </div>
         </div>
 
@@ -364,7 +364,7 @@
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ dd if=/dev/zero bs=1M count=100 | nc -l 8080<br>
                         $ time nc localhost 8080 > /dev/null<br>
-                        $ time splice_copy /dev/zero /dev/null 100M
+                        $ # confronta con un programma di test che usa splice() invece di read()/write()
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Confronta velocità trasferimento con e senza splice</em></p>
                 </div>
@@ -372,7 +372,7 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Monitor utilizzo splice</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ strace -c nginx -s reload 2>&1 | grep splice<br>
+                        $ sudo strace -f -c -e trace=splice -p PID_NGINX<br>
                         $ perf stat -e syscalls:sys_enter_splice nginx -t<br>
                         $ bpftrace -e 'tracepoint:syscalls:sys_enter_splice { printf("splice: %d bytes\n", args->len); }'
                     </div>
@@ -386,7 +386,7 @@
                         $ curl -x localhost:8080 http://httpbin.org/get<br>
                         $ # Osserva efficienza zero-copy nel proxy
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Testa proxy TCP che usa splice internamente</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Prova un semplice proxy TCP (socat usa read/write: serve come termine di confronto con un proxy basato su splice)</em></p>
                 </div>
             </div>
         </div>
@@ -449,51 +449,63 @@
     const quizQuestions = [
         {
             question: "Cosa permette socket splice?",
-            options: ["Trasferimenti dati con zero copie", "Compressione automatica dei dati", "Crittografia end-to-end", "Load balancing automatico"],
-            correct: 0,
+            options: ["Load balancing automatico", "Trasferimenti dati con zero copie", "Compressione automatica dei dati", "Crittografia end-to-end"],
+            correct: 1,
             explanation: "Socket splice permette trasferimenti diretti di dati tra socket senza copie intermedie in user space."
         },
         {
-            question: "Quale system call implementa splice?",
-            options: ["sendfile()", "splice()", "tee()", "vmsplice()"],
-            correct: 1,
-            explanation: "La system call splice() è il cuore dell'implementazione zero-copy in Linux."
+            question: "Quale system call è una versione semplificata di splice() per inviare un file su un socket?",
+            options: ["sendfile()", "tee()", "mmap()", "vmsplice()"],
+            correct: 0,
+            explanation: "sendfile() è la semplificazione di splice() per il caso file-to-socket: i dati vanno dal file al socket senza passare dallo spazio utente."
         },
         {
             question: "Cosa usa splice come buffer intermedio?",
-            options: ["File temporanei", "Pipe del kernel", "Socket UDP", "Memoria condivisa"],
-            correct: 1,
+            options: ["Pipe del kernel", "File temporanei", "Socket UDP", "Memoria condivisa"],
+            correct: 0,
             explanation: "Splice utilizza pipe del kernel come buffer circolare per trasferimenti zero-copy."
         },
         {
             question: "Quale flag tenta di spostare pagine invece di copiarle?",
-            options: ["SPLICE_F_NONBLOCK", "SPLICE_F_MOVE", "SPLICE_F_MORE", "SPLICE_F_GIFT"],
-            correct: 1,
+            options: ["SPLICE_F_NONBLOCK", "SPLICE_F_GIFT", "SPLICE_F_MOVE", "SPLICE_F_MORE"],
+            correct: 2,
             explanation: "SPLICE_F_MOVE indica al kernel di tentare di spostare le pagine invece di copiarle."
         },
         {
             question: "Quale applicazione beneficia maggiormente di splice?",
-            options: ["Calcolatrici", "Web server ad alto traffico", "Editor di testo", "Giochi 3D"],
-            correct: 1,
+            options: ["Calcolatrici", "Giochi 3D", "Editor di testo", "Web server ad alto traffico"],
+            correct: 3,
             explanation: "I web server che servono file statici beneficiano enormemente di splice per trasferimenti zero-copy."
         },
         {
             question: "Cosa significa zero-copy in splice?",
-            options: ["Nessuna CPU utilizzata", "Nessuna copia dati in user space", "Nessuna memoria utilizzata", "Nessuna latenza di rete"],
-            correct: 1,
+            options: ["Nessuna latenza di rete", "Nessuna memoria utilizzata", "Nessuna CPU utilizzata", "Nessuna copia dati in user space"],
+            correct: 3,
             explanation: "Zero-copy significa che i dati non vengono copiati tra kernel space e user space durante il trasferimento."
         },
         {
             question: "Quale comando verifica supporto splice?",
-            options: ["lsmod", "grep splice /proc/kallsyms", "dmesg", "ps aux"],
-            correct: 1,
+            options: ["grep splice /proc/kallsyms", "ps aux", "lsmod", "dmesg"],
+            correct: 0,
             explanation: "grep splice /proc/kallsyms verifica se la system call splice è presente nel kernel."
         },
         {
             question: "Cosa ottimizza splice nei trasferimenti file-to-socket?",
-            options: ["Compressione dati", "Trasferimento diretto senza read/write", "Crittografia", "Autenticazione"],
+            options: ["Crittografia", "Trasferimento diretto senza read/write", "Compressione dati", "Autenticazione"],
             correct: 1,
             explanation: "Splice permette di trasferire dati direttamente dal file system al socket senza passare per user space."
+        },
+        {
+            question: "Quale chiamata duplica i dati tra due pipe senza consumarli?",
+            options: ["pipe2()", "tee()", "vmsplice()", "sendfile()"],
+            correct: 1,
+            explanation: "tee() copia i dati da una pipe a un'altra senza consumarli, duplicando lo stream senza copiare i contenuti in user space."
+        },
+        {
+            question: "Che cosa serve perché splice() possa trasferire dati?",
+            options: ["Il flag SPLICE_F_GIFT", "Che entrambi siano socket", "Che almeno uno dei due file descriptor sia una pipe", "Che entrambi siano file regolari"],
+            correct: 2,
+            explanation: "splice() sposta dati tra un file descriptor e una pipe: per andare da socket a socket (o da file a socket) servono due chiamate che passano da una pipe."
         }
     ];
 
@@ -518,7 +530,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -526,7 +538,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -579,7 +591,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -594,9 +606,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -605,7 +617,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -622,7 +634,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -640,7 +652,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

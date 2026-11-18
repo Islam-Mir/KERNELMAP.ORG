@@ -97,7 +97,7 @@
             <li><code>find /usr/src/linux-headers* -name "*.h" | head</code> - Trova file header</li>
             <li><code>grep -r "struct task_struct" /usr/src/linux-headers*/include/</code> - Cerca definizioni</li>
             <li><code>cpp -dM /usr/include/linux/sched.h | head</code> - Mostra macro definite</li>
-            <li><code>nm /usr/src/linux-headers*/include/linux/sched.h</code> - Simboli esportati</li>
+            <li><code>head /usr/src/linux-headers-$(uname -r)/Module.symvers</code> - Simboli esportati</li>
         </ul>
 
         <h3>🎯 Caso Reale: Scrivere un Device Driver</h3>
@@ -105,7 +105,7 @@
         <ol>
             <li>#include &lt;linux/module.h&gt; - Per registrazione moduli</li>
             <li>#include &lt;linux/usb.h&gt; - Per framework USB</li>
-            <li>#include &lt;linux/device.&gt; - Per device model</li>
+            <li>#include &lt;linux/device.h&gt; - Per device model</li>
             <li>Usi struct usb_driver dal header</li>
             <li>Implementi le callback definite negli header</li>
         </ol>
@@ -154,7 +154,7 @@
             <span style="color: #666; font-size: 0.9em;">Macro per registrazione moduli kernel (MODULE_LICENSE, module_init)</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">#include &lt;linux/kernel.h&gt;</code><br>
-            <span style="color: #666; font-size: 0.9em;">Funzioni core del kernel (printk, kmalloc, kfree)</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Funzioni e macro di uso generale (printk, container_of, min/max); kmalloc e kfree sono dichiarate in linux/slab.h</span><br><br>
 
             <code style="color: #f57c00; font-weight: bold;">#include &lt;linux/sched.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Strutture scheduler e processi (task_struct, current)</span><br><br>
@@ -168,7 +168,7 @@
             <code style="color: #0288d1; font-weight: bold;">#include &lt;linux/pci.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Supporto dispositivi PCI (pci_device_id, pci_driver)</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">#include &lt;inux/usb.h&gt;</code><br>
+            <code style="color: #d32f2f; font-weight: bold;">#include &lt;linux/usb.h&gt;</code><br>
             <span style="color: #666; font-size: 0.9em;">Framework USB (usb_driver, urb, endpoint)</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">#include &lt;linux/netdevice.h&gt;</code><br>
@@ -355,13 +355,13 @@
                         capability.h<br>
                         cdrom.h
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti gli header pubblici del kernel disponibili</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Vedi gli header UAPI (API per lo user space) installati nel sistema</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza una struttura</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ grep -A 10 "struct task_struct" /usr/include/linux/sched.h<br>
+                        $ grep -A 10 "^struct task_struct {" /usr/src/linux-headers-$(uname -r)/include/linux/sched.h<br>
                         struct task_struct {<br>
                         #ifdef CONFIG_THREAD_INFO_IN_TASK<br>
                         struct thread_info thread_info;<br>
@@ -373,7 +373,7 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Vedi macro definite</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cpp -dM /usr/include/linux/module.h | grep MODULE<br>
+                        $ grep -n "define MODULE_" /usr/src/linux-headers-$(uname -r)/include/linux/module.h<br>
                         #define MODULE_AUTHOR(x)<br>
                         #define MODULE_DESCRIPTION(x)<br>
                         #define MODULE_LICENSE(x)
@@ -384,7 +384,7 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">🏗️ Controlla dipendenze</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ grep "#include" /usr/include/linux/fs.h | head -5<br>
+                        $ grep "#include" /usr/src/linux-headers-$(uname -r)/include/linux/fs.h | head -5<br>
                         #include &lt;linux/linkage.h&gt;<br>
                         #include &lt;linux/wait.h&gt;<br>
                         #include &lt;linux/rbtree.h&gt;
@@ -400,7 +400,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📄</div>
                 <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Interfacce Pubbliche</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Gli header in include/linux/ definiscono l'API pubblica del kernel. Tutto ciò che è esportato qui è stabile e utilizzabile dai moduli e dai driver.
+                    Gli header in include/linux/ definiscono le API interne usate da moduli e driver (non garantite stabili tra versioni). Stabili sono solo quelli in include/uapi/, rivolti a user space.
                 </p>
             </div>
 
@@ -452,63 +452,63 @@
     const quizQuestions = [
         {
             question: "Cosa contengono i file header del kernel?",
-            options: ["Codice eseguibile", "Definizioni di strutture e prototipi", "Dati utente", "File di configurazione"],
+            options: ["Dati utente", "Definizioni di strutture e prototipi", "Codice eseguibile", "File di configurazione"],
             correct: 1,
             explanation: "I file header (.h) contengono definizioni di strutture dati, prototipi di funzioni, costanti e macro utilizzati dal codice del kernel."
         },
         {
             question: "Quale header contiene la struttura task_struct?",
-            options: ["linux/fs.h", "linux/sched.h", "linux/mm.h", "linux/net.h"],
-            correct: 1,
+            options: ["linux/fs.h", "linux/mm.h", "linux/net.h", "linux/sched.h"],
+            correct: 3,
             explanation: "sched.h contiene la definizione della struttura task_struct che rappresenta un processo o thread nel kernel."
         },
         {
             question: "Cosa significa #include &lt;linux/module.h&gt;?",
-            options: ["Include codice eseguibile", "Include definizioni per moduli kernel", "Include dati di configurazione", "Include file di testo"],
-            correct: 1,
+            options: ["Include dati di configurazione", "Include codice eseguibile", "Include definizioni per moduli kernel", "Include file di testo"],
+            correct: 2,
             explanation: "linux/module.h fornisce le macro e strutture necessarie per scrivere moduli kernel caricabili dinamicamente."
         },
         {
             question: "Dove si trovano gli header specifici dell'architettura?",
-            options: ["/include/linux/", "/arch/*/include/asm/", "/include/uapi/", "/asm-generic/"],
-            correct: 1,
+            options: ["/arch/*/include/asm/", "/include/linux/", "/include/uapi/", "/asm-generic/"],
+            correct: 0,
             explanation: "Gli header specifici dell'architettura si trovano in /arch/*/include/asm/ e contengono codice dipendente dalla CPU."
         },
         {
             question: "Cosa permette la direttiva #ifdef nel kernel?",
-            options: ["Eseguire codice", "Compilazione condizionale", "Includere file", "Definire funzioni"],
-            correct: 1,
+            options: ["Definire funzioni", "Eseguire codice", "Compilazione condizionale", "Includere file"],
+            correct: 2,
             explanation: "#ifdef permette di includere o escludere codice in base a condizioni di compilazione, utile per configurazioni variabili."
         },
         {
             question: "Quale comando mostra le macro definite in un header?",
-            options: ["grep", "cat", "cpp -dM", "make"],
-            correct: 2,
+            options: ["make", "cpp -dM", "grep", "cat"],
+            correct: 1,
             explanation: "cpp -dM elabora un file header e mostra tutte le macro definite con #define."
         },
         {
             question: "Cosa contengono gli header uapi?",
-            options: ["Solo codice kernel", "API per userspace", "Driver dispositivi", "Codice architettura"],
-            correct: 1,
+            options: ["API per userspace", "Driver dispositivi", "Solo codice kernel", "Codice architettura"],
+            correct: 0,
             explanation: "Gli header uapi (userspace API) contengono le definizioni delle interfacce tra kernel e programmi userspace."
         },
         {
             question: "Perché sono importanti i prototipi negli header?",
-            options: ["Per eseguire codice", "Per type checking a compile-time", "Per salvare memoria", "Per velocizzare l'esecuzione"],
+            options: ["Per salvare memoria", "Per type checking a compile-time", "Per velocizzare l'esecuzione", "Per eseguire codice"],
             correct: 1,
             explanation: "I prototipi permettono al compilatore di verificare che le funzioni siano chiamate con i tipi di parametro corretti."
         },
         {
             question: "Cosa sono gli asm-generic header?",
-            options: ["Header specifici x86", "Implementazioni generiche", "Header solo ARM", "Codice assembly"],
-            correct: 1,
+            options: ["Header solo ARM", "Header specifici x86", "Codice assembly", "Implementazioni generiche"],
+            correct: 3,
             explanation: "asm-generic/ contiene implementazioni generiche che possono essere usate da più architetture quando non sono necessarie ottimizzazioni specifiche."
         },
         {
-            question: "Quale header include le funzioni base del kernel?",
-            options: ["linux/module.h", "linux/kernel.h", "linux/sched.h", "linux/fs.h"],
-            correct: 1,
-            explanation: "linux/kernel.h contiene funzioni fondamentali come printk, kmalloc, kfree usate in tutto il kernel."
+            question: "Quale header dichiara kmalloc() e kfree()?",
+            options: ["linux/slab.h", "linux/fs.h", "linux/sched.h", "linux/module.h"],
+            correct: 0,
+            explanation: "kmalloc() e kfree() sono dichiarate in linux/slab.h (l'interfaccia dello slab allocator); linux/kernel.h contiene invece funzioni e macro generali come printk e container_of."
         }
     ];
 
@@ -533,7 +533,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -541,7 +541,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -594,7 +594,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -609,9 +609,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -620,7 +620,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -637,7 +637,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -655,7 +655,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

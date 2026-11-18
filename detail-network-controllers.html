@@ -123,7 +123,7 @@
 <li><strong>Wire-speed processing</strong> - Elaborazione pacchetti alla velocità massima del collegamento</li>
 <li><strong>Low latency</strong> - Minimizzazione latenza attraverso ottimizzazioni hardware</li>
 <li><strong>High throughput</strong> - Supporto multi-gigabit con CPU utilization minima</li>
-<li><strong>Advanced offloads</strong> - Scarico completo TCP/UDP/IP stack in hardware</li>
+<li><strong>Advanced offloads</strong> - Scarico in hardware di operazioni come checksum e segmentazione (un TCP Offload Engine completo non è supportato dal kernel Linux mainline)</li>
 </ul>
 
 <h2>🔗 Interazioni Sistemiche</h2>
@@ -290,7 +290,7 @@
                 • L'evoluzione mostra passaggio da NIC semplici a piattaforme computazionali complete<br>
                 • Ogni generazione aggiunge funzionalità e aumenta prestazioni<br>
                 • I controller moderni sono sistemi embedded completi<br>
-                • Il futuro prevede intelligenza artificiale integrata nei controller
+                • Tra le direzioni di ricerca ci sono analisi del traffico con machine learning e crittografia post-quantistica (ancora in evoluzione)
             </div>
         </div>
 
@@ -335,7 +335,7 @@ Mellanox CX-5<br>
 </div>
 
 <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-<strong>🎯 Risultato:</strong> Trasferimento 10GB in ~80ms con <1% CPU utilization. I network controller moderni rendono possibile il cloud computing ad alta performance!
+<strong>🎯 Risultato:</strong> Trasferimento di 10GB in circa 0,8 secondi (a 100Gbps) con <1% CPU utilization. I network controller moderni rendono possibile il cloud computing ad alta performance!
 </div>
 </div>
 
@@ -453,63 +453,63 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
     const quizQuestions = [
         {
             question: "Cosa sono i Network Controllers?",
-            options: ["Software per gestire reti", "Hardware specializzato per elaborazione pacchetti", "Protocolli di comunicazione", "Driver di dispositivo"],
-            correct: 1,
+            options: ["Hardware specializzato per elaborazione pacchetti", "Driver di dispositivo", "Protocolli di comunicazione", "Software per gestire reti"],
+            correct: 0,
             explanation: "I Network Controllers sono dispositivi hardware specializzati che gestiscono l'elaborazione e l'inoltro dei pacchetti di rete."
         },
         {
-            question: "Quale tecnologia permette velocità 100Gbps+?",
-            options: ["Traditional NIC", "Multi-Queue Controller", "SmartNIC/DPU", "ASIC-based"],
-            correct: 2,
-            explanation: "Gli SmartNIC e DPU (Data Processing Units) supportano velocità 100Gbps+ grazie a CPU integrate e accelerazione hardware."
+            question: "Quale tipo di scheda di rete integra CPU o acceleratori programmabili per elaborazione avanzata del traffico?",
+            options: ["SmartNIC/DPU", "Adattatore USB Ethernet", "Scheda Wi-Fi legacy", "NIC tradizionale a coda singola"],
+            correct: 0,
+            explanation: "Le SmartNIC/DPU integrano core CPU e acceleratori programmabili, così possono eseguire sicurezza, storage e networking direttamente sulla scheda."
         },
         {
             question: "Cosa significa TSO nel contesto network?",
-            options: ["TCP Socket Option", "TCP Segmentation Offload", "Time Stamp Option", "Transmission Speed Optimization"],
-            correct: 1,
+            options: ["TCP Socket Option", "Transmission Speed Optimization", "Time Stamp Option", "TCP Segmentation Offload"],
+            correct: 3,
             explanation: "TSO (TCP Segmentation Offload) permette all'hardware di dividere pacchetti TCP grandi, scaricando lavoro dalla CPU."
         },
         {
-            question: "Quale comando mostra informazioni sul controller?",
-            options: ["lspci", "ethtool -i", "lsmod", "dmesg"],
-            correct: 1,
-            explanation: "ethtool -i interfaccia mostra informazioni dettagliate sul driver e firmware del controller hardware."
+            question: "Quale comando mostra il driver e il firmware del controller di rete?",
+            options: ["lsusb", "df -h", "ethtool -i", "free -h"],
+            correct: 2,
+            explanation: "ethtool -i interfaccia mostra nome e versione del driver, versione del firmware e bus-info del controller."
         },
         {
             question: "Cosa fa RSS nei network controller?",
-            options: ["Riduce spazio storage", "Distribuisce RX su CPU multiple", "Aumenta velocità rete", "Comprime pacchetti"],
-            correct: 1,
+            options: ["Aumenta velocità rete", "Riduce spazio storage", "Comprime pacchetti", "Distribuisce RX su CPU multiple"],
+            correct: 3,
             explanation: "RSS (Receive Side Scaling) distribuisce pacchetti ricevuti su più CPU per migliorare performance in sistemi multiprocessore."
         },
         {
-            question: "Quale architettura permette wire-speed processing?",
-            options: ["ASIC-based controllers", "FPGA-programmable", "SmartNICs", "Tutte le precedenti"],
-            correct: 3,
-            explanation: "ASIC, FPGA, e SmartNIC permettono tutti elaborazione pacchetti alla velocità massima del collegamento (wire-speed)."
+            question: "Quale caratteristica permette a un controller di elaborare i pacchetti alla velocità massima del collegamento?",
+            options: ["Wire-speed processing", "Polling lento via software", "Uso esclusivo della CPU", "Interrupt per ogni pacchetto"],
+            correct: 0,
+            explanation: "Il wire-speed processing è l'elaborazione dei pacchetti alla velocità massima del collegamento, resa possibile da hardware dedicato e offload."
         },
         {
             question: "Cosa significa offloading hardware?",
-            options: ["Spegne dispositivo", "Scarica CPU su hardware", "Aumenta consumo energetico", "Rallenta trasmissione"],
+            options: ["Rallenta trasmissione", "Scarica CPU su hardware", "Aumenta consumo energetico", "Spegne dispositivo"],
             correct: 1,
             explanation: "Hardware offloading permette al controller di eseguire operazioni come checksum e segmentation, riducendo carico CPU."
         },
         {
             question: "Quale comando configura code multiple?",
-            options: ["ethtool -L", "ethtool -i", "lspci", "lsusb"],
-            correct: 0,
+            options: ["lspci", "ethtool -L", "lsusb", "ethtool -i"],
+            correct: 1,
             explanation: "ethtool -L interfaccia combined N configura il numero di code combinate per distribuzione del carico."
         },
         {
             question: "Cosa sono gli SmartNIC?",
-            options: ["NIC intelligenti con CPU", "NIC solo per Wi-Fi", "NIC per dispositivi mobili", "NIC legacy"],
-            correct: 0,
+            options: ["NIC legacy", "NIC per dispositivi mobili", "NIC intelligenti con CPU", "NIC solo per Wi-Fi"],
+            correct: 2,
             explanation: "Gli SmartNIC sono Network Interface Card con CPU integrate per processamento avanzato oltre le funzioni base di rete."
         },
         {
-            question: "Quale tecnologia permette zero-copy networking?",
-            options: ["DMA", "RDMA", "Entrambi", "Nessuno"],
-            correct: 2,
-            explanation: "Sia DMA che RDMA permettono trasferimenti zero-copy, evitando copie intermedie dei dati."
+            question: "Quale tecnologia permette a un controller di scrivere dati direttamente nella memoria di un altro host senza coinvolgere la CPU?",
+            options: ["Promiscuous mode", "RDMA", "Interrupt coalescing", "VLAN tagging"],
+            correct: 1,
+            explanation: "RDMA (es. RoCE, iWARP) consente al controller di trasferire dati direttamente tra le memorie dei due host, senza copie intermedie né intervento della CPU."
         }
     ];
 
@@ -534,7 +534,7 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -542,7 +542,7 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -595,7 +595,7 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -610,9 +610,9 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -621,7 +621,7 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -638,7 +638,7 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -656,7 +656,7 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

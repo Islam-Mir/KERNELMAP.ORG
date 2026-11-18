@@ -41,10 +41,10 @@
         <p><strong>Le User Space Interfaces rappresentano il confine controllato tra mondo utente e mondo kernel.</strong> Immagina una banca con gli sportelli: i clienti possono depositare, prelevare, o chiedere informazioni, ma non possono accedere direttamente alla camera blindata (kernel space).</p>
 
         <p>• <strong>System Call Interface</strong> - Il meccanismo principale per richiedere servizi dal kernel</p>
-        <p>• <strong>Virtual Filesystems</strong> - procfs, sysfs, devfs per accedere a informazioni kernel</p>
+        <p>• <strong>Virtual Filesystems</strong> - procfs, sysfs, devtmpfs (con udev per i nodi in /dev) per accedere a informazioni kernel</p>
         <p>• <strong>Shared Memory</strong> - Meccanismi per comunicazione efficiente tra processi</p>
         <p>• <strong>Signals</strong> - Sistema di comunicazione asincrona tra kernel e processi</p>
-        <p>• <strong>Context Switching</strong> - Transizione controllata tra user mode e kernel mode</p>
+        <p>• <strong>Mode Switching</strong> - Transizione controllata tra user mode e kernel mode (mode switch, diverso dal context switch tra processi)</p>
         <p>• <strong>Parameter Validation</strong> - Controllo rigoroso di tutti i dati passati dal user space</p>
         <p><em>• Interazione: Ogni richiesta dal user space viene validata e instradata al sottosistema appropriato</em></p>
 
@@ -54,13 +54,13 @@
         <h3>🔧 System Call Interface</h3>
         <p>• <strong>Software Interrupt</strong> - int 0x80 o syscall instruction per entrare in kernel mode</p>
         <p>• <strong>Fast System Calls</strong> - sysenter/sysexit per performance ottimali</p>
-        <p>• <strong>Virtual Dynamic Shared Object (vDSO)</strong> - System calls in user space per velocità</p>
+        <p>• <strong>Virtual Dynamic Shared Object (vDSO)</strong> - Alcune funzioni (es. clock_gettime) eseguite in user space, senza entrare nel kernel</p>
         <p>• <strong>Parameter Passing</strong> - Registri CPU e stack per passare argomenti</p>
 
         <h3>📁 Virtual Filesystems</h3>
         <p>• <strong>procfs (/proc)</strong> - Informazioni sui processi e configurazione kernel</p>
         <p>• <strong>sysfs (/sys)</strong> - Gerarchia dispositivi e driver del kernel</p>
-        <p>• <strong>devfs (/dev)</strong> - Nodi dispositivo per hardware e dispositivi virtuali</p>
+        <p>• <strong>devtmpfs (con udev per i nodi in /dev)</strong> - Nodi dispositivo per hardware e dispositivi virtuali</p>
         <p>• <strong>tmpfs</strong> - Filesystem in memoria per file temporanei</p>
 
         <h3>📡 Segnali e IPC</h3>
@@ -116,7 +116,7 @@
             <li><code>ls /proc/</code> - Esplora il virtual filesystem dei processi</li>
             <li><code>find /sys/ -name "*cpu*"</code> - Naviga la gerarchia sysfs</li>
             <li><code>lsof</code> - Lista file aperti (usa system calls)</li>
-            <li><code>time command</code> - Misura tempo di esecuzione (context switches)</li>
+            <li><code>time command</code> - Misura il tempo di esecuzione del comando</li>
         </ul>
 
         <h3>🎯 Caso Reale: Web Server</h3>
@@ -134,13 +134,13 @@
             <li><strong>x86 System Calls</strong> - int 0x80, sysenter, syscall</li>
             <li><strong>ARM System Calls</strong> - svc instruction</li>
             <li><strong>RISC-V System Calls</strong> - ecall instruction</li>
-            <li><strong>Virtual Filesystems</strong> - procfs, sysfs, devfs</li>
+            <li><strong>Virtual Filesystems</strong> - procfs, sysfs, devtmpfs (con udev per i nodi in /dev)</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
             <li><strong>Sicurezza</strong> - Validazione rigorosa di tutti i parametri</li>
-            <li><strong>Performance</strong> - Ottimizzazioni per ridurre context switches</li>
+            <li><strong>Performance</strong> - Ottimizzazioni per ridurre i passaggi user/kernel (mode switch)</li>
             <li><strong>Compatibilità</strong> - API stabili attraverso versioni kernel</li>
             <li><strong>Estensibilità</strong> - Nuove system calls aggiunte quando necessario</li>
             <li><strong>Debugging</strong> - Strumenti come strace per tracciare chiamate</li>
@@ -155,7 +155,7 @@
         <p>• <strong>Directory Navigation</strong> - chdir, getcwd lavorano con VFS</p>
 
         <h3>⚙️ Process Scheduler</h3>
-        <p>• <strong>Process Creation</strong> - fork, exec, wait sono gestiti dallo scheduler</p>
+        <p>• <strong>Process Creation</strong> - fork, exec e wait sono gestiti dal sottosistema dei processi (che usa lo scheduler)</p>
         <p>• <strong>Signal Delivery</strong> - kill, sigaction coordinano con scheduler</p>
         <p>• <strong>Resource Limits</strong> - setrlimit, getrlimit controllano risorse</p>
 
@@ -302,7 +302,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Context switching<br>
+                    • Mode switch user/kernel<br>
                     • Parameter validation<br>
                     • Service routing
                 </div>
@@ -359,20 +359,20 @@
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
                     <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📊 System Calls</div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        write(1, "ciao mondo\n", 12)<br>
+                        write(1, "ciao mondo\n", 11)<br>
                         <span style="color: #666;">(kernel scrive su stdout)</span>
                     </div>
                 </div>
             </div>
 
             <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando per vedere le system calls:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">strace -c echo "ciao mondo"</code>
+                <strong>Comando per vedere le system calls:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">strace echo "ciao mondo"</code>
             </div>
 
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Context Switch</strong> - La CPU passa da user mode a kernel mode</li>
+                    <li><strong>1. Mode Switch</strong> - La CPU passa da user mode a kernel mode</li>
                     <li><strong>2. Parameter Validation</strong> - Il kernel controlla fd=1, buffer, e count</li>
                     <li><strong>3. Service Execution</strong> - Il kernel scrive i dati nel file descriptor stdout</li>
                     <li><strong>4. Return to User</strong> - La CPU torna in user mode con il risultato</li>
@@ -438,7 +438,7 @@
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ kill -l<br>
                         $ ps aux | head -5<br>
-                        $ kill -SIGTERM <pid><br>
+                        $ kill -SIGTERM &lt;PID&gt;<br>
                         $ ipcs -m  # memoria condivisa
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Sperimenta con segnali e meccanismi IPC</em></p>
@@ -452,7 +452,7 @@
                         $ cat /sys/block/sda/size<br>
                         $ udevadm info -a -n /dev/sda
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esplora dispositivi e usa ioctl attraverso sysfs</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Esplora dispositivi attraverso /dev e sysfs</em></p>
                 </div>
             </div>
         </div>
@@ -463,7 +463,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
                 <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Confine Sicuro</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Le user space interfaces sono il checkpoint di sicurezza: ogni richiesta viene validata prima di raggiungere il kernel. È il primo livello di difesa contro malware e errori.
+                    Le user space interfaces sono il checkpoint di sicurezza: ogni richiesta viene validata prima di raggiungere il kernel. È il primo livello di difesa contro errori e comportamenti non sicuri dei programmi.
                 </p>
             </div>
 
@@ -471,7 +471,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Overhead Controllato</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Ogni system call richiede un context switch costoso, quindi il kernel ottimizza con vDSO e altre tecniche per ridurre l'overhead quando possibile.
+                Ogni system call richiede un passaggio da user mode a kernel mode (mode switch), che ha un costo; il vDSO permette di evitare la system call per alcune funzioni (es. clock_gettime).  
                 </p>
             </div>
 
@@ -514,87 +514,63 @@
     const quizQuestions = [
         {
             question: "Cosa sono le User Space Interfaces nel kernel Linux?",
-            options: ["Driver per dispositivi hardware", "Meccanismi per la comunicazione tra programmi e kernel", "Parte del sistema di avvio", "Gestori di memoria"],
-            correct: 1,
+            options: ["Driver per dispositivi hardware", "Parte del sistema di avvio", "Meccanismi per la comunicazione tra programmi e kernel", "Gestori di memoria"],
+            correct: 2,
             explanation: "Le User Space Interfaces sono i meccanismi che permettono ai programmi applicativi di richiedere servizi dal kernel in modo sicuro e controllato."
         },
         {
             question: "Quale comando permette di tracciare le system calls eseguite da un programma?",
-            options: ["ps", "top", "strace", "lsof"],
-            correct: 2,
+            options: ["top", "ps", "lsof", "strace"],
+            correct: 3,
             explanation: "strace traccia e mostra tutte le system calls eseguite da un programma, utile per debugging e comprensione del comportamento del sistema."
         },
         {
             question: "Cosa rappresenta /proc nel filesystem Linux?",
-            options: ["Directory fisica", "Virtual filesystem per informazioni kernel", "Backup del sistema", "File di configurazione"],
-            correct: 1,
+            options: ["Backup del sistema", "Directory fisica", "File di configurazione", "Virtual filesystem per informazioni kernel"],
+            correct: 3,
             explanation: "/proc è un virtual filesystem (procfs) che permette l'accesso alle informazioni sui processi e alla configurazione del kernel."
         },
         {
-            question: "Quale system call viene usata per aprire un file?",
-            options: ["read", "write", "open", "close"],
+            question: "Cosa succede quando un programma esegue una system call?",
+            options: ["Il disco viene formattato", "La memoria viene cancellata", "La CPU passa da user mode a kernel mode (mode switch)", "Il programma termina"],
             correct: 2,
-            explanation: "La system call open() apre un file e restituisce un file descriptor che può essere usato per successive operazioni di lettura/scrittura."
-        },
-        {
-            question: "Cosa succede durante un context switch?",
-            options: ["Il programma termina", "La CPU passa da user mode a kernel mode", "La memoria viene cancellata", "Il disco viene formattato"],
-            correct: 1,
-            explanation: "Un context switch avviene quando la CPU cambia dal modo utente (user mode) al modo kernel (kernel mode) per eseguire una system call."
+            explanation: "La CPU entra in kernel mode (mode switch) per eseguire il servizio richiesto e poi torna in user mode. Non va confusa con il context switch, che cambia il processo in esecuzione."
         },
         {
             question: "Quale filesystem virtuale contiene informazioni sui dispositivi hardware?",
-            options: ["/proc", "/sys", "/dev", "/tmp"],
-            correct: 1,
+            options: ["/sys", "/dev", "/proc", "/tmp"],
+            correct: 0,
             explanation: "/sys (sysfs) è il virtual filesystem che espone la gerarchia dei dispositivi hardware e dei loro driver nel kernel."
         },
         {
-            question: "Cosa permette di fare la system call fork()?",
-            options: ["Creare un nuovo file", "Creare un nuovo processo", "Leggere da un file", "Scrivere su un file"],
+            question: "Quale meccanismo permette ad alcune funzioni (es. clock_gettime) di evitare la system call vera e propria?",
+            options: ["procfs", "vDSO", "strace", "sysfs"],
             correct: 1,
-            explanation: "fork() crea un nuovo processo duplicando quello corrente, permettendo la creazione di processi figli."
+            explanation: "Il vDSO è una piccola libreria che il kernel mappa nello spazio utente: alcune funzioni vengono eseguite in user space, evitando il passaggio user→kernel (mode switch)."
         },
         {
-            question: "Quale meccanismo permette system calls più veloci evitando alcuni context switch?",
-            options: ["strace", "vDSO", "procfs", "sysfs"],
+            question: "Quale valore restituisce open() in caso di successo?",
+            options: ["Il contenuto del file", "Un file descriptor (intero non negativo)", "Sempre il valore 0", "Un puntatore alla struct file"],
             correct: 1,
-            explanation: "vDSO (Virtual Dynamic Shared Object) permette di eseguire alcune system calls direttamente in user space senza context switch completi."
+            explanation: "In caso di successo open() restituisce un file descriptor: un intero non negativo che il processo usa nelle chiamate successive (read, write, close...); in caso di errore restituisce -1."
         },
         {
-            question: "Cosa rappresenta un file descriptor?",
-            options: ["Un file sul disco", "Un numero intero che identifica un file aperto", "Un tipo di permesso", "Un indirizzo di memoria"],
-            correct: 1,
-            explanation: "Un file descriptor è un numero intero restituito da open() che identifica univocamente un file o socket aperto nel processo."
-        },
-        {
-            question: "Quale comando mostra i file aperti da un processo?",
-            options: ["ps", "top", "lsof", "free"],
+            question: "Quale comando mostra le aree di memoria condivisa System V presenti nel sistema?",
+            options: ["ps aux", "df -h", "ipcs -m", "free -h"],
             correct: 2,
-            explanation: "lsof (list open files) mostra tutti i file e socket aperti da processi, utilizzando le informazioni delle user space interfaces."
+            explanation: "ipcs -m elenca i segmenti di memoria condivisa System V (chiave, proprietario, dimensione, numero di processi collegati)."
         },
         {
             question: "Cosa permette di fare la system call ioctl()?",
-            options: ["Aprire file", "Controllare dispositivi specifici", "Creare processi", "Inviare segnali"],
-            correct: 1,
+            options: ["Controllare dispositivi specifici", "Creare processi", "Aprire file", "Inviare segnali"],
+            correct: 0,
             explanation: "ioctl() permette di inviare comandi specifici ai driver dei dispositivi, permettendo controllo granulare dell'hardware."
         },
         {
             question: "Quale meccanismo permette comunicazione veloce tra processi?",
-            options: ["Signals", "Shared Memory", "Pipes", "Message Queues"],
+            options: ["Message Queues", "Shared Memory", "Pipes", "Signals"],
             correct: 1,
             explanation: "La Shared Memory permette ai processi di condividere direttamente aree di memoria, offrendo comunicazione molto veloce senza copie."
-        },
-        {
-            question: "Cosa rappresenta SIGKILL?",
-            options: ["Un segnale ignorabile", "Un segnale che termina forzatamente un processo", "Un segnale per pausa", "Un segnale personalizzato"],
-            correct: 1,
-            explanation: "SIGKILL (segnale 9) termina forzatamente un processo senza possibilità di intercettazione o pulizia."
-        },
-        {
-            question: "Quale filesystem espone la gerarchia dei dispositivi?",
-            options: ["/proc", "/dev", "/sys", "/tmp"],
-            correct: 2,
-            explanation: "/sys (sysfs) espone informazioni sui dispositivi hardware e sui loro driver in una struttura gerarchica navigabile."
         }
     ];
 
@@ -619,7 +595,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show all questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Show all questions
             showResults();
             return;
         }
@@ -627,7 +603,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -680,7 +656,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -695,9 +671,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -706,7 +682,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -723,7 +699,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -741,7 +717,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

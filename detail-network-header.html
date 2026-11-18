@@ -100,7 +100,7 @@
         <ul>
             <li><code>tcpdump -i eth0 -vv</code> - Cattura pacchetti con header completi</li>
             <li><code>ip route show</code> - Visualizza tabella routing</li>
-            <li><code>netstat -tuln</code> - Stato connessioni e porte</li>
+            <li><code>netstat -tuln</code> - Mostra le porte TCP/UDP in ascolto (con -a anche le connessioni stabilite)</li>
             <li><code>ss -tuln</code> - Socket statistics avanzate</li>
             <li><code>wireshark</code> - Analizzatore pacchetti grafico</li>
         </ul>
@@ -434,7 +434,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
                 <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Checksum e Integrità</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Ogni header contiene checksum per verificare l'integrità dei dati. Errori di trasmissione vengono rilevati e corretti automaticamente.
+                    Ogni header contiene checksum per verificare l'integrità dei dati. Errori di trasmissione vengono rilevati dal checksum; in TCP i segmenti persi o corrotti sono ritrasmessi.
                 </p>
             </div>
 
@@ -470,51 +470,63 @@
     const quizQuestions = [
         {
             question: "Cosa contiene un header IP?",
-            options: ["Indirizzi MAC", "Indirizzi IP sorgente e destinazione", "Dati applicativi", "Solo checksum"],
-            correct: 1,
+            options: ["Solo checksum", "Dati applicativi", "Indirizzi MAC", "Indirizzi IP sorgente e destinazione"],
+            correct: 3,
             explanation: "L'header IP contiene gli indirizzi IP sorgente e destinazione, TTL, protocollo, e altre informazioni di routing."
         },
         {
             question: "Quale protocollo garantisce consegna affidabile?",
-            options: ["UDP", "TCP", "IP", "Ethernet"],
-            correct: 1,
+            options: ["Ethernet", "UDP", "TCP", "IP"],
+            correct: 2,
             explanation: "TCP garantisce consegna affidabile con ritrasmissione, controllo flusso e ordinamento pacchetti."
         },
         {
             question: "Cosa fa il checksum negli header?",
-            options: ["Comprime i dati", "Verifica integrità pacchetto", "Crittografa i dati", "Instrada il pacchetto"],
-            correct: 1,
+            options: ["Verifica integrità pacchetto", "Instrada il pacchetto", "Crittografa i dati", "Comprime i dati"],
+            correct: 0,
             explanation: "Il checksum permette di verificare se il pacchetto è stato corrotto durante la trasmissione."
         },
         {
-            question: "Quale comando mostra le connessioni di rete?",
-            options: ["ps aux", "df -h", "netstat -tuln", "ls -la"],
-            correct: 2,
-            explanation: "netstat -tuln mostra tutte le connessioni TCP/UDP in ascolto e stabilite."
+            question: "Quale comando mostra le porte TCP/UDP in ascolto?",
+            options: ["ls -la", "df -h", "ps aux", "ss -tuln"],
+            correct: 3,
+            explanation: "ss -tuln elenca i socket TCP e UDP in stato LISTEN con i numeri di porta (-l = solo in ascolto, -n = valori numerici)."
         },
         {
             question: "Cosa significa TTL nell'header IP?",
-            options: ["Time To Live", "Total Transmission Length", "Transport Type Label", "Traffic Transfer Limit"],
-            correct: 0,
+            options: ["Transport Type Label", "Time To Live", "Traffic Transfer Limit", "Total Transmission Length"],
+            correct: 1,
             explanation: "TTL (Time To Live) limita la vita del pacchetto prevenendo loop infiniti nel routing."
         },
         {
             question: "Quale strato aggiunge gli indirizzi MAC?",
-            options: ["Applicativo", "Trasporto", "Rete", "Collegamento"],
-            correct: 3,
+            options: ["Collegamento", "Rete", "Applicativo", "Trasporto"],
+            correct: 0,
             explanation: "Il livello di collegamento (Ethernet) aggiunge gli indirizzi MAC hardware per la trasmissione locale."
         },
         {
             question: "Cosa permette il port multiplexing?",
-            options: ["Connessioni multiple su stessa interfaccia", "Compressione dati", "Crittografia automatica", "Load balancing"],
-            correct: 0,
+            options: ["Load balancing", "Connessioni multiple su stessa interfaccia", "Compressione dati", "Crittografia automatica"],
+            correct: 1,
             explanation: "Il port multiplexing permette multiple connessioni simultanee usando diverse porte TCP/UDP."
         },
         {
             question: "Quale comando cattura pacchetti di rete?",
-            options: ["ping", "traceroute", "tcpdump", "nslookup"],
+            options: ["traceroute", "nslookup", "tcpdump", "ping"],
             correct: 2,
             explanation: "tcpdump cattura e analizza pacchetti di rete mostrando tutti gli header."
+        },
+        {
+            question: "Cosa descrive la struttura sk_buff nel kernel?",
+            options: ["Una connessione TCP", "Un pacchetto di rete, con i dati e i puntatori ai vari header", "Una regola di firewall", "Un'interfaccia di rete"],
+            correct: 1,
+            explanation: "sk_buff (socket buffer) contiene i dati di un pacchetto e i puntatori ai suoi header (MAC, IP, TCP): attraversa tutto lo stack di rete."
+        },
+        {
+            question: "Quale tecnica delega alla scheda di rete la segmentazione dei pacchetti TCP?",
+            options: ["TSO (TCP Segmentation Offload)", "NAT", "VLAN tagging", "RSS"],
+            correct: 0,
+            explanation: "Con TSO/GSO il kernel passa segmenti grandi e la scheda (o il livello GSO) li divide in pacchetti della dimensione giusta, riducendo il carico sulla CPU."
         }
     ];
 
@@ -539,7 +551,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -547,7 +559,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -600,7 +612,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -615,9 +627,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -626,7 +638,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -643,7 +655,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -661,7 +673,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

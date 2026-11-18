@@ -56,7 +56,7 @@
         <h3>🚀 Boot Process</h3>
         <p>• <strong>BIOS/UEFI</strong> - Inizializzazione hardware e caricamento bootloader</p>
         <p>• <strong>GRUB/LILO</strong> - Bootloader che carica il kernel in memoria</p>
-        <p>• <strong>kernel_init()</strong> - Inizializzazione del kernel e setup memoria</p>
+        <p>• <strong>start_kernel()</strong> - Inizializzazione del kernel e setup memoria</p>
         <p>• <strong>initrd</strong> - Ramdisk iniziale per moduli essenziali</p>
         <p>• <strong>rootfs mount</strong> - Montaggio del filesystem root</p>
 
@@ -220,7 +220,7 @@
         <p><em>systemd gestisce tutto il ciclo di vita dei servizi, dalla dipendenza alla supervisione!</em></p>
 
 
-        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <h2>🗺️ Mappa Concettuale del System Run</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
             <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del System Run</h3>
 
@@ -239,7 +239,7 @@
 
             <!-- System Call Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
+                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 INIT SYSTEM (USER SPACE)</div>
                 <div style="font-size: 0.9em; color: #666;">
                     • systemd • SysV init<br>
                     • Service units • Targets<br>
@@ -461,67 +461,67 @@
 <script>
     // Quiz functionality
                 const quizQuestions = [
-                    {
-                        question: "Cosa gestisce il System Run nel kernel Linux?",
-                        options: ["Solo la memoria", "Avvio, inizializzazione e esecuzione del sistema", "Solo i dispositivi", "Solo la rete"],
-                        correct: 1,
-                        explanation: "Il System Run coordina l'avvio completo del sistema dall'accensione fino all'esecuzione dei servizi."
-                    },
-                    {
-                        question: "Quale componente avvia i servizi di sistema in ordine?",
-                        options: ["BIOS", "Kernel", "Init system (systemd)", "Bootloader"],
-                        correct: 2,
-                        explanation: "L'init system (come systemd) gestisce l'avvio ordinato dei servizi risolvendo le dipendenze."
-                    },
-                    {
-                        question: "Cosa fa GRUB durante il boot?",
-                        options: ["Inizializza la RAM", "Carica il kernel in memoria", "Avvia i servizi", "Configura la rete"],
-                        correct: 1,
-                        explanation: "GRUB è il bootloader che carica il kernel Linux e l'initrd nella memoria."
-                    },
-                    {
-                        question: "Quale comando mostra i log del boot corrente?",
-                        options: ["dmesg", "journalctl -b", "systemctl status", "uptime"],
-                        correct: 1,
-                        explanation: "journalctl -b mostra i log del boot corrente registrati da systemd."
-                    },
-                    {
-                        question: "Cosa rappresenta un 'target' in systemd?",
-                        options: ["Un file di configurazione", "Uno stato del sistema (es. multi-user.target)", "Un processo", "Un dispositivo"],
-                        correct: 1,
-                        explanation: "I target sono stati del sistema che definiscono quali servizi devono essere attivi."
-                    },
-                    {
-                        question: "Quale fase del boot avviene prima del caricamento del kernel?",
-                        options: ["Init system", "BIOS/UEFI POST", "Filesystem mount", "Service start"],
-                        correct: 1,
-                        explanation: "BIOS/UEFI esegue il POST e inizializza l'hardware prima di passare al bootloader."
-                    },
-                    {
-                        question: "Cosa fa systemd-analyze?",
-                        options: ["Avvia servizi", "Analizza i tempi di boot", "Mostra log", "Cambia target"],
-                        correct: 1,
-                        explanation: "systemd-analyze misura e mostra i tempi impiegati da ciascun servizio durante l'avvio."
-                    },
-                    {
-                        question: "Quale comando abilita un servizio per l'avvio automatico?",
-                        options: ["systemctl start", "systemctl enable", "systemctl status", "systemctl list-units"],
-                        correct: 1,
-                        explanation: "systemctl enable crea i link simbolici necessari per avviare il servizio automaticamente."
-                    },
-                    {
-                        question: "Cosa succede durante uno shutdown ordinato?",
-                        options: ["Il sistema si spegne immediatamente", "I servizi vengono arrestati in ordine inverso", "Il kernel viene ricaricato", "La RAM viene cancellata"],
-                        correct: 1,
-                        explanation: "Durante lo shutdown, systemd arresta i servizi nell'ordine inverso rispetto all'avvio."
-                    },
-                    {
-                        question: "Quale componente gestisce le dipendenze tra servizi?",
-                        options: ["Kernel", "BIOS", "Init system", "Bootloader"],
-                        correct: 2,
-                        explanation: "L'init system risolve le dipendenze e avvia i servizi nell'ordine corretto."
-                    }
-                ];
+        {
+            question: "Cosa gestisce il System Run nel kernel Linux?",
+            options: ["Solo la memoria", "Avvio, inizializzazione e esecuzione del sistema", "Solo la rete", "Solo i dispositivi"],
+            correct: 1,
+            explanation: "Il System Run coordina l'avvio completo del sistema dall'accensione fino all'esecuzione dei servizi."
+        },
+        {
+            question: "Quale componente avvia i servizi di sistema in ordine?",
+            options: ["Bootloader", "Init system (systemd)", "BIOS", "Kernel"],
+            correct: 1,
+            explanation: "L'init system (come systemd) gestisce l'avvio ordinato dei servizi risolvendo le dipendenze."
+        },
+        {
+            question: "Cosa fa GRUB durante il boot?",
+            options: ["Configura la rete", "Inizializza la RAM", "Avvia i servizi", "Carica il kernel in memoria"],
+            correct: 3,
+            explanation: "GRUB è il bootloader che carica il kernel Linux e l'initrd nella memoria."
+        },
+        {
+            question: "Quale comando mostra i log di systemd-journald relativi al boot corrente (kernel e servizi)?",
+            options: ["dmesg", "uptime", "systemctl status", "journalctl -b"],
+            correct: 3,
+            explanation: "journalctl -b mostra i messaggi raccolti da journald dal boot corrente, sia del kernel sia dei servizi; dmesg mostra invece solo il kernel ring buffer."
+        },
+        {
+            question: "Cosa rappresenta un 'target' in systemd?",
+            options: ["Un dispositivo", "Un file di configurazione", "Uno stato del sistema (es. multi-user.target)", "Un processo"],
+            correct: 2,
+            explanation: "I target sono stati del sistema che definiscono quali servizi devono essere attivi."
+        },
+        {
+            question: "Quale fase del boot avviene prima del caricamento del kernel?",
+            options: ["BIOS/UEFI POST", "Service start", "Filesystem mount", "Init system"],
+            correct: 0,
+            explanation: "BIOS/UEFI esegue il POST e inizializza l'hardware prima di passare al bootloader."
+        },
+        {
+            question: "Cosa fa systemd-analyze?",
+            options: ["Analizza i tempi di boot", "Avvia servizi", "Cambia target", "Mostra log"],
+            correct: 0,
+            explanation: "systemd-analyze misura e mostra i tempi impiegati da ciascun servizio durante l'avvio."
+        },
+        {
+            question: "Quale comando abilita un servizio per l'avvio automatico?",
+            options: ["systemctl start", "systemctl status", "systemctl enable", "systemctl list-units"],
+            correct: 2,
+            explanation: "systemctl enable crea i link simbolici necessari per avviare il servizio automaticamente."
+        },
+        {
+            question: "Cosa fa lo shutdown ordinato prima di spegnere la macchina?",
+            options: ["Arresta i servizi, sincronizza i dati su disco e smonta i filesystem", "Ricarica il kernel dal bootloader", "Toglie subito l'alimentazione senza salvare nulla", "Cancella RAM e disco"],
+            correct: 0,
+            explanation: "Lo shutdown ordinato ferma i servizi, sincronizza i dati su disco e smonta i filesystem prima di richiedere lo spegnimento (poweroff/halt) o il riavvio."
+        },
+        {
+            question: "Quali file definiscono le unità di systemd (servizi, target, mount)?",
+            options: [".ko e .so", ".conf e .ini", ".log e .txt", ".service, .target e .mount"],
+            correct: 3,
+            explanation: "systemd descrive servizi, target, mount e socket con file di unità: .service, .target, .mount, .socket e così via."
+        }
+    ];
 
     let currentQuestionIndex = 0;
     let score = 0;
@@ -544,7 +544,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -552,7 +552,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -605,7 +605,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -620,9 +620,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -631,7 +631,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -648,7 +648,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -666,7 +666,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

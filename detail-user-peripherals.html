@@ -65,9 +65,9 @@
 <p>• <strong>ioctl(VIDIOC_S_FMT)</strong> - Imposta formato video (risoluzione, pixel format)</p>
 
 <h3>⚙️ Graphics Operations</h3>
-<p>• <strong>drmModeSetCrtc()</strong> - Configura controller RAMDAC per display</p>
-<p>• <strong>drm_gem_create()</strong> - Crea oggetto memoria grafica</p>
-<p>• <strong>drm_fb_create()</strong> - Crea framebuffer per display</p>
+<p>• <strong>drmModeSetCrtc()</strong> - Configura il CRTC (controller di scansione) del display</p>
+<p>• <strong>drm_gem_handle_create()</strong> - Crea oggetto memoria grafica</p>
+<p>• <strong>drm_framebuffer_init()</strong> - Crea framebuffer per display</p>
 
 <h2>📋 Esempi Pratici dei User Peripherals</h2>
 <p><strong>I User Peripherals rendono possibile l'interazione umana completa con il sistema Linux:</strong></p>
@@ -434,61 +434,61 @@
     const quizQuestions = [
         {
             question: "Cosa gestisce il sottosistema Input?",
-            options: ["Solo tastiere", "Tastiere, mouse, touchscreen", "Solo dispositivi USB", "Solo dispositivi wireless"],
-            correct: 1,
+            options: ["Solo dispositivi wireless", "Solo tastiere", "Solo dispositivi USB", "Tastiere, mouse, touchscreen"],
+            correct: 3,
             explanation: "L'Input Subsystem gestisce tutti i dispositivi di input: tastiere, mouse, touchscreen, gamepad attraverso API uniformi."
         },
         {
-            question: "Quale API gestisce l'audio in Linux?",
-            options: ["PulseAudio", "ALSA", "JACK", "OSS"],
+            question: "Quale framework del kernel Linux gestisce l'audio (driver delle schede audio, interfacce PCM e mixer)?",
+            options: ["JACK", "ALSA", "PulseAudio", "Xorg"],
             correct: 1,
-            explanation: "ALSA (Advanced Linux Sound Architecture) è il framework kernel per gestione audio professionale."
+            explanation: "ALSA (Advanced Linux Sound Architecture) è il framework audio del kernel; PulseAudio e JACK sono server audio in user space che si appoggiano ad ALSA."
         },
         {
             question: "Cosa significa V4L2?",
-            options: ["Video for Linux 2", "Virtual Video Layer", "Video4Linux API", "Visual Linux 2"],
+            options: ["Video for Linux 2", "Virtual Video Layer 2", "Video Library Interface", "Visual Layer for Linux"],
             correct: 0,
-            explanation: "V4L2 è l'API Video for Linux 2 per gestire webcam e dispositivi di cattura video."
+            explanation: "V4L2 è Video for Linux 2, l'API del kernel per webcam, TV tuner e dispositivi di cattura video."
         },
         {
             question: "Quale comando lista dispositivi input?",
-            options: ["lsusb", "cat /proc/bus/input/devices", "lspci", "lsblk"],
+            options: ["lsusb", "cat /proc/bus/input/devices", "lsblk", "lspci"],
             correct: 1,
             explanation: "cat /proc/bus/input/devices mostra tutti i dispositivi input registrati nel sistema."
         },
         {
             question: "Cosa permette l'hotplug?",
-            options: ["Solo dispositivi USB", "Connessione/disconnessione dinamica", "Solo dispositivi Bluetooth", "Solo dispositivi wired"],
-            correct: 1,
+            options: ["Solo dispositivi Bluetooth", "Solo dispositivi USB", "Connessione/disconnessione dinamica", "Solo dispositivi wired"],
+            correct: 2,
             explanation: "L'hotplug permette di collegare e scollegare dispositivi senza riavviare il sistema."
         },
         {
             question: "Quale struttura rappresenta eventi input?",
-            options: ["input_dev", "input_event", "input_handle", "input_handler"],
-            correct: 1,
+            options: ["input_event", "input_handle", "input_dev", "input_handler"],
+            correct: 0,
             explanation: "input_event è la struttura che rappresenta eventi input standardizzati (tasti, movimento, etc.)."
         },
         {
             question: "Cosa gestisce DRM?",
-            options: ["Solo audio", "Solo rete", "Grafica e display", "Solo dispositivi input"],
-            correct: 2,
+            options: ["Solo dispositivi input", "Solo audio", "Solo rete", "Grafica e display"],
+            correct: 3,
             explanation: "DRM (Direct Rendering Manager) gestisce accelerazione grafica e configurazione display."
         },
         {
             question: "Quale comando testa l'audio?",
-            options: ["audio-test", "speaker-test", "sound-check", "alsa-verify"],
-            correct: 1,
+            options: ["alsa-verify", "sound-check", "speaker-test", "audio-test"],
+            correct: 2,
             explanation: "speaker-test è uno strumento per testare l'output audio attraverso ALSA."
         },
         {
             question: "Cosa significa HID in USB?",
-            options: ["High-speed Interface Device", "Human Interface Device", "Hardware Input Driver", "Host Interface Device"],
-            correct: 1,
+            options: ["Hardware Input Driver", "High-speed Interface Device", "Host Interface Device", "Human Interface Device"],
+            correct: 3,
             explanation: "HID significa Human Interface Device, classe USB per dispositivi come tastiere e mouse."
         },
         {
             question: "Quale API usa per dispositivi video?",
-            options: ["ioctl(VIDIOC_*)", "read/write", "mmap", "poll"],
+            options: ["ioctl(VIDIOC_*)", "poll", "mmap", "read/write"],
             correct: 0,
             explanation: "I dispositivi V4L2 usano ioctl con comandi VIDIOC_* per controllo e configurazione."
         }
@@ -515,7 +515,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -523,7 +523,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -576,7 +576,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -591,9 +591,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -602,7 +602,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -619,7 +619,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -637,7 +637,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

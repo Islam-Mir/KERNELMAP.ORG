@@ -778,3 +778,187 @@ body {
                 min-height: 35px;
             }
         }
+
+        /* ============= CONFIGURAZIONE PULSANTE QUIZ (ISOLATO) ============= */
+
+.kernel-quiz-btn {
+  /* Posizionamento assoluto in alto a destra nell'header senza toccare il flusso esistente */
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  background-color: #1a1a24; 
+  color: #61dafb; 
+  font-family: 'Courier New', Courier, monospace, sans-serif; 
+  font-size: 23px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 1px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+/* Icona SVG */
+.kernel-quiz-btn .btn-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  stroke: #61dafb;
+  transition: transform 0.3s ease;
+}
+
+/* Effetto sfumatura nascosto */
+.kernel-quiz-btn .btn-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #ff79c6, #8be9fd, #50fa7b);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.kernel-quiz-btn .btn-text {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+/* Stati Hover e Active */
+.kernel-quiz-btn:hover {
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 0 12px rgba(139, 233, 253, 0.5);
+  transform: translateY(-1px);
+}
+
+.kernel-quiz-btn:hover .btn-glow {
+  opacity: 0.15; 
+}
+
+.kernel-quiz-btn:hover .btn-icon {
+  transform: scale(1.1);
+  stroke: #ffffff;
+}
+
+.kernel-quiz-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Adattamento per schermi piccoli per evitare sovrapposizioni sul testo */
+@media (max-width: 768px) {
+  .kernel-quiz-btn {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 8px auto 0 auto;
+    display: flex;
+    width: max-content;
+  }
+}
+
+
+/* ============= PULSANTE INTRODUZIONE KERNEL ============= */
+
+.kernel-intro-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  background-color: #1a1a24;
+  color: #61dafb;
+  font-family: 'Courier New', Courier, monospace, sans-serif;
+  font-size: 23px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 1px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+.kernel-intro-btn .btn-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  stroke: #61dafb;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.kernel-intro-btn .btn-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #ff79c6, #8be9fd, #50fa7b);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.kernel-intro-btn .btn-text {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.kernel-intro-btn:hover {
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 0 12px rgba(139, 233, 253, 0.5);
+  transform: translateY(-1px);
+}
+
+.kernel-intro-btn:hover .btn-glow {
+  opacity: 0.15;
+}
+
+.kernel-intro-btn:hover .btn-icon {
+  transform: scale(1.1);
+  stroke: #ffffff;
+}
+
+.kernel-intro-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .kernel-intro-btn {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin: 8px auto 0 auto;
+    display: flex;
+    width: max-content;
+    max-width: 95%;
+    font-size: 15px;
+    text-align: center;
+  }
+}

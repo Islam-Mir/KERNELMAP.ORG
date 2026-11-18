@@ -74,7 +74,7 @@
 
         <h3>🔍 Allocazione Pagina Singola</h3>
         <p>1. Processo chiama malloc() per 4KB</p>
-        <p>2. Kernel richiede pagina fisica: alloc_pages(GFP_KERNEL, 0)</p>
+        <p>2. Al primo accesso il page fault fa richiedere al kernel una pagina fisica: alloc_pages(GFP_HIGHUSER_MOVABLE, 0)</p>
         <p>3. Page allocator controlla ZONE_NORMAL</p>
         <p>4. Verifica watermarks min/free</p>
         <p>5. Chiama buddy system per ordine 0</p>
@@ -306,7 +306,7 @@
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede nell'allocazione pagine:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Determinazione zona:</strong> GFP_KERNEL specifica ZONE_NORMAL come zona preferita</li>
+                    <li><strong>1. Determinazione zona:</strong> GFP_KERNEL (allocazione che può dormire) permette di usare le zone fino a ZONE_NORMAL, con ZONE_NORMAL come scelta preferita</li>
                     <li><strong>2. Controllo watermarks:</strong> Verifica che free > min per permettere allocazione</li>
                     <li><strong>3. Per-CPU cache:</strong> Controlla cache locale CPU per pagine "hot"</li>
                     <li><strong>4. Buddy allocation:</strong> Richiede blocco da 4 pagine (2^2) dal buddy system</li>
@@ -384,7 +384,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🗂️</div>
                 <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Zone-Based Allocation</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    La memoria è divisa in zone (DMA, NORMAL, HIGHMEM) che riflettono limitazioni hardware. Ogni zona ha il suo page allocator con watermarks e politiche specifiche per garantire compatibilità con dispositivi legacy e ottimizzazioni moderne.
+                    La memoria è divisa in zone (DMA, NORMAL, HIGHMEM) che riflettono limitazioni hardware. Ogni zona ha le proprie free list, i propri watermark e politiche specifiche per garantire compatibilità con dispositivi legacy e ottimizzazioni moderne.
                 </p>
             </div>
 
@@ -435,15 +435,15 @@
     const quizQuestions = [
         {
             question: "Cosa gestisce ZONE_DMA?",
-            options: ["Memoria kernel", "Primi 16MB per dispositivi legacy", "Memoria alta", "Pagine swappabili"],
-            correct: 1,
+            options: ["Memoria kernel", "Pagine swappabili", "Memoria alta", "Primi 16MB per dispositivi legacy"],
+            correct: 3,
             explanation: "ZONE_DMA contiene i primi 16MB di RAM, utilizzati per dispositivi che possono indirizzare solo questa regione."
         },
         {
-            question: "Quale funzione alloca pagine contigue?",
-            options: ["malloc()", "alloc_page()", "alloc_pages()", "kmalloc()"],
-            correct: 2,
-            explanation: "alloc_pages() alloca 2^order pagine contigue dalla zona appropriata."
+            question: "Quale funzione permette di richiedere 2^order pagine fisiche contigue?",
+            options: ["alloc_pages()", "malloc()", "alloc_page()", "free_pages()"],
+            correct: 0,
+            explanation: "alloc_pages(gfp_mask, order) alloca 2^order pagine fisicamente contigue; alloc_page() ne alloca una sola (order 0) e free_pages() le libera."
         },
         {
             question: "Cosa significa order in alloc_pages?",
@@ -453,43 +453,43 @@
         },
         {
             question: "Quale watermark attiva kswapd?",
-            options: ["min", "low", "high", "free"],
-            correct: 1,
+            options: ["min", "free", "high", "low"],
+            correct: 3,
             explanation: "Quando le pagine libere scendono sotto low watermark, si attiva kswapd per reclaim."
         },
         {
             question: "Cosa mostra /proc/buddyinfo?",
-            options: ["Uso CPU", "Blocchi liberi per ordine", "Connessioni rete", "Processi attivi"],
-            correct: 1,
+            options: ["Connessioni rete", "Processi attivi", "Blocchi liberi per ordine", "Uso CPU"],
+            correct: 2,
             explanation: "/proc/buddyinfo mostra il numero di blocchi liberi per ogni ordine del buddy allocator."
         },
         {
-            question: "Quale zona è per kernel 32-bit?",
-            options: ["ZONE_DMA", "ZONE_NORMAL", "ZONE_HIGHMEM", "ZONE_MOVABLE"],
-            correct: 2,
-            explanation: "ZONE_HIGHMEM contiene memoria oltre 896MB, accessibile solo dinamicamente su sistemi 32-bit."
+            question: "Quale zona esiste solo sui sistemi a 32 bit, per la memoria non mappata in modo permanente dal kernel?",
+            options: ["ZONE_NORMAL", "ZONE_HIGHMEM", "ZONE_MOVABLE", "ZONE_DMA"],
+            correct: 1,
+            explanation: "ZONE_HIGHMEM contiene la memoria oltre ~896MB che su sistemi a 32 bit il kernel non riesce a mappare in modo permanente; su 64 bit non esiste."
         },
         {
             question: "Cosa fa __free_pages()?",
-            options: ["Alloca pagine", "Libera pagine fisiche", "Mappa pagine", "Blocca pagine"],
-            correct: 1,
+            options: ["Libera pagine fisiche", "Blocca pagine", "Mappa pagine", "Alloca pagine"],
+            correct: 0,
             explanation: "__free_pages() libera 2^order pagine fisiche, restituendole al buddy system."
         },
         {
-            question: "Quale GFP flag permette sleep?",
-            options: ["GFP_ATOMIC", "GFP_KERNEL", "GFP_NOFS", "GFP_USER"],
-            correct: 1,
-            explanation: "GFP_KERNEL permette all'allocazione di dormire se necessario, adatto per context non-atomic."
+            question: "Cosa permette il flag GFP_KERNEL?",
+            options: ["Che l'allocazione possa dormire in attesa di memoria (process context)", "Che l'allocazione non possa mai dormire", "Di allocare solo in ZONE_DMA", "Di allocare solo memoria per lo spazio utente"],
+            correct: 0,
+            explanation: "GFP_KERNEL è il flag standard per allocazioni in process context: può bloccarsi per far recuperare memoria. Nei contesti atomici (interrupt) si usa GFP_ATOMIC, che non dorme."
         },
         {
             question: "Cosa controlla per_cpu_pages?",
-            options: ["Zone memoria", "Cache pagine per CPU", "Buddy allocator", "Virtual memory"],
+            options: ["Virtual memory", "Cache pagine per CPU", "Buddy allocator", "Zone memoria"],
             correct: 1,
             explanation: "per_cpu_pages mantiene cache locali per CPU di pagine recentemente liberate, per allocazioni veloci."
         },
         {
             question: "Quando avviene fallback allocation?",
-            options: ["Sempre", "Mai", "Quando zona piena", "Solo per DMA"],
+            options: ["Solo per DMA", "Sempre", "Quando zona piena", "Mai"],
             correct: 2,
             explanation: "Fallback allocation avviene quando la zona preferita non ha pagine disponibili, provando zone alternative."
         }
@@ -516,7 +516,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -524,7 +524,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -577,7 +577,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -592,9 +592,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -603,7 +603,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -620,7 +620,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -638,7 +638,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

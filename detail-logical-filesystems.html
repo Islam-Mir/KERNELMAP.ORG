@@ -61,14 +61,14 @@
 <p>• <strong>rename()</strong> - Sposta/rinomina file o directory mantenendo integrità</p>
 
 <h3>💾 Space Management</h3>
-<p>• <strong>alloc_blocks()</strong> - Alloca blocchi liberi per nuovi dati o metadati</p>
-<p>• <strong>free_blocks()</strong> - Rilascia blocchi non più utilizzati</p>
-<p>• <strong>resize_fs()</strong> - Ridimensiona il filesystem (online resize)</p>
+<p>• <strong>ext4_mb_new_blocks()</strong> - Alloca blocchi liberi per nuovi dati o metadati</p>
+<p>• <strong>ext4_free_blocks()</strong> - Rilascia blocchi non più utilizzati</p>
+<p>• <strong>ext4_resize_fs()</strong> - Ridimensiona il filesystem (online resize)</p>
 
 <h3>🔄 Journaling & Recovery</h3>
-<p>• <strong>journal_start()</strong> - Inizia transazione journaled per atomicità</p>
-<p>• <strong>journal_commit()</strong> - Conferma transazione e aggiorna strutture permanenti</p>
-<p>• <strong>fsck()</strong> - Verifica e ripara inconsistenze del filesystem</p>
+<p>• <strong>jbd2_journal_start()</strong> - Inizia transazione journaled per atomicità</p>
+<p>• <strong>jbd2_journal_commit_transaction()</strong> - Conferma transazione e aggiorna strutture permanenti</p>
+<p>• <strong>fsck</strong> - Verifica e ripara inconsistenze del filesystem</p>
 
 <h2>📋 Esempi Pratici</h2>
 <p><strong>Quando crei un file con 'touch nuovo.txt', ecco cosa succede nei Logical Filesystems:</strong></p>
@@ -109,7 +109,7 @@
             <li><strong>EXT4</strong> - Filesystem nativo Linux con extents, journaling e prestazioni elevate</li>
             <li><strong>BTRFS</strong> - Moderno filesystem con snapshot, checksum e compressione integrata</li>
             <li><strong>XFS</strong> - High-performance journaling filesystem ottimizzato per grandi storage</li>
-            <li><strong>ZFS</strong> - Advanced filesystem con storage pooling e deduplicazione</li>
+            <li><strong>ZFS</strong> - Filesystem avanzato con storage pooling e deduplicazione (OpenZFS, non incluso nel kernel mainline per motivi di licenza)</li>
             <li><strong>F2FS</strong> - Ottimizzato per dispositivi flash (SSD, eMMC)</li>
         </ul>
 
@@ -151,7 +151,7 @@
             <code style="color: #2e7d32; font-weight: bold;">int ext4_create(struct inode *dir, struct dentry *dentry, umode_t mode, bool excl);</code><br>
             <span style="color: #666; font-size: 0.9em;">Crea un nuovo file regolare nella directory specificata.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">ssize_t ext4_readpage(struct file *file, struct page *page);</code><br>
+            <code style="color: #f57c00; font-weight: bold;">int ext4_read_folio(struct file *file, struct folio *folio);</code><br>
             <span style="color: #666; font-size: 0.9em;">Legge una pagina di dati dal disco nel page cache.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">int ext4_writepage(struct page *page, struct writeback_control *wbc);</code><br>
@@ -347,7 +347,7 @@
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ tune2fs -l /dev/sda1 | head -10<br>
                         tune2fs 1.46.5 (30-Dec-2021)<br>
-                        Filesystem volume name:   <none><br>
+                        Filesystem volume name:   &lt;none&gt;<br>
                         Last mounted on:          /<br>
                         Filesystem UUID:          xxx<br>
                         Filesystem magic number:  0xEF53
@@ -447,62 +447,62 @@
     const quizQuestions = [
         {
             question: "Cosa rappresentano i Logical Filesystems?",
-            options: ["Interfacce hardware", "Implementazioni concrete dei filesystem", "Driver di dispositivo", "Protocolli di rete"],
+            options: ["Driver di dispositivo", "Implementazioni concrete dei filesystem", "Protocolli di rete", "Interfacce hardware"],
             correct: 1,
             explanation: "I Logical Filesystems sono le implementazioni concrete che trasformano le operazioni astratte del VFS in azioni specifiche sui dispositivi fisici."
         },
         {
-            question: "Quale filesystem usa extents per allocazione contigua?",
-            options: ["FAT32", "EXT4", "NTFS", "BTRFS"],
-            correct: 1,
-            explanation: "EXT4 usa extents per allocare blocchi contigui, migliorando prestazioni e riducendo frammentazione rispetto all'allocazione a blocchi singoli."
+            question: "Quale struttura ext4 contiene i metadati globali del filesystem (dimensione, blocchi liberi, parametri)?",
+            options: ["ext4_extent", "ext4_inode", "ext4_super_block", "journal_t"],
+            correct: 2,
+            explanation: "ext4_super_block è il superblock su disco: raccoglie dimensione, blocchi liberi e parametri globali; ext4_inode descrive un file, journal_t il journal ed ext4_extent un'area di blocchi contigui."
         },
         {
             question: "Cosa garantisce il journaling nei filesystem?",
-            options: ["Compressione automatica", "Atomicità delle operazioni", "Crittografia trasparente", "Snapshot automatici"],
-            correct: 1,
+            options: ["Atomicità delle operazioni", "Snapshot automatici", "Crittografia trasparente", "Compressione automatica"],
+            correct: 0,
             explanation: "Il journaling garantisce che le operazioni del filesystem siano atomiche: o tutto riesce o tutto viene annullato, proteggendo da crash."
         },
         {
             question: "Quale comando esamina il superblock EXT4?",
-            options: ["ls -l", "tune2fs -l", "df -h", "du -sh"],
-            correct: 1,
+            options: ["tune2fs -l", "df -h", "du -sh", "ls -l"],
+            correct: 0,
             explanation: "tune2fs -l mostra tutti i parametri del superblock EXT4, inclusi UUID, dimensioni, e caratteristiche del filesystem."
         },
         {
             question: "Cosa fa ext4_lookup()?",
-            options: ["Crea un nuovo file", "Cerca un file in una directory", "Scrive dati su disco", "Elimina un file"],
+            options: ["Crea un nuovo file", "Cerca un file in una directory", "Elimina un file", "Scrive dati su disco"],
             correct: 1,
             explanation: "ext4_lookup() cerca un file in una directory EXT4 e restituisce il dentry corrispondente con tutte le informazioni necessarie."
         },
         {
             question: "Quale filesystem è ottimizzato per dispositivi flash?",
-            options: ["EXT4", "XFS", "F2FS", "BTRFS"],
-            correct: 2,
+            options: ["F2FS", "EXT4", "XFS", "BTRFS"],
+            correct: 0,
             explanation: "F2FS (Flash-Friendly File System) è ottimizzato per dispositivi flash come SSD eMMC, gestendo wear leveling e garbage collection."
         },
         {
             question: "Cosa rappresenta un extent in EXT4?",
-            options: ["Un singolo blocco", "Una sequenza contigua di blocchi", "Un inode", "Una directory"],
-            correct: 1,
+            options: ["Una directory", "Un inode", "Una sequenza contigua di blocchi", "Un singolo blocco"],
+            correct: 2,
             explanation: "Un extent rappresenta una sequenza contigua di blocchi allocati per un file, migliorando prestazioni rispetto ai blocchi singoli."
         },
         {
-            question: "Quale comando verifica l'integrità del filesystem?",
-            options: ["mkfs", "mount", "fsck", "umount"],
-            correct: 2,
-            explanation: "fsck (file system check) verifica e ripara inconsistenze nel filesystem, utilizzando il journal per recovery rapido."
+            question: "Quale comando verifica e ripara le inconsistenze di un filesystem?",
+            options: ["mkfs", "mount", "umount", "fsck"],
+            correct: 3,
+            explanation: "fsck controlla e ripara le inconsistenze del filesystem. Su ext4 il journal viene riprodotto (replay) al mount, quindi un controllo completo è raramente necessario dopo un crash."
         },
         {
             question: "Cosa fa il copy-on-write in BTRFS?",
-            options: ["Elimina file automaticamente", "Copia dati solo quando modificati", "Comprimi tutti i file", "Crittografa i dati"],
+            options: ["Comprimi tutti i file", "Copia dati solo quando modificati", "Crittografa i dati", "Elimina file automaticamente"],
             correct: 1,
             explanation: "Il copy-on-write copia i dati solo quando vengono modificati, preservando versioni precedenti e abilitando snapshot efficienti."
         },
         {
             question: "Quale struttura contiene i metadati globali del filesystem?",
-            options: ["inode", "dentry", "superblock", "extent"],
-            correct: 2,
+            options: ["dentry", "extent", "inode", "superblock"],
+            correct: 3,
             explanation: "Il superblock contiene metadati globali del filesystem: dimensione totale, blocchi liberi, parametri di mount, e informazioni di recovery."
         }
     ];
@@ -528,7 +528,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -536,7 +536,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -589,7 +589,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -604,9 +604,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -615,7 +615,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -632,7 +632,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -650,7 +650,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

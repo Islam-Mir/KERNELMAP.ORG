@@ -28,255 +28,201 @@
     
     <div class="header">
         <h1>PROCESSING HEADER</h1>
-        <p class="subtitle">Intestazioni di Elaborazione</p>
+        <p class="subtitle">Intestazioni e Strutture Dati dei Processi</p>
     </div>
 
     <div class="content">
         <span class="badge">📋 INTESTAZIONI ELABORAZIONE</span>
         <h2>DESCRIZIONE:</h2>
-        <p><strong>Le Processing Header gestiscono le strutture dati e i metadati che descrivono l'organizzazione e lo stato dei processi e thread nel sistema operativo Linux.</strong></p>
+        <p><strong>Le Processing Header gestiscono i file di intestazione del kernel (<code style="color: #d32f2f;">&lt;linux/sched.h&gt;</code>, <code style="color: #d32f2f;">&lt;linux/sched/task_stack.h&gt;</code>) e le relative strutture dati che definiscono formalmente l'organizzazione, i campi e i metadati dei processi e dei thread in Linux.</strong></p>
 
         <h2>CONFRONTO:</h2>
-        <p>Come il registro di classe di una scuola: ogni alunno (processo) ha la sua scheda con nome, voti, presenze, ma il registro generale permette di organizzare tutto e trovare rapidamente le informazioni.</p>
+        <p>Come il registro anagrafico e i moduli ufficiali di un'organizzazione: definiscono formalmente i campi, i permessi, i tipi di dati e gli attributi di ogni entità registrata nel sistema, focalizzandosi sull'architettura statica dei descrittori anziché sul ciclo di vita dinamico.</p>
 
         <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>Le Processing Header sono le strutture dati fondamentali che descrivono l'organizzazione e le caratteristiche dei processi e thread nel kernel Linux.</strong> Immagina un grande schedario digitale dove ogni processo ha la sua cartella con tutte le informazioni necessarie: stato, risorse allocate, relazioni con altri processi, priorità, e tutto ciò che serve per gestirlo correttamente.</p>
+        <p><strong>Le Processing Header definiscono i descrittori di processo e le interfacce strutturali del sottosistema di scheduling e gestione task del kernel Linux.</strong> A differenza di <code style="color: #2e7d32;">processes</code> (incentrata sul ciclo di vita fork/exec/wait/exit e sugli stati operativi), queste intestazioni specificano l'architettura interna dei metadati tramite strutture come <code style="color: #2e7d32;">task_struct</code>, <code style="color: #2e7d32;">mm_struct</code>, <code style="color: #2e7d32;">signal_struct</code> e le macro di accesso rapido.</p>
 
-        <p>• <strong>Process descriptors</strong> - Strutture task_struct con tutte le info sui processi</p>
-        <p>• <strong>Thread info blocks</strong> - Informazioni specifiche per ogni thread</p>
-        <p>• <strong>Process hierarchy</strong> - Relazioni padre-figlio tra processi</p>
-        <p>• <strong>Resource tracking</strong> - Monitoraggio risorse allocate per processo</p>
-        <p>• <strong>Scheduling parameters</strong> - Priorità, nice values, scheduling class</p>
-        <p>• <strong>Security contexts</strong> - Contesti di sicurezza per ogni processo</p>
-        <p><em>• Interazione: Forniscono al kernel tutte le informazioni necessarie per schedulare e gestire processi</em></p>
+        <p>• <strong>Process descriptors (<code style="color: #2e7d32;">task_struct</code>)</strong> - Definizione dei campi di stato, PID, puntatori alle code e credenziali definiti nei file header del kernel</p>
+        <p>• <strong>Thread info blocks (<code style="color: #2e7d32;">&lt;linux/sched/task_stack.h&gt;</code>)</strong> - Informazioni specifiche e stack del kernel per ogni thread</p>
+        <p>• <strong>Memory mapping fields (<code style="color: #2e7d32;">mm_struct</code>)</strong> - Descrittori dello spazio di memoria virtuale e tabelle delle pagine</p>
+        <p>• <strong>Signal management (<code style="color: #2e7d32;">signal_struct</code>)</strong> - Strutture dati per la ricezione e la gestione asincrona dei segnali</p>
+        <p>• <strong>Scheduling entities (<code style="color: #2e7d32;">sched_entity</code>)</strong> - Parametri per CFS ed EEVDF (virtual runtime, pesi e priorità)</p>
+        <p>• <strong>Security contexts</strong> - Contesti di sicurezza e credenziali (UID, GID, capabilities)</p>
+        <p><em>• Nota sui kernel recenti: CFS è stato lo scheduler di default fino al kernel 6.5; dal 6.6 è affiancato/sostituito da EEVDF (Earliest Eligible Virtual Deadline First).</em></p>
+        <p><em>• Interazione: Forniscono al kernel le definizioni statiche e le macro necessarie per schedulare e gestire i task</em></p>
 
         <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>Le Processing Header gestiscono quattro aspetti fondamentali dell'organizzazione processi, ciascuno essenziale per il multitasking:</strong></p>
+        <p><strong>Le Processing Header gestiscono l'architettura dei metadati dei processi attraverso macro e funzioni inline:</strong></p>
 
-        <h3>🔄 Process Creation</h3>
-        <p>• <strong>alloc_task_struct()</strong> - Alloca struttura task_struct per nuovo processo</p>
-        <p>• <strong>copy_process()</strong> - Copia informazioni processo padre nel figlio</p>
-        <p>• <strong>wake_up_new_task()</strong> - Riattiva processo appena creato</p>
-        <p>• <strong>dup_task_struct()</strong> - Duplica struttura task per fork</p>
-        <p>• <strong>free_task_struct()</strong> - Libera struttura processo terminato</p>
+        <h3>🔄 Strutture e Campi Chiave di task_struct</h3>
+        <p>• <strong>unsigned int __state;</strong> - Stato corrente del processo (TASK_RUNNING, TASK_INTERRUPTIBLE, ecc.)</p>
+        <p>• <strong>pid_t pid, tgid;</strong> - Identificatore del processo e del gruppo di thread</p>
+        <p>• <strong>struct mm_struct *mm, *active_mm;</strong> - Descrittori dello spazio di memoria virtuale</p>
+        <p>• <strong>struct files_struct *files;</strong> - Tabella dei file descriptor aperti</p>
+        <p>• <strong>const struct cred *cred;</strong> - Credenziali di sicurezza (UID, GID, capabilities)</p>
 
-        <h3>🎯 Scheduling Management</h3>
-        <p>• <strong>task_fork_fair()</strong> - Inizializza scheduler CFS per nuovo task</p>
-        <p>• <strong>set_user_nice()</strong> - Imposta priorità nice del processo</p>
-        <p>• <strong>sched_setscheduler()</strong> - Cambia politica scheduling</p>
-        <p>• <strong>task_tick_fair()</strong> - Aggiorna contatori scheduler ad ogni tick</p>
-        <p>• <strong>pick_next_task()</strong> - Seleziona prossimo task da eseguire</p>
+        <h3>🎯 Macro di Accesso e Gestione Task</h3>
+        <p>• <strong>current</strong> - Macro fondamentale definita negli header che restituisce il puntatore al <code style="color: #d32f2f;">task_struct</code> del processo in esecuzione sulla CPU corrente</p>
+        <p>• <strong>task_pid_nr()</strong> - Estrae il PID numerico globale dal descrittore del task</p>
+        <p>• <strong>set_user_nice()</strong> - Aggiorna i parametri di priorità nice basandosi sulle strutture definite negli header</p>
+        <p>• <strong>for_each_process()</strong> - Iteratore per scorrere la lista circolare di tutti i processi del sistema</p>
+        <p>• <strong>dup_task_struct()</strong> - Alloca la struttura <code style="color: #2e7d32;">task_struct</code> per un nuovo task</p>
 
-        <h3>💾 Resource Tracking</h3>
-        <p>• <strong>get_task_mm()</strong> - Ottiene puntatore allo spazio memoria</p>
-        <p>• <strong>get_task_cred()</strong> - Ottiene credenziali sicurezza processo</p>
-        <p>• <strong>task_lock()</strong> - Blocca struttura task per modifiche</p>
-        <p>• <strong>task_unlock()</strong> - Sblocca struttura task</p>
-        <p>• <strong>find_task_by_pid()</strong> - Trova processo per PID</p>
+        <h3>💾 Resource Tracking headers</h3>
+        <p>• <strong>get_task_mm()</strong> - Ottiene il puntatore allo spazio di memoria del task</p>
+        <p>• <strong>get_task_cred()</strong> - Ottiene le credenziali di sicurezza definite nelle strutture</p>
+        <p>• <strong>task_lock() / task_unlock()</strong> - Meccanismi di blocco per la struttura task</p>
+        <p>• <strong>find_task_by_vpid()</strong> - Trova un task a partire dal PID visto dal namespace corrente</p>
 
-        <h3>🛡️ Security Context</h3>
-        <p>• <strong>prepare_creds()</strong> - Prepara nuove credenziali per processo</p>
-        <p>• <strong>commit_creds()</strong> - Applica nuove credenziali</p>
-        <p>• <strong>override_creds()</strong> - Sostituisce credenziali temporaneamente</p>
-        <p>• <strong>revert_creds()</strong> - Ripristina credenziali originali</p>
-        <p>• <strong>validate_creds()</strong> - Valida correttezza credenziali</p>
+        <h3>🛡️ Security Context Structures</h3>
+        <p>• <strong>prepare_creds()</strong> - Prepara nuove credenziali basate sulle definizioni di header</p>
+        <p>• <strong>commit_creds()</strong> - Applica le nuove credenziali al task corrente</p>
+        <p>• <strong>override_creds()</strong> - Sostituisce temporaneamente le credenziali</p>
+        <p>• <strong>revert_creds()</strong> - Ripristina le credenziali originali</p>
+        <p>• <strong>validate_creds()</strong> - Valida la coerenza delle strutture di sicurezza</p>
 
         <h2>📋 Esempi Pratici</h2>
-        <p><strong>Esempi concreti di strutture dati per processi nel kernel Linux:</strong></p>
+        <p><strong>Come il kernel utilizza le definizioni delle Processing Header nel codice sorgente:</strong></p>
 
-        <h3>🔍 Creazione di un Nuovo Processo</h3>
-        <p>Quando lanci un comando come <code>ls</code>:</p>
+        <h3>🔍 Accesso al Task Corrente nel Kernel</h3>
+        <p>Nel codice del kernel, l'identificazione del processo attivo avviene tramite la macro <code style="color: #d32f2f;">current</code> definita in <code style="color: #d32f2f;">&lt;asm/current.h&gt;</code> e inclusa tramite le processing header:</p>
+        <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 0.9em; margin: 10px 0;">
+            struct task_struct *t = current;<br>
+            printk(KERN_INFO "Processo corrente: %s [PID: %d]\n", t->comm, t->pid);
+        </div>
+
+        <h3>📄 Strutture Dati Definite nelle Header</h3>
         <ul>
-            <li><code>fork()</code> - Crea nuovo task_struct copiando quello del padre</li>
-            <li><code>execve()</code> - Sostituisce l'immagine del processo con ls</li>
-            <li>Il kernel aggiorna PID, PPID, e altre strutture del processo</li>
-            <li>Lo scheduler aggiunge il processo alla runqueue</li>
+            <li><strong>task_struct</strong> - Contiene tutti i metadati descrittivi del processo</li>
+            <li><strong>mm_struct</strong> - Gestisce la memoria virtuale e le tabelle delle pagine</li>
+            <li><strong>sched_entity</strong> - Parametri di scheduling (vruntime, load, priorità)</li>
+            <li><strong>signal_struct</strong> - Gestione dei segnali e dei relativi handler</li>
+            <li><strong>files_struct</strong> - Gestione dei file aperti dal processo</li>
         </ul>
 
-        <h3>📄 Strutture Dati Chiave</h3>
+        <h3>💻 Nel Computer: Come Esaminare i Metadati?</h3>
+        <p><strong>Comandi Linux per esplorare le informazioni basate su queste strutture:</strong></p>
         <ul>
-            <li><strong>task_struct</strong> - Struttura principale con PID, stato, priorità, credenziali</li>
-            <li><strong>thread_info</strong> - Informazioni specifiche del thread (flags, CPU, preempt)</li>
-            <li><strong>sched_entity</strong> - Parametri di scheduling (vruntime, load, priority)</li>
-            <li><strong>mm_struct</strong> - Gestione dello spazio di memoria virtuale</li>
-            <li><strong>files_struct</strong> - Tabella dei file descriptor aperti</li>
-            <li><strong>signal_struct</strong> - Gestione segnali e loro handlers</li>
+            <li><code>cat /proc/$$/status</code> - Mostra stato, UID, GID e risorse del task</li>
+            <li><code>cat /proc/$$/sched</code> - Parametri di scheduling estratti da <code style="color: #2e7d32;">sched_entity</code></li>
+            <li><code>cat /proc/$$/maps</code> - Mappatura della memoria definita in <code style="color: #2e7d32;">mm_struct</code></li>
+            <li><code>cat /proc/$$/limits</code> - Limiti di risorse associati al task</li>
         </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare le strutture processi:</strong></p>
-        <ul>
-            <li><code>ps aux</code> - Mostra PID, PPID, stato, comando di tutti i processi</li>
-            <li><code>cat /proc/$$/status</code> - Stato dettagliato del processo corrente</li>
-            <li><code>cat /proc/$$/sched</code> - Parametri di scheduling del processo</li>
-            <li><code>pstree</code> - Visualizza la gerarchia padre-figlio dei processi</li>
-            <li><code>top -p $$</code> - Monitora risorse usate dal processo</li>
-        </ul>
-
-        <h3>🎯 Caso Reale: Multitasking</h3>
-        <p>Quando il sistema esegue più programmi contemporaneamente:</p>
+        <h3>🎯 Caso Reale: Organizzazione dei Metadati</h3>
+        <p>Quando il kernel gestisce una moltitudine di task concorrenti:</p>
         <ol>
-            <li>Ogni processo ha il suo task_struct con priorità e stato</li>
-            <li>Lo scheduler CFS mantiene vruntime per fairness</li>
-            <li>Context switch salva/restaura registri e stack</li>
-            <li>Il kernel alterna esecuzione tra processi runnable</li>
-            <li>Interrupt possono preemptare processi in esecuzione</li>
+            <li>Ogni task è rigidamente tipizzato tramite le definizioni di <code style="color: #2e7d32;">task_struct</code></li>
+            <li>I puntatori incrociati collegano memoria (<code style="color: #2e7d32;">mm_struct</code>), file (<code style="color: #2e7d32;">files_struct</code>) e segnali (<code style="color: #2e7d32;">signal_struct</code>)</li>
+            <li>Le intestazioni garantiscono l'allineamento dei campi per ottimizzare la cache hardware</li>
+            <li>Il context switch sfrutta la struttura salvando e ripristinando i registri descritti</li>
         </ol>
 
-        <h2>⚙️ Modelli di Scheduling Supportati</h2>
+        <h2>⚙️ Modelli e Versioni del Kernel</h2>
         <ul>
-            <li><strong>CFS (Completely Fair Scheduler)</strong> - Scheduler predefinito basato su fairness e vruntime</li>
-            <li><strong>Real-time scheduling</strong> - SCHED_FIFO e SCHED_RR per processi real-time</li>
-            <li><strong>Deadline scheduling</strong> - SCHED_DEADLINE per vincoli temporali rigorosi</li>
-            <li><strong>Nice values</strong> - Sistema di priorità relativa da -20 a +19</li>
-            <li><strong>Control Groups (cgroups)</strong> - Limitazione risorse per gruppi di processi</li>
+            <li><strong>CFS (Completely Fair Scheduler)</strong> - Scheduler basato su fairness e vruntime (default fino al kernel 6.5)</li>
+            <li><strong>EEVDF (Earliest Eligible Virtual Deadline First)</strong> - Scheduler introdotto dal kernel 6.6 in poi</li>
+            <li><strong>Real-time scheduling</strong> - SCHED_FIFO e SCHED_RR definiti nelle intestazioni</li>
+            <li><strong>Task Grouping</strong> - Supporto per cgroups e isolamento risorse</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
-            <li><strong>Modularità</strong> - Strutture dati estensibili per nuove funzionalità</li>
-            <li><strong>Efficienza</strong> - Layout ottimizzato per cache CPU e accesso rapido</li>
-            <li><strong>Sicurezza</strong> - Separazione credenziali e controllo accessi granulare</li>
-            <li><strong>Scalabilità</strong> - Supporto per sistemi con migliaia di processi</li>
-            <li><strong>Real-time capable</strong> - Supporto per scheduling real-time deterministico</li>
+            <li><strong>Modularità</strong> - Strutture dati estensibili e organizzate in file header dedicati</li>
+            <li><strong>Efficienza</strong> - Layout ottimizzato per la cache della CPU e accesso rapido tramite <code style="color: #2e7d32;">current</code></li>
+            <li><strong>Sicurezza</strong> - Separazione rigorosa dei contesti di credenziali e permessi</li>
+            <li><strong>Scalabilità</strong> - Supporto per sistemi SMP con migliaia di task simultanei</li>
+            <li><strong>Compatibilità</strong> - Strutture pronte per architetture multiple (x86, ARM, RISC-V)</li>
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Le processing header interagiscono con tutti i principali sottosistemi del kernel:</strong></p>
+        <p><strong>Le Processing Header forniscono le fondamenta strutturali per tutti i sottosistemi:</strong></p>
 
         <h3>⚙️ Scheduler Subsystem</h3>
-        <p>• <strong>CFS scheduler</strong> - Usa vruntime e load balancing per decisioni di scheduling</p>
-        <p>• <strong>Real-time scheduler</strong> - Gestisce processi con priorità assoluta</p>
-        <p>• <strong>Load balancer</strong> - Distribuisce processi tra CPU disponibili</p>
+        <p>• <strong>CFS / EEVDF</strong> - Leggono i campi di <code style="color: #2e7d32;">sched_entity</code> per le decisioni di scheduling</p>
+        <p>• <strong>Load balancing</strong> - Utilizzano i metadati dei task per la distribuzione tra CPU</p>
 
         <h3>🧠 Memory Management</h3>
-        <p>• <strong>Virtual memory</strong> - Gestisce spazi di indirizzamento per processi</p>
-        <p>• <strong>Page tables</strong> - Traduce indirizzi virtuali in fisici</p>
-        <p>• <strong>Memory limits</strong> - Applica limiti RAM per processo</p>
+        <p>• <strong>Virtual memory</strong> - Collega <code style="color: #2e7d32;">task_struct</code> a <code style="color: #2e7d32;">mm_struct</code> e alle tabelle delle pagine</p>
 
         <h3>🔌 Interrupt System</h3>
-        <p>• <strong>Context switching</strong> - Salva/restaura stato durante switch processi</p>
-        <p>• <strong>Preemption</strong> - Permette interruzione processi per priorità più alta</p>
-        <p>• <strong>Timer interrupts</strong> - Gestisce time slice e scheduling periodico</p>
+        <p>• <strong>Context switching</strong> - Le intestazioni definiscono le routine di salvataggio dei registri nello stack</p>
 
         <h3>🔐 Security Framework</h3>
-        <p>• <strong>Credentials</strong> - Gestisce UID, GID, capabilities per processo</p>
-        <p>• <strong>Namespaces</strong> - Isola processi in ambienti separati</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari oltre il modello root/non-root</p>
+        <p>• <strong>Credentials</strong> - Gestione di UID, GID e capabilities tramite <code style="color: #2e7d32;">struct cred</code></p>
 
         <h3>📡 IPC Subsystem</h3>
-        <p>• <strong>Signals</strong> - Meccanismo di comunicazione asincrona tra processi</p>
-        <p>• <strong>Pipes/FIFOs</strong> - Comunicazione unidirezionale tra processi</p>
-        <p>• <strong>Shared memory</strong> - Memoria condivisa per comunicazione veloce</p>
+        <p>• <strong>Signals</strong> - Strutture dati per la notifica asincrona e gestione handler</p>
 
-        <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni kernel per gestire processi e scheduling:</strong></p>
+        <h2>🛠️ API e Macro Principali</h2>
+        <p><strong>Funzioni e macro chiave definite nelle Processing Header del kernel:</strong></p>
 
-        <h3>⚙️ Gestione Processi</h3>
+        <h3>⚙️ Accesso ai Task</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
             <code style="color: #d32f2f; font-weight: bold;">struct task_struct *current;</code><br>
-            <span style="color: #666; font-size: 0.9em;">Macro che restituisce il puntatore al processo attualmente in esecuzione.</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Macro per ottenere il puntatore al processo in esecuzione sulla CPU corrente.</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">pid_t task_pid_nr(struct task_struct *tsk);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Restituisce il PID di un processo dato il suo task_struct.</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Restituisce il PID globale di un task.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">struct task_struct *find_task_by_pid(pid_t pid);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Trova un processo nella hash table usando il suo PID.</span><br><br>
-
-            <code style="color: #9c27b0; font-weight: bold;">void wake_up_process(struct task_struct *tsk);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Riattiva un processo dormiente mettendolo nella runqueue.</span>
+            <code style="color: #f57c00; font-weight: bold;">struct task_struct *get_pid_task(struct pid *pid, enum pid_type type);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Risolve una struttura PID nel relativo task_struct.</span>
         </div>
 
-        <h3>🎯 Scheduling Operations</h3>
+        <h3>🔐 Gestione Credenziali e Sicurezza</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">void schedule(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Funzione principale dello scheduler che seleziona il prossimo processo da eseguire.</span><br><br>
+            <code style="color: #0288d1; font-weight: bold;">const struct cred *get_task_cred(struct task_struct *task);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Estrae le credenziali di sicurezza da un descrittore di task.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">int sched_setscheduler(pid_t pid, int policy, struct sched_param *param);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Imposta la politica di scheduling per un processo (CFS, RT, deadline).</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">int capable(int cap);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Verifica se il task corrente possiede una specifica capability.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">int set_user_nice(struct task_struct *p, long nice);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Modifica il valore nice di un processo per regolare la sua priorità.</span>
-        </div>
-
-        <h3>🔐 Security Context</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">const struct cred *get_task_cred(struct task_struct *task);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene le credenziali di sicurezza di un processo (UID, GID, capabilities).</span><br><br>
-
-            <code style="color: #9c27b0; font-weight: bold;">int capable(int cap);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Verifica se il processo corrente ha una specifica capability.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">void put_cred(const struct cred *cred);</code><br>
+            <code style="color: #2e7d32; font-weight: bold;">void put_cred(const struct cred *cred);</code><br>
             <span style="color: #666; font-size: 0.9em;">Rilascia il riferimento alle credenziali ottenuto con get_task_cred.</span>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando il kernel decide di cambiare processo:</strong></p>
-        <ol>
-            <li><code>schedule()</code> - Scheduler seleziona il prossimo processo runnable</li>
-            <li><code>context_switch()</code> - Salva stato corrente, carica nuovo processo</li>
-            <li><code>switch_mm()</code> - Cambia tabelle delle pagine per nuovo spazio memoria</li>
-            <li><code>switch_to()</code> - Salta all'entry point del nuovo processo</li>
-        </ol>
-        <p><em>Ogni context switch coinvolge le processing header per salvare e ripristinare lo stato del processo!</em></p>
-
-
-        <h2>🗺️ Mappa Concettuale del VFS</h2>
+        <h2>🗺️ Mappa Concettuale delle Processing Header</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Strutture Dati dei Processi nel Kernel</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Intestazioni di Elaborazione</h3>
 
-            <!-- User Applications Layer -->
+            <!-- Header Files Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ PROCESSI USER SPACE</div>
+                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">📋 KERNEL HEADER FILES</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • Applicazioni (bash, firefox)<br>
-                    • Daemons (sshd, apache)<br>
-                    • System tools
+                    • &lt;linux/sched.h&gt;<br>
+                    • &lt;linux/sched/task_stack.h&gt;<br>
+                    • &lt;linux/mm_types.h&gt;
                 </div>
             </div>
 
             <!-- Arrows -->
             <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
 
-            <!-- System Call Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • fork() • exec() • wait()<br>
-                    • getpid() • nice() • kill()<br>
-                    • Context switch
-                </div>
-            </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- VFS Core -->
+            <!-- Data Structures Core -->
             <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 PROCESSING HEADERS CORE</div>
+                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 STRUTTURE DATI FONDAMENTALI</div>
                 <div style="display: flex; justify-content: space-around; color: white;">
                     <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
                         <div style="font-size: 0.8em;">task_struct</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🧵</div>
-                        <div style="font-size: 0.8em;">thread_info</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
-                        <div style="font-size: 0.8em;">sched_entity</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="font-size: 1.5em; margin-bottom: 5px;">🧠</div>
                         <div style="font-size: 0.8em;">mm_struct</div>
                     </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
+                        <div style="font-size: 0.8em;">sched_entity</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5em; margin-bottom: 5px;">🛡️</div>
+                        <div style="font-size: 0.8em;">cred</div>
+                    </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Process hierarchy<br>
-                    • Resource tracking<br>
-                    • Security contexts
+                    • Definizione campi e attributi<br>
+                    • Macro di accesso rapido<br>
+                    • Gestione stack e credenziali
                 </div>
             </div>
 
@@ -287,136 +233,86 @@
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚙️ SCHEDULER</div>
-                    <div style="font-size: 0.8em; color: #666;">CFS, RT, Deadline</div>
+                    <div style="font-size: 0.8em; color: #666;">CFS, EEVDF, RT</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🧠 MEMORY</div>
-                    <div style="font-size: 0.8em; color: #666;">Virtual memory</div>
+                    <div style="font-size: 0.8em; color: #666;">mm_struct linkage</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔐 SECURITY</div>
-                    <div style="font-size: 0.8em; color: #666;">Credentials, caps</div>
+                    <div style="font-size: 0.8em; color: #666;">struct cred</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">📡 IPC</div>
-                    <div style="font-size: 0.8em; color: #666;">Signals, pipes, shm</div>
-                </div>
-            </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Hardware Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">⚡ HARDWARE LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • CPU Cores & Registers<br>
-                    • Memory Hierarchy (RAM, Cache)<br>
-                    • Interrupt Controllers
+                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">📡 SIGNALS</div>
+                    <div style="font-size: 0.8em; color: #666;">signal_struct</div>
                 </div>
             </div>
 
             <!-- Legend -->
             <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
                 <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso dalla user space al kernel<br>
-                • Ogni struttura dati contiene informazioni specifiche<br>
-                • Le processing header collegano tutti i sottosistemi del kernel<br>
-                • task_struct è il cuore della gestione processi
+                • Le processing header definiscono l'architettura dei metadati dei task<br>
+                • Forniscono le strutture usate da scheduler, memoria e sicurezza<br>
+                • task_struct è il descrittore centrale unificato
             </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Context Switching</h2>
+        <h2>🎬 Demo Interattiva: Strutture e Macro del Kernel</h2>
         <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Cambio di processo nel kernel</h3>
+            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Risoluzione del task corrente tramite macro</h3>
 
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">⚙️ Processo A (bash)</div>
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📋 Macro <code>current</code></div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        PID: 1234<br>
-                        Stato: RUNNING<br>
-                        <span style="color: #666;">(in esecuzione sulla CPU)</span>
+                        Puntatore rapido al descrittore<br>
+                        <span style="color: #666;">(Su x86-64 letto da una variabile per-CPU; su altre architetture da un registro dedicato)</span>
                     </div>
                 </div>
 
-                <div style="font-size: 2em; color: #f57c00;">🔄</div>
+                <div style="font-size: 2em; color: #f57c00;">➡️</div>
 
                 <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📊 Processo B (firefox)</div>
+                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📄 Struttura <code>task_struct</code></div>
                     <div style="font-family: monospace; font-size: 0.9em;">
-                        PID: 5678<br>
-                        Stato: READY<br>
-                        <span style="color: #666;">(pronto per esecuzione)</span>
+                        Campi accessibili:<br>
+                        <span style="color: #666;">• t->pid (ID processo)</span><br>
+                        <span style="color: #666;">• t->mm (Memoria virtuale)</span><br>
+                        <span style="color: #666;">• t->cred (Credenziali)</span>
                     </div>
                 </div>
-            </div>
-
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Evento scatenante:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">Timer interrupt ogni 4ms</code>
             </div>
 
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza del context switch:</h4>
+                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Flusso di accesso alle intestazioni:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Interrupt handler:</strong> CPU salva stato corrente in thread_info</li>
-                    <li><strong>2. Scheduler invocation:</strong> schedule() seleziona prossimo processo</li>
-                    <li><strong>3. Context save:</strong> Salva registri e stack pointer in task_struct</li>
-                    <li><strong>4. Memory switch:</strong> Cambia tabelle pagine per nuovo spazio memoria</li>
-                    <li><strong>5. Context restore:</strong> Carica registri e stack del nuovo processo</li>
-                    <li><strong>6. Resume execution:</strong> Nuovo processo continua dall'istruzione successiva</li>
+                    <li><strong>1. Inclusione header:</strong> Il modulo o sottosistema include <code style="color: #2f2f2f;">&lt;linux/sched.h&gt;</code></li>
+                    <li><strong>2. Risoluzione macro:</strong> Viene invocata la macro <code style="color: #2f2f2f;">current</code></li>
+                    <li><strong>3. Accesso ai campi:</strong> Il kernel legge direttamente i metadati strutturati</li>
                 </ol>
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> L'utente percepisce multitasking continuo, ma il kernel alterna rapidamente tra processi usando le processing header per salvare e ripristinare lo stato!
             </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora le Processing Header</h2>
+        <h2>🧪 Laboratorio Pratico: Esplora le Processing Header nel Codice Sorgente</h2>
         <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Comandi ed esperimenti per analizzare le strutture</h3>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora i processi</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📄 Trova definizione task_struct</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ps aux | head -5<br>
-                        USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND<br>
-                        root 1 0.0 0.1 225688 13944 ? Ss gen01 0:01 /sbin/init<br>
-                        $ cat /proc/$$/status | head -10
+                        $ cd /usr/src/linux<br>$ grep -n "struct task_struct {" include/linux/sched.h
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi le informazioni dettagliate sui processi attivi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Individua dove inizia la struttura principale nei sorgenti del kernel</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Analizza lo scheduling</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Esamina sched.h</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/$$/sched<br>
-                        $ chrt --pid $$<br>
-                        $ nice -n 10 sleep 1 &
+                        $ head -n 50 include/linux/sched.h
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina i parametri di scheduling dei processi</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🧠 Monitora l'uso memoria</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/$$/maps | head -5<br>
-                        $ pmap $$ | head -10<br>
-                        $ ps -o pid,ppid,pgid,sid,comm $$
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi la mappatura memoria e relazioni tra processi</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔐 Controlla le credenziali</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ id<br>
-                        $ cat /proc/$$/status | grep -E "(Uid|Gid|Cap)"<br>
-                        $ getpcaps $$
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina UID, GID e capabilities dei processi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza le intestazioni e le inclusioni principali del file header</em></p>
                 </div>
             </div>
         </div>
@@ -425,33 +321,25 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
             <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Task Struct Core</h4>
+                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Definizione Strutturale</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    task_struct è il cuore delle processing header. Contiene tutto ciò che il kernel deve sapere su un processo: stato, priorità, risorse, sicurezza.
+                    Le processing header definiscono la forma e i campi di task_struct, mm_struct e signal_struct utilizzati da tutto il kernel.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Context Switching</h4>
+                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Costo del Context Switch</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Il cambio di contesto è l'operazione più costosa del kernel. Le processing header ottimizzano il salvataggio e ripristino dello stato dei processi.
+                    Il cambio di contesto ha un costo non trascurabile (alcuni microsecondi); le processing header ne ottimizzano salvataggio e ripristino dello stato.
                 </p>
             </div>
 
             <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Scheduling Entity</h4>
+                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">La Macro current</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    sched_entity contiene i parametri di scheduling: vruntime, load, priorità. È ciò che il CFS scheduler usa per prendere decisioni.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔐</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Security Context</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Ogni processo ha credenziali (UID/GID), capabilities, e namespace. Le processing header garantiscono isolamento e controllo accessi.
+                    Permette al codice del kernel di identificare istantaneamente il task in esecuzione accedendo a una variabile per-CPU o a un registro dedicato della CPU.
                 </p>
             </div>
         </div>
@@ -472,72 +360,72 @@
 
     <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
         © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    </div>
 
 <script>
     // Quiz functionality
-                const quizQuestions = [
-                    {
-                        question: "Cosa gestiscono le Processing Header nel kernel Linux?",
-                        options: ["Strutture dati per processi e thread", "Gestione memoria fisica", "Driver dispositivi", "Protocolli di rete"],
-                        correct: 0,
-                        explanation: "Le Processing Header contengono le strutture dati fondamentali per gestire processi e thread nel kernel."
-                    },
-                    {
-                        question: "Quale è la struttura dati principale per un processo?",
-                        options: ["struct process", "struct task_struct", "struct proc", "struct thread"],
-                        correct: 1,
-                        explanation: "struct task_struct è la struttura dati che rappresenta un processo nel kernel Linux."
-                    },
-                    {
-                        question: "Cosa contiene sched_entity?",
-                        options: ["Informazioni di rete", "Parametri di scheduling (vruntime, priorità)", "Dati del filesystem", "Configurazioni hardware"],
-                        correct: 1,
-                        explanation: "sched_entity contiene i parametri usati dallo scheduler CFS: vruntime, load, priorità, etc."
-                    },
-                    {
-                        question: "Quale struttura gestisce la memoria virtuale di un processo?",
-                        options: ["struct vm_area", "struct mm_struct", "struct page", "struct inode"],
-                        correct: 1,
-                        explanation: "mm_struct contiene tutte le informazioni sulla memoria virtuale di un processo."
-                    },
-                    {
-                        question: "Cosa rappresenta thread_info?",
-                        options: ["Informazioni globali del thread", "Informazioni specifiche del thread corrente", "Tabella dei processi", "Configurazione CPU"],
-                        correct: 1,
-                        explanation: "thread_info contiene informazioni specifiche del thread in esecuzione sulla CPU corrente."
-                    },
-                    {
-                        question: "Quale macro restituisce il processo attualmente in esecuzione?",
-                        options: ["current_task()", "get_current()", "current", "this_task()"],
-                        correct: 2,
-                        explanation: "La macro 'current' restituisce un puntatore al task_struct del processo attualmente in esecuzione."
-                    },
-                    {
-                        question: "Cosa contiene la struttura signal_struct?",
-                        options: ["Configurazioni di rete", "Gestione segnali e handlers", "Informazioni sui file aperti", "Parametri di scheduling"],
-                        correct: 1,
-                        explanation: "signal_struct gestisce i segnali Unix e i loro handler per un processo."
-                    },
-                    {
-                        question: "Quale struttura traccia i file descriptor aperti?",
-                        options: ["struct files", "struct fd_table", "files_struct", "struct inode"],
-                        correct: 2,
-                        explanation: "files_struct contiene la tabella dei file descriptor aperti da un processo."
-                    },
-                    {
-                        question: "Cosa rappresentano le credenziali in task_struct?",
-                        options: ["Coordinate GPS", "UID, GID, capabilities di sicurezza", "Indirizzi di rete", "Configurazioni audio"],
-                        correct: 1,
-                        explanation: "Le credenziali contengono UID, GID, gruppi supplementari e capabilities per il controllo accessi."
-                    },
-                    {
-                        question: "Quale campo indica lo stato di un processo?",
-                        options: ["task_state", "state", "status", "condition"],
-                        correct: 1,
-                        explanation: "Il campo 'state' in task_struct indica lo stato corrente del processo (RUNNING, INTERRUPTIBLE, etc.)."
-                    }
-                ];
+    const quizQuestions = [
+        {
+            question: "Cosa definiscono principalmente le processing header nel kernel Linux?",
+            options: ["Le strutture dati come task_struct e mm_struct", "Le interfacce grafiche utente", "I protocolli di rete TCP/IP", "I driver per le schede video"],
+            correct: 0,
+            explanation: "Le processing header definiscono le strutture dati fondamentali per la rappresentazione dei processi, inclusi task_struct e mm_struct."
+        },
+        {
+            question: "Quale macro restituisce il puntatore al task_struct del processo in esecuzione sulla CPU?",
+            options: ["running_task", "current", "active_task", "this_process"],
+            correct: 1,
+            explanation: "La macro 'current' permette al codice del kernel di accedere direttamente al descrittore del task corrente."
+        },
+        {
+            question: "Quale struttura descrive lo spazio di memoria virtuale di un processo all'interno degli header?",
+            options: ["vm_area_struct", "mem_descriptor", "page_table", "mm_struct"],
+            correct: 3,
+            explanation: "mm_struct è la struttura principale che descrive lo spazio di indirizzamento virtuale del processo."
+        },
+        {
+            question: "Qual è l'ordine di grandezza del costo di un context switch?",
+            options: ["Un millisecondo fisso", "Diversi secondi", "Zero cicli", "Da frazioni di microsecondo ad alcuni microsecondi"],
+            correct: 3,
+            explanation: "Un cambio di contesto ha un costo non trascurabile, dell'ordine dei microsecondi (migliaia di cicli di CPU, più il costo indiretto di cache e TLB)."
+        },
+        {
+            question: "Quale scheduler ha iniziato ad affiancare o sostituire il CFS a partire dal kernel 6.6?",
+            options: ["First Come First Served", "EEVDF", "Round Robin", "FIFO"],
+            correct: 1,
+            explanation: "Dal kernel 6.6 (rilasciato nel 2023), l'algoritmo EEVDF è subentrato al CFS come scheduler di default."
+        },
+        {
+            question: "Quale struttura contiene le credenziali di sicurezza (UID, GID, capabilities) di un task?",
+            options: ["struct signal_struct", "struct mm_struct", "struct cred", "struct files_struct"],
+            correct: 2,
+            explanation: "struct cred raccoglie UID, GID e capabilities del task; si ottiene con get_task_cred() e si modifica con prepare_creds() e commit_creds()."
+        },
+        {
+            question: "Quale struttura tiene la tabella dei file descriptor aperti da un processo?",
+            options: ["struct files_struct", "struct signal_struct", "struct sched_entity", "struct mm_struct"],
+            correct: 0,
+            explanation: "files_struct, puntata dal campo files di task_struct, gestisce i file aperti dal processo."
+        },
+        {
+            question: "Quale funzione estrae il PID numerico globale di un task?",
+            options: ["commit_creds()", "get_task_mm()", "set_user_nice()", "task_pid_nr()"],
+            correct: 3,
+            explanation: "task_pid_nr(tsk) restituisce il PID globale del task; set_user_nice() cambia la priorità, get_task_mm() dà la memoria e commit_creds() applica nuove credenziali."
+        },
+        {
+            question: "In quale header è definita la struttura task_struct?",
+            options: ["&lt;linux/sched.h&gt;", "&lt;linux/mm_types.h&gt;", "&lt;linux/cred.h&gt;", "&lt;linux/fs.h&gt;"],
+            correct: 0,
+            explanation: "task_struct è definita in &lt;linux/sched.h&gt;; mm_struct è invece in &lt;linux/mm_types.h&gt;."
+        },
+        {
+            question: "Cosa contiene la struttura sched_entity?",
+            options: ["L'elenco dei file aperti", "La mappa di memoria virtuale", "I parametri di scheduling di un task (virtual runtime, peso e priorità)", "Le credenziali di sicurezza"],
+            correct: 2,
+            explanation: "sched_entity descrive l'entità schedulabile: virtual runtime, peso e dati usati da CFS/EEVDF per decidere quale task eseguire."
+        }
+    ];
 
     let currentQuestionIndex = 0;
     let score = 0;
@@ -560,7 +448,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show all questions
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
             return;
         }
@@ -568,13 +456,13 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
-                            ${String.fromCharCode(65 + index)}) ${option}
+                            ${String.fromCharCode(65 + index)})${option}
                         </button>
                     `).join('')}
                 </div>
@@ -585,13 +473,12 @@
     let answered = false;
 
     function answerQuestion(selectedIndex) {
-        if (answered) return; // Prevent multiple answers
+        if (answered) return;
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
         const container = document.getElementById('quizContent');
 
-        // Disable all option buttons
         for (let i = 0; i < 4; i++) {
             const button = document.getElementById(`option${i}`);
             if (button) {
@@ -618,36 +505,20 @@
             `;
         }
 
-        // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
-                answered = false; // Reset for next question
+                answered = false;
                 showQuestion();
             }
-        }, 1000); // Very fast delay to show feedback
-    }
-
-    function nextQuestion() {
-        currentQuestionIndex++;
-        answered = false; // Reset for next question
-
-        // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
-
-        if (currentQuestionIndex >= 5) {
-            showResults();
-        } else {
-            showQuestion();
-        }
+        }, 1000);
     }
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -664,7 +535,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -682,7 +553,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();
@@ -710,14 +581,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

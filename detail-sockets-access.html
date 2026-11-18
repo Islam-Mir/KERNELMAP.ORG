@@ -356,7 +356,7 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Testa multiplexing I/O</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ strace -e socket,connect,send,recv nc -l 8080<br>
+                        $ strace -e socket,bind,listen,accept nc -l 8080<br>
                         socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) = 3<br>
                         bind(3, {sa_family=AF_INET, sin_port=htons(8080), sin_addr=inet_addr("0.0.0.0")}, 16) = 0<br>
                         listen(3, 1) = 0<br>
@@ -437,62 +437,62 @@
     const quizQuestions = [
         {
             question: "Cosa crea la funzione socket()?",
-            options: ["Un file", "Un endpoint di comunicazione", "Un processo", "Un thread"],
-            correct: 1,
+            options: ["Un processo", "Un thread", "Un file", "Un endpoint di comunicazione"],
+            correct: 3,
             explanation: "socket() crea un endpoint per la comunicazione, restituendo un file descriptor che rappresenta il socket."
         },
         {
-            question: "Quale tipo di socket garantisce consegna ordinata?",
-            options: ["SOCK_DGRAM", "SOCK_STREAM", "SOCK_RAW", "SOCK_SEQPACKET"],
+            question: "Quale tipo di socket fornisce un flusso di byte affidabile e ordinato (come TCP)?",
+            options: ["SOCK_RAW", "SOCK_STREAM", "SOCK_SEQPACKET", "SOCK_DGRAM"],
             correct: 1,
-            explanation: "SOCK_STREAM (tipicamente TCP) garantisce consegna ordinata e affidabile dei dati."
+            explanation: "SOCK_STREAM fornisce una connessione bidirezionale affidabile e ordinata, senza confini tra i messaggi (flusso di byte); SOCK_DGRAM invia datagrammi indipendenti."
         },
         {
             question: "Cosa fa la funzione bind()?",
-            options: ["Connette a server", "Ascolta connessioni", "Associa indirizzo locale", "Invia dati"],
+            options: ["Invia dati", "Connette a server", "Associa indirizzo locale", "Ascolta connessioni"],
             correct: 2,
             explanation: "bind() associa un socket a un indirizzo e porta locali specifici."
         },
         {
             question: "Quale comando mostra socket TCP?",
-            options: ["ps aux", "ss -t", "df -h", "free -h"],
+            options: ["df -h", "ss -t", "free -h", "ps aux"],
             correct: 1,
             explanation: "ss -t mostra tutti i socket TCP attivi nel sistema."
         },
         {
             question: "Cosa significa AF_INET?",
-            options: ["Socket raw", "IPv4 Internet protocols", "Socket Unix", "Socket Netlink"],
-            correct: 1,
+            options: ["Socket Netlink", "Socket Unix", "Socket raw", "IPv4 Internet protocols"],
+            correct: 3,
             explanation: "AF_INET indica l'uso di protocolli Internet IPv4 per la comunicazione."
         },
         {
             question: "Quale funzione accetta connessioni in entrata?",
-            options: ["connect()", "bind()", "listen()", "accept()"],
-            correct: 3,
+            options: ["accept()", "connect()", "bind()", "listen()"],
+            correct: 0,
             explanation: "accept() accetta una connessione in entrata e crea un nuovo socket per gestirla."
         },
         {
             question: "Cosa monitora lsof -i?",
-            options: ["File aperti", "Socket di rete", "Processi", "Memoria"],
-            correct: 1,
+            options: ["Processi", "File aperti", "Socket di rete", "Memoria"],
+            correct: 2,
             explanation: "lsof -i mostra tutti i file descriptor relativi a socket di rete aperti."
         },
         {
             question: "Quale famiglia usa comunicazione locale?",
-            options: ["AF_INET", "AF_INET6", "AF_UNIX", "AF_NETLINK"],
-            correct: 2,
+            options: ["AF_NETLINK", "AF_UNIX", "AF_INET", "AF_INET6"],
+            correct: 1,
             explanation: "AF_UNIX permette comunicazione inter-processo efficiente senza passare attraverso lo stack di rete."
         },
         {
             question: "Cosa fa listen()?",
-            options: ["Chiude socket", "Mette in ascolto", "Connette", "Invia dati"],
-            correct: 1,
+            options: ["Mette in ascolto", "Chiude socket", "Connette", "Invia dati"],
+            correct: 0,
             explanation: "listen() mette un socket in modalità ascolto per accettare connessioni in entrata."
         },
         {
             question: "Quale comando traccia socket calls?",
-            options: ["top", "strace -e socket", "ps", "kill"],
-            correct: 1,
+            options: ["ps", "kill", "strace -e socket", "top"],
+            correct: 2,
             explanation: "strace -e socket traccia tutte le system call relative ai socket eseguite da un processo."
         }
     ];
@@ -518,7 +518,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -526,7 +526,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -579,7 +579,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -594,9 +594,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -605,7 +605,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -622,7 +622,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -640,7 +640,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

@@ -87,7 +87,7 @@
         <ul>
             <li><strong>Device driver</strong> - Modulo kernel che gestisce dispositivo specifico</li>
             <li><strong>Device file</strong> - File speciale in /dev che rappresenta dispositivo</li>
-            <li><strong>Major/Minor numbers</strong> - Identificatori univoci del dispositivo</li>
+            <li><strong>Major/Minor numbers</strong> - Il major identifica il driver, il minor il dispositivo gestito da quel driver</li>
             <li><strong>File operations</strong> - Tabella funzioni del driver</li>
         </ul>
 
@@ -357,11 +357,12 @@
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora /dev</h4>
                     <div style="background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-    <pre style="margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre-wrap;"><code>$ ls -la /dev | head -10
-crw------- 1 root root 5, 1 Jan 1 10:00 console
-brw-rw---- 1 root disk 8, 0 Jan 1 10:00 sda
-crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
-</div>
+                        <pre style="margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre-wrap;"><code>$ ls -la /dev | head -10
+                            crw------- 1 root root 5, 1 Jan 1 10:00 console
+                            brw-rw---- 1 root disk 8, 0 Jan 1 10:00 sda
+                            crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code>
+                        </pre>
+                    </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Vedi i device files con major/minor numbers</em></p>
                 </div>
 
@@ -409,7 +410,7 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
                 <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Astrazione Hardware</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    I dispositivi appaiono come file normali. open(), read(), write() funzionano su tutto: dischi, reti, periferiche!
+                    I dispositivi appaiono come file normali. open(), read(), write() funzionano sui dispositivi a blocchi e a carattere; le interfacce di rete si usano tramite socket.
                 </p>
             </div>
 
@@ -460,64 +461,64 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
     // Quiz functionality
     const quizQuestions = [
         {
-            question: "Cosa rappresentano i major/minor numbers?",
-            options: ["Dimensioni del dispositivo", "Identificatori univoci del dispositivo", "Velocità di trasferimento", "Tipo di connessione"],
+            question: "Cosa identificano i numeri major e minor di un device file?",
+            options: ["La dimensione e la velocità del dispositivo", "Il driver (major) e il dispositivo specifico gestito da quel driver (minor)", "Il tipo di connessione fisica", "Il proprietario del dispositivo"],
             correct: 1,
-            explanation: "Major e minor numbers identificano univocamente ogni dispositivo nel sistema, permettendo al kernel di associare il driver corretto."
+            explanation: "Il major seleziona il driver responsabile, il minor distingue i singoli dispositivi gestiti da quel driver (es. sda = 8,0; sdb = 8,16)."
         },
         {
             question: "Quale system call permette controllo specifico del dispositivo?",
-            options: ["read()", "write()", "ioctl()", "open()"],
+            options: ["open()", "read()", "ioctl()", "write()"],
             correct: 2,
             explanation: "ioctl() permette di inviare comandi specifici al dispositivo, come configurazioni particolari non coperte dalle system calls standard."
         },
         {
             question: "Cosa sono i device drivers?",
-            options: ["File di configurazione", "Moduli kernel per gestire dispositivi specifici", "Applicazioni user-space", "Protocolli di rete"],
-            correct: 1,
+            options: ["Protocolli di rete", "Applicazioni user-space", "File di configurazione", "Moduli kernel per gestire dispositivi specifici"],
+            correct: 3,
             explanation: "I device drivers sono moduli del kernel che forniscono l'interfaccia software per comunicare con dispositivi hardware specifici."
         },
         {
             question: "Quale directory contiene i device files?",
-            options: ["/etc", "/var", "/dev", "/proc"],
-            correct: 2,
+            options: ["/dev", "/proc", "/etc", "/var"],
+            correct: 0,
             explanation: "/dev contiene i device files speciali che rappresentano tutti i dispositivi del sistema come file normali."
         },
         {
             question: "Cosa permette il DMA?",
-            options: ["Accesso diretto alla memoria", "Trasferimenti diretti memoria-dispositivo senza CPU", "Configurazione dispositivi", "Gestione interrupt"],
-            correct: 1,
+            options: ["Trasferimenti diretti memoria-dispositivo senza CPU", "Gestione interrupt", "Accesso diretto alla memoria", "Configurazione dispositivi"],
+            correct: 0,
             explanation: "Il DMA (Direct Memory Access) permette ai dispositivi di trasferire dati direttamente dalla/da memoria senza coinvolgere la CPU."
         },
         {
             question: "Quale comando mostra i dispositivi PCI?",
-            options: ["lsusb", "lspci", "lsmod", "dmesg"],
-            correct: 1,
+            options: ["dmesg", "lsusb", "lspci", "lsmod"],
+            correct: 2,
             explanation: "lspci mostra tutti i dispositivi collegati al bus PCI del sistema."
         },
         {
-            question: "Cosa sono gli interrupt?",
-            options: ["Segnali di errore", "Notifiche che un dispositivo ha bisogno di attenzione", "Comandi di configurazione", "Richieste di dati"],
+            question: "Come risponde un driver a un interrupt hardware?",
+            options: ["Con un comando del terminale", "Con un interrupt handler registrato dal driver", "Con un file di configurazione", "Con un processo utente"],
             correct: 1,
-            explanation: "Gli interrupt sono segnali che i dispositivi inviano alla CPU per notificare che hanno bisogno di attenzione immediata."
+            explanation: "Il driver registra un interrupt handler (es. con request_irq()): quando il dispositivo segnala un evento, la CPU sospende il codice in corso ed esegue quell'handler."
         },
         {
             question: "Quale tipo di dispositivo è una stampante USB?",
-            options: ["Block device", "Character device", "Network device", "Virtual device"],
-            correct: 1,
+            options: ["Block device", "Virtual device", "Network device", "Character device"],
+            correct: 3,
             explanation: "Le stampanti sono character devices perché trasferiscono dati in modo sequenziale, non random come i dischi."
         },
         {
-            question: "Cosa fa udev?",
-            options: ["Gestisce la memoria", "Crea dinamicamente device files", "Configura la rete", "Ottimizza le prestazioni"],
-            correct: 1,
-            explanation: "udev è il device manager che crea e gestisce dinamicamente i device files in /dev quando dispositivi vengono collegati o rimossi."
+            question: "Quale comando mostra i dispositivi PCI presenti nel sistema?",
+            options: ["ps aux", "df -h", "lspci", "lsmod"],
+            correct: 2,
+            explanation: "lspci elenca i dispositivi collegati al bus PCI (schede di rete, controller di storage, GPU) con vendor e modello."
         },
         {
-            question: "Quale comando mostra i moduli kernel caricati?",
-            options: ["lsmod", "lspci", "dmesg", "ps aux"],
-            correct: 0,
-            explanation: "lsmod mostra tutti i moduli del kernel attualmente caricati, inclusi i device drivers."
+            question: "Quale comando elenca i dispositivi registrati nel kernel con il loro numero major?",
+            options: ["uname -a", "cat /proc/devices", "whoami", "df -h"],
+            correct: 1,
+            explanation: "/proc/devices mostra i dispositivi a caratteri e a blocchi registrati con i rispettivi numeri major."
         }
     ];
 
@@ -542,7 +543,7 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -550,7 +551,7 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -603,7 +604,7 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -618,9 +619,9 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -629,7 +630,7 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -646,7 +647,7 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -664,7 +665,7 @@ crw-rw-rw- 1 root root 1, 3 Jan 1 10:00 null</code></pre>
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

@@ -52,13 +52,13 @@
 <p><strong>Le Interfaces Core gestiscono quattro categorie fondamentali di operazioni che costituiscono il cuore del sistema operativo:</strong></p>
 
 <h3>🔄 System Call Processing</h3>
-<p>• <strong>syscall_entry()</strong> - Punto di ingresso per tutte le system call dal user space</p>
-<p>• <strong>syscall_dispatch()</strong> - Smistamento delle chiamate ai rispettivi handler</p>
-<p>• <strong>syscall_exit()</strong> - Gestione dell'uscita e ritorno dei risultati al user space</p>
+<p>• <strong>entry_SYSCALL_64</strong> - Punto di ingresso per tutte le system call dal user space</p>
+<p>• <strong>do_syscall_64()</strong> - Smistamento delle chiamate ai rispettivi handler</p>
+<p>• <strong>syscall_exit_to_user_mode()</strong> - Gestione dell'uscita e ritorno dei risultati al user space</p>
 
 <h3>⚡ Interrupt Management</h3>
-<p>• <strong>do_IRQ()</strong> - Gestione degli interrupt hardware attraverso il sistema IRQ</p>
-<p>• <strong>softirq_action()</strong> - Elaborazione dei softirq per lavoro differito</p>
+<p>• <strong>generic_handle_irq()</strong> - Gestione degli interrupt hardware attraverso il sistema IRQ</p>
+<p>• <strong>__do_softirq()</strong> - Elaborazione dei softirq per lavoro differito</p>
 <p>• <strong>tasklet_action()</strong> - Esecuzione di tasklet per operazioni lightweight</p>
 
 <h3>🎯 Process Coordination</h3>
@@ -68,7 +68,7 @@
 
 <h3>💾 Memory Operations</h3>
 <p>• <strong>__alloc_pages()</strong> - Allocazione di pagine di memoria fisica</p>
-<p>• <strong>do_page_fault()</strong> - Gestione dei page fault per memoria virtuale</p>
+<p>• <strong>handle_mm_fault()</strong> - Gestione dei page fault per memoria virtuale</p>
 <p>• <strong>shrink_slab()</strong> - Riduzione della cache per liberare memoria</p>
 
 <h2>📋 Esempi Pratici</h2>
@@ -76,7 +76,7 @@
 
 <h3>🔍 Esecuzione di un Comando</h3>
 <p>1. La shell chiama la system call execve() per eseguire il programma ls</p>
-<p>2. Le interfaces core ricevono la chiamata e la instradano al process scheduler</p>
+<p>2. Le interfaces core ricevono la chiamata e la instradano al sottosistema di gestione dei processi (exec)</p>
 <p>3. Viene creato un nuovo processo e allocata memoria attraverso l'interfaccia memory</p>
 <p>4. Il programma ls accede ai file attraverso le system call gestite dalle interfaces</p>
 
@@ -213,7 +213,7 @@
                 <div style="font-size: 0.9em; color: #666;">
                     • syscall entry/exit<br>
                     • Parameter validation<br>
-                    • Context switching
+                    • Mode switch user/kernel
                 </div>
             </div>
 
@@ -313,7 +313,7 @@
         <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
         <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🔧 Kernel Processing</div>
         <div style="font-family: monospace; font-size: 0.9em;">
-        syscall_entry → sys_open()<br>
+        entry_SYSCALL_64 → do_syscall_64() → sys_open()<br>
         <span style="color: #666;">(Validazione e dispatch)</span>
         </div>
         </div>
@@ -449,19 +449,19 @@
     const quizQuestions = [
         {
             question: "Cosa gestiscono le Interfaces Core nel kernel Linux?",
-            options: ["Solo dispositivi hardware", "Interfacce fondamentali tra user space e kernel", "Solo filesystem", "Solo memoria RAM"],
-            correct: 1,
+            options: ["Solo memoria RAM", "Solo dispositivi hardware", "Interfacce fondamentali tra user space e kernel", "Solo filesystem"],
+            correct: 2,
             explanation: "Le Interfaces Core gestiscono le interfacce fondamentali che connettono il mondo user space con il kernel Linux."
         },
         {
-            question: "Cosa fa la funzione syscall_entry()?",
-            options: ["Termina un processo", "Punto di ingresso per le system call", "Alloca memoria", "Gestisce interrupt"],
-            correct: 1,
-            explanation: "syscall_entry() è il punto di ingresso nel kernel quando viene effettuata una system call dal user space."
+            question: "Quale funzione è il punto di ingresso in assembly delle system call su x86-64?",
+            options: ["schedule()", "kmalloc()", "entry_SYSCALL_64", "do_exit()"],
+            correct: 2,
+            explanation: "entry_SYSCALL_64 è il codice assembly che riceve l'istruzione SYSCALL: salva i registri in pt_regs e passa il controllo a do_syscall_64(), che smista la chiamata."
         },
         {
             question: "Quale comando traccia le system call di un programma?",
-            options: ["ps", "top", "strace", "free"],
+            options: ["ps", "free", "strace", "top"],
             correct: 2,
             explanation: "strace traccia e mostra tutte le system call effettuate da un programma durante la sua esecuzione."
         },
@@ -473,38 +473,38 @@
         },
         {
             question: "Quale struttura contiene le informazioni su un processo?",
-            options: ["struct file", "struct inode", "struct task_struct", "struct superblock"],
-            correct: 2,
+            options: ["struct file", "struct inode", "struct superblock", "struct task_struct"],
+            correct: 3,
             explanation: "struct task_struct contiene tutte le informazioni relative a un processo: PID, stato, risorse allocate, etc."
         },
         {
             question: "Cosa fa la funzione schedule()?",
-            options: ["Alloca memoria", "Seleziona il prossimo processo da eseguire", "Gestisce file", "Configura dispositivi"],
+            options: ["Alloca memoria", "Seleziona il prossimo processo da eseguire", "Configura dispositivi", "Gestisce file"],
             correct: 1,
             explanation: "schedule() è la funzione principale dello scheduler che decide quale processo eseguire successivamente."
         },
         {
-            question: "Quale comando mostra le statistiche degli interrupt?",
-            options: ["ps aux", "free -h", "cat /proc/interrupts", "df -h"],
-            correct: 2,
-            explanation: "cat /proc/interrupts mostra le statistiche di tutti gli interrupt gestiti dal sistema."
+            question: "Quale comando mostra le system call eseguite da un programma?",
+            options: ["free -h", "strace", "dmesg", "lsmod"],
+            correct: 1,
+            explanation: "strace intercetta e mostra le system call di un processo, con argomenti e valori di ritorno: permette di osservare il confine tra user space e kernel."
         },
         {
             question: "Cosa garantisce la privilege separation?",
-            options: ["Accesso diretto all'hardware", "Separazione tra user space e kernel space", "Velocità di esecuzione", "Supporto multi-threading"],
-            correct: 1,
+            options: ["Separazione tra user space e kernel space", "Supporto multi-threading", "Velocità di esecuzione", "Accesso diretto all'hardware"],
+            correct: 0,
             explanation: "La privilege separation garantisce che il codice user space non possa danneggiare il kernel o altri processi."
         },
         {
-            question: "Quale funzione gestisce i page fault?",
-            options: ["do_IRQ()", "do_page_fault()", "schedule()", "syscall_dispatch()"],
-            correct: 1,
-            explanation: "do_page_fault() gestisce gli errori di pagina quando si accede a memoria non presente in RAM."
+            question: "Quale funzione generica del kernel risolve un page fault (chiamata dal gestore dell'eccezione dell'architettura)?",
+            options: ["schedule()", "__do_softirq()", "syscall_exit_to_user_mode()", "handle_mm_fault()"],
+            correct: 3,
+            explanation: "Il gestore dell'eccezione dell'architettura (es. exc_page_fault su x86) chiama handle_mm_fault(), che carica o alloca la pagina mancante e aggiorna le page table."
         },
         {
             question: "Cosa monitora il comando vmstat?",
-            options: ["Processi attivi", "Utilizzo memoria e sistema", "File aperti", "Dispositivi di rete"],
-            correct: 1,
+            options: ["Utilizzo memoria e sistema", "File aperti", "Dispositivi di rete", "Processi attivi"],
+            correct: 0,
             explanation: "vmstat fornisce statistiche dettagliate sull'utilizzo della memoria virtuale, processi, I/O e attività di sistema."
         }
     ];
@@ -530,7 +530,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -538,7 +538,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -591,7 +591,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -606,9 +606,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -617,7 +617,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -634,7 +634,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -652,7 +652,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

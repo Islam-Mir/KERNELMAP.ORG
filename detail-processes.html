@@ -44,7 +44,7 @@
 
         <p>• <strong>Process lifecycle management</strong> - Creazione, esecuzione, sospensione, terminazione processi</p>
         <p>• <strong>Context switching</strong> - Salvataggio e ripristino stato processi durante cambi di contesto</p>
-        <p>• <strong>Process scheduling</strong> - Algoritmi CFS, RT, deadline per assegnazione CPU time</p>
+        <p>• <strong>Process scheduling</strong> - Classi fair (CFS/EEVDF), RT e deadline per assegnazione CPU time</p>
         <p>• <strong>Inter-process communication</strong> - Pipe, segnali, shared memory, semafori</p>
         <p>• <strong>Process hierarchy</strong> - Relazioni padre-figlio e gestione processi zombie</p>
         <p>• <strong>Resource management</strong> - Allocazione CPU, memoria, I/O per processi</p>
@@ -89,7 +89,7 @@
         <p>1. La shell esegue fork() per creare un processo figlio identico</p>
         <p>2. Il processo figlio chiama execve() per caricare l'immagine di Firefox</p>
         <p>3. Il kernel assegna un PID e inizializza la task_struct</p>
-        <p>4. Lo scheduler CFS assegna tempo CPU per l'esecuzione</p>
+        <p>4. Lo scheduler fair (CFS/EEVDF) assegna tempo CPU per l'esecuzione</p>
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
@@ -98,7 +98,7 @@
             <li><strong>thread_info</strong> - Su alcune architetture, embedded nel kernel stack per accesso rapido al task_struct</li>
             <li><strong>mm_struct</strong> - Descrittore dello spazio di memoria virtuale del processo</li>
             <li><strong>files_struct</strong> - Lista dei file descriptor aperti dal processo</li>
-            <li><strong>sched_entity</strong> - Entità di scheduling per CFS con vruntime e load</li>
+            <li><strong>sched_entity</strong> - Entità di scheduling della classe fair (CFS/EEVDF) con vruntime e load</li>
             <li><strong>sched_class</strong> - Classe di scheduling (fair, real-time, deadline)</li>
             <li><strong>cred</strong> - Credenziali di sicurezza (UID, GID, capabilities)</li>
         </ul>
@@ -108,7 +108,7 @@
         <ul>
             <li><code>ps aux</code> - Mostra tutti i processi attivi con dettagli</li>
             <li><code>top</code> - Monitora processi in tempo reale</li>
-            <li><code>htop</code> - Versione avanzata di top con interfaccia grafica</li>
+            <li><code>htop</code> - Versione avanzata di top con interfaccia testuale interattiva</li>
             <li><code>pstree</code> - Mostra la gerarchia dei processi ad albero</li>
             <li><code>pgrep firefox</code> - Trova PID dei processi Firefox</li>
             <li><code>strace -p PID</code> - Traccia le system call di un processo</li>
@@ -132,24 +132,24 @@
             <li><strong>Uninterruptible Sleep (D)</strong> - In attesa di I/O, non può essere interrotto</li>
             <li><strong>Stopped (T)</strong> - Fermato da segnale (Ctrl+Z)</li>
             <li><strong>Zombie (Z)</strong> - Processi terminati che hanno rilasciato risorse ma di cui il padre non ha ancora letto lo stato di uscita (exit status)</li>
-            <li><strong>Idle (I)</strong> - Processi in attesa su più CPU in sistemi SMP</li>
+            <li><strong>Idle (I)</strong> - Thread del kernel inattivi (non contano nel load average)</li>
             <li><strong>Dead (X)</strong> - Processi completamente terminati e rimossi dalla process table</li>
         </ul>
 
         <h2>✨ Caratteristiche</h2>
         <ul>
             <li><strong>Preemptive multitasking</strong> - Scheduler può interrompere processi</li>
-            <li><strong>Caching</strong> - Buffer e page cache integrate</li>
-            <li><strong>Permissions</strong> - Modello Unix completo</li>
-            <li><strong>Mounting</strong> - Gerarchia unificata</li>
-            <li><strong>Hotplug</strong> - Supporto dispositivi rimovibili</li>
+            <li><strong>Isolamento</strong> - Ogni processo ha il proprio spazio di indirizzamento virtuale</li>
+            <li><strong>Gerarchia</strong> - Albero padre-figlio con radice in init/systemd (PID 1)</li>
+            <li><strong>Creazione efficiente</strong> - fork() con copy-on-write: le pagine si copiano solo se modificate</li>
+            <li><strong>Controllo risorse</strong> - Limiti per processo (rlimits) e per gruppi (cgroups)</li>
         </ul>
 
         <h2>🔗 Interazioni Chiave</h2>
         <p><strong>La gestione dei processi coordina con tutti i principali sottosistemi del kernel:</strong></p>
 
         <h3>⚙️ Scheduler Subsystem</h3>
-        <p>• <strong>CFS scheduler</strong> - Gestisce l'allocazione del tempo CPU tra processi runnable</p>
+        <p>• <strong>Scheduler fair (CFS/EEVDF)</strong> - Gestisce l'allocazione del tempo CPU tra processi runnable</p>
         <p>• <strong>Real-time scheduler</strong> - Supporta processi con priorità assoluta</p>
         <p>• <strong>Load balancer</strong> - Distribuisce processi tra CPU disponibili</p>
 
@@ -169,7 +169,7 @@
         <p>• <strong>Capabilities</strong> - Permessi granulari oltre il modello root/non-root</p>
 
         <h3>📡 IPC Subsystem</h3>
-        <p>• <strong>Signals</strong> - Meccanismo di comunicazione asincrona tra processi</p>
+        <p>• <strong>Signals</strong> - Notifiche asincrone tra processi (forma limitata di IPC: non trasportano dati)</p>
         <p>• <strong>Pipes/FIFOs</strong> - Comunicazione unidirezionale tra processi</p>
         <p>• <strong>Shared memory</strong> - Memoria condivisa per comunicazione veloce</p>
 
@@ -294,7 +294,7 @@
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚙️ SCHEDULER</div>
-                    <div style="font-size: 0.8em; color: #666;">CFS, RT, Deadline</div>
+                    <div style="font-size: 0.8em; color: #666;">Fair (CFS/EEVDF), RT, Deadline</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🧠 MEMORY</div>
@@ -366,7 +366,7 @@
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza del context switch:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Interrupt handler:</strong> CPU salva stato corrente in thread_info</li>
+                    <li><strong>1. Interrupt handler:</strong> CPU salva lo stato minimo (pt_regs) sul kernel stack</li>
                     <li><strong>2. Scheduler invocation:</strong> schedule() seleziona prossimo processo</li>
                     <li><strong>3. Context save:</strong> Salva registri e stack pointer in task_struct</li>
                     <li><strong>4. Memory switch:</strong> Aggiorna il registro CR3 (x86) o equivalente per puntare alle nuove page tables dello spazio di indirizzamento</li>
@@ -442,7 +442,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Context Switching</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Context switch costa ~1000-5000 cicli CPU. CFS usa virtual runtime, non time slice fissi. Non è l'operazione più costosa del kernel.
+                    Context switch costa ~1000-5000 cicli CPU (da frazioni di microsecondo ad alcuni microsecondi). Lo scheduler fair (CFS/EEVDF) usa virtual runtime, non time slice fissi. Non è l'operazione più costosa del kernel.
                 </p>
             </div>
 
@@ -450,7 +450,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
                 <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Scheduling Entity</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    sched_entity contiene vruntime e load per CFS. sched_class definisce il tipo di scheduler (fair, RT, deadline). Segnali non sono vero IPC ma notifiche asincrone.
+                    sched_entity contiene vruntime e load per la classe fair (CFS/EEVDF). sched_class definisce il tipo di scheduler (fair, RT, deadline). I segnali sono una forma limitata di IPC: notifiche asincrone che non trasportano dati.
                 </p>
             </div>
 
@@ -492,80 +492,56 @@
         },
         {
             question: "Quale struttura dati contiene tutte le informazioni di un processo?",
-            options: ["mm_struct", "task_struct", "files_struct", "thread_info"],
+            options: ["thread_info", "task_struct", "mm_struct", "files_struct"],
             correct: 1,
             explanation: "task_struct contiene tutti i dati del processo: PID, stato, priorità, memoria, file aperti, etc."
         },
         {
             question: "Cosa fa execve()?",
-            options: ["Termina un processo", "Sostituisce l'immagine del processo", "Crea un thread", "Cambia priorità"],
-            correct: 1,
+            options: ["Sostituisce l'immagine del processo", "Crea un thread", "Termina un processo", "Cambia priorità"],
+            correct: 0,
             explanation: "execve() sostituisce completamente l'immagine del processo corrente con un nuovo programma."
         },
         {
-            question: "Qual è lo stato di un processo in attesa di I/O?",
-            options: ["Running", "Zombie", "Interruptible Sleep", "Stopped"],
-            correct: 2,
-            explanation: "Interruptible Sleep (S) è lo stato di un processo che aspetta un evento come I/O completion."
+            question: "Quale stato (ps/top) indica un processo in attesa di un evento (es. input) e interrompibile da un segnale?",
+            options: ["Stopped", "Running", "Zombie", "Interruptible Sleep"],
+            correct: 3,
+            explanation: "Interruptible Sleep (S) è lo stato di un processo in attesa di un evento (input, timer...) che può essere risvegliato anche da un segnale. Per l'attesa di I/O su disco si vede spesso Uninterruptible Sleep (D)."
         },
         {
             question: "Cosa significa CFS nel kernel Linux?",
-            options: ["Completely Fair Scheduler", "Central File System", "Critical Function Set", "Core Functionality System"],
-            correct: 0,
-            explanation: "CFS (Completely Fair Scheduler) usa virtual runtime per garantire equità, non time slice fissi come gli scheduler tradizionali."
+            options: ["Core Functionality System", "Completely Fair Scheduler", "Central File System", "Critical Function Set"],
+            correct: 1,
+            explanation: "CFS (Completely Fair Scheduler) usa virtual runtime per garantire equità, non time slice fissi. È stato lo scheduler fair di default fino al kernel 6.5; dal 6.6 è sostituito da EEVDF."
         },
         {
-            question: "Quale comando mostra tutti i processi attivi?",
-            options: ["free", "df", "ps", "netstat"],
-            correct: 2,
-            explanation: "ps mostra informazioni dettagliate su tutti i processi attivi, incluse risorse usate e stato."
+            question: "Quale comando mostra tutti i processi del sistema con dettagli (utente, CPU, memoria)?",
+            options: ["ps aux", "free -h", "netstat", "df -h"],
+            correct: 0,
+            explanation: "ps aux elenca tutti i processi con utente, %CPU, %MEM e stato; ps senza opzioni mostra solo i processi della shell corrente."
         },
         {
             question: "Cosa contiene mm_struct?",
-            options: ["File aperti dal processo", "Spazio di memoria virtuale", "Informazioni thread", "Dati di scheduling"],
-            correct: 1,
+            options: ["File aperti dal processo", "Dati di scheduling", "Spazio di memoria virtuale", "Informazioni thread"],
+            correct: 2,
             explanation: "mm_struct descrive lo spazio di indirizzamento virtuale del processo e gestisce la memoria."
         },
         {
             question: "Quale stato ha un processo terminato ma non ancora 'raccolto'?",
-            options: ["Running", "Stopped", "Zombie", "Sleep"],
+            options: ["Stopped", "Running", "Zombie", "Sleep"],
             correct: 2,
             explanation: "Zombie (Z) è lo stato di un processo terminato che aspetta che il padre legga il suo exit status."
         },
         {
-            question: "Cosa fa il comando pstree?",
-            options: ["Mostra processi in tempo reale", "Mostra gerarchia processi ad albero", "Uccide processi", "Cambia priorità"],
-            correct: 1,
-            explanation: "pstree mostra la gerarchia dei processi in formato ad albero, visualizzando le relazioni padre-figlio."
-        },
-        {
-            question: "Quale system call invia segnali ai processi?",
-            options: ["fork", "exec", "kill", "wait"],
-            correct: 2,
-            explanation: "kill() invia segnali ai processi. I segnali non sono vero IPC ma notifiche asincrone unidirezionali."
-        },
-        {
             question: "Cosa fa clone() con CLONE_VM?",
-            options: ["Crea un processo separato", "Crea un thread nello stesso processo", "Clona la memoria fisica", "Crea un nuovo namespace"],
-            correct: 1,
-            explanation: "clone() con CLONE_VM crea un thread che condivide lo spazio di memoria con il processo padre, non un processo separato."
-        },
-        {
-            question: "Cosa ottiene gettid()?",
-            options: ["Process ID", "Thread ID nel kernel", "Parent Process ID", "Group ID"],
-            correct: 1,
-            explanation: "gettid() ottiene il thread ID (TID) del thread corrente, diverso dal PID che identifica il processo."
-        },
-        {
-            question: "I processi Zombie occupano risorse significative?",
-            options: ["Sì, molta memoria", "Sì, molto CPU", "No, solo uno slot nella process table", "No, vengono eliminati immediatamente"],
-            correct: 2,
-            explanation: "Gli zombie non occupano risorse significative: hanno rilasciato memoria e CPU, solo il padre deve leggere il loro exit status."
+            options: ["Clona la memoria fisica", "Crea un nuovo namespace", "Crea un processo separato", "Il nuovo task condivide lo spazio di memoria del padre (come un thread)"],
+            correct: 3,
+            explanation: "CLONE_VM fa condividere al nuovo task lo spazio di indirizzamento del padre: è la base dei thread (che usano anche altri flag, es. CLONE_THREAD)."
         },
         {
             question: "fork() copia fisicamente tutta la memoria?",
-            options: ["Sì, sempre", "No, usa copy-on-write per ottimizzazione", "Solo per processi piccoli", "Dipende dal kernel"],
-            correct: 1,
+            options: ["No, usa copy-on-write per ottimizzazione", "Solo per processi piccoli", "Sì, sempre", "Dipende dal kernel"],
+            correct: 0,
             explanation: "fork() usa copy-on-write: inizialmente condivide le pagine di memoria, copiandole solo quando vengono modificate."
         }
     ];
@@ -591,7 +567,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show all questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Show all questions
             showResults();
             return;
         }
@@ -599,7 +575,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -652,7 +628,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -667,9 +643,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -678,7 +654,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -695,7 +671,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -713,7 +689,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

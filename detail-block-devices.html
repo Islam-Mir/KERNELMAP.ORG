@@ -51,11 +51,11 @@
 
 <h3>⚙️ Gestione Richieste I/O</h3>
 <p>• <strong>submit_bio()</strong> - Invia una richiesta bio (block I/O) al dispositivo</p>
-<p>• <strong>blk_queue_bio()</strong> - Accoda richieste nella coda del dispositivo</p>
+<p>• <strong>blk_mq_submit_bio()</strong> - Accoda richieste nella coda del dispositivo</p>
 
 <h3>⚙️ I/O Scheduling</h3>
-<p>• <strong>elevator_add_req()</strong> - Aggiunge richieste alla coda dell'elevator</p>
-<p>• <strong>blk_start_request()</strong> - Inizia l'elaborazione di una richiesta</p>
+<p>• <strong>blk_mq_sched_insert_request()</strong> - Aggiunge richieste alla coda dell'elevator</p>
+<p>• <strong>blk_mq_start_request()</strong> - Inizia l'elaborazione di una richiesta</p>
 
 <h3>⚙️ Caching e Buffer</h3>
 <p>• <strong>__bread()</strong> - Legge un blocco con caching automatico</p>
@@ -66,7 +66,7 @@
 
 <h3>🔍 Lettura di un File dal Disco</h3>
 <p>1. L'applicazione chiama read() sul file descriptor</p>
-<p>2. Il VFS converte l'offset del file in numeri di blocco</p>
+<p>2. Il filesystem converte l'offset del file in numeri di blocco</p>
 <p>3. Il block layer crea una richiesta bio e la accoda</p>
 <p>4. L'I/O scheduler ottimizza l'ordine delle richieste</p>
 <p>5. Il driver del dispositivo esegue l'I/O fisico</p>
@@ -107,7 +107,7 @@
 
         <h2>✨ Caratteristiche Avanzate</h2>
 <ul>
-<li><strong>I/O Scheduling</strong> - Algoritmi CFQ, Deadline, Noop per ottimizzare l'accesso</li>
+<li><strong>I/O Scheduling</strong> - Algoritmi mq-deadline, BFQ, Kyber o none (nessun riordino, adatto a SSD NVMe molto veloci) per ottimizzare l'accesso</li>
 <li><strong>Block Layer Caching</strong> - Page cache e buffer cache per prestazioni</li>
 <li><strong>RAID e LVM</strong> - Supporto per storage virtuale avanzato</li>
 <li><strong>Hotplug</strong> - Rilevamento dispositivi rimovibili a caldo</li>
@@ -133,13 +133,13 @@
 
         <h3>📂 Richieste I/O Base</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">struct bio *bio_alloc(gfp_t gfp_mask, unsigned int nr_iovecs);</code><br>
+            <code style="color: #d32f2f; font-weight: bold;">struct bio *bio_alloc(struct block_device *bdev, unsigned short nr_vecs, blk_opf_t opf, gfp_t gfp_mask);</code><br>
             <span style="color: #666; font-size: 0.9em;">Alloca una struttura bio per una richiesta I/O.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">void submit_bio(int rw, struct bio *bio);</code><br>
+            <code style="color: #2e7d32; font-weight: bold;">void submit_bio(struct bio *bio);</code><br>
             <span style="color: #666; font-size: 0.9em;">Invia una richiesta bio al dispositivo sottostante.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">int blkdev_issue_flush(struct block_device *bdev, gfp_t gfp_mask, sector_t *error_sector);</code><br>
+            <code style="color: #f57c00; font-weight: bold;">int blkdev_issue_flush(struct block_device *bdev);</code><br>
             <span style="color: #666; font-size: 0.9em;">Forza la scrittura di tutti i dati cached sul dispositivo.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">struct block_device *blkdev_get_by_path(const char *path, fmode_t mode, void *holder);</code><br>
@@ -151,8 +151,8 @@
             <code style="color: #0288d1; font-weight: bold;">struct request_queue *blk_alloc_queue(gfp_t gfp_mask);</code><br>
             <span style="color: #666; font-size: 0.9em;">Alloca una coda di richieste per un dispositivo.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">void blk_queue_make_request(struct request_queue *q, make_request_fn *mfn);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Imposta la funzione di elaborazione richieste per la coda.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">int blk_mq_alloc_tag_set(struct blk_mq_tag_set *set);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Prepara le code hardware (blk-mq) usate per elaborare le richieste del dispositivo.</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">int elevator_change(struct request_queue *q, const char *elevator_name);</code><br>
             <span style="color: #666; font-size: 0.9em;">Cambia l'algoritmo di I/O scheduling per la coda.</span>
@@ -395,7 +395,6 @@
         </div>
     </div>
 
-    </ul>
 
     <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
         © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
@@ -406,26 +405,26 @@
     const quizQuestions = [
         {
             question: "Cosa caratterizza i dispositivi a blocchi rispetto a quelli a caratteri?",
-            options: ["Trasferimento byte per byte", "Accesso random ai dati", "Solo operazioni sequenziali", "Nessuna cache"],
-            correct: 1,
+            options: ["Nessuna cache", "Trasferimento byte per byte", "Accesso random ai dati", "Solo operazioni sequenziali"],
+            correct: 2,
             explanation: "I dispositivi a blocchi supportano l'accesso random ai dati attraverso blocchi di dimensione fissa, a differenza dei dispositivi a caratteri che lavorano sequenzialmente."
         },
         {
             question: "Quale struttura rappresenta una richiesta I/O nel block layer?",
-            options: ["inode", "dentry", "bio", "superblock"],
-            correct: 2,
+            options: ["dentry", "inode", "superblock", "bio"],
+            correct: 3,
             explanation: "La struttura bio (block I/O) rappresenta una richiesta I/O singola o multi-segmento nel block layer del kernel."
         },
         {
             question: "Cosa fa l'I/O scheduler nel kernel?",
-            options: ["Crea i filesystem", "Riordina le richieste I/O", "Gestisce la memoria", "Controlla i processi"],
+            options: ["Gestisce la memoria", "Riordina le richieste I/O", "Crea i filesystem", "Controlla i processi"],
             correct: 1,
             explanation: "L'I/O scheduler riordina e ottimizza le richieste I/O per ridurre i seek del disco e migliorare le prestazioni complessive."
         },
         {
             question: "Quale comando mostra tutti i dispositivi a blocchi?",
-            options: ["ps aux", "lsblk", "df -h", "free -h"],
-            correct: 1,
+            options: ["df -h", "free -h", "lsblk", "ps aux"],
+            correct: 2,
             explanation: "Il comando lsblk mostra tutti i dispositivi a blocchi presenti nel sistema con le loro partizioni e punti di mount."
         },
         {
@@ -435,32 +434,32 @@
             explanation: "Il Direct I/O permette di bypassare il page cache per trasferimenti diretti tra memoria applicativa e dispositivo, utile per alte prestazioni."
         },
         {
-            question: "Qual è la dimensione tipica di un blocco nei dispositivi a blocchi?",
-            options: ["1 byte", "512 byte", "1 KB", "4 KB"],
-            correct: 1,
-            explanation: "La dimensione tradizionale di un blocco è 512 byte, anche se moderni filesystem usano blocchi più grandi come 4KB per prestazioni migliori."
+            question: "Qual è la dimensione tradizionale di un settore di un disco?",
+            options: ["16 KB", "64 byte", "512 byte", "1 MB"],
+            correct: 2,
+            explanation: "Il settore tradizionale è di 512 byte; molti dischi moderni usano settori da 4KB, e i filesystem lavorano in blocchi più grandi (tipicamente 4KB)."
         },
         {
             question: "Cosa rappresenta una request queue?",
-            options: ["Una coda di processi", "Coda delle richieste I/O per un dispositivo", "Lista di file aperti", "Cache di pagine"],
-            correct: 1,
+            options: ["Coda delle richieste I/O per un dispositivo", "Cache di pagine", "Una coda di processi", "Lista di file aperti"],
+            correct: 0,
             explanation: "La request queue è la coda dove vengono accodate le richieste I/O per un dispositivo a blocchi prima dell'elaborazione."
         },
         {
-            question: "Quale algoritmo I/O scheduler è ottimizzato per SSD?",
-            options: ["CFQ", "Deadline", "Noop", "Anticipatory"],
-            correct: 2,
-            explanation: "L'algoritmo Noop è ottimizzato per dispositivi che gestiscono internamente l'ottimizzazione I/O, come gli SSD."
+            question: "Quale scheduler I/O non riordina le richieste ed è adatto a SSD NVMe molto veloci?",
+            options: ["none", "mq-deadline", "BFQ", "Kyber"],
+            correct: 0,
+            explanation: "Lo scheduler none (ex noop) non riordina le richieste: su SSD NVMe, dove il dispositivo ha già code interne efficienti, riordinare costerebbe solo CPU."
         },
         {
             question: "Cosa fa il comando iostat?",
-            options: ["Mostra processi attivi", "Monitora statistiche I/O dispositivi", "Lista file system", "Controlla memoria"],
-            correct: 1,
+            options: ["Controlla memoria", "Lista file system", "Mostra processi attivi", "Monitora statistiche I/O dispositivi"],
+            correct: 3,
             explanation: "iostat monitora e riporta statistiche di input/output per dispositivi e partizioni, mostrando letture, scritture e utilizzo."
         },
         {
             question: "Quale componente permette la virtualizzazione dello storage?",
-            options: ["VFS", "Device Mapper", "Block Layer", "I/O Scheduler"],
+            options: ["I/O Scheduler", "Device Mapper", "VFS", "Block Layer"],
             correct: 1,
             explanation: "Il Device Mapper permette di creare dispositivi virtuali sopra dispositivi fisici, abilitando LVM, RAID e altri tipi di virtualizzazione storage."
         }
@@ -487,7 +486,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -495,7 +494,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -548,7 +547,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -563,9 +562,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -574,7 +573,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -591,7 +590,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -609,7 +608,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

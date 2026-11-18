@@ -35,14 +35,14 @@
         <p><strong>Il sistema di memoria virtuale del kernel Linux permette a ogni processo di avere il proprio spazio di indirizzamento privato, isolato dagli altri processi.</strong> Ogni programma "vede" di avere tutta la memoria del sistema per sé, ma il kernel gestisce intelligentemente la condivisione delle risorse fisiche.</p>
 
         <h2>CONFRONTO:</h2>
-        <p>Come un condominio dove ogni appartamento ha il suo indirizzo privato (0x00000000-0xFFFFFFFF), ma condividono lo stesso edificio. Il portiere (kernel) gestisce chi può accedere a cosa e quando.</p>
+        <p>Come un condominio dove ogni appartamento ha il suo indirizzo privato (i propri indirizzi virtuali), ma condividono lo stesso edificio. Il portiere (kernel) gestisce chi può accedere a cosa e quando.</p>
 
         <h2>🔍 Descrizione Tecnica</h2>
         <p><strong>La memoria virtuale è il cuore della gestione memoria in Linux, fornendo isolamento, protezione e condivisione efficiente delle risorse.</strong> Immagina di avere un ristorante dove ogni cliente ha il suo menu privato, ma la cucina condivisa prepara tutti i piatti. L'MMU (Memory Management Unit) è il maître che traduce richieste in realtà fisica.</p>
 
         <p>• <strong>Traduzione indirizzi</strong> - MMU converte indirizzi virtuali in indirizzi fisici attraverso page table</p>
-        <p>• <strong>Isolamento processi</strong> - Ogni processo ha il proprio spazio di indirizzamento (4GB su 32-bit, 256TB su 64-bit)</p>
-        <p>• <strong>Paging su richiesta</strong> - Caricamento lazy delle pagine dalla memoria al disco</p>
+        <p>• <strong>Isolamento processi</strong> - Ogni processo ha il proprio spazio di indirizzamento (fino a 4GB su 32-bit, di cui tipicamente 3GB per lo spazio utente; 128TB di spazio utente su x86-64 a 48 bit)</p>
+        <p>• <strong>Paging su richiesta</strong> - Caricamento lazy delle pagine dal disco alla memoria, solo quando servono</p>
         <p>• <strong>Condivisione intelligente</strong> - Codice eseguibile e librerie condivise tra processi</p>
         <p>• <strong>Protezione memoria</strong> - Controllo rigoroso degli accessi (lettura/scrittura/esecuzione)</p>
         <p>• <strong>Overcommit</strong> - Allocazione di più memoria virtuale di quella fisica disponibile</p>
@@ -96,7 +96,7 @@
             <li><strong>Accesso diretto</strong> - Leggi/scrivi come se fosse memoria normale</li>
             <li><strong>Paging automatico</strong> - Kernel gestisce caricamento/scaricamento</li>
             <li><strong>Condivisione IPC</strong> - File mappati visibili tra processi</li>
-            <li><strong>Database efficienti</strong> - MySQL/PostgreSQL usano mmap per performance</li>
+            <li><strong>Database efficienti</strong> - Alcuni motori di database (es. SQLite, LMDB) possono usare mmap per accedere ai dati</li>
         </ul>
 
         <h3>💻 Nel Computer: Come Osservarla?</h3>
@@ -209,7 +209,7 @@
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ SPAZIO VIRTUALE PROCESSO</div>
                 <div style="font-size: 0.9em; color: #666;">
-                    • 0x00000000 - 0xFFFFFFFF (32-bit)<br>
+                    • Es. 0x00000000 - 0xBFFFFFFF (3GB utente su 32-bit)<br>
                     • Isolamento completo tra processi<br>
                     • Layout: Text, Data, Heap, Stack<br>
                     • Memory-mapped regions
@@ -314,7 +314,7 @@
                     <li><strong>1. Accesso memoria</strong> - Programma accede a indirizzo virtuale 0x400000</li>
                     <li><strong>2. Controllo MMU</strong> - Page table indica pagina non presente in RAM</li>
                     <li><strong>3. Interrupt CPU</strong> - Eccezione page fault generata automaticamente</li>
-                    <li><strong>4. Kernel handler</strong> - do_page_fault() determina tipo di fault</li>
+                    <li><strong>4. Kernel handler</strong> - il gestore del page fault (exc_page_fault() su x86) determina il tipo di fault</li>
                     <li><strong>5. Allocazione fisica</strong> - Kernel trova o alloca pagina RAM libera</li>
                     <li><strong>6. Caricamento dati</strong> - Dati copiati da swap/disco alla RAM</li>
                     <li><strong>7. Aggiornamento PT</strong> - Page table aggiornata con nuovo mapping</li>
@@ -434,44 +434,44 @@
     const quizQuestions = [
         {
             question: "Cosa permette la memoria virtuale?",
-            options: ["Processi di accedere direttamente all'hardware", "Ogni processo di avere il proprio spazio di indirizzamento isolato", "Il kernel di vedere la memoria dei processi", "Dischi di funzionare come RAM"],
-            correct: 1,
-            explanation: "La memoria virtuale permette a ogni processo di avere il proprio spazio di indirizzamento privato (0x00000000-0xFFFFFFFF su 32-bit), isolato dagli altri processi."
+            options: ["Ai processi di accedere direttamente all'hardware", "Al kernel di vedere la memoria dei processi", "Ai dischi di funzionare come RAM", "Ogni processo di avere il proprio spazio di indirizzamento isolato"],
+            correct: 3,
+            explanation: "La memoria virtuale dà a ogni processo un proprio spazio di indirizzamento privato, isolato dagli altri processi; l'MMU lo traduce in indirizzi fisici."
         },
         {
             question: "Cosa traduce gli indirizzi virtuali in indirizzi fisici?",
-            options: ["Il processore", "L'MMU (Memory Management Unit)", "Il disco rigido", "La RAM"],
-            correct: 1,
+            options: ["Il disco rigido", "Il processore", "L'MMU (Memory Management Unit)", "La RAM"],
+            correct: 2,
             explanation: "L'MMU (Memory Management Unit) è l'hardware che traduce gli indirizzi virtuali in indirizzi fisici usando le page table."
         },
         {
-            question: "Cosa succede durante un page fault?",
-            options: ["Il processo termina", "Il kernel carica la pagina dalla RAM al disco", "Il kernel carica la pagina dal disco alla RAM", "La CPU si blocca"],
+            question: "Cosa succede quando un processo accede a una pagina virtuale valida ma non presente in RAM (page fault)?",
+            options: ["La CPU si blocca", "Il kernel carica la pagina dalla RAM al disco", "Il kernel carica la pagina in RAM (da disco o swap) e il programma riprende", "Il processo termina sempre"],
             correct: 2,
-            explanation: "Un page fault avviene quando si accede a una pagina virtuale non presente in RAM; il kernel la carica dal disco (o swap) alla RAM."
+            explanation: "Il page fault è un'eccezione: il kernel individua la pagina, la porta in RAM (da file o swap), aggiorna la page table e riprende l'istruzione. Se l'indirizzo non è valido, invece, il processo riceve SIGSEGV."
         },
         {
             question: "Cosa permette il copy-on-write?",
-            options: ["Scrivere direttamente sul disco", "Condividere pagine fino alla modifica, poi copiarle", "Eliminare processi automaticamente", "Bloccare l'accesso alla memoria"],
+            options: ["Bloccare l'accesso alla memoria", "Condividere pagine fino alla modifica, poi copiarle", "Eliminare processi automaticamente", "Scrivere direttamente sul disco"],
             correct: 1,
             explanation: "Copy-on-write permette di condividere pagine di memoria tra processi fino a quando uno dei due non le modifica, momento in cui viene creata una copia fisica."
         },
         {
             question: "Cosa contiene una page table?",
-            options: ["Dati dei programmi", "Mapping tra indirizzi virtuali e fisici", "Codice del kernel", "File di sistema"],
-            correct: 1,
+            options: ["Mapping tra indirizzi virtuali e fisici", "Codice del kernel", "File di sistema", "Dati dei programmi"],
+            correct: 0,
             explanation: "Le page table contengono i mapping tra indirizzi virtuali e indirizzi fisici, oltre ai permessi di accesso per ogni pagina."
         },
         {
             question: "Quale comando mostra lo spazio virtuale di un processo?",
-            options: ["ps aux", "pmap PID", "free -h", "df -h"],
-            correct: 1,
+            options: ["free -h", "ps aux", "df -h", "pmap PID"],
+            correct: 3,
             explanation: "pmap PID mostra la mappa completa dello spazio di indirizzamento virtuale di un processo, incluse tutte le regioni mappate."
         },
         {
             question: "Cosa accelera la traduzione degli indirizzi virtuali?",
-            options: ["La RAM", "Il TLB (Translation Lookaside Buffer)", "Il disco", "La cache L1"],
-            correct: 1,
+            options: ["La RAM", "La cache L1", "Il disco", "Il TLB (Translation Lookaside Buffer)"],
+            correct: 3,
             explanation: "Il TLB è una cache hardware che memorizza le traduzioni di indirizzi virtuali→fisici più recenti per accelerare l'accesso alla memoria."
         },
         {
@@ -482,14 +482,14 @@
         },
         {
             question: "Cosa sono le huge pages?",
-            options: ["Pagine molto piccole", "Pagine da 2MB/1GB invece di 4KB", "Pagine di swap", "Pagine di kernel"],
-            correct: 1,
+            options: ["Pagine da 2MB/1GB invece di 4KB", "Pagine di kernel", "Pagine di swap", "Pagine molto piccole"],
+            correct: 0,
             explanation: "Le huge pages sono pagine di memoria molto grandi (2MB o 1GB) che riducono l'overhead delle page table e migliorano le performance."
         },
         {
             question: "Cosa succede durante lo swapping?",
-            options: ["Pagine si muovono dalla RAM al disco", "Processi vengono terminati", "La RAM viene cancellata", "Il sistema si riavvia"],
-            correct: 0,
+            options: ["Processi vengono terminati", "La RAM viene cancellata", "Pagine si muovono dalla RAM al disco", "Il sistema si riavvia"],
+            correct: 2,
             explanation: "Lo swapping muove pagine di memoria dalla RAM al disco (swap space) quando la memoria fisica è piena, permettendo al sistema di continuare a funzionare."
         }
     ];
@@ -515,7 +515,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -523,7 +523,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -576,7 +576,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -591,9 +591,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -602,7 +602,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -619,7 +619,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -637,7 +637,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

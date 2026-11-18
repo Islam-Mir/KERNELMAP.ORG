@@ -34,7 +34,7 @@
     <div class="content">
         <span class="badge">🏗️ SOTTOSISTEMI HI</span>
         <h2>DESCRIZIONE:</h2>
-        <p><strong>I HI Subsystems (High-Level Subsystems) rappresentano l'insieme dei sottosistemi di alto livello del kernel Linux che forniscono servizi avanzati e interfacce specializzate per categorie specifiche di dispositivi e funzionalità. Questi sottosistemi orchestrano l'interazione tra applicazioni userspace e l'hardware sottostante attraverso layer di astrazione sofisticati.</strong></p>
+        <p><strong>I HI Subsystems (Human Interfaces) rappresentano l'insieme dei sottosistemi del kernel Linux dedicati alle interfacce uomo-macchina che forniscono servizi avanzati e interfacce specializzate per categorie specifiche di dispositivi e funzionalità. Questi sottosistemi orchestrano l'interazione tra applicazioni userspace e l'hardware sottostante attraverso layer di astrazione sofisticati.</strong></p>
         
         <h2>CONFRONTO:</h2>
         <p>Immagina i HI Subsystems come un'orchestra sinfonica: ogni sezione (ALSA per audio, DRM per grafica, Input per dispositivi input) suona la sua parte in armonia, diretta da un maestro (il kernel core) che coordina tutto per creare un'esperienza musicale perfetta (sistema operativo funzionante).</p>
@@ -67,7 +67,7 @@
 <h3>⚙️ Graphics Subsystem (DRM)</h3>
 <p>• <strong>drm_open()</strong> - Apre dispositivo grafico</p>
 <p>• <strong>drm_mode_getresources()</strong> - Ottiene informazioni display</p>
-<p>• <strong>drm_gem_create()</strong> - Crea oggetto memoria grafica</p>
+<p>• <strong>drm_gem_handle_create()</strong> - Crea oggetto memoria grafica</p>
 
 <h2>📋 Esempi Pratici dei HI Subsystems</h2>
 <p><strong>I HI Subsystems rendono possibile l'uso avanzato di dispositivi specializzati attraverso API specializzate:</strong></p>
@@ -99,7 +99,7 @@
 <h3>🎯 Caso Reale: Riproduzione Video</h3>
 <p>Quando fai <code>$ mplayer video.mp4</code>:</p>
 <ol>
-<li>V4L2 subsystem configura overlay video</li>
+<li>V4L2 non interviene nella riproduzione di un file: serve per webcam e TV tuner</li>
 <li>ALSA apre dispositivo audio per traccia sonora</li>
 <li>DRM gestisce accelerazione video hardware</li>
 <li>Input subsystem riceve comandi da tastiera</li>
@@ -191,7 +191,7 @@
 
 <h2>🗺️ Architettura dei HI Subsystems</h2>
         <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei High-Level Subsystems</h3>
+            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei Subsystems Human Interfaces</h3>
 
             <!-- User Applications Layer -->
             <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -417,61 +417,61 @@
     const quizQuestions = [
         {
             question: "Cosa gestisce ALSA?",
-            options: ["Dispositivi video", "Dispositivi audio", "Dispositivi di rete", "Dispositivi USB"],
-            correct: 1,
+            options: ["Dispositivi video", "Dispositivi di rete", "Dispositivi audio", "Dispositivi USB"],
+            correct: 2,
             explanation: "ALSA (Advanced Linux Sound Architecture) gestisce dispositivi audio digitali, mixer e interfacce MIDI."
         },
         {
             question: "Quale comando elenca dispositivi V4L2?",
-            options: ["lsaudio", "v4l2-ctl --list-devices", "lspci", "lsusb"],
-            correct: 1,
+            options: ["lspci", "lsaudio", "lsusb", "v4l2-ctl --list-devices"],
+            correct: 3,
             explanation: "v4l2-ctl --list-devices mostra tutti i dispositivi video V4L2 disponibili nel sistema."
         },
         {
             question: "Cosa significa DRM nel contesto grafico?",
-            options: ["Direct Rendering Manager", "Device Resource Manager", "Display Rendering Module", "Digital Rights Management"],
-            correct: 0,
+            options: ["Display Rendering Module", "Direct Rendering Manager", "Device Resource Manager", "Digital Rights Management"],
+            correct: 1,
             explanation: "DRM (Direct Rendering Manager) gestisce l'accesso diretto all'hardware grafico e il kernel mode setting."
         },
         {
             question: "Quale sottosistema gestisce eventi input?",
-            options: ["ALSA", "V4L2", "Input Subsystem", "DRM"],
-            correct: 2,
+            options: ["Input Subsystem", "ALSA", "DRM", "V4L2"],
+            correct: 0,
             explanation: "L'Input Subsystem gestisce eventi da tastiere, mouse, touchscreen e altri dispositivi di input."
         },
         {
             question: "Cosa permette il memory mapping in V4L2?",
-            options: ["Solo lettura sequenziale", "Accesso diretto ai buffer video", "Solo streaming", "Solo dispositivi locali"],
-            correct: 1,
+            options: ["Accesso diretto ai buffer video", "Solo dispositivi locali", "Solo streaming", "Solo lettura sequenziale"],
+            correct: 0,
             explanation: "Il memory mapping in V4L2 permette l'accesso diretto ai buffer video per prestazioni ottimali."
         },
         {
             question: "Quale comando monitora eventi input?",
-            options: ["input-monitor", "evtest", "device-watcher", "event-listener"],
+            options: ["event-listener", "evtest", "input-monitor", "device-watcher"],
             correct: 1,
             explanation: "evtest permette di monitorare e testare eventi da dispositivi input in tempo reale."
         },
         {
             question: "Cosa gestisce KMS in DRM?",
-            options: ["Solo accelerazione 3D", "Impostazioni modalità display", "Solo dispositivi wireless", "Solo memoria video"],
-            correct: 1,
+            options: ["Solo memoria video", "Solo accelerazione 3D", "Solo dispositivi wireless", "Impostazioni modalità display"],
+            correct: 3,
             explanation: "KMS (Kernel Mode Setting) gestisce la configurazione delle modalità display, risoluzione e refresh rate."
         },
         {
             question: "Quale API usa ALSA per PCM?",
-            options: ["alsa-pcm", "snd_pcm_*", "audio-api", "pcm-interface"],
-            correct: 1,
+            options: ["snd_pcm_*", "alsa-pcm", "pcm-interface", "audio-api"],
+            correct: 0,
             explanation: "ALSA usa le funzioni snd_pcm_* per gestire l'audio PCM (Pulse Code Modulation)."
         },
         {
             question: "Cosa permette l'Input Subsystem?",
-            options: ["Solo tastiere USB", "Dispositivi input eterogenei", "Solo mouse wireless", "Solo touchscreen"],
-            correct: 1,
+            options: ["Solo tastiere USB", "Solo mouse wireless", "Dispositivi input eterogenei", "Solo touchscreen"],
+            correct: 2,
             explanation: "L'Input Subsystem unifica l'accesso a tutti i tipi di dispositivi input attraverso un'API comune."
         },
         {
             question: "Quale comando testa l'audio ALSA?",
-            options: ["audio-test", "speaker-test", "sound-check", "alsa-verify"],
+            options: ["sound-check", "speaker-test", "alsa-verify", "audio-test"],
             correct: 1,
             explanation: "speaker-test è uno strumento per testare l'output audio attraverso ALSA."
         }
@@ -498,7 +498,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -506,7 +506,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -559,7 +559,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -574,9 +574,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -585,7 +585,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -602,7 +602,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -620,7 +620,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

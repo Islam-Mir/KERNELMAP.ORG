@@ -76,12 +76,12 @@
 <p>1. Utente prova ad aprire file riservato</p>
 <p>2. LSM hook intercetta chiamata open()</p>
 <p>3. SELinux consulta policy e nega accesso</p>
-<p>4. Sistema restituisce EPERM (Permission denied)</p>
+<p>4. Sistema restituisce EACCES (Permission denied)</p>
 
 <h3>📄 Strutture Dati Chiave</h3>
 <ul>
-<li><strong>security_operations</strong> - Tabella funzioni LSM per controlli sicurezza</li>
-<li><strong>task_security_struct</strong> - Contesto sicurezza processo (SELinux/AppArmor)</li>
+<li><strong>security_hook_list</strong> - Hook LSM registrati dai moduli di sicurezza per i controlli</li>
+<li><strong>task_security_struct</strong> - Contesto di sicurezza del processo (esempio: SELinux)</li>
 <li><strong>inode_security_struct</strong> - Etichette sicurezza file/directory</li>
 <li><strong>crypto_tfm</strong> - Trasformazione crittografica (cipher/hash)</li>
 <li><strong>key</strong> - Struttura chiave crittografica kernel</li>
@@ -101,7 +101,7 @@
 <ol>
 <li>SSH verifica permessi file chiave privata</li>
 <li>SELinux controlla contesto sicurezza processo</li>
-<li>Crypto API valida firma digitale</li>
+<li>Le librerie crittografiche in user space (OpenSSL) validano la firma digitale</li>
 <li>Audit subsystem registra accesso riuscito</li>
 </ol>
 
@@ -374,7 +374,7 @@
                         LIST_RULES: exit,always watch=/etc/passwd<br><br>
                         $ ausearch -m avc -ts recent<br>
                         ----<br>
-                        time->Mon Nov 9 02:54:00 2025
+                        time->Sun Nov 9 02:54:00 2025
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Controlla regole audit e cerca eventi di sicurezza recenti</em></p>
                 </div>
@@ -416,7 +416,7 @@
         <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
         <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Audit Trail</h4>
-        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Registrazione completa e immutabile di tutte le operazioni di sicurezza, essenziale per compliance, forensics e rilevamento intrusioni.</p>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Registrazione configurabile degli eventi di sicurezza, protetta da permessi e (opzionalmente) da regole immutabili, forensics e rilevamento intrusioni.</p>
         </div>
         </div>
 </div>
@@ -443,62 +443,62 @@
     const quizQuestions = [
         {
             question: "Cosa significa LSM in Linux?",
-            options: ["Linux Security Module", "Local System Monitor", "Linux System Manager", "Loadable Security Module"],
+            options: ["Linux Security Module", "Linux System Manager", "Local System Monitor", "Loadable Security Module"],
             correct: 0,
             explanation: "LSM significa Linux Security Modules, il framework che permette di caricare moduli di sicurezza come SELinux e AppArmor."
         },
         {
             question: "Quale comando verifica lo stato di SELinux?",
-            options: ["selinux-status", "sestatus", "check-selinux", "selinux-check"],
-            correct: 1,
+            options: ["selinux-check", "check-selinux", "sestatus", "selinux-status"],
+            correct: 2,
             explanation: "Il comando sestatus mostra lo stato completo di SELinux, inclusa la modalità (enforcing/permissive) e il mount point."
         },
         {
             question: "Cosa controlla DAC?",
-            options: ["Solo permessi root", "Discretionary Access Control (permessi UNIX tradizionali)", "Solo accessi di rete", "Solo crittografia"],
-            correct: 1,
+            options: ["Solo crittografia", "Solo permessi root", "Discretionary Access Control (permessi UNIX tradizionali)", "Solo accessi di rete"],
+            correct: 2,
             explanation: "DAC significa Discretionary Access Control, il sistema tradizionale di permessi UNIX basato su proprietario/gruppo/altri."
         },
         {
             question: "Quale API gestisce le chiavi crittografiche del kernel?",
-            options: ["crypto_*()", "keyctl_*()", "security_*()", "audit_*()"],
+            options: ["crypto_*()", "keyctl_*()", "audit_*()", "security_*()"],
             correct: 1,
             explanation: "Le funzioni keyctl_*() gestiscono il keyring del kernel, permettendo di aggiungere, revocare e utilizzare chiavi crittografiche."
         },
         {
             question: "Cosa garantisce il principio del 'least privilege'?",
-            options: ["Accesso a tutto per tutti", "Privilegi minimi necessari", "Solo accesso root", "Nessun controllo di accesso"],
-            correct: 1,
+            options: ["Accesso a tutto per tutti", "Solo accesso root", "Nessun controllo di accesso", "Privilegi minimi necessari"],
+            correct: 3,
             explanation: "Il least privilege garantisce che processi e utenti abbiano solo i privilegi minimi necessari per funzionare, riducendo rischi di sicurezza."
         },
         {
             question: "Quale comando mostra gli eventi di audit recenti?",
-            options: ["audit-show", "ausearch -ts recent", "audit-log", "security-events"],
-            correct: 1,
+            options: ["ausearch -ts recent", "audit-log", "audit-show", "security-events"],
+            correct: 0,
             explanation: "ausearch -ts recent mostra gli eventi di audit più recenti, utili per monitorare attività di sicurezza."
         },
         {
             question: "Cosa significa MAC in sicurezza?",
-            options: ["Media Access Control", "Mandatory Access Control", "Memory Access Control", "Multi Access Control"],
-            correct: 1,
+            options: ["Multi Access Control", "Memory Access Control", "Mandatory Access Control", "Media Access Control"],
+            correct: 2,
             explanation: "MAC significa Mandatory Access Control, controlli di accesso obbligatori imposti dal sistema (come in SELinux)."
         },
         {
             question: "Quale modulo LSM è basato su profili applicativi?",
-            options: ["SELinux", "AppArmor", "Smack", "Tomoyo"],
-            correct: 1,
+            options: ["Smack", "SELinux", "Tomoyo", "AppArmor"],
+            correct: 3,
             explanation: "AppArmor usa profili per applicazioni per definire quali risorse possono accedere, diverso dall'approccio basato su etichette di SELinux."
         },
         {
-            question: "Cosa fornisce il framework crypto del kernel?",
-            options: ["Solo crittografia", "API unificata per tutti algoritmi crittografici", "Solo hash", "Solo chiavi"],
+            question: "Cosa offre il framework crypto del kernel?",
+            options: ["Solo il calcolo degli hash", "Un'API uniforme per usare cifrari, hash e altri algoritmi, con implementazioni software o hardware", "Solo la cifratura dei dischi", "Solo la gestione delle chiavi utente"],
             correct: 1,
-            explanation: "Il crypto framework fornisce API uniformi per utilizzare qualsiasi algoritmo crittografico supportato dal kernel (AES, SHA, RSA, etc.)."
+            explanation: "Il Crypto API del kernel espone un'interfaccia comune (crypto_alloc_*) per cifrari, hash e altri algoritmi: il kernel sceglie l'implementazione migliore, anche con acceleratori hardware."
         },
         {
             question: "Quale comando aggiunge una chiave al keyring utente?",
-            options: ["key-add", "keyctl add user", "add-key", "keyring-add"],
-            correct: 1,
+            options: ["add-key", "key-add", "keyring-add", "keyctl add user"],
+            correct: 3,
             explanation: "keyctl add user nome_chiave \"valore\" @u aggiunge una chiave al keyring dell'utente corrente."
         }
     ];
@@ -524,7 +524,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -532,7 +532,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -585,7 +585,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -600,9 +600,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -611,7 +611,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -628,7 +628,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -646,7 +646,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

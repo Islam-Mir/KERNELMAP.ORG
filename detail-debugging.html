@@ -54,26 +54,26 @@
 <p><strong>Il debugging del kernel supporta diverse categorie di operazioni, ciascuna specializzata per tipi specifici di analisi:</strong></p>
 
 <h3>🔍 Tracing e Profiling</h3>
-<p>• <strong>ftrace()</strong> - Framework di tracing dinamico per catturare eventi del kernel</p>
-<p>• <strong>perf()</strong> - Strumento di profiling delle prestazioni con supporto hardware</p>
-<p>• <strong>trace-cmd()</strong> - Interfaccia a riga di comando per il tracing del kernel</p>
-<p>• <strong>LTTng()</strong> - Tracing a bassa latenza per analisi dettagliate</p>
+<p>• <strong>ftrace</strong> - Framework di tracing dinamico per catturare eventi del kernel</p>
+<p>• <strong>perf</strong> - Strumento di profiling delle prestazioni con supporto hardware</p>
+<p>• <strong>trace-cmd</strong> - Interfaccia a riga di comando per il tracing del kernel</p>
+<p>• <strong>LTTng</strong> - Tracing a bassa latenza per analisi dettagliate</p>
 
 <h3>🐛 Debugging Interattivo</h3>
-<p>• <strong>kgdb()</strong> - Debugger del kernel via porta seriale o Ethernet</p>
-<p>• <strong>kdb()</strong> - Debugger integrato del kernel per ispezione interattiva</p>
-<p>• <strong>kprobes()</strong> - Probe dinamici per inserire breakpoint nel codice del kernel</p>
-<p>• <strong>systemtap()</strong> - Framework di scripting per analisi dinamica</p>
+<p>• <strong>kgdb</strong> - Debugger del kernel via porta seriale o Ethernet</p>
+<p>• <strong>kdb</strong> - Debugger integrato del kernel per ispezione interattiva</p>
+<p>• <strong>kprobes</strong> - Probe dinamici per inserire breakpoint nel codice del kernel</p>
+<p>• <strong>systemtap</strong> - Framework di scripting per analisi dinamica</p>
 
 <h3>📊 Analisi di Memoria</h3>
-<p>• <strong>kmemleak()</strong> - Rilevatore di memory leak nel kernel</p>
-<p>• <strong>KASAN()</strong> - Kernel Address Sanitizer per rilevamento di bug di memoria</p>
-<p>• <strong>kmemcheck()</strong> - Strumento per debug di accessi alla memoria</p>
+<p>• <strong>kmemleak</strong> - Rilevatore di memory leak nel kernel</p>
+<p>• <strong>KASAN</strong> - Kernel Address Sanitizer per rilevamento di bug di memoria</p>
+<p>• <strong>KMSAN</strong> - Kernel Memory Sanitizer: rileva l'uso di memoria non inizializzata (il vecchio kmemcheck è stato rimosso dal kernel)</p>
 
 <h3>🔥 Analisi di Crash</h3>
-<p>• <strong>kdump()</strong> - Cattura dump della memoria in caso di kernel panic</p>
-<p>• <strong>kexec()</strong> - Esecuzione di un nuovo kernel senza riavvio del sistema</p>
-<p>• <strong>crash()</strong> - Analizzatore di dump della memoria del kernel</p>
+<p>• <strong>kdump</strong> - Cattura dump della memoria in caso di kernel panic</p>
+<p>• <strong>kexec</strong> - Esecuzione di un nuovo kernel senza riavvio del sistema</p>
+<p>• <strong>crash</strong> - Analizzatore di dump della memoria del kernel</p>
 
 <h2>📋 Esempi Pratici</h2>
 <p><strong>Il debugging del kernel si usa quotidianamente per identificare e risolvere problemi di prestazioni e stabilità del sistema:</strong></p>
@@ -183,7 +183,7 @@
 <ol>
 <li><code>$ perf top</code> - Mostra in tempo reale le funzioni che consumano più CPU</li>
 <li><code>$ trace-cmd record -e sched_switch -o trace.dat sleep 5</code> - Registra il context switching per 5 secondi</li>
-<li><code>$ stap -e 'probe kernel.function("schedule") { printf("PID %d -> PID %d\n", prev_pid, next_pid) }'</code> - Monitora i cambi di contesto</li>
+<li><code>$ stap -e 'probe scheduler.ctxswitch { printf("PID %d -> PID %d\n", prev_pid, next_pid) }'</code> - Monitora i cambi di contesto</li>
 <li><code>$ crash vmlinux vmcore</code> - Analizza un dump della memoria dopo un crash</li>
 </ol>
 <p><em>Questi strumenti permettono di diagnosticare problemi complessi senza modificare il codice sorgente del kernel.</em></p>
@@ -347,47 +347,43 @@
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora gli inode</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔬 Traccia con ftrace</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        12345678 /etc/passwd<br><br>
-                        $ stat /etc/passwd<br>
-                        File: /etc/passwd<br>
-                        Size: 2455 Blocks: 8 IO Block: 4096 regular file<br>
-                        Inode: 12345678 Links: 1
+                        $ sudo cat /sys/kernel/debug/tracing/available_tracers<br>
+                        hwlat function_graph function nop<br><br>
+                        $ echo function | sudo tee /sys/kernel/debug/tracing/current_tracer<br>
+                        $ sudo head /sys/kernel/debug/tracing/trace
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi l'inode number e tutte le proprietà del file</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Abilita il tracer di funzioni e leggi gli eventi catturati dal kernel</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Scopri i filesystem montati</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⏱️ Profila con perf</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ mount<br>
-                        /dev/sda1 on / type ext4<br>
-                        /dev/sdb1 on /home type ext4<br>
-                        server:/share on /mnt/nfs type nfs
+                        $ sudo perf top<br>
+                        $ sudo perf record -a -g -- sleep 10<br>
+                        $ sudo perf report
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i filesystem attivi e i loro tipi</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Individua le funzioni che consumano più CPU, anche dentro il kernel</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora l'attività I/O</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Cerca memory leak con kmemleak</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ iostat -x 1<br>
-                        Device r/s w/s rkB/s wkB/s<br>
-                        sda 15.0 25.0 120.0 200.0<br>
-                        nfs 2.0 8.0 16.0 64.0
+                        $ echo scan | sudo tee /sys/kernel/debug/kmemleak<br>
+                        $ sudo cat /sys/kernel/debug/kmemleak | head
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le operazioni di lettura/scrittura in tempo reale</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Richiede un kernel compilato con CONFIG_DEBUG_KMEMLEAK</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza la cache del VFS</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💥 Prepara l'analisi di un crash</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/slabinfo | grep dentry<br>
-                        $ cat /proc/slabinfo | grep inode
+                        $ grep crashkernel /proc/cmdline<br>
+                        $ ls /var/crash/<br>
+                        $ crash vmlinux /var/crash/vmcore
                     </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usa la cache degli inode e dentry</em></p>
+                    <p style="font-size: 0.9em; color: #666;"><em>Dopo un kernel panic, kdump salva il vmcore che si analizza con crash</em></p>
                 </div>
             </div>
         </div>
@@ -449,63 +445,63 @@
     const quizQuestions = [
         {
             question: "Quale strumento permette il tracing dinamico del kernel?",
-            options: ["gdb", "ftrace", "strace", "ltrace"],
-            correct: 1,
+            options: ["gdb", "strace", "ftrace", "ltrace"],
+            correct: 2,
             explanation: "ftrace è il framework di tracing dinamico integrato nel kernel Linux che permette di catturare eventi in tempo reale."
         },
         {
             question: "Cosa misura principalmente il comando 'perf'?",
-            options: ["Utilizzo disco", "Prestazioni CPU e memoria", "Traffico di rete", "Consumo energetico"],
-            correct: 1,
+            options: ["Prestazioni CPU e memoria", "Traffico di rete", "Consumo energetico", "Utilizzo disco"],
+            correct: 0,
             explanation: "perf è uno strumento di profiling che misura le prestazioni del sistema, inclusi cicli CPU, cache miss e altri eventi hardware."
         },
         {
             question: "Quale strumento rileva memory leak nel kernel?",
-            options: ["kmemcheck", "kmemleak", "kasan", "kprobes"],
+            options: ["kmemcheck", "kmemleak", "kprobes", "kasan"],
             correct: 1,
             explanation: "kmemleak è uno strumento specifico per il rilevamento di memory leak nel kernel Linux."
         },
         {
             question: "Cosa permette di fare kgdb?",
-            options: ["Debug solo user space", "Debug remoto del kernel", "Analisi di crash dump", "Tracing di system call"],
-            correct: 1,
+            options: ["Debug solo user space", "Analisi di crash dump", "Tracing di system call", "Debug remoto del kernel"],
+            correct: 3,
             explanation: "kgdb permette il debugging remoto del kernel attraverso una connessione seriale o di rete."
         },
         {
-            question: "Quale comando cattura un dump della memoria in caso di kernel panic?",
-            options: ["kexec", "kdump", "crash", "kdb"],
+            question: "Quale meccanismo cattura un dump della memoria in caso di kernel panic?",
+            options: ["crash", "kdump", "perf", "ftrace"],
             correct: 1,
-            explanation: "kdump cattura un dump completo della memoria del sistema quando si verifica un kernel panic."
+            explanation: "kdump (basato su kexec) avvia un kernel di emergenza che salva il dump della memoria (vmcore) quando avviene un kernel panic; il dump si analizza poi con crash."
         },
         {
             question: "Cosa sono i kprobes?",
-            options: ["Kernel probes dinamici", "Kernel performance counters", "Kernel debug symbols", "Kernel trace buffers"],
+            options: ["Kernel probes dinamici", "Kernel trace buffers", "Kernel performance counters", "Kernel debug symbols"],
             correct: 0,
             explanation: "I kprobes sono probe dinamici che possono essere inseriti in qualsiasi punto del codice del kernel per debugging."
         },
         {
             question: "Quale strumento permette scripting per analisi dinamica del kernel?",
-            options: ["ftrace", "SystemTap", "perf", "kgdb"],
-            correct: 1,
+            options: ["kgdb", "perf", "SystemTap", "ftrace"],
+            correct: 2,
             explanation: "SystemTap permette di scrivere script per analisi dinamica del comportamento del kernel in esecuzione."
         },
         {
             question: "Cosa analizza il comando 'crash'?",
-            options: ["File di log del sistema", "Dump della memoria del kernel", "Prestazioni di rete", "Utilizzo delle risorse"],
-            correct: 1,
+            options: ["File di log del sistema", "Prestazioni di rete", "Utilizzo delle risorse", "Dump della memoria del kernel"],
+            correct: 3,
             explanation: "Il comando crash analizza i dump della memoria catturati con kdump per investigare kernel panic."
         },
         {
             question: "Quale strumento fornisce tracing a bassa latenza?",
-            options: ["ftrace", "LTTng", "perf", "strace"],
-            correct: 1,
+            options: ["strace", "ftrace", "perf", "LTTng"],
+            correct: 3,
             explanation: "LTTng (Linux Trace Toolkit Next Generation) fornisce tracing a bassa latenza per analisi dettagliate."
         },
         {
-            question: "Cosa permette KASAN?",
-            options: ["Kernel Address Sanitizer", "Kernel Analysis System", "Kernel Audit Subsystem", "Kernel Access Security"],
+            question: "Che cos'è KASAN?",
+            options: ["Kernel Address Sanitizer, uno strumento che rileva use-after-free e accessi fuori dai limiti", "Kernel Analysis System, un profiler hardware", "Kernel Audit Subsystem, che registra gli accessi ai file", "Kernel Access Security, un modulo LSM"],
             correct: 0,
-            explanation: "KASAN (Kernel Address Sanitizer) rileva bug di accesso alla memoria nel kernel, come use-after-free e out-of-bounds."
+            explanation: "KASAN (Kernel Address Sanitizer) individua a runtime bug di memoria nel kernel, come use-after-free e accessi out-of-bounds."
         }
     ];
 
@@ -530,7 +526,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -538,7 +534,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -591,7 +587,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -606,9 +602,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -617,7 +613,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -634,7 +630,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -652,7 +648,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

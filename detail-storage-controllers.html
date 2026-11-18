@@ -42,7 +42,7 @@
         <h2>🔍 Descrizione Tecnica</h2>
         <p><strong>I Storage Controllers sono il cervello del sottosistema di storage, orchestrando l'accesso intelligente ai dispositivi attraverso algoritmi di scheduling avanzati, caching multi-livello e ottimizzazioni prestazionali.</strong> Immagina un air traffic controller in un aeroporto affollato: coordina tutti gli aerei (richieste I/O), ottimizza le piste (dispositivi), gestisce le priorità e garantisce che tutto scorra senza collisioni.</p>
 
-        <p>• <strong>I/O scheduling</strong> - Algoritmi avanzati (CFQ, Deadline, Noop) per ottimizzare ordine richieste</p>
+        <p>• <strong>I/O scheduling</strong> - Algoritmi (mq-deadline, BFQ, Kyber, none) per ottimizzare l'ordine delle richieste</p>
         <p>• <strong>Request merging</strong> - Combina richieste adiacenti per ridurre seek time</p>
         <p>• <strong>Elevator algorithm</strong> - Ordinamento intelligente richieste per minimizzare spostamenti testina</p>
         <p>• <strong>Block layer abstraction</strong> - Interfaccia uniforme per tutti dispositivi a blocchi</p>
@@ -54,18 +54,18 @@
         <p><strong>I Storage Controllers gestiscono quattro aspetti fondamentali dell'orchestrazione I/O, ciascuno essenziale per prestazioni ottimali:</strong></p>
 
         <h3>📋 Request Queue Management</h3>
-        <p>• <strong>blk_init_queue()</strong> - Inizializza coda richieste per dispositivo</p>
+        <p>• <strong>blk_mq_init_queue()</strong> - Inizializza coda richieste per dispositivo</p>
         <p>• <strong>blk_queue_max_segments()</strong> - Configura limiti segmenti per richiesta</p>
-        <p>• <strong>elv_add_request()</strong> - Aggiunge richiesta alla coda elevator</p>
-        <p>• <strong>blk_start_request()</strong> - Avvia elaborazione richiesta</p>
-        <p>• <strong>blk_requeue_request()</strong> - Riaccoda richiesta per retry</p>
+        <p>• <strong>blk_mq_sched_insert_request()</strong> - Aggiunge richiesta alla coda elevator</p>
+        <p>• <strong>blk_mq_start_request()</strong> - Avvia elaborazione richiesta</p>
+        <p>• <strong>blk_mq_requeue_request()</strong> - Riaccoda richiesta per retry</p>
 
         <h3>🔀 I/O Scheduling</h3>
-        <p>• <strong>cfq_schedule_dispatch()</strong> - Scheduler Completely Fair Queuing</p>
-        <p>• <strong>deadline_schedule_dispatch()</strong> - Scheduler con deadline garantite</p>
-        <p>• <strong>noop_schedule_dispatch()</strong> - Scheduler semplice FIFO</p>
-        <p>• <strong>bfq_schedule_dispatch()</strong> - Budget Fair Queueing scheduler</p>
-        <p>• <strong>kyber_schedule_dispatch()</strong> - Scheduler basato latenza</p>
+        <p>• <strong>none</strong> - Nessun riordino (adatto a SSD NVMe)</p>
+        <p>• <strong>dd_dispatch_request()</strong> - Scheduler mq-deadline con latenze massime garantite</p>
+        <p>• <strong>blk_mq_sched_dispatch_requests()</strong> - Estrae le richieste dalla coda dello scheduler</p>
+        <p>• <strong>bfq_dispatch_request()</strong> - Budget Fair Queueing scheduler</p>
+        <p>• <strong>kyber_dispatch_request()</strong> - Scheduler basato latenza</p>
 
         <h3>🔗 Bio Operations</h3>
         <p>• <strong>bio_alloc()</strong> - Alloca struttura bio per richiesta I/O</p>
@@ -75,7 +75,7 @@
         <p>• <strong>bio_split()</strong> - Suddivide bio troppo grandi</p>
 
         <h3>🗂️ Device Mapping</h3>
-        <p>• <strong>dm_setup_md_dev()</strong> - Setup device mapper device</p>
+        <p>• <strong>dm_table_create()</strong> - Setup device mapper device</p>
         <p>• <strong>dm_table_add_target()</strong> - Aggiunge target alla tabella DM</p>
         <p>• <strong>dm_resume()</strong> - Riattiva device mapper device</p>
         <p>• <strong>dm_suspend()</strong> - Sospende device mapper device</p>
@@ -111,7 +111,7 @@
         <h3>🎯 Caso Reale: Accesso Disco RAID</h3>
         <p>Quando fai <code>dd if=/dev/md0 of=/dev/null bs=1M count=100</code>:</p>
         <ol>
-            <li>Il device mapper riceve la richiesta per /dev/md0</li>
+            <li>Il driver md (RAID software) riceve la richiesta per /dev/md0</li>
             <li>Traduce l'offset logico in posizioni fisiche sui dischi</li>
             <li>Il RAID controller distribuisce letture su dischi multipli</li>
             <li>I/O scheduler ottimizza ordine delle operazioni</li>
@@ -164,13 +164,13 @@
 
         <h3>📋 Request Queue Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">struct request_queue *blk_init_queue(request_fn_proc *rfn, spinlock_t *lock);</code><br>
+            <code style="color: #d32f2f; font-weight: bold;">struct request_queue *blk_mq_init_queue(struct blk_mq_tag_set *set);</code><br>
             <span style="color: #666; font-size: 0.9em;">Inizializza una coda di richieste per un dispositivo a blocchi.</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">void blk_queue_max_segments(struct request_queue *q, unsigned short max_segments);</code><br>
             <span style="color: #666; font-size: 0.9em;">Imposta il numero massimo di segmenti per richiesta.</span><br><br>
 
-            <code style="color: #f57c00; font-weight: bold;">void elv_add_request(struct request_queue *q, struct request *rq, int where);</code><br>
+            <code style="color: #f57c00; font-weight: bold;">void blk_mq_sched_insert_request(struct request *rq, bool at_head, bool run_queue, bool async);</code><br>
             <span style="color: #666; font-size: 0.9em;">Aggiunge una richiesta alla coda dell'elevator scheduler.</span>
         </div>
 
@@ -179,11 +179,11 @@
             <code style="color: #0288d1; font-weight: bold;">int elevator_change(struct request_queue *q, const char *name);</code><br>
             <span style="color: #666; font-size: 0.9em;">Cambia l'algoritmo di scheduling I/O per una coda.</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">void cfq_schedule_dispatch(struct request_queue *q);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scheduler CFQ: distribuisce equamente tempo I/O tra processi.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">struct request *bfq_dispatch_request(struct blk_mq_hw_ctx *hctx);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scheduler BFQ: distribuisce equamente il tempo I/O tra i processi.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">void deadline_schedule_dispatch(struct request_queue *q);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scheduler deadline: garantisce latenze massime per richieste.</span>
+            <code style="color: #2e7d32; font-weight: bold;">struct request *dd_dispatch_request(struct blk_mq_hw_ctx *hctx);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Scheduler mq-deadline: garantisce latenze massime per le richieste.</span>
         </div>
 
         <h3>🗂️ Device Mapping</h3>
@@ -201,10 +201,10 @@
         <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
         <p><strong>Quando accedi a un file su dispositivo RAID:</strong></p>
         <ol>
-            <li><code>blk_init_queue()</code> - Inizializza coda per dispositivo RAID</li>
+            <li><code>blk_mq_init_queue()</code> - Inizializza coda per dispositivo RAID</li>
             <li><code>elevator_change()</code> - Imposta scheduler appropriato</li>
             <li><code>dm_create()</code> - Crea dispositivo virtuale RAID</li>
-            <li><code>elv_add_request()</code> - Aggiunge richieste alla coda</li>
+            <li><code>blk_mq_sched_insert_request()</code> - Aggiunge richieste alla coda</li>
             <li>Controller distribuisce I/O su dischi fisici</li>
         </ol>
         <p><em>I storage controllers rendono trasparente la complessità del RAID e dell'I/O scheduling!</em></p>
@@ -261,16 +261,16 @@
             <!-- I/O Schedulers -->
             <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚖️ CFQ</div>
-                    <div style="font-size: 0.8em; color: #666;">Completely Fair Queuing</div>
+                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚖️ BFQ</div>
+                    <div style="font-size: 0.8em; color: #666;">Budget Fair Queueing</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">⏰ DEADLINE</div>
+                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">⏰ MQ-DEADLINE</div>
                     <div style="font-size: 0.8em; color: #666;">Guaranteed latency</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🚀 NOOP</div>
-                    <div style="font-size: 0.8em; color: #666;">Simple FIFO</div>
+                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🚀 NONE</div>
+                    <div style="font-size: 0.8em; color: #666;">Nessun riordino</div>
                 </div>
                 <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
                     <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🎯 KYBER</div>
@@ -332,7 +332,7 @@
             <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
                 <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
                 <ol style="line-height: 1.8;">
-                    <li><strong>1. Request reception:</strong> Device mapper riceve richiesta per /dev/md0</li>
+                    <li><strong>1. Request reception:</strong> Il driver md riceve la richiesta per /dev/md0</li>
                     <li><strong>2. Logical mapping:</strong> Traduce offset logico in posizioni fisiche sui dischi</li>
                     <li><strong>3. I/O scheduling:</strong> Elevator scheduler ordina richieste per ridurre seek</li>
                     <li><strong>4. RAID distribution:</strong> Distribuisce lettura su dischi data + calcolo parità</li>
@@ -355,8 +355,8 @@
                     <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Cambia I/O scheduler</h4>
                     <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                         $ cat /sys/block/sda/queue/scheduler<br>
-                        noop deadline [cfq] <br><br>
-                        $ echo deadline > /sys/block/sda/queue/scheduler<br>
+                        [mq-deadline] kyber bfq none <br><br>
+                        $ echo bfq | sudo tee /sys/block/sda/queue/scheduler<br>
                         $ cat /sys/block/sda/queue/scheduler
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Cambia algoritmo di scheduling I/O e osserva l'impatto</em></p>
@@ -412,7 +412,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔀</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">I/O Scheduling</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Algoritmi che riordinano le richieste I/O per ridurre seek time. CFQ distribuisce equamente, deadline garantisce latenze.
+                    Algoritmi che riordinano le richieste I/O per ridurre seek time. BFQ distribuisce equamente, mq-deadline garantisce latenze.
                 </p>
             </div>
 
@@ -456,63 +456,63 @@
                 const quizQuestions = [
         {
             question: "Quale è la funzione principale di un controller storage?",
-            options: ["Gestire l'interfaccia hardware con i dischi", "Comprimere i dati", "Fornire firewall", "Gestire la rete"],
-            correct: 0,
+            options: ["Fornire firewall", "Comprimere i dati", "Gestire l'interfaccia hardware con i dischi", "Gestire la rete"],
+            correct: 2,
             explanation: "Il controller gestisce la comunicazione con i dischi e le operazioni fisiche."
         },
         {
             question: "Cosa significa RAID 0?",
-            options: ["Striping senza ridondanza", "Mirror completo", "Striping con parità", "No redundancy"],
+            options: ["Striping dei dati su più dischi, senza ridondanza", "Striping con parità distribuita", "Doppia parità su tutti i dischi", "Mirroring completo dei dati"],
             correct: 0,
-            explanation: "RAID 0 distribuisce i dati su più dischi (striping) ma non ha ridondanza."
+            explanation: "RAID 0 distribuisce i dati a strisce su più dischi: migliora le prestazioni ma non ha ridondanza, quindi il guasto di un solo disco fa perdere i dati."
         },
         {
-            question: "Quale configurazione RAID fornisce massima ridondanza?",
-            options: ["RAID 0", "RAID 1", "RAID 5", "RAID 6"],
-            correct: 1,
-            explanation: "RAID 1 è mirror: ogni dato è duplicato su almeno due dischi."
+            question: "Quale livello RAID tollera la perdita di due dischi qualsiasi?",
+            options: ["RAID 5", "RAID 1 con due dischi", "RAID 0", "RAID 6"],
+            correct: 3,
+            explanation: "RAID 6 usa una doppia parità e sopravvive alla perdita di due dischi; RAID 5 ne tollera uno, RAID 1 a due dischi uno, RAID 0 nessuno."
         },
         {
             question: "Come calcola la parità RAID 5?",
-            options: ["XOR dei blocchi dati", "Somma dei blocchi", "Checksum", "Hash"],
-            correct: 0,
+            options: ["Checksum", "Somma dei blocchi", "Hash", "XOR dei blocchi dati"],
+            correct: 3,
             explanation: "RAID 5 usa XOR dei dati per calcolare blocchi di parità."
         },
         {
-            question: "Quale è l'overhead di spazio RAID 1?",
-            options: ["0%", "33%", "50%", "100%"],
-            correct: 3,
-            explanation: "RAID 1 raddoppia lo spazio usato (100% overhead) per la duplicazione."
-        },
-        {
-            question: "Quanti dischi è possibile perdere in RAID 6?",
-            options: ["1", "2", "3", "Dipende dal controller"],
-            correct: 1,
-            explanation: "RAID 6 usa doppia parità, permettendo la perdita di 2 dischi simultaneamente."
-        },
-        {
-            question: "Cosa rappresenta una 'hot spare' in RAID?",
-            options: ["Un disco di ricambio attivo", "Un disco freddo", "Un disco di cache", "Un disco secondario"],
+            question: "Quanta capacità utile offre un RAID 1 a due dischi uguali, rispetto alla capacità totale?",
+            options: ["50%", "100%", "75%", "33%"],
             correct: 0,
-            explanation: "Una hot spare è un disco di ricambio pronto che sostituisce automaticamente dischi difettosi."
+            explanation: "Nel mirroring ogni dato è scritto su entrambi i dischi, quindi la capacità utile è la metà di quella totale."
         },
         {
-            question: "Quale è il tempo di rebuild dopo guasto disco in RAID?",
-            options: ["Secondi", "Minuti", "Ore", "Variabile con capacità disco"],
-            correct: 3,
-            explanation: "Il rebuild RAID dipende dalla capacità totale e dalla velocità di I/O."
+            question: "Quale livello RAID combina mirroring e striping?",
+            options: ["RAID 5", "RAID 0", "RAID 10", "RAID 6"],
+            correct: 2,
+            explanation: "RAID 10 (1+0) crea coppie di dischi in mirroring e poi distribuisce i dati a strisce tra le coppie."
         },
         {
-            question: "Come comunica il controller con il driver via interrupt?",
-            options: ["Message signaled interrupts", "Edge triggered", "Level triggered", "Tutte le precedenti"],
-            correct: 3,
-            explanation: "I controller moderni supportano vari meccanismi di interrupt (MSI, edge, level)."
+            question: "Quale struttura del device mapper descrive un target come linear, striped o mirror?",
+            options: ["struct elevator_queue", "struct dm_target", "struct bio", "struct request_queue"],
+            correct: 1,
+            explanation: "struct dm_target rappresenta un target del device mapper (linear, striped, mirror...) all'interno della tabella di mapping."
         },
         {
-            question: "Quale metodo usa il controller per verificare integrità dei dati?",
-            options: ["RAID parity check", "Scrubbing", "Background init", "Tutte le precedenti"],
+            question: "Quale comando mostra lo stato degli array RAID software (md)?",
+            options: ["free -h", "cat /proc/mdstat", "lsmod", "df -h"],
+            correct: 1,
+            explanation: "/proc/mdstat elenca gli array md attivi, il loro livello RAID, i dischi componenti e lo stato di sincronizzazione."
+        },
+        {
+            question: "Quale comando mostra lo scheduler I/O attivo di un disco?",
+            options: ["df -h", "lsmod", "cat /proc/mdstat", "cat /sys/block/sda/queue/scheduler"],
             correct: 3,
-            explanation: "I controller RAID moderni usano parity check, scrubbing e background init."
+            explanation: "Il file queue/scheduler del disco elenca gli scheduler disponibili e mostra tra parentesi quadre quello attivo."
+        },
+        {
+            question: "Quale framework del kernel è alla base di LVM, della cifratura dei dischi e di altri dispositivi logici?",
+            options: ["Device mapper", "VFS", "Page cache", "I/O scheduler"],
+            correct: 0,
+            explanation: "Il device mapper crea dispositivi a blocchi logici sopra quelli fisici; LVM e dm-crypt ne sono utilizzatori tipici."
         }
     ];
 
@@ -537,7 +537,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -545,7 +545,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -598,7 +598,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -613,9 +613,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -624,7 +624,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -641,7 +641,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -659,7 +659,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

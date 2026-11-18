@@ -77,7 +77,7 @@
         <h3>🔍 Allocazione Pagina</h3>
         <p>1. Sistema richiede pagina libera dal buddy allocator</p>
         <p>2. Buddy restituisce pagina con header struct page</p>
-        <p>3. Header inizializzato: flags=0, _refcount=1, _mapcount=0</p>
+        <p>3. Header inizializzato: flags=0, _refcount=1, _mapcount=-1 (nessun mapping)</p>
         <p>4. Pagina aggiunta alla zona appropriata (DMA, NORMAL, HIGHMEM)</p>
         <p>5. Header aggiornato quando pagina mappata in spazio virtuale</p>
 
@@ -112,9 +112,9 @@
 
         <h2>🔧 Zone di Memoria</h2>
         <ul>
-            <li><strong>ZONE_DMA</strong> - Pagine per DMA (0-16MB)</li>
-            <li><strong>ZONE_NORMAL</strong> - Pagine normali (16MB-896MB)</li>
-            <li><strong>ZONE_HIGHMEM</strong> - Pagine high memory (896MB+)</li>
+            <li><strong>ZONE_DMA</strong> - Pagine per DMA (0-16MB su x86)</li>
+            <li><strong>ZONE_NORMAL</strong> - Pagine normali (su x86 a 32 bit: 16MB-896MB; su 64 bit quasi tutta la RAM)</li>
+            <li><strong>ZONE_HIGHMEM</strong> - Pagine high memory (solo su sistemi a 32 bit, oltre 896MB)</li>
             <li><strong>ZONE_MOVABLE</strong> - Pagine hot-removable</li>
         </ul>
 
@@ -312,7 +312,7 @@
                     <div style="font-family: monospace; font-size: 0.9em;">
                         flags: PG_locked<br>
                         _refcount: 1<br>
-                        <span style="color: #666;">_mapcount: 0</span>
+                        <span style="color: #666;">_mapcount: -1</span>
                     </div>
                 </div>
             </div>
@@ -456,62 +456,62 @@
     const quizQuestions = [
         {
             question: "Cosa contiene struct page?",
-            options: ["Codice eseguibile", "Metadati per pagina fisica", "Dati utente", "Codice kernel"],
-            correct: 1,
+            options: ["Codice eseguibile", "Codice kernel", "Metadati per pagina fisica", "Dati utente"],
+            correct: 2,
             explanation: "struct page è l'header che contiene tutti i metadati per ogni pagina fisica: flags, reference count, mapping info, etc."
         },
         {
             question: "Cosa significa PG_dirty?",
-            options: ["Pagina libera", "Pagina modificata", "Pagina bloccata", "Pagina in cache"],
-            correct: 1,
+            options: ["Pagina libera", "Pagina in cache", "Pagina bloccata", "Pagina modificata"],
+            correct: 3,
             explanation: "PG_dirty indica che la pagina è stata modificata e deve essere scritta su disco prima di poter essere liberata."
         },
         {
             question: "Cosa fa get_page()?",
-            options: ["Libera pagina", "Decrementa refcount", "Incrementa refcount", "Marca pagina dirty"],
-            correct: 2,
+            options: ["Incrementa refcount", "Marca pagina dirty", "Decrementa refcount", "Libera pagina"],
+            correct: 0,
             explanation: "get_page() incrementa il reference count della pagina, impedendo che venga liberata mentre è in uso."
         },
         {
             question: "Quale zona è per DMA?",
-            options: ["ZONE_NORMAL", "ZONE_DMA", "ZONE_HIGHMEM", "ZONE_MOVABLE"],
+            options: ["ZONE_HIGHMEM", "ZONE_DMA", "ZONE_MOVABLE", "ZONE_NORMAL"],
             correct: 1,
             explanation: "ZONE_DMA contiene pagine utilizzabili per Direct Memory Access, tipicamente sotto i 16MB."
         },
         {
             question: "Cosa indica _mapcount?",
-            options: ["Pagine libere", "Mapping PTE attivi", "Pagine allocate", "Pagine in swap"],
-            correct: 1,
+            options: ["Mapping PTE attivi", "Pagine allocate", "Pagine in swap", "Pagine libere"],
+            correct: 0,
             explanation: "_mapcount indica quanti Page Table Entries (PTE) mappano attualmente questa pagina fisica."
         },
         {
-            question: "Quale comando mostra meminfo?",
-            options: ["free -h", "cat /proc/meminfo", "ps aux", "top"],
+            question: "Quale file mostra le statistiche generali sulla memoria del sistema (totale, libera, cache)?",
+            options: ["/proc/mounts", "/proc/meminfo", "/proc/cpuinfo", "/proc/devices"],
             correct: 1,
-            explanation: "cat /proc/meminfo mostra statistiche dettagliate sulla memoria del sistema, incluse pagine allocate per zona."
+            explanation: "/proc/meminfo mostra le statistiche generali (MemTotal, MemFree, Cached, SwapTotal...); le informazioni per zona sono in /proc/zoneinfo."
         },
         {
             question: "Cosa fa SetPageDirty()?",
-            options: ["Pulisce pagina", "Marca pagina modificata", "Blocca pagina", "Sblocca pagina"],
-            correct: 1,
+            options: ["Blocca pagina", "Pulisce pagina", "Marca pagina modificata", "Sblocca pagina"],
+            correct: 2,
             explanation: "SetPageDirty() marca la pagina come modificata, indicando che deve essere sincronizzata con il backing store."
         },
         {
             question: "Quale è la dimensione tipica di una pagina?",
-            options: ["1KB", "4KB", "64KB", "1MB"],
-            correct: 1,
+            options: ["64KB", "1KB", "1MB", "4KB"],
+            correct: 3,
             explanation: "La dimensione standard di una pagina è 4KB nella maggior parte delle architetture Linux."
         },
         {
             question: "Cosa gestisce il buddy allocator?",
-            options: ["Singole pagine", "Blocchi di pagine power-of-2", "Byte singoli", "File aperti"],
-            correct: 1,
+            options: ["Singole pagine", "Byte singoli", "File aperti", "Blocchi di pagine power-of-2"],
+            correct: 3,
             explanation: "Il buddy allocator gestisce allocazione di blocchi di pagine contigue di dimensioni power-of-2 (1, 2, 4, 8 pagine, etc.)."
         },
         {
             question: "Cosa significa PG_referenced?",
-            options: ["Pagina vecchia", "Pagina recentemente acceduta", "Pagina in errore", "Pagina mappata"],
-            correct: 1,
+            options: ["Pagina recentemente acceduta", "Pagina mappata", "Pagina in errore", "Pagina vecchia"],
+            correct: 0,
             explanation: "PG_referenced indica che la pagina è stata acceduta recentemente, influenzando decisioni di page reclamation."
         }
     ];
@@ -537,7 +537,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -545,7 +545,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -598,7 +598,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -613,9 +613,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -624,7 +624,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -641,7 +641,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -659,7 +659,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

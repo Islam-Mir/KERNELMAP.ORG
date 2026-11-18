@@ -40,7 +40,7 @@
         <p>Immagina il sottosistema MEMORY come un magazziniere esperto in un grande deposito: organizza gli scaffali (RAM fisica), tiene traccia di ogni oggetto (dati), ottimizza lo spazio (compression), e garantisce che ogni cliente (processo) abbia accesso solo ai propri beni (isolamento memoria).</p>
         
         <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>Il memory management implementa un'architettura complessa che include virtual memory, paging, swapping, memory mapping e meccanismi di protezione. Utilizza algoritmi sofisticati per l'allocazione dinamica, il garbage collection implicito e l'ottimizzazione delle prestazioni.</strong></p>
+        <p><strong>Il memory management implementa un'architettura complessa che include virtual memory, paging, swapping, memory mapping e meccanismi di protezione. Utilizza algoritmi sofisticati per l'allocazione dinamica, il reclaim della memoria e l'ottimizzazione delle prestazioni.</strong></p>
         <p>• <strong>Virtual Memory</strong> - Astrazione che permette programmi di usare più memoria di quella fisica disponibile</p>
         <p>• <strong>Demand Paging</strong> - Caricamento delle pagine in memoria solo quando necessario</p>
         <p>• <strong>Memory Protection</strong> - Isolamento tra processi per sicurezza e stabilità</p>
@@ -60,7 +60,7 @@
 <p>• <strong>mprotect()</strong> - Modifica protezione pagine virtuali</p>
 
 <h3>⚙️ Memory Management</h3>
-<p>• <strong>do_page_fault()</strong> - Gestione page fault e caricamento pagine</p>
+<p>• <strong>handle_mm_fault()</strong> - Gestione page fault e caricamento pagine</p>
 <p>• <strong>shrink_slab()</strong> - Reclamo memoria da cache kernel</p>
 <p>• <strong>oom_kill_process()</strong> - Terminazione processi in out-of-memory</p>
 
@@ -79,7 +79,7 @@
 <li><strong>vm_area_struct</strong> - Descrive regione memoria virtuale</li>
 <li><strong>page</strong> - Rappresenta pagina fisica di memoria</li>
 <li><strong>pte_t</strong> - Page table entry per traduzione indirizzi</li>
-<li><strong>slab_cache</strong> - Cache oggetti kernel per allocazioni frequenti</li>
+<li><strong>kmem_cache</strong> - Cache oggetti kernel per allocazioni frequenti</li>
 </ul>
 
 <h3>💻 Comandi Linux Essenziali</h3>
@@ -102,7 +102,7 @@
 
 <h2>💾 Supporto e Compatibilità Memory Management</h2>
         <ul>
-            <li><strong>Physical Memory</strong> - Supporto RAM fino a 128TB (x86-64)</li>
+            <li><strong>Physical Memory</strong> - Supporto RAM fino a 64TB (x86-64 con 4 livelli di paging)</li>
             <li><strong>NUMA</strong> - Non-Uniform Memory Access per sistemi multiprocessore</li>
             <li><strong>Huge Pages</strong> - Pagine grandi da 2MB/1GB per prestazioni</li>
             <li><strong>Transparent Huge Pages</strong> - THP per allocazioni automatiche</li>
@@ -437,56 +437,56 @@
         },
         {
             question: "Cosa significa demand paging?",
-            options: ["Allocazione immediata", "Caricamento lazy delle pagine", "Solo memoria fisica", "Swap obbligatorio"],
-            correct: 1,
+            options: ["Caricamento lazy delle pagine", "Solo memoria fisica", "Swap obbligatorio", "Allocazione immediata"],
+            correct: 0,
             explanation: "Demand paging carica pagine in memoria solo quando vengono effettivamente accedute, ottimizzando l'uso della RAM."
         },
         {
             question: "Quale struttura contiene info memoria processo?",
-            options: ["task_struct", "mm_struct", "page", "pte_t"],
-            correct: 1,
+            options: ["pte_t", "page", "task_struct", "mm_struct"],
+            correct: 3,
             explanation: "mm_struct contiene tutte le informazioni sulla gestione memoria di un processo: spazi virtuali, page table, statistiche."
         },
         {
-            question: "Cosa permette la memoria virtuale?",
-            options: ["Solo processi singoli", "Isolamento tra processi", "Solo memoria fisica", "Solo swapping"],
+            question: "Quale meccanismo permette di spostare su disco le pagine poco usate quando la RAM è piena?",
+            options: ["NUMA", "Swap", "DMA", "TLB"],
             correct: 1,
-            explanation: "La memoria virtuale garantisce isolamento tra processi attraverso spazi di indirizzamento separati."
+            explanation: "Lo swap permette al kernel di spostare su disco (o in RAM compressa) le pagine anonime meno usate, liberando RAM per altri usi."
         },
         {
-            question: "Quale comando mostra uso memoria?",
-            options: ["ps", "top", "free", "df"],
-            correct: 2,
-            explanation: "free mostra l'utilizzo totale della memoria: RAM totale, usata, libera, buffer/cache."
+            question: "Quale comando mostra un riepilogo di memoria totale, usata, libera e buff/cache?",
+            options: ["free -h", "ls -l", "df -h", "uname -r"],
+            correct: 0,
+            explanation: "free -h mostra RAM e swap totali, usate e libere, più buff/cache e memoria disponibile, in formato leggibile."
         },
         {
             question: "Cosa fa l'OOM killer?",
-            options: ["Ottimizza memoria", "Termina processi in out-of-memory", "Aumenta RAM", "Disabilita swap"],
-            correct: 1,
+            options: ["Ottimizza memoria", "Disabilita swap", "Termina processi in out-of-memory", "Aumenta RAM"],
+            correct: 2,
             explanation: "L'OOM killer termina processi quando il sistema è in out-of-memory per liberare risorse."
         },
         {
             question: "Cosa accelera la page cache?",
-            options: ["Solo scrittura", "Accessi successivi a file", "Solo memoria fisica", "Solo processi kernel"],
-            correct: 1,
+            options: ["Solo scrittura", "Solo processi kernel", "Accessi successivi a file", "Solo memoria fisica"],
+            correct: 2,
             explanation: "La page cache mantiene copie di dati file in RAM per accelerare accessi successivi."
         },
         {
-            question: "Quale API alloca memoria kernel?",
-            options: ["malloc", "kmalloc", "vmalloc", "brk"],
-            correct: 1,
-            explanation: "kmalloc alloca memoria per il kernel usando slab allocator, ottimizzato per piccole allocazioni frequenti."
+            question: "Quale API alloca memoria fisicamente contigua per il kernel, usando lo slab allocator per le piccole dimensioni?",
+            options: ["malloc()", "brk()", "kmalloc()", "mmap()"],
+            correct: 2,
+            explanation: "kmalloc() è l'API principale per allocare memoria nel kernel (piccole dimensioni, fisicamente contigua); malloc(), brk() e mmap() sono interfacce dello spazio utente."
         },
         {
             question: "Cosa permette overcommit?",
-            options: ["Solo memoria fisica", "Allocazione oltre RAM disponibile", "Solo processi root", "Disabilita swapping"],
-            correct: 1,
+            options: ["Disabilita swapping", "Solo memoria fisica", "Solo processi root", "Allocazione oltre RAM disponibile"],
+            correct: 3,
             explanation: "L'overcommit permette di allocare più memoria virtuale di quella fisica disponibile, affidandosi al lazy allocation."
         },
         {
             question: "Quale comando monitora swapping?",
-            options: ["free", "vmstat", "iostat", "ps"],
-            correct: 1,
+            options: ["ps", "iostat", "free", "vmstat"],
+            correct: 3,
             explanation: "vmstat mostra statistiche memoria in tempo reale, inclusi swap in/out e pressione memoria."
         }
     ];
@@ -512,7 +512,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -520,7 +520,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -573,7 +573,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -588,9 +588,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -599,7 +599,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -616,7 +616,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -634,7 +634,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

@@ -17,18 +17,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virtual Memory - Dettagli</title>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-GW3S1CKY7Q');
-    </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-         crossorigin="anonymous"></script>
-     
+   
     <!--Libreria css per pagine-->
     <link rel="stylesheet" href="style_pages.css">
     
@@ -394,7 +383,7 @@
                         HugePages_Total:       0<br>
                         HugePages_Free:        0<br>
                         HugePages_Rsvd:        0<br>
-                        $ echo 1 > /proc/sys/vm/nr_hugepages<br>
+                        $ echo 1 | sudo tee /proc/sys/vm/nr_hugepages<br>
                     </div>
                     <p style="font-size: 0.9em; color: #666;"><em>Abilita e monitora huge pages per prestazioni</em></p>
                 </div>
@@ -407,7 +396,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
                 <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Page Tables</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Strutture dati gerarchiche che mappano indirizzi virtuali a fisici. Su x86-64 sono 4 livelli per supportare spazi di indirizzamento vasti ed efficienti.
+                    Strutture dati gerarchiche che mappano indirizzi virtuali a fisici. Su x86-64 sono 4 livelli (5 sui sistemi con LA57) per supportare spazi di indirizzamento vasti ed efficienti.
                 </p>
             </div>
 
@@ -458,46 +447,40 @@
     // Quiz functionality
     const quizQuestions = [
         {
-            question: "Cosa è la Virtual Memory?",
-            options: ["Memoria fisica del sistema", "Spazio indirizzamento virtuale più grande della RAM", "Cache della CPU", "Disco rigido"],
-            correct: 1,
-            explanation: "La Virtual Memory permette processi di usare indirizzi virtuali più grandi della memoria fisica disponibile."
+            question: "Cosa è la memoria virtuale?",
+            options: ["Lo spazio su disco riservato ai file", "La memoria fisica installata nel sistema", "La cache della CPU", "Un meccanismo che dà a ogni processo uno spazio di indirizzamento privato, tradotto in indirizzi fisici"],
+            correct: 3,
+            explanation: "La memoria virtuale permette a ogni processo di usare indirizzi virtuali privati: MMU e page table li traducono in indirizzi fisici, con isolamento, demand paging e swap."
         },
         {
             question: "Qual è la dimensione standard di una pagina su x86-64?",
-            options: ["1 KB", "2 KB", "4 KB", "8 KB"],
+            options: ["2 KB", "8 KB", "4 KB", "1 KB"],
             correct: 2,
             explanation: "La dimensione standard di una pagina su x86-64 è 4 KB (4096 bytes)."
         },
         {
             question: "Cosa fa il Copy-on-Write?",
-            options: ["Copia immediatamente le pagine", "Condivide pagine fino alla modifica", "Elimina pagine inutilizzate", "Comprime la memoria"],
+            options: ["Comprime la memoria", "Condivide pagine fino alla modifica", "Elimina pagine inutilizzate", "Copia immediatamente le pagine"],
             correct: 1,
             explanation: "Copy-on-Write permette condivisione memoria fino al primo tentativo di scrittura, ottimizzando fork()."
         },
         {
-            question: "Quanti livelli hanno le page tables su x86-64?",
-            options: ["2 livelli", "3 livelli", "4 livelli", "5 livelli"],
+            question: "Quanti livelli di page table usa tipicamente Linux su x86-64 (senza LA57)?",
+            options: ["3 livelli", "6 livelli", "4 livelli (PGD, PUD, PMD, PTE)", "2 livelli"],
             correct: 2,
-            explanation: "Le page tables su x86-64 hanno 4 livelli: PGD, PUD, PMD, PTE."
+            explanation: "Su x86-64 a 48 bit Linux usa 4 livelli: PGD, PUD, PMD e PTE. Con l'estensione LA57 (57 bit) se ne aggiunge un quinto."
         },
         {
             question: "Cosa rappresenta una VMA?",
-            options: ["Una singola pagina fisica", "Una regione contigua di memoria virtuale", "Un processo in esecuzione", "Un file system"],
-            correct: 1,
+            options: ["Una singola pagina fisica", "Un file system", "Un processo in esecuzione", "Una regione contigua di memoria virtuale"],
+            correct: 3,
             explanation: "Una VMA (vm_area_struct) rappresenta una regione contigua di memoria virtuale con stessi permessi."
         },
         {
             question: "Qual è il vantaggio principale del Demand Paging?",
-            options: ["Aumenta velocità CPU", "Carica pagine solo quando necessarie", "Elimina page fault", "Raddoppia memoria"],
-            correct: 1,
+            options: ["Raddoppia memoria", "Elimina page fault", "Carica pagine solo quando necessarie", "Aumenta velocità CPU"],
+            correct: 2,
             explanation: "Demand paging carica pagine in memoria solo quando accedute, permettendo programmi più grandi della RAM."
-        },
-        {
-            question: "Cosa accelera il TLB?",
-            options: ["CPU clock", "Cache traduzioni indirizzi", "RAM speed", "Disco velocità"],
-            correct: 1,
-            explanation: "Il TLB (Translation Lookaside Buffer) è una cache che memorizza traduzioni recenti di indirizzi virtuali."
         },
         {
             question: "Cosa è lo swapping?",
@@ -506,34 +489,22 @@
             explanation: "Lo swapping sposta pagine dalla RAM al disco quando la memoria fisica è insufficiente."
         },
         {
-            question: "Cosa permette ASLR?",
-            options: ["Velocità", "Sicurezza contro buffer overflow", "Semplicità", "Compatibilità"],
-            correct: 1,
-            explanation: "ASLR (Address Space Layout Randomization) randomizza posizioni memoria per rendere più difficili gli exploit."
-        },
-        {
-            question: "Cosa sono le Huge Pages?",
-            options: ["Pagine piccole", "Pagine grandi (2MB/1GB)", "Pagine vuote", "Pagine di swap"],
-            correct: 1,
-            explanation: "Huge pages sono pagine di grandi dimensioni che riducono TLB misses e migliorano prestazioni."
+            question: "Quale parametro di /proc/sys/vm/ controlla il numero di huge pages riservate?",
+            options: ["nr_hugepages", "overcommit_memory", "swappiness", "dirty_ratio"],
+            correct: 0,
+            explanation: "vm.nr_hugepages imposta quante huge pages (di norma da 2MB) il kernel riserva; le huge pages riducono i TLB miss e il costo di gestione delle page table."
         },
         {
             question: "Cosa fa mmap()?",
-            options: ["Chiude file", "Mappa file in memoria virtuale", "Crea processi", "Gestisce rete"],
+            options: ["Chiude file", "Mappa file in memoria virtuale", "Gestisce rete", "Crea processi"],
             correct: 1,
             explanation: "mmap() mappa un file o dispositivo direttamente nello spazio di indirizzi virtuali del processo."
         },
         {
             question: "Cosa controlla swappiness?",
-            options: ["Velocità CPU", "Aggressività dello swap", "Dimensione pagine", "Numero processi"],
-            correct: 1,
+            options: ["Aggressività dello swap", "Numero processi", "Velocità CPU", "Dimensione pagine"],
+            correct: 0,
             explanation: "Swappiness controlla quanto aggressivamente il kernel sposta pagine dalla RAM al disco."
-        },
-        {
-            question: "Perché la memoria virtuale è importante?",
-            options: ["Solo per sicurezza", "Permette isolamento processi e memoria efficiente", "Rallenta programmi", "Complica programmazione"],
-            correct: 1,
-            explanation: "La memoria virtuale permette isolamento processi, gestione efficiente memoria e spazi di indirizzamento privati."
         }
     ];
 
@@ -558,7 +529,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -566,7 +537,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -619,7 +590,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -634,9 +605,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -645,7 +616,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color, buttonText, buttonAction;
         if (score >= 4) {
@@ -668,7 +639,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 ${buttonHtml}
@@ -684,7 +655,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

@@ -54,7 +54,7 @@
 <p>• <strong>context_switch()</strong> - Cambia contesto tra processi</p>
 
 <h3>⚙️ Interrupt Management</h3>
-<p>• <strong>do_IRQ()</strong> - Gestisce interruzioni hardware</p>
+<p>• <strong>common_interrupt()</strong> - Gestisce interruzioni hardware (x86; il nome varia per architettura)</p>
 <p>• <strong>local_bh_enable()</strong> - Abilita softirq locali</p>
 
 <h3>⚙️ CPU Architecture</h3>
@@ -102,6 +102,7 @@
             <li><strong>ARM</strong> - Architettura mobile e embedded</li>
             <li><strong>RISC-V</strong> - Architettura open-source</li>
             <li><strong>PowerPC</strong> - Architettura IBM enterprise</li>
+            <li><strong>MIPS, s390, LoongArch e altre</strong> - Molte altre architetture sono supportate</li>
             <li><strong>SMP</strong> - Symmetric Multi-Processing</li>
         </ul>
 
@@ -143,24 +144,24 @@
             <span style="color: #666; font-size: 0.9em;">Esegue il cambio di contesto tra due processi, salvando e ripristinando lo stato CPU.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">void schedule_preempt_disabled(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scheduler che non permette preemption durante l'esecuzione.</span>
+            <span style="color: #666; font-size: 0.9em;">Riabilita la preemption, chiama schedule() e la disabilita di nuovo al ritorno (usata da codice che deve restare non-preemptible).</span>
         </div>
 
         <h3>📊 CPU Management</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
             <code style="color: #0288d1; font-weight: bold;">int smp_call_function(smp_call_func_t func, void *info, int wait);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Esegue una funzione su tutte le CPU del sistema SMP.</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Esegue una funzione su tutte le altre CPU del sistema SMP (esclusa quella corrente).</span><br><br>
 
-            <code style="color: #d32f2f; font-weight: bold;">void cpu_idle(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Loop principale per CPU inattive, gestisce stati di risparmio energetico.</span><br><br>
+            <code style="color: #d32f2f; font-weight: bold;">void arch_cpu_idle(void);</code><br>
+            <span style="color: #666; font-size: 0.9em;">Fa entrare la CPU in uno stato di idle; è richiamata dal loop di idle generico, che gestisce il risparmio energetico.</span><br><br>
 
-            <code style="color: #2e7d32; font-weight: bold;">int cpu_down(unsigned int cpu);</code><br>
+            <code style="color: #2e7d32; font-weight: bold;">int remove_cpu(unsigned int cpu);</code><br>
             <span style="color: #666; font-size: 0.9em;">Disattiva una CPU in sistemi SMP per manutenzione o risparmio energetico.</span>
         </div>
 
         <h3>💽 Interrupt Handling</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">irqreturn_t request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags, const char *name, void *dev);</code><br>
+            <code style="color: #f57c00; font-weight: bold;">int request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags, const char *name, void *dev);</code><br>
             <span style="color: #666; font-size: 0.9em;">Registra un handler per una linea di interrupt hardware.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">void local_bh_enable(void);</code><br>
@@ -172,8 +173,8 @@
 <ol>
 <li><code>schedule()</code> - Chiamata esplicita allo scheduler</li>
 <li><code>request_irq(irq, handler, 0, "mydev", dev)</code> - Registra interrupt handler</li>
-<li><code>smp_call_function(func, NULL, 1)</code> - Esegue funzione su tutte CPU</li>
-<li><code>cpu_down(cpu_id)</code> - Disattiva CPU specifica</li>
+<li><code>smp_call_function(func, NULL, 1)</code> - Esegue funzione su tutte le altre CPU</li>
+<li><code>remove_cpu(cpu_id)</code> - Disattiva CPU specifica</li>
 </ol>
 <p><em>Queste API formano la base per la gestione CPU nel kernel Linux.</em></p>
 
@@ -229,7 +230,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • CFS (Completely Fair Scheduler)<br>
+                    • CFS/EEVDF (scheduler fair)<br>
                     • Real-time scheduling<br>
                     • SMP load balancing
                 </div>
@@ -289,7 +290,7 @@
         <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
         <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
         <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Timer Interrupt</div>
-        <div style="font-family: monospace; font-size: 0.9em;">Timer hardware interrompe processo corrente ogni 1-10ms</div>
+        <div style="font-family: monospace; font-size: 0.9em;">Timer hardware interrompe processo corrente a ogni tick (1-4 ms con HZ 250-1000)</div>
         </div>
         
         <div style="font-size: 2em; color: #f57c00;">⚡</div>
@@ -301,13 +302,13 @@
         </div>
         
         <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <strong>Processo eseguito:</strong> Il timer hardware genera interrupt periodici che permettono al kernel di interrompere processi, salvare il loro stato (registri, stack pointer, memoria virtuale) e selezionare il prossimo processo da eseguire attraverso lo scheduler CFS.
+        <strong>Processo eseguito:</strong> Il timer hardware genera interrupt periodici che permettono al kernel di interrompere processi, salvare il loro stato (registri, stack pointer, memoria virtuale) e selezionare il prossimo processo da eseguire attraverso lo scheduler (CFS/EEVDF).
         </div>
         
         <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
         <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Ciclo di scheduling CPU:</h4>
         <ol style="line-height: 1.8;">
-        <li><strong>1. Timer Tick</strong> - Interrupt timer ogni millisecondi</li>
+        <li><strong>1. Timer Tick</strong> - Interrupt timer ogni 1-4 millisecondi (HZ 250-1000)</li>
         <li><strong>2. Preemption Check</strong> - Verifica se processo deve essere interrotto</li>
         <li><strong>3. State Save</strong> - Salva registri e stack del processo corrente</li>
         <li><strong>4. Scheduler Run</strong> - Seleziona prossimo processo dalla runqueue</li>
@@ -317,7 +318,7 @@
         </div>
         
         <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-        <strong>🎯 Risultato:</strong> Multipli processi sembrano eseguire simultaneamente grazie al rapidissimo context switching (milioni di operazioni al secondo), garantendo fairness e responsiveness del sistema.
+        <strong>🎯 Risultato:</strong> Multipli processi sembrano eseguire simultaneamente grazie al rapido context switching (decine di migliaia di cambi di contesto al secondo), garantendo fairness e responsiveness del sistema.
         </div>
         </div>
 
@@ -379,8 +380,8 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
         <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚖️</div>
-        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Completely Fair Scheduler</h4>
-        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Scheduler Linux che garantisce fairness assegnando tempo CPU proporzionale alla priorità, usando red-black tree per efficienza O(log n).</p>
+        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">CFS / EEVDF (scheduler fair)</h4>
+        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Scheduler Linux che garantisce fairness assegnando tempo CPU proporzionale alla priorità, usando red-black tree per efficienza O(log n). Era il CFS fino al kernel 6.5; dal 6.6 è sostituito da EEVDF.</p>
         </div>
         
         <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
@@ -398,7 +399,7 @@
         <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
         <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🏗️</div>
         <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Runqueue</h4>
-        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Struttura dati che mantiene i processi pronti per l'esecuzione, organizzata per priorità e fairness nel Completely Fair Scheduler.</p>
+        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Struttura dati che mantiene i processi pronti per l'esecuzione, una per CPU; per la classe fair è un red-black tree ordinato per virtual runtime (CFS/EEVDF).</p>
         </div>
         </div>
 </div>
@@ -414,8 +415,6 @@
         </div>
     </div>
 
-    </ul>
-
     <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
         © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
 </div>
@@ -424,63 +423,63 @@
     // Quiz functionality
     const quizQuestions = [
         {
-            question: "Cosa fa il Completely Fair Scheduler (CFS)?",
-            options: ["Assegna priorità fissa ai processi", "Garantisce tempo CPU proporzionale alla priorità", "Blocca processi ad alta priorità", "Ignora la priorità dei processi"],
+            question: "Cosa fa lo scheduler fair di Linux (CFS, poi EEVDF)?",
+            options: ["Blocca processi ad alta priorità", "Garantisce tempo CPU proporzionale alla priorità", "Assegna priorità fissa ai processi", "Ignora la priorità dei processi"],
             correct: 1,
-            explanation: "Il CFS garantisce fairness assegnando tempo CPU proporzionale alla priorità di ogni processo."
+            explanation: "Il CFS (e dal kernel 6.6 EEVDF) garantisce fairness assegnando tempo CPU in proporzione alla priorità (peso) di ogni processo."
         },
         {
-            question: "Cosa succede durante un context switch?",
-            options: ["La CPU si spegne", "Si salva e ripristina lo stato dei registri", "Si cancella la memoria", "Si chiude il processo"],
-            correct: 1,
-            explanation: "Durante context switch si salvano registri, stack pointer e stato del processo corrente per ripristinarlo dopo."
-        },
-        {
-            question: "Quale comando mostra l'utilizzo CPU per processo?",
-            options: ["ps", "free", "top", "df"],
+            question: "Quale componente hardware genera gli interrupt periodici che permettono al kernel di riprendere il controllo della CPU?",
+            options: ["Tastiera", "Scheda audio", "Timer hardware", "Disco rigido"],
             correct: 2,
-            explanation: "top mostra in tempo reale l'utilizzo CPU e memoria per ogni processo in esecuzione."
+            explanation: "Il timer hardware genera interrupt periodici (tick): il kernel li usa per aggiornare i contatori di tempo e decidere se rischedulare."
+        },
+        {
+            question: "Quale comando mostra in tempo reale l'utilizzo CPU di ogni processo?",
+            options: ["df", "free", "ps", "top"],
+            correct: 3,
+            explanation: "top si aggiorna di continuo e mostra %CPU e memoria per processo; ps fornisce invece una fotografia istantanea."
         },
         {
             question: "Cosa contiene /proc/cpuinfo?",
-            options: ["Processi in esecuzione", "Informazioni tecniche CPU", "File aperti", "Configurazione rete"],
-            correct: 1,
+            options: ["File aperti", "Configurazione rete", "Informazioni tecniche CPU", "Processi in esecuzione"],
+            correct: 2,
             explanation: "/proc/cpuinfo contiene dettagli tecnici di ogni CPU/core: modello, frequenza, cache, flags supportati."
         },
         {
             question: "Quale funzione kernel seleziona il prossimo processo?",
-            options: ["fork()", "exec()", "schedule()", "exit()"],
-            correct: 2,
+            options: ["fork()", "schedule()", "exit()", "exec()"],
+            correct: 1,
             explanation: "schedule() è la funzione principale dello scheduler che seleziona il prossimo processo da eseguire."
         },
         {
             question: "Cosa misura il time quantum?",
-            options: ["Velocità CPU", "Tempo massimo esecuzione processo", "Dimensione memoria", "Numero di core"],
-            correct: 1,
+            options: ["Velocità CPU", "Numero di core", "Dimensione memoria", "Tempo massimo esecuzione processo"],
+            correct: 3,
             explanation: "Il time quantum è il tempo massimo concesso a un processo prima di poter essere preempted."
         },
         {
-            question: "Quale architettura CPU NON è supportata da Linux?",
-            options: ["x86", "ARM", "PowerPC", "MIPS non è supportata"],
+            question: "Cosa significa SMP nel contesto del kernel Linux?",
+            options: ["Shared Memory Protocol", "Single Memory Processing", "Secure Multi-Process", "Symmetric Multi-Processing"],
             correct: 3,
-            explanation: "Linux supporta x86, ARM, PowerPC, RISC-V e molte altre architetture, ma non MIPS nella versione standard."
+            explanation: "SMP (Symmetric Multi-Processing) indica sistemi con più CPU/core che condividono la stessa memoria e sono gestiti allo stesso modo dal kernel."
         },
         {
             question: "Cosa fa mpstat?",
-            options: ["Misura prestazioni disco", "Mostra statistiche CPU per core", "Monitora processi", "Configura rete"],
-            correct: 1,
+            options: ["Mostra statistiche CPU per core", "Misura prestazioni disco", "Monitora processi", "Configura rete"],
+            correct: 0,
             explanation: "mpstat mostra statistiche dettagliate di utilizzo CPU per ogni core in sistemi multiprocessore."
         },
         {
             question: "Quale struttura dati gestisce i processi pronti?",
-            options: ["Stack", "Heap", "Runqueue", "Cache"],
-            correct: 2,
+            options: ["Runqueue", "Cache", "Stack", "Heap"],
+            correct: 0,
             explanation: "La runqueue è la struttura dati che mantiene tutti i processi pronti per l'esecuzione."
         },
         {
             question: "Cosa permette l'Hyper-Threading?",
-            options: ["Eseguire più OS", "Thread logici simultanei", "Aumentare frequenza", "Ridurre consumo"],
-            correct: 1,
+            options: ["Aumentare frequenza", "Ridurre consumo", "Thread logici simultanei", "Eseguire più OS"],
+            correct: 2,
             explanation: "L'Hyper-Threading permette l'esecuzione simultanea di thread logici sulla stessa CPU fisica."
         }
     ];
@@ -506,7 +505,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -514,7 +513,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -567,7 +566,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -582,9 +581,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -593,7 +592,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -610,7 +609,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -628,7 +627,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

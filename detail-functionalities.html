@@ -54,7 +54,7 @@
         <p><strong>Il kernel Linux organizza le sue funzionalità in diverse aree specializzate:</strong></p>
 
         <h3>🚀 Process Management</h3>
-        <p>• <strong>Process scheduling</strong> - Algoritmi di scheduling (CFS, RT, deadline)</p>
+        <p>• <strong>Process scheduling</strong> - Algoritmi di scheduling (CFS/EEVDF, RT, deadline)</p>
         <p>• <strong>Process lifecycle</strong> - fork, exec, exit, wait</p>
         <p>• <strong>Inter-process communication</strong> - pipe, signal, shared memory</p>
         <p>• <strong>Synchronization</strong> - mutex, semaphore, futex</p>
@@ -69,7 +69,7 @@
         <p>• <strong>TCP/IP stack</strong> - Implementazione completa dei protocolli</p>
         <p>• <strong>Socket API</strong> - Interfaccia BSD socket</p>
         <p>• <strong>Network devices</strong> - Driver per schede di rete</p>
-        <p>• <strong>Firewall</strong> - Netfilter e iptables</p>
+        <p>• <strong>Firewall</strong> - Netfilter con nftables (e iptables legacy)</p>
 
         <h3>💽 Storage & Filesystems</h3>
         <p>• <strong>Virtual File System</strong> - Astrazione unificata dei filesystem</p>
@@ -81,9 +81,9 @@
         <p><strong>Quando lanci un'applicazione come Firefox, ecco cosa succede nelle funzionalità del kernel:</strong></p>
 
         <h3>🔍 Avvio Applicazione</h3>
-        <p>1. Il loader carica l'eseguibile in memoria (memory management)</p>
-        <p>2. Viene creato un nuovo processo con fork() (process management)</p>
-        <p>3. exec() sostituisce l'immagine del processo (process management)</p>
+        <p>1. La shell crea un nuovo processo con fork() (process management)</p>
+        <p>2. exec() carica il nuovo programma e sostituisce l'immagine del processo (process management)</p>
+        <p>3. Il loader dinamico mappa il programma e le librerie condivise in memoria (memory management)</p>
         <p>4. Vengono allocati stack e heap (memory management)</p>
         <p>5. Si stabiliscono connessioni di rete (networking)</p>
 
@@ -100,7 +100,7 @@
         <ul>
             <li><code>ps aux</code> - Mostra tutti i processi attivi</li>
             <li><code>free -h</code> - Visualizza uso della memoria</li>
-            <li><code>netstat -tuln</code> - Mostra connessioni di rete</li>
+            <li><code>ss -tuln</code> - Mostra i socket in ascolto</li>
             <li><code>df -h</code> - Mostra filesystem montati</li>
             <li><code>top</code> - Monitora processi e risorse</li>
         </ul>
@@ -129,7 +129,7 @@
             <li><strong>Scalabilità</strong> - Supporto da embedded a supercomputer</li>
             <li><strong>Stabilità</strong> - Architettura robusta e fault-tolerant</li>
             <li><strong>Performance</strong> - Ottimizzazioni per bassa latenza</li>
-            <li><strong>Sicurezza</strong> - Modello di sicurezza Mandatory Access Control</li>
+            <li><strong>Sicurezza</strong> - Modello DAC (utenti/gruppi) con Mandatory Access Control opzionale (SELinux, AppArmor)</li>
         </ul>
 
         <h2>🔗 Interazioni tra Funzionalità</h2>
@@ -179,7 +179,7 @@
             <span style="color: #666; font-size: 0.9em;">Mappa un file o crea memoria condivisa nello spazio degli indirizzi.</span><br><br>
 
             <code style="color: #d32f2f; font-weight: bold;">void *malloc(size_t size);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Alloca memoria dinamica (glibc wrapper attorno a brk/sbrk).</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Alloca memoria dinamica (funzione di libreria glibc che usa brk e mmap).</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">int mprotect(void *addr, size_t len, int prot);</code><br>
             <span style="color: #666; font-size: 0.9em;">Modifica la protezione di una regione di memoria.</span>
@@ -351,7 +351,7 @@
                     <li><strong>2. Memory Allocation:</strong> mmap() riserva spazio per codice e dati</li>
                     <li><strong>3. Thread Management:</strong> clone() crea thread per rendering e I/O</li>
                     <li><strong>4. Network Setup:</strong> socket() per connessioni HTTP/HTTPS</li>
-                    <li><strong>5. Scheduling:</strong> CFS scheduler distribuisce tempo CPU</li>
+                    <li><strong>5. Scheduling:</strong> lo scheduler fair (CFS/EEVDF) distribuisce tempo CPU</li>
                 </ol>
             </div>
 
@@ -433,7 +433,7 @@
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌐</div>
                 <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Networking</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Stack TCP/IP completo con supporto per tutti i protocolli moderni. Socket API fornisce interfaccia standard per comunicazione di rete.
+                    Stack TCP/IP completo con supporto per i principali protocolli di rete. Socket API fornisce interfaccia standard per comunicazione di rete.
                 </p>
             </div>
 
@@ -469,63 +469,63 @@
     const quizQuestions = [
         {
             question: "Cosa fa principalmente il kernel Linux?",
-            options: ["Gestisce l'interfaccia grafica", "Coordina risorse hardware e software", "Esegue programmi utente", "Gestisce solo la rete"],
+            options: ["Esegue programmi utente", "Coordina risorse hardware e software", "Gestisce solo la rete", "Gestisce l'interfaccia grafica"],
             correct: 1,
             explanation: "Il kernel coordina tutte le risorse del sistema: processi, memoria, dispositivi, rete, fornendo un'interfaccia stabile alle applicazioni."
         },
         {
-            question: "Quale system call crea un nuovo processo?",
-            options: ["exec()", "fork()", "wait()", "kill()"],
-            correct: 1,
-            explanation: "fork() crea un nuovo processo duplicando quello corrente. Il nuovo processo è identico ma ha un PID diverso."
+            question: "Quale area funzionale del kernel gestisce filesystem come ext4, btrfs e xfs?",
+            options: ["Storage &amp; Filesystems", "Process Management", "Networking", "Security Framework"],
+            correct: 0,
+            explanation: "Storage &amp; Filesystems comprende il Virtual File System, il block layer e i driver dei singoli filesystem (ext4, btrfs, xfs, nfs...)."
         },
         {
             question: "Cosa gestisce il memory management del kernel?",
-            options: ["Solo RAM fisica", "Spazio virtuale e fisico con paging", "Solo dispositivi USB", "File di configurazione"],
-            correct: 1,
+            options: ["Solo RAM fisica", "File di configurazione", "Solo dispositivi USB", "Spazio virtuale e fisico con paging"],
+            correct: 3,
             explanation: "Il memory management gestisce memoria virtuale (isolamento processi) e fisica (allocazione efficiente) attraverso paging e swapping."
         },
         {
             question: "Quale componente gestisce la comunicazione di rete?",
-            options: ["Process scheduler", "TCP/IP stack", "Memory allocator", "Filesystem driver"],
-            correct: 1,
-            explanation: "Il TCP/IP stack implementa tutti i protocolli di rete, dalla risoluzione indirizzi alla gestione connessioni."
-        },
-        {
-            question: "Cosa significa CFS nel kernel Linux?",
-            options: ["Completely Fair Scheduler", "Central File System", "Critical Function Set", "Core Functionality System"],
+            options: ["TCP/IP stack", "Filesystem driver", "Memory allocator", "Process scheduler"],
             correct: 0,
-            explanation: "CFS (Completely Fair Scheduler) è l'algoritmo di scheduling predefinito che garantisce equità nella distribuzione del tempo CPU."
+            explanation: "Il TCP/IP stack implementa i principali protocolli di rete, dalla risoluzione indirizzi alla gestione connessioni."
         },
         {
-            question: "Quale comando mostra tutti i processi attivi?",
-            options: ["free", "df", "ps", "netstat"],
+            question: "Che tipo di architettura ha il kernel Linux?",
+            options: ["Unikernel", "Exokernel", "Microkernel puro", "Monolitico con moduli caricabili"],
+            correct: 3,
+            explanation: "Linux è un kernel monolitico: i servizi girano in kernel space, ma driver e funzionalità si possono caricare dinamicamente come moduli."
+        },
+        {
+            question: "Quale modello di controllo accessi è predefinito in Linux?",
+            options: ["Discretionary Access Control (utenti e gruppi)", "Nessun controllo di accesso", "Solo password", "Mandatory Access Control obbligatorio"],
+            correct: 0,
+            explanation: "Il modello predefinito è DAC (permessi per utente/gruppo/altri); SELinux e AppArmor aggiungono un MAC opzionale."
+        },
+        {
+            question: "Quale comando moderno mostra i socket di rete in ascolto (sostituto di netstat)?",
+            options: ["ls", "mount", "ss", "fdisk"],
             correct: 2,
-            explanation: "ps mostra informazioni dettagliate su tutti i processi attivi, incluse risorse usate e stato."
-        },
-        {
-            question: "Cosa fa mmap()?",
-            options: ["Chiude un file", "Mappa file in memoria", "Crea directory", "Invia segnale"],
-            correct: 1,
-            explanation: "mmap() mappa un file (o memoria anonima) nello spazio di indirizzi virtuale del processo, permettendo accessi efficienti."
+            explanation: "ss (iproute2) mostra socket e connessioni di rete ed ha sostituito netstat, ormai deprecato."
         },
         {
             question: "Quale comando monitora l'uso della memoria?",
-            options: ["ps", "netstat", "free", "df"],
-            correct: 2,
+            options: ["df", "free", "netstat", "ps"],
+            correct: 1,
             explanation: "free mostra l'uso della memoria fisica e virtuale, inclusi buffer e cache."
         },
         {
-            question: "Cosa gestisce il Completely Fair Scheduler?",
-            options: ["Memoria", "Rete", "CPU time", "Dischi"],
-            correct: 2,
-            explanation: "Il CFS (Completely Fair Scheduler) distribuisce equamente il tempo CPU tra tutti i processi runnable."
+            question: "Cosa gestisce lo scheduler fair di Linux (CFS/EEVDF)?",
+            options: ["Memoria", "CPU time", "Rete", "Dischi"],
+            correct: 1,
+            explanation: "Lo scheduler fair (CFS fino al kernel 6.5, EEVDF dal 6.6) distribuisce equamente il tempo CPU tra tutti i processi runnable."
         },
         {
-            question: "Quale system call stabilisce connessioni di rete?",
-            options: ["fork", "mmap", "socket", "kill"],
+            question: "Quale system call crea un endpoint (punto di comunicazione) per la comunicazione di rete?",
+            options: ["mmap", "fork", "socket", "kill"],
             correct: 2,
-            explanation: "socket() crea un endpoint per la comunicazione di rete, che poi può essere usato con connect(), bind(), listen()."
+            explanation: "socket() crea l'endpoint di comunicazione; poi si usano bind(), listen(), accept() (server) oppure connect() (client) per stabilire la connessione."
         }
     ];
 
@@ -550,7 +550,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -558,7 +558,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -611,7 +611,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -626,9 +626,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -637,7 +637,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -654,7 +654,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -672,7 +672,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

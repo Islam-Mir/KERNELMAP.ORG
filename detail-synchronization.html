@@ -43,7 +43,7 @@
         <p><strong>La Sincronizzazione è il guardiano dell'integrità dei dati in sistemi multi-threaded, implementando primitive atomiche e meccanismi di esclusione mutua per prevenire race condition e garantire consistenza.</strong> Immagina un sistema di lucchetti digitali che proteggono stanze (risorse condivise) da accessi simultanei: ogni processo deve chiedere il permesso prima di entrare, e solo uno alla volta può accedere per evitare conflitti.</p>
 
         <p>• <strong>Spinlocks</strong> - Blocchi busy-wait per sezioni critiche brevi</p>
-        <p>• <strong>Mutex</strong> - Semafori binari per esclusione mutua con sleep</p>
+        <p>• <strong>Mutex</strong> - Lock di esclusione mutua con sleep (ha un proprietario, a differenza di un semaforo binario)</p>
         <p>• <strong>Semaphores</strong> - Contatori per controllo accesso a risorse multiple</p>
         <p>• <strong>Read-Write locks</strong> - Permessi differenziati per lettura/scrittura</p>
         <p>• <strong>Futex</strong> - Meccanismo ibrido user-kernel per implementare lock in user space con supporto kernel per wait/wakeup</p>
@@ -72,7 +72,7 @@
         <p>• <strong>up()</strong> - Incrementa semaforo (V operation)</p>
         <p>• <strong>down_interruptible()</strong> - Down interrompibile</p>
         <p>• <strong>down_trylock()</strong> - Tentativo non-blocking</p>
-        <p>• <strong>sem_destroy()</strong> - Distrugge semaforo</p>
+        <p>• <strong>sema_init()</strong> - Inizializza il semaforo con un valore iniziale</p>
 
         <h3>⚡ Atomic Operations</h3>
         <p>• <strong>atomic_inc()</strong> - Incremento atomico</p>
@@ -92,7 +92,7 @@
 
         <h3>📄 Strutture Dati Chiave</h3>
         <ul>
-            <li><strong>spinlock_t</strong> - Struttura per spinlock: flag di stato e proprietario</li>
+            <li><strong>spinlock_t</strong> - Tipo per spinlock (stato del lock, più dati di debug se abilitati)</li>
             <li><strong>struct mutex</strong> - Mutex con wait queue e stato di ownership</li>
             <li><strong>struct semaphore</strong> - Semaforo con contatore e wait queue</li>
             <li><strong>atomic_t</strong> - Tipo per operazioni atomiche su interi</li>
@@ -102,11 +102,11 @@
         <h3>💻 Nel Computer: Come Vederlo?</h3>
         <p><strong>Comandi Linux per esplorare la sincronizzazione:</strong></p>
         <ul>
-            <li><code>cat /proc/locks</code> - Lock attivi nel sistema</li>
-            <li><code>debugfs -R 'info locks' /sys/kernel/debug</code> - Alternativa moderna per lock info</li>
-            <li><code>perf lock cont</code> - Analisi contese lock</li>
+            <li><code>cat /proc/locks</code> - File lock (flock/fcntl) attivi nel sistema</li>
+            <li><code>cat /proc/lockdep_stats</code> - Statistiche del validatore lockdep (richiede CONFIG_PROVE_LOCKING)</li>
+            <li><code>perf lock contention</code> - Analisi contese lock</li>
             <li><code>strace -e trace=futex ./program</code> - Traccia chiamate futex</li>
-            <li><code>cat /proc/slabinfo | grep mutex</code> - Memoria usata per mutex</li>
+            <li><code>echo 1 | sudo tee /proc/sys/kernel/lock_stat</code> - Abilita la raccolta delle statistiche sui lock (richiede CONFIG_LOCK_STAT)</li>
         </ul>
 
         <h3>🎯 Caso Reale: Database Multi-Threaded</h3>
@@ -171,7 +171,7 @@
 
         <h3>👤 USER SPACE API (System Calls)</h3>
         <div style="background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #4caf50;">
-            <code style="color: #2e7d32; font-weight: bold;">int futex(int *uaddr, int futex_op, int val, ...);</code><br>
+            <code style="color: #2e7d32; font-weight: bold;">long syscall(SYS_futex, uint32_t *uaddr, int futex_op, uint32_t val, ...);</code><br>
             <span style="color: #666; font-size: 0.9em;">Meccanismo ibrido user-kernel per implementare lock in user space con supporto kernel per wait/wakeup.</span><br><br>
 
             <code style="color: #f57c00; font-weight: bold;">int semop(int semid, struct sembuf *sops, size_t nsops);</code><br>
@@ -195,10 +195,10 @@
 
         <h3>🔧 HARDWARE PRIMITIVES</h3>
         <div style="background: #f3e5f5; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #9c27b0;">
-            <code style="color: #9c27b0; font-weight: bold;">int test_and_set(int *ptr, int value);</code><br>
+            <code style="color: #9c27b0; font-weight: bold;">int test_and_set_bit(long nr, volatile unsigned long *addr);</code><br>
             <span style="color: #666; font-size: 0.9em;">Operazione atomica fondamentale: legge e scrive in un'unica istruzione.</span><br><br>
 
-            <code style="color: #0288d1; font-weight: bold;">bool compare_and_swap(long *ptr, long old, long new);</code><br>
+            <code style="color: #0288d1; font-weight: bold;">cmpxchg(ptr, old, new);</code><br>
             <span style="color: #666; font-size: 0.9em;">Confronta valore corrente con expected, scambia se uguale (lock-free programming).</span><br><br>
 
             <code style="color: #d32f2f; font-weight: bold;">void smp_mb(void);</code><br>
@@ -210,10 +210,10 @@
             <code style="color: #f57c00; font-weight: bold;">void atomic_inc(atomic_t *v);</code><br>
             <span style="color: #666; font-size: 0.9em;">Integer operations: inc, dec, add, sub, read, set.</span><br><br>
 
-            <code style="color: #9c27b0; font-weight: bold;">void atomic_set_bit(int nr, volatile unsigned long *addr);</code><br>
+            <code style="color: #9c27b0; font-weight: bold;">void set_bit(long nr, volatile unsigned long *addr);</code><br>
             <span style="color: #666; font-size: 0.9em;">Bit operations: set, clear, test-and-set, test-and-clear.</span><br><br>
 
-            <code style="color: #0288d1; font-weight: bold;">void *atomic_xchg(void **ptr, void *new);</code><br>
+            <code style="color: #0288d1; font-weight: bold;">xchg(ptr, new);</code><br>
             <span style="color: #666; font-size: 0.9em;">Pointer operations: exchange, compare-exchange per strutture dati lock-free.</span>
         </div>
 
@@ -428,13 +428,12 @@
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza memoria mutex</h4>
+                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Verifica il validatore dei lock (lockdep)</h4>
                     <div style="background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-    <pre style="margin: 0; font-family: monospace; font-size: 0.9em; white-space: pre-wrap;"><code>$ cat /proc/slabinfo | grep mutex
-mutex 125 125 256 16 1 : tunables [...]
-$ cat /proc/slabinfo | grep semaphore</code></pre>
-</div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanta memoria usano strutture di sincronizzazione</em></p>
+                        $ cat /proc/lockdep_stats | head -5<br>
+                        $ sudo dmesg | grep -i lockdep
+                    </div>
+                    <p style="font-size: 0.9em; color: #666;"><em>Richiede un kernel compilato con CONFIG_PROVE_LOCKING</em></p>
                 </div>
 
                 <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
@@ -463,7 +462,7 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
                 <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
                 <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Atomicità</h4>
                 <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Operazioni che appaiono come un singolo passo indivisibile. Le atomic operations del kernel garantiscono che modifiche a dati condivisi siano visibili immediatamente a tutti i processori.
+                    Operazioni che appaiono come un singolo passo indivisibile. Le operazioni atomiche sono indivisibili; l'ordine con cui le altre CPU vedono le modifiche si controlla con barriere di memoria o con le varianti _acquire/_release.
                 </p>
             </div>
 
@@ -506,76 +505,52 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
     // Quiz functionality
                 const quizQuestions = [
         {
-            question: "Quale meccanismo di sincronizzazione non permette il sleep in kernel space?",
-            options: ["Spinlock", "Mutex", "Semaphore", "RCU"],
-            correct: 0,
-            explanation: "Lo spinlock rimane attivo (spinning) senza mettere il processo in sleep, a differenza del mutex."
-        },
-        {
-            question: "Cosa fa uno spinlock quando il lock è già acquisito?",
-            options: ["Mette in sleep il processo", "Rimane in busy-wait", "Genera un interrupt", "Riprova dopo 1 secondo"],
-            correct: 1,
-            explanation: "Lo spinlock continua a girare (spinning) in un loop, aspettando il rilascio del lock."
-        },
-        {
-            question: "Quale struttura dati contiene le informazioni di sincronizzazione in Linux?",
-            options: ["spinlock_t", "mutex", "semaphore", "Tutte le precedenti"],
+            question: "Quale meccanismo di sincronizzazione NON può essere usato in un interrupt handler perché può mettere il processo in sleep?",
+            options: ["spin_lock()", "spin_trylock()", "atomic_inc()", "Mutex"],
             correct: 3,
-            explanation: "Linux implementa molteplici meccanismi: spinlock_t, struct mutex, semaphore, e altri."
+            explanation: "Il mutex può far dormire chi lo richiede, quindi si usa solo in process context; spinlock e operazioni atomiche non dormono e sono utilizzabili anche negli interrupt handler."
         },
         {
             question: "Cosa significa RCU nel kernel Linux?",
-            options: ["Read-Copy-Update", "Real-CPU-Unit", "Resource-Control-Unit", "Register-Cache-Unit"],
+            options: ["Read-Copy-Update", "Resource-Control-Unit", "Real-CPU-Unit", "Register-Cache-Unit"],
             correct: 0,
             explanation: "RCU (Read-Copy-Update) è un meccanismo efficiente per letture concorrenti."
         },
         {
-            question: "Quale comando mostra i lock attivi nel sistema?",
-            options: ["ps aux", "lsof", "cat /proc/locks", "watch -n 1 cat /proc/stat"],
+            question: "Quale file mostra i lock sui file (flock/fcntl) attualmente attivi?",
+            options: ["/proc/devices", "/proc/meminfo", "/proc/locks", "/proc/stat"],
             correct: 2,
-            explanation: "/proc/locks mostra i file lock e le loro informazioni nel sistema."
+            explanation: "/proc/locks elenca i lock sui file (POSIX, flock, lease) con tipo, processo proprietario e file interessato."
         },
         {
             question: "Quale struttura kernel gestisce i mutex?",
-            options: ["struct mutex", "mutex_t", "lock_t", "sync_struct"],
-            correct: 0,
+            options: ["mutex_t", "lock_t", "sync_struct", "struct mutex"],
+            correct: 3,
             explanation: "struct mutex è la struttura standard per mutex nel kernel Linux."
         },
         {
             question: "Quale primitiva RCU è usata per letture critiche?",
-            options: ["rcu_read_lock()", "rcu_synchronize()", "rcu_assign_pointer()", "synchronize_rcu()"],
+            options: ["rcu_read_lock()", "synchronize_rcu()", "rcu_synchronize()", "rcu_assign_pointer()"],
             correct: 0,
             explanation: "rcu_read_lock() marca l'inizio di una sezione critica RCU per letture."
         },
         {
             question: "Cosa fa synchronize_rcu() nel kernel?",
-            options: ["Acquisisce un lock", "Attende che tutte le sezioni RCU terminino", "Rilascia un semaforo", "Inizia un nuovo RCU cycle"],
-            correct: 1,
+            options: ["Acquisisce un lock", "Rilascia un semaforo", "Inizia un nuovo RCU cycle", "Attende che tutte le sezioni RCU terminino"],
+            correct: 3,
             explanation: "synchronize_rcu() blocca finché tutti i lettori RCU precedenti non terminano."
         },
         {
-            question: "Quale tipo di lock è il semaphore?",
-            options: ["Binario", "Contatore", "Mutex", "Spinlock"],
+            question: "Cosa fa un'operazione come test_and_set_bit()?",
+            options: ["Imposta il bit senza leggerlo", "Legge il vecchio valore del bit e lo imposta in un'unica operazione atomica", "Cancella il bit", "Confronta due interi e li scambia"],
             correct: 1,
-            explanation: "Un semaphore è un contatore che controlla l'accesso a più risorse."
-        },
-        {
-            question: "Cosa fa test_and_set()?",
-            options: ["Legge un valore", "Scrive un valore", "Legge e scrive in un'unica istruzione atomica", "Confronta due valori"],
-            correct: 2,
-            explanation: "test_and_set() è una primitiva hardware che legge e scrive in un'unica operazione atomica indivisibile."
+            explanation: "test_and_set_bit() restituisce il valore precedente del bit e lo imposta a 1 in modo atomico: è la base di molti lock."
         },
         {
             question: "Cosa sono le memory barriers?",
-            options: ["Barriere fisiche", "Istruzioni che garantiscono ordine operazioni memoria", "Limiti di memoria", "Cache memory"],
-            correct: 1,
+            options: ["Limiti di memoria", "Cache memory", "Istruzioni che garantiscono ordine operazioni memoria", "Barriere fisiche"],
+            correct: 2,
             explanation: "Memory barriers (smp_mb(), rmb(), wmb()) garantiscono che operazioni memoria siano visibili in ordine corretto a tutti i processori."
-        },
-        {
-            question: "Cosa fa seqlock_t?",
-            options: ["Blocca sequenzialmente", "Permette letture mentre si scrive", "Blocca definitivamente", "Conta sequenze"],
-            correct: 1,
-            explanation: "Seqlocks permettono letture concorrenti durante scritture, con meccanismo per rilevare scritture in corso."
         },
         {
             question: "Cosa rileva lockdep nel kernel?",
@@ -584,14 +559,8 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
             explanation: "Lockdep traccia dipendenze tra lock e rileva deadlock potenziali durante l'esecuzione del kernel."
         },
         {
-            question: "Quale è un problema di performance nei lock?",
-            options: ["Lock contention", "False sharing", "NUMA awareness", "Tutti i precedenti"],
-            correct: 3,
-            explanation: "Lock contention, false sharing, e mancanza di NUMA awareness sono tutti problemi di performance nei sistemi concorrenti."
-        },
-        {
             question: "Quando usare spinlock vs mutex?",
-            options: ["Sempre spinlock", "Sempre mutex", "Spinlock per interrupt context, mutex per process context", "Dipende dal programmatore"],
+            options: ["Dipende dal programmatore", "Sempre spinlock", "Spinlock per interrupt context, mutex per process context", "Sempre mutex"],
             correct: 2,
             explanation: "Spinlock per contesti che non possono dormire (interrupt handlers), mutex per process context ordinario."
         }
@@ -618,7 +587,7 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show first 10 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Show first 10 questions
             showResults();
             return;
         }
@@ -626,7 +595,7 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -679,7 +648,7 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -694,9 +663,9 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -705,7 +674,7 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -722,7 +691,7 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -740,7 +709,7 @@ $ cat /proc/slabinfo | grep semaphore</code></pre>
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();

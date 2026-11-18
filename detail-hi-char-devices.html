@@ -41,7 +41,7 @@
         <p>Come un rubinetto che eroga acqua goccia a goccia invece di un secchio pieno: i dispositivi a carattere trasferiscono dati in modo continuo e sequenziale, non a blocchi casuali come i dischi.</p>
 
         <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>I dispositivi a carattere rappresentano la classe più ampia di dispositivi in Linux.</strong> Immagina di avere una collezione di dispositivi che parlano una lingua comune: ogni dispositivo ha il suo accento (protocollo specifico), ma tutti seguono le stesse regole grammaticali (interfaccia a carattere).</p>
+        <p><strong>I dispositivi a carattere sono una delle grandi classi di dispositivi in Linux, insieme ai dispositivi a blocchi e alle interfacce di rete.</strong> Immagina di avere una collezione di dispositivi che parlano una lingua comune: ogni dispositivo ha il suo accento (protocollo specifico), ma tutti seguono le stesse regole grammaticali (interfaccia a carattere).</p>
 
         <p>• <strong>Accesso sequenziale</strong> - Lettura/scrittura byte per byte senza posizionamento casuale</p>
         <p>• <strong>Buffering intelligente</strong> - Gestione efficiente di flussi di dati continui</p>
@@ -55,8 +55,8 @@
         <p><strong>Linux classifica i dispositivi a carattere per funzione e interfaccia:</strong></p>
 
         <h3>🖥️ Terminali e Console</h3>
-        <p>• <strong>TTY devices</strong> - Terminali virtuali e fisici (/dev/tty*)</p>
-        <p>• <strong>PTY pairs</strong> - Pseudo-terminali per emulatori (ssh, screen)</p>
+        <p>• <strong>TTY devices</strong> - TTY (da Teletype): terminali virtuali e fisici (/dev/tty*)</p>
+        <p>• <strong>PTY pairs</strong> - PTY (Pseudo Terminal): pseudo-terminali per emulatori (ssh, screen)</p>
         <p>• <strong>Console</strong> - Terminale principale del sistema (/dev/console)</p>
         <p>• <strong>Serial terminals</strong> - Accesso diretto alla console seriale</p>
 
@@ -156,7 +156,7 @@
         <h3>📂 Registrazione Device</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
             <code style="color: #d32f2f; font-weight: bold;">int register_chrdev(unsigned int major, const char *name, struct file_operations *fops);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Registra un driver di dispositivo a carattere con numero major.</span><br><br>
+            <span style="color: #666; font-size: 0.9em;">Registra un driver di dispositivo a carattere con numero major (API legacy: oggi si preferisce alloc_chrdev_region() + cdev_add()).</span><br><br>
 
             <code style="color: #2e7d32; font-weight: bold;">int alloc_chrdev_region(dev_t *dev, unsigned int firstminor, unsigned int count, char *name);</code><br>
             <span style="color: #666; font-size: 0.9em;">Alloca dinamicamente numeri major/minor per dispositivi.</span><br><br>
@@ -179,7 +179,7 @@
 
         <h3>🎛️ Controllo Device</h3>
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">long (*ioctl)(struct file *, unsigned int, unsigned long);</code><br>
+            <code style="color: #f57c00; font-weight: bold;">long (*unlocked_ioctl)(struct file *, unsigned int, unsigned long);</code><br>
             <span style="color: #666; font-size: 0.9em;">Comandi speciali per configurazione dispositivo.</span><br><br>
 
             <code style="color: #9c27b0; font-weight: bold;">int (*release)(struct inode *, struct file *);</code><br>
@@ -458,39 +458,39 @@
     const quizQuestions = [
         {
             question: "Cosa caratterizza i dispositivi a carattere?",
-            options: ["Accesso casuale ai dati", "Trasferimento sequenziale byte per byte", "Supporto solo dispositivi USB", "Archiviazione permanente"],
-            correct: 1,
+            options: ["Archiviazione permanente", "Supporto solo dispositivi USB", "Trasferimento sequenziale byte per byte", "Accesso casuale ai dati"],
+            correct: 2,
             explanation: "I dispositivi a carattere trasferiscono dati in modo sequenziale, un byte alla volta, senza possibilità di accesso casuale come nei dischi."
         },
         {
             question: "Quale comando mostra i dispositivi a carattere?",
-            options: ["lsblk", "lspci", "ls -la /dev | grep '^c'", "df -h"],
+            options: ["lspci", "df -h", "ls -la /dev | grep '^c'", "lsblk"],
             correct: 2,
             explanation: "ls -la /dev | grep '^c' mostra tutti i dispositivi a carattere (iniziano con 'c') nel filesystem /dev."
         },
         {
             question: "Cosa fa ioctl()?",
-            options: ["Legge dati dal dispositivo", "Scrive dati sul dispositivo", "Controlla parametri speciali", "Chiude il dispositivo"],
-            correct: 2,
+            options: ["Scrive dati sul dispositivo", "Chiude il dispositivo", "Legge dati dal dispositivo", "Controlla parametri speciali"],
+            correct: 3,
             explanation: "ioctl() permette di inviare comandi speciali ai dispositivi per configurare parametri specifici come baud rate seriali o volumi audio."
         },
         {
             question: "Quale dispositivo rappresenta la console principale?",
-            options: ["/dev/tty0", "/dev/console", "/dev/ttyS0", "/dev/null"],
-            correct: 1,
+            options: ["/dev/console", "/dev/ttyS0", "/dev/tty0", "/dev/null"],
+            correct: 0,
             explanation: "/dev/console rappresenta la console principale del sistema, dove vengono diretti i messaggi del kernel."
         },
         {
-            question: "Cosa significa TTY?",
-            options: ["Terminal Type Yellow", "Teletype Terminal", "Text Transfer Yield", "Terminal Transfer Yield"],
+            question: "Da quale macchina deriva il nome TTY?",
+            options: ["Il terminale a tubo catodico (CRT)", "La telescrivente (Teletype)", "Il modem telefonico", "La stampante parallela"],
             correct: 1,
-            explanation: "TTY sta per Teletype, riferendosi ai dispositivi terminale che erano originariamente macchine da scrivere elettriche."
+            explanation: "TTY deriva da Teletype, la telescrivente elettromeccanica usata in origine come terminale; il nome è rimasto per tutti i terminali (/dev/tty*)."
         },
         {
-            question: "Quale comando configura una porta seriale?",
-            options: ["stty", "setserial", "minicom", "screen"],
-            correct: 0,
-            explanation: "stty configura i parametri di una porta seriale o terminale, come baud rate, parità, e modalità di controllo flusso."
+            question: "Quale comando mostra o imposta i parametri del terminale/porta seriale corrente (baud rate, parità, ecc.)?",
+            options: ["lsblk", "who", "stty", "aplay -l"],
+            correct: 2,
+            explanation: "stty -a mostra la configurazione del terminale (velocità, parità, modalità di controllo); con -F si può indicare una porta seriale come /dev/ttyS0."
         },
         {
             question: "Cosa rappresentano i dispositivi /dev/pts/*?",
@@ -499,33 +499,21 @@
             explanation: "I dispositivi /dev/pts/* sono pseudo-terminali usati da emulatori di terminale come xterm, gnome-terminal, e connessioni SSH."
         },
         {
-            question: "Quale funzione registra un driver a carattere?",
-            options: ["register_blkdev()", "register_chrdev()", "register_netdev()", "register_fb()"],
-            correct: 1,
-            explanation: "register_chrdev() registra un driver di dispositivo a carattere nel kernel, assegnandogli un numero major."
+            question: "Quale funzione alloca dinamicamente numeri major/minor per un dispositivo a carattere?",
+            options: ["alloc_chrdev_region()", "register_fb()", "register_blkdev()", "register_netdev()"],
+            correct: 0,
+            explanation: "alloc_chrdev_region() riserva dinamicamente un intervallo di numeri major/minor; di solito si abbina a cdev_init() e cdev_add() per registrare il dispositivo."
         },
         {
             question: "Cosa fa la line discipline nei terminali?",
-            options: ["Gestisce l'alimentazione", "Elabora input/output", "Controlla la luminosità", "Gestisce gli interrupt"],
+            options: ["Controlla la luminosità", "Elabora input/output", "Gestisce l'alimentazione", "Gestisce gli interrupt"],
             correct: 1,
             explanation: "La line discipline elabora input/output per terminali, gestendo editing di linea, echo, e conversioni speciali."
         },
         {
-            question: "Quale dispositivo è usato per input/output null?",
-            options: ["/dev/zero", "/dev/null", "/dev/random", "/dev/urandom"],
-            correct: 1,
-            explanation: "/dev/null è un dispositivo a carattere che scarta tutti i dati scritti e restituisce EOF quando letto."
-        },
-        {
-            question: "Cosa significa PTY?",
-            options: ["Physical Terminal Yield", "Pseudo Terminal Yield", "Parallel Terminal Yield", "Portable Terminal Yield"],
-            correct: 1,
-            explanation: "PTY significa Pseudo Terminal, dispositivi virtuali che emulano terminali fisici per applicazioni come SSH e emulatori di terminale."
-        },
-        {
             question: "Quale comando mostra dispositivi audio?",
-            options: ["lspci", "lsusb", "aplay -l", "df -h"],
-            correct: 2,
+            options: ["lspci", "lsusb", "df -h", "aplay -l"],
+            correct: 3,
             explanation: "aplay -l (da ALSA) mostra tutti i dispositivi audio disponibili nel sistema."
         }
     ];
@@ -551,7 +539,7 @@
 
     function showQuestion() {
         const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= 5) { // Show only first 5 questions
+        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
             showResults();
             return;
         }
@@ -559,7 +547,7 @@
         const question = quizQuestions[currentQuestionIndex];
         container.innerHTML = `
             <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #0277bd; margin-bottom: 15px;">
-                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/5</h4>
+                <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
                     ${question.options.map((option, index) => `
@@ -612,7 +600,7 @@
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
             currentQuestionIndex++;
-            if (currentQuestionIndex >= 5) {
+            if (currentQuestionIndex >= quizQuestions.length) {
                 showResults();
             } else {
                 answered = false; // Reset for next question
@@ -627,9 +615,9 @@
 
         // Hide the next button before showing new question
         const nextButtonContainer = document.getElementById('nextButtonContainer');
-        nextButtonContainer.style.display = 'none';
+        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
 
-        if (currentQuestionIndex >= 5) {
+        if (currentQuestionIndex >= quizQuestions.length) {
             showResults();
         } else {
             showQuestion();
@@ -638,7 +626,7 @@
 
     function showResults() {
         const container = document.getElementById('quizContent');
-        const percentage = Math.round((score / 5) * 100);
+        const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
@@ -655,7 +643,7 @@
         container.innerHTML = `
             <div style="background: white; padding: 25px; border-radius: 8px; border: 3px solid ${color}; text-align: center;">
                 <h3 style="color: ${color}; margin-bottom: 15px;">Quiz Completato!</h3>
-                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/5</div>
+                <div style="font-size: 3em; margin: 20px 0; color: ${color};">${score}/${quizQuestions.length}</div>
                 <div style="font-size: 1.2em; margin-bottom: 15px; color: ${color};">${percentage}% di risposte corrette</div>
                 <p style="font-size: 1.1em; color: #333; margin-bottom: 20px;">${message}</p>
                 <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3);">
@@ -673,7 +661,7 @@
     </div>
 
     <script>
-        const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-bridges.html", "detail-logical.html", "detail-device-control.html", "detail-hardware-interfaces.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
 
         function getCurrentPageIndex() {
             const currentPage = window.location.pathname.split('/').pop();
