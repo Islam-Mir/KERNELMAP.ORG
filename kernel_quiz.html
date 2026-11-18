@@ -158,12 +158,12 @@ function question(){
   function autoNext(){
     stopAuto();
     const next = S.items[S.i+1];
-    if(!AUTO_NEXT || last || next.chosen!==null) return;
+    if(!AUTO_NEXT || (next && next.chosen!==null)) return;
     let left = Math.ceil(autoDelay(it,instant)/1000);
     autoMsg.style.display='';
     const step = ()=>{
-      if(left<=0){ S.i++; question(); return; }
-      autoTxt.textContent='⏭ Prossima domanda tra '+left+' s';
+      if(left<=0){ if(last){ finish(false); return; } S.i++; question(); return; }
+      autoTxt.textContent='⏭ '+(last?'Quiz in arrivo':'Prossima domanda tra ')+left+' s';
       left--; autoId=setTimeout(step,1000);
     };
     step();
