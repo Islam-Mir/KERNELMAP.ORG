@@ -1,595 +1,1352 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SYNCHRONIZATION - Dettagli</title>
-     
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>SYNCHRONIZATION</h1>
-        <p class="subtitle">Sincronizzazione dei Processi</p>
+      <h1>SYNCHRONIZATION</h1>
+      <p class="subtitle">Sincronizzazione dei Processi</p>
     </div>
 
     <div class="content">
-        <span class="badge">🔒 GESTORE SINCRONIZZAZIONE</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>La Sincronizzazione gestisce l'accesso coordinato alle risorse condivise tra processi e thread, prevenendo race condition e garantendo l'integrità dei dati in ambienti multi-threaded.</strong></p>
+      <span class="badge">🔒 GESTORE SINCRONIZZAZIONE</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >La Sincronizzazione gestisce l'accesso coordinato alle risorse
+          condivise tra processi e thread, prevenendo race condition e
+          garantendo l'integrità dei dati in ambienti multi-threaded.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come un sistema di semafori stradali in una città: coordina il flusso di veicoli (processi) attraverso incroci diversi (risorse condivise), impedendo incidenti (race condition) e garantendo che tutti arrivino a destinazione (integrità dati).</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come un sistema di semafori stradali in una città: coordina il flusso di
+        veicoli (processi) attraverso incroci diversi (risorse condivise),
+        impedendo incidenti (race condition) e garantendo che tutti arrivino a
+        destinazione (integrità dati).
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>La Sincronizzazione è il guardiano dell'integrità dei dati in sistemi multi-threaded, implementando primitive atomiche e meccanismi di esclusione mutua per prevenire race condition e garantire consistenza.</strong> Immagina un sistema di lucchetti digitali che proteggono stanze (risorse condivise) da accessi simultanei: ogni processo deve chiedere il permesso prima di entrare, e solo uno alla volta può accedere per evitare conflitti.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >La Sincronizzazione è il guardiano dell'integrità dei dati in sistemi
+          multi-threaded, implementando primitive atomiche e meccanismi di
+          esclusione mutua per prevenire race condition e garantire
+          consistenza.</strong
+        >
+        Immagina un sistema di lucchetti digitali che proteggono stanze (risorse
+        condivise) da accessi simultanei: ogni processo deve chiedere il
+        permesso prima di entrare, e solo uno alla volta può accedere per
+        evitare conflitti.
+      </p>
 
-        <p>• <strong>Spinlocks</strong> - Blocchi busy-wait per sezioni critiche brevi</p>
-        <p>• <strong>Mutex</strong> - Lock di esclusione mutua con sleep (ha un proprietario, a differenza di un semaforo binario)</p>
-        <p>• <strong>Semaphores</strong> - Contatori per controllo accesso a risorse multiple</p>
-        <p>• <strong>Read-Write locks</strong> - Permessi differenziati per lettura/scrittura</p>
-        <p>• <strong>Futex</strong> - Meccanismo ibrido user-kernel per implementare lock in user space con supporto kernel per wait/wakeup</p>
-        <p>• <strong>Atomic operations</strong> - Operazioni indivisibili su memoria condivisa</p>
-        <p><em>• Interazione: Coordina accesso concorrente a strutture dati condivise tra processi e interrupt</em></p>
+      <p>
+        • <strong>Spinlocks</strong> - Blocchi busy-wait per sezioni critiche
+        brevi
+      </p>
+      <p>
+        • <strong>Mutex</strong> - Lock di esclusione mutua con sleep (ha un
+        proprietario, a differenza di un semaforo binario)
+      </p>
+      <p>
+        • <strong>Semaphores</strong> - Contatori per controllo accesso a
+        risorse multiple
+      </p>
+      <p>
+        • <strong>Read-Write locks</strong> - Permessi differenziati per
+        lettura/scrittura
+      </p>
+      <p>
+        • <strong>Futex</strong> - Meccanismo ibrido user-kernel per
+        implementare lock in user space con supporto kernel per wait/wakeup
+      </p>
+      <p>
+        • <strong>Atomic operations</strong> - Operazioni indivisibili su
+        memoria condivisa
+      </p>
+      <p>
+        <em
+          >• Interazione: Coordina accesso concorrente a strutture dati
+          condivise tra processi e interrupt</em
+        >
+      </p>
 
-        <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>La Sincronizzazione implementa quattro livelli di meccanismi di coordinamento, ciascuno ottimizzato per scenari specifici:</strong></p>
+      <h2>⚙️ Operazioni Principali</h2>
+      <p>
+        <strong
+          >La Sincronizzazione implementa quattro livelli di meccanismi di
+          coordinamento, ciascuno ottimizzato per scenari specifici:</strong
+        >
+      </p>
 
-        <h3>🔄 Spinlock Operations</h3>
-        <p>• <strong>spin_lock()</strong> - Acquisisce spinlock con busy-wait</p>
-        <p>• <strong>spin_unlock()</strong> - Rilascia spinlock</p>
-        <p>• <strong>spin_lock_irqsave()</strong> - Salva flags interrupt e acquisisce lock</p>
-        <p>• <strong>spin_lock_bh()</strong> - Disabilita bottom-half e acquisisce lock</p>
-        <p>• <strong>spin_trylock()</strong> - Tentativo non-blocking di acquisizione</p>
+      <h3>🔄 Spinlock Operations</h3>
+      <p>• <strong>spin_lock()</strong> - Acquisisce spinlock con busy-wait</p>
+      <p>• <strong>spin_unlock()</strong> - Rilascia spinlock</p>
+      <p>
+        • <strong>spin_lock_irqsave()</strong> - Salva flags interrupt e
+        acquisisce lock
+      </p>
+      <p>
+        • <strong>spin_lock_bh()</strong> - Disabilita bottom-half e acquisisce
+        lock
+      </p>
+      <p>
+        • <strong>spin_trylock()</strong> - Tentativo non-blocking di
+        acquisizione
+      </p>
 
-        <h3>🔒 Mutex Operations</h3>
-        <p>• <strong>mutex_lock()</strong> - Acquisisce mutex con possibile sleep</p>
-        <p>• <strong>mutex_unlock()</strong> - Rilascia mutex</p>
-        <p>• <strong>mutex_trylock()</strong> - Tentativo non-blocking</p>
-        <p>• <strong>mutex_lock_interruptible()</strong> - Mutex interrompibile da segnali</p>
-        <p>• <strong>mutex_destroy()</strong> - Distrugge mutex</p>
+      <h3>🔒 Mutex Operations</h3>
+      <p>
+        • <strong>mutex_lock()</strong> - Acquisisce mutex con possibile sleep
+      </p>
+      <p>• <strong>mutex_unlock()</strong> - Rilascia mutex</p>
+      <p>• <strong>mutex_trylock()</strong> - Tentativo non-blocking</p>
+      <p>
+        • <strong>mutex_lock_interruptible()</strong> - Mutex interrompibile da
+        segnali
+      </p>
+      <p>• <strong>mutex_destroy()</strong> - Distrugge mutex</p>
 
-        <h3>📊 Semaphore Operations</h3>
-        <p>• <strong>down()</strong> - Decrementa semaforo (P operation)</p>
-        <p>• <strong>up()</strong> - Incrementa semaforo (V operation)</p>
-        <p>• <strong>down_interruptible()</strong> - Down interrompibile</p>
-        <p>• <strong>down_trylock()</strong> - Tentativo non-blocking</p>
-        <p>• <strong>sema_init()</strong> - Inizializza il semaforo con un valore iniziale</p>
+      <h3>📊 Semaphore Operations</h3>
+      <p>• <strong>down()</strong> - Decrementa semaforo (P operation)</p>
+      <p>• <strong>up()</strong> - Incrementa semaforo (V operation)</p>
+      <p>• <strong>down_interruptible()</strong> - Down interrompibile</p>
+      <p>• <strong>down_trylock()</strong> - Tentativo non-blocking</p>
+      <p>
+        • <strong>sema_init()</strong> - Inizializza il semaforo con un valore
+        iniziale
+      </p>
 
-        <h3>⚡ Atomic Operations</h3>
-        <p>• <strong>atomic_inc()</strong> - Incremento atomico</p>
-        <p>• <strong>atomic_dec()</strong> - Decremento atomico</p>
-        <p>• <strong>atomic_read()</strong> - Lettura atomica</p>
-        <p>• <strong>atomic_set()</strong> - Scrittura atomica</p>
-        <p>• <strong>atomic_cmpxchg()</strong> - Compare-and-exchange atomico</p>
+      <h3>⚡ Atomic Operations</h3>
+      <p>• <strong>atomic_inc()</strong> - Incremento atomico</p>
+      <p>• <strong>atomic_dec()</strong> - Decremento atomico</p>
+      <p>• <strong>atomic_read()</strong> - Lettura atomica</p>
+      <p>• <strong>atomic_set()</strong> - Scrittura atomica</p>
+      <p>• <strong>atomic_cmpxchg()</strong> - Compare-and-exchange atomico</p>
 
-        <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando due processi accedono contemporaneamente a una risorsa condivisa, ecco cosa succede nella sincronizzazione:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong
+          >Quando due processi accedono contemporaneamente a una risorsa
+          condivisa, ecco cosa succede nella sincronizzazione:</strong
+        >
+      </p>
 
-        <h3>🔍 Accesso a Risorsa Condivisa</h3>
-        <p>1. Processo A acquisisce un mutex sulla risorsa condivisa</p>
-        <p>2. Processo B tenta di accedere ma trova il mutex occupato</p>
-        <p>3. Processo B viene messo in sleep nella wait queue del mutex</p>
-        <p>4. Quando A rilascia il mutex, B viene svegliato e può procedere</p>
+      <h3>🔍 Accesso a Risorsa Condivisa</h3>
+      <p>1. Processo A acquisisce un mutex sulla risorsa condivisa</p>
+      <p>2. Processo B tenta di accedere ma trova il mutex occupato</p>
+      <p>3. Processo B viene messo in sleep nella wait queue del mutex</p>
+      <p>4. Quando A rilascia il mutex, B viene svegliato e può procedere</p>
 
-        <h3>📄 Strutture Dati Chiave</h3>
-        <ul>
-            <li><strong>spinlock_t</strong> - Tipo per spinlock (stato del lock, più dati di debug se abilitati)</li>
-            <li><strong>struct mutex</strong> - Mutex con wait queue e stato di ownership</li>
-            <li><strong>struct semaphore</strong> - Semaforo con contatore e wait queue</li>
-            <li><strong>atomic_t</strong> - Tipo per operazioni atomiche su interi</li>
-            <li><strong>wait_queue_head_t</strong> - Coda di processi in attesa di un evento</li>
-        </ul>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>spinlock_t</strong> - Tipo per spinlock (stato del lock, più
+          dati di debug se abilitati)
+        </li>
+        <li>
+          <strong>struct mutex</strong> - Mutex con wait queue e stato di
+          ownership
+        </li>
+        <li>
+          <strong>struct semaphore</strong> - Semaforo con contatore e wait
+          queue
+        </li>
+        <li>
+          <strong>atomic_t</strong> - Tipo per operazioni atomiche su interi
+        </li>
+        <li>
+          <strong>wait_queue_head_t</strong> - Coda di processi in attesa di un
+          evento
+        </li>
+      </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare la sincronizzazione:</strong></p>
-        <ul>
-            <li><code>cat /proc/locks</code> - File lock (flock/fcntl) attivi nel sistema</li>
-            <li><code>cat /proc/lockdep_stats</code> - Statistiche del validatore lockdep (richiede CONFIG_PROVE_LOCKING)</li>
-            <li><code>perf lock contention</code> - Analisi contese lock</li>
-            <li><code>strace -e trace=futex ./program</code> - Traccia chiamate futex</li>
-            <li><code>echo 1 | sudo tee /proc/sys/kernel/lock_stat</code> - Abilita la raccolta delle statistiche sui lock (richiede CONFIG_LOCK_STAT)</li>
-        </ul>
+      <h3>💻 Nel Computer: Come Vederlo?</h3>
+      <p><strong>Comandi Linux per esplorare la sincronizzazione:</strong></p>
+      <ul>
+        <li>
+          <code>cat /proc/locks</code> - File lock (flock/fcntl) attivi nel
+          sistema
+        </li>
+        <li>
+          <code>cat /proc/lockdep_stats</code> - Statistiche del validatore
+          lockdep (richiede CONFIG_PROVE_LOCKING)
+        </li>
+        <li><code>perf lock contention</code> - Analisi contese lock</li>
+        <li>
+          <code>strace -e trace=futex ./program</code> - Traccia chiamate futex
+        </li>
+        <li>
+          <code>echo 1 | sudo tee /proc/sys/kernel/lock_stat</code> - Abilita la
+          raccolta delle statistiche sui lock (richiede CONFIG_LOCK_STAT)
+        </li>
+      </ul>
 
-        <h3>🎯 Caso Reale: Database Multi-Threaded</h3>
-        <p>Quando un database gestisce richieste concorrenti:</p>
-        <ol>
-            <li>Thread A acquisisce read-write lock in lettura</li>
-            <li>Thread B può anche acquisire lock in lettura (letture concorrenti)</li>
-            <li>Thread C aspetta perché vuole scrivere (esclusione)</li>
-            <li>A e B finiscono, C ottiene lock esclusivo per scrittura</li>
-            <li>Tutti i thread successivi aspettano la fine della scrittura</li>
-        </ol>
+      <h3>🎯 Caso Reale: Database Multi-Threaded</h3>
+      <p>Quando un database gestisce richieste concorrenti:</p>
+      <ol>
+        <li>Thread A acquisisce read-write lock in lettura</li>
+        <li>
+          Thread B può anche acquisire lock in lettura (letture concorrenti)
+        </li>
+        <li>Thread C aspetta perché vuole scrivere (esclusione)</li>
+        <li>A e B finiscono, C ottiene lock esclusivo per scrittura</li>
+        <li>Tutti i thread successivi aspettano la fine della scrittura</li>
+      </ol>
 
-        <h2>🔒 Meccanismi di Sincronizzazione</h2>
-        <ul>
-            <li><strong>Spinlocks</strong> - Lock busy-wait per sezioni critiche brevi</li>
-            <li><strong>Mutex</strong> - Lock con sleep per esclusione mutua</li>
-            <li><strong>Semaphores</strong> - Contatori per risorse multiple</li>
-            <li><strong>Read-Write Locks</strong> - Lock differenziati lettura/scrittura</li>
-            <li><strong>RCU</strong> - Read-Copy-Update per letture ad alta frequenza</li>
-            <li><strong>Futex</strong> - Fast user-space mutex per sincronizzazione efficiente</li>
-        </ul>
+      <h2>🔒 Meccanismi di Sincronizzazione</h2>
+      <ul>
+        <li>
+          <strong>Spinlocks</strong> - Lock busy-wait per sezioni critiche brevi
+        </li>
+        <li><strong>Mutex</strong> - Lock con sleep per esclusione mutua</li>
+        <li><strong>Semaphores</strong> - Contatori per risorse multiple</li>
+        <li>
+          <strong>Read-Write Locks</strong> - Lock differenziati
+          lettura/scrittura
+        </li>
+        <li>
+          <strong>RCU</strong> - Read-Copy-Update per letture ad alta frequenza
+        </li>
+        <li>
+          <strong>Futex</strong> - Fast user-space mutex per sincronizzazione
+          efficiente
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche</h2>
-        <ul>
-            <li><strong>Atomicità</strong> - Operazioni indivisibili su memoria condivisa</li>
-            <li><strong>Performance</strong> - Lock contention, false sharing, NUMA awareness, lock-free algorithms</li>
-            <li><strong>Scalabilità</strong> - Supporto per sistemi multi-core e NUMA</li>
-            <li><strong>Debugging</strong> - Lockdep validator rileva deadlock potenziali a runtime</li>
-            <li><strong>Sicurezza</strong> - Prevenzione di accessi concorrenti dannosi</li>
-        </ul>
+      <h2>✨ Caratteristiche</h2>
+      <ul>
+        <li>
+          <strong>Atomicità</strong> - Operazioni indivisibili su memoria
+          condivisa
+        </li>
+        <li>
+          <strong>Performance</strong> - Lock contention, false sharing, NUMA
+          awareness, lock-free algorithms
+        </li>
+        <li>
+          <strong>Scalabilità</strong> - Supporto per sistemi multi-core e NUMA
+        </li>
+        <li>
+          <strong>Debugging</strong> - Lockdep validator rileva deadlock
+          potenziali a runtime
+        </li>
+        <li>
+          <strong>Sicurezza</strong> - Prevenzione di accessi concorrenti
+          dannosi
+        </li>
+      </ul>
 
-        <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>La sincronizzazione coordina l'accesso concorrente tra tutti i principali sottosistemi del kernel:</strong></p>
+      <h2>🔗 Interazioni Chiave</h2>
+      <p>
+        <strong
+          >La sincronizzazione coordina l'accesso concorrente tra tutti i
+          principali sottosistemi del kernel:</strong
+        >
+      </p>
 
-        <h3>⚙️ Scheduler Subsystem</h3>
-        <p>• <strong>Context switching</strong> - Salva/ripristina stato processi con lock protection</p>
-        <p>• <strong>Load balancing</strong> - Sincronizzazione tra CPU per distribuzione carico</p>
-        <p>• <strong>Real-time scheduling</strong> - Priorità assoluta con lock avoidance</p>
+      <h3>⚙️ Scheduler Subsystem</h3>
+      <p>
+        • <strong>Context switching</strong> - Salva/ripristina stato processi
+        con lock protection
+      </p>
+      <p>
+        • <strong>Load balancing</strong> - Sincronizzazione tra CPU per
+        distribuzione carico
+      </p>
+      <p>
+        • <strong>Real-time scheduling</strong> - Priorità assoluta con lock
+        avoidance
+      </p>
 
-        <h3>🧠 Memory Management</h3>
-        <p>• <strong>Page allocation</strong> - Lock per allocazione/deallocazione pagine</p>
-        <p>• <strong>Virtual memory</strong> - Sincronizzazione tabelle delle pagine</p>
-        <p>• <strong>Memory mapping</strong> - Lock per operazioni mmap/munmap</p>
+      <h3>🧠 Memory Management</h3>
+      <p>
+        • <strong>Page allocation</strong> - Lock per allocazione/deallocazione
+        pagine
+      </p>
+      <p>
+        • <strong>Virtual memory</strong> - Sincronizzazione tabelle delle
+        pagine
+      </p>
+      <p>• <strong>Memory mapping</strong> - Lock per operazioni mmap/munmap</p>
 
-        <h3>📡 Interrupt System</h3>
-        <p>• <strong>Bottom-half locking</strong> - Sincronizzazione tra interrupt e processi</p>
-        <p>• <strong>Tasklet coordination</strong> - Lock per esecuzione tasklet differita</p>
-        <p>• <strong>Workqueue sync</strong> - Coordinamento lavoro in background</p>
+      <h3>📡 Interrupt System</h3>
+      <p>
+        • <strong>Bottom-half locking</strong> - Sincronizzazione tra interrupt
+        e processi
+      </p>
+      <p>
+        • <strong>Tasklet coordination</strong> - Lock per esecuzione tasklet
+        differita
+      </p>
+      <p>
+        • <strong>Workqueue sync</strong> - Coordinamento lavoro in background
+      </p>
 
-        <h3>🔌 Device Drivers</h3>
-        <p>• <strong>Hardware access</strong> - Lock per registri e memoria dispositivi</p>
-        <p>• <strong>Buffer management</strong> - Sincronizzazione buffer DMA</p>
-        <p>• <strong>Device state</strong> - Lock per configurazione dispositivi</p>
+      <h3>🔌 Device Drivers</h3>
+      <p>
+        • <strong>Hardware access</strong> - Lock per registri e memoria
+        dispositivi
+      </p>
+      <p>• <strong>Buffer management</strong> - Sincronizzazione buffer DMA</p>
+      <p>
+        • <strong>Device state</strong> - Lock per configurazione dispositivi
+      </p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>Socket locking</strong> - Sincronizzazione strutture socket</p>
-        <p>• <strong>Protocol state</strong> - Lock per stati protocollo TCP/UDP</p>
-        <p>• <strong>Routing tables</strong> - Sincronizzazione tabelle di routing</p>
+      <h3>🌐 Network Stack</h3>
+      <p>
+        • <strong>Socket locking</strong> - Sincronizzazione strutture socket
+      </p>
+      <p>
+        • <strong>Protocol state</strong> - Lock per stati protocollo TCP/UDP
+      </p>
+      <p>
+        • <strong>Routing tables</strong> - Sincronizzazione tabelle di routing
+      </p>
 
-        <h2>🛠️ API di Sincronizzazione</h2>
-        <p><strong>La sincronizzazione opera su tre livelli: user space (system call), kernel space (funzioni interne), e hardware primitives:</strong></p>
+      <h2>🛠️ API di Sincronizzazione</h2>
+      <p>
+        <strong
+          >La sincronizzazione opera su tre livelli: user space (system call),
+          kernel space (funzioni interne), e hardware primitives:</strong
+        >
+      </p>
 
-        <h3>👤 USER SPACE API (System Calls)</h3>
-        <div style="background: #e8f5e9; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #4caf50;">
-            <code style="color: #2e7d32; font-weight: bold;">long syscall(SYS_futex, uint32_t *uaddr, int futex_op, uint32_t val, ...);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Meccanismo ibrido user-kernel per implementare lock in user space con supporto kernel per wait/wakeup.</span><br><br>
+      <h3>👤 USER SPACE API (System Calls)</h3>
+      <div
+        style="
+          background: #e8f5e9;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+          border-left: 4px solid #4caf50;
+        "
+      >
+        <code style="color: #2e7d32; font-weight: bold"
+          >long syscall(SYS_futex, uint32_t *uaddr, int futex_op, uint32_t val,
+          ...);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Meccanismo ibrido user-kernel per implementare lock in user space con
+          supporto kernel per wait/wakeup.</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">int semop(int semid, struct sembuf *sops, size_t nsops);</code><br>
-            <span style="color: #666; font-size: 0.9em;">System V semaphores per sincronizzazione tra processi.</span><br><br>
+        <code style="color: #f57c00; font-weight: bold"
+          >int semop(int semid, struct sembuf *sops, size_t nsops);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >System V semaphores per sincronizzazione tra processi.</span
+        ><br /><br />
 
-            <code style="color: #9c27b0; font-weight: bold;">int sem_timedwait(sem_t *sem, const struct timespec *abs_timeout);</code><br>
-            <span style="color: #666; font-size: 0.9em;">POSIX semaphores con timeout per evitare deadlock infiniti.</span>
+        <code style="color: #9c27b0; font-weight: bold"
+          >int sem_timedwait(sem_t *sem, const struct timespec
+          *abs_timeout);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >POSIX semaphores con timeout per evitare deadlock infiniti.</span
+        >
+      </div>
+
+      <h3>⚙️ KERNEL SPACE API (Funzioni Interne)</h3>
+      <div
+        style="
+          background: #fff3e0;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+          border-left: 4px solid #ff9800;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >void spin_lock(spinlock_t *lock);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Funzione kernel per spinlock - busy-wait, solo in contesti non-sleep
+          (interrupt handlers).</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >void mutex_lock(struct mutex *lock);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Funzione kernel per mutex - può dormire, per process context
+          ordinario.</span
+        ><br /><br />
+
+        <code style="color: #f57c00; font-weight: bold"
+          >void down(struct semaphore *sem);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Funzione kernel per semafori kernel-space.</span
+        >
+      </div>
+
+      <h3>🔧 HARDWARE PRIMITIVES</h3>
+      <div
+        style="
+          background: #f3e5f5;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+          border-left: 4px solid #9c27b0;
+        "
+      >
+        <code style="color: #9c27b0; font-weight: bold"
+          >int test_and_set_bit(long nr, volatile unsigned long *addr);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Operazione atomica fondamentale: legge e scrive in un'unica
+          istruzione.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >cmpxchg(ptr, old, new);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Confronta valore corrente con expected, scambia se uguale (lock-free
+          programming).</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold">void smp_mb(void);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Memory barrier completa per SMP - garantisce ordine operazioni
+          memoria.</span
+        >
+      </div>
+
+      <h3>⚡ ATOMIC OPERATIONS COMPLETE</h3>
+      <div
+        style="
+          background: #e0f2f1;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+          border-left: 4px solid #009688;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >void atomic_inc(atomic_t *v);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Integer operations: inc, dec, add, sub, read, set.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >void set_bit(long nr, volatile unsigned long *addr);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Bit operations: set, clear, test-and-set, test-and-clear.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold">xchg(ptr, new);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Pointer operations: exchange, compare-exchange per strutture dati
+          lock-free.</span
+        >
+      </div>
+
+      <h3>🔄 RCU (Read-Copy-Update)</h3>
+      <div
+        style="
+          background: #fff9c4;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+          border-left: 4px solid #f57c00;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >void rcu_read_lock(void);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Marca inizio sezione lettura RCU (letture concorrenti senza
+          lock).</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >void synchronize_rcu(void);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Attende che tutte le sezioni RCU precedenti terminino prima di
+          liberare memoria.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >void call_rcu(struct rcu_head *head, rcu_callback_t func);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Defer cleanup di strutture dati RCU in modo sicuro.</span
+        >
+      </div>
+
+      <h3>🔢 SEQLOCKS</h3>
+      <div
+        style="
+          background: #fce4ec;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+          border-left: 4px solid #e91e63;
+        "
+      >
+        <code style="color: #e91e63; font-weight: bold"
+          >unsigned read_seqbegin(const seqlock_t *sl);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Inizia lettura sequenziale (può fallire se scrittura in corso).</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >void write_seqlock(seqlock_t *sl);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Acquisisce seqlock per scrittura (letture possono continuare).</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >int read_seqretry(const seqlock_t *sl, unsigned start);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Verifica se lettura è valida (nessuna scrittura durante
+          lettura).</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+      <p><strong>Quando aggiorni una struttura dati condivisa:</strong></p>
+      <ol>
+        <li>
+          <code>spin_lock(&my_lock)</code> - Acquisisci lock per protezione
+        </li>
+        <li>
+          <code>atomic_inc(&counter)</code> - Modifica atomica del contatore
+        </li>
+        <li>Aggiorna struttura dati condivisa</li>
+        <li><code>spin_unlock(&my_lock)</code> - Rilascia lock</li>
+      </ol>
+      <p>
+        <em
+          >La sincronizzazione garantisce che le modifiche siano visibili
+          correttamente a tutti i thread/processi!</em
+        >
+      </p>
+
+      <h2>🗺️ Mappa Concettuale della Sincronizzazione</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura della Sincronizzazione
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ APPLICAZIONI MULTI-THREADED
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Server web (Apache, Nginx)<br />
+            • Database (MySQL, PostgreSQL)<br />
+            • Applicazioni concorrenti
+          </div>
         </div>
 
-        <h3>⚙️ KERNEL SPACE API (Funzioni Interne)</h3>
-        <div style="background: #fff3e0; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ff9800;">
-            <code style="color: #d32f2f; font-weight: bold;">void spin_lock(spinlock_t *lock);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Funzione kernel per spinlock - busy-wait, solo in contesti non-sleep (interrupt handlers).</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #0288d1; font-weight: bold;">void mutex_lock(struct mutex *lock);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Funzione kernel per mutex - può dormire, per process context ordinario.</span><br><br>
-
-            <code style="color: #f57c00; font-weight: bold;">void down(struct semaphore *sem);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Funzione kernel per semafori kernel-space.</span>
+        <!-- System Call Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔧 SYSTEM CALLS
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • pthread_mutex_lock()<br />
+            • sem_wait() • sem_post()<br />
+            • futex() per ottimizzazione
+          </div>
         </div>
 
-        <h3>🔧 HARDWARE PRIMITIVES</h3>
-        <div style="background: #f3e5f5; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #9c27b0;">
-            <code style="color: #9c27b0; font-weight: bold;">int test_and_set_bit(long nr, volatile unsigned long *addr);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Operazione atomica fondamentale: legge e scrive in un'unica istruzione.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #0288d1; font-weight: bold;">cmpxchg(ptr, old, new);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Confronta valore corrente con expected, scambia se uguale (lock-free programming).</span><br><br>
-
-            <code style="color: #d32f2f; font-weight: bold;">void smp_mb(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Memory barrier completa per SMP - garantisce ordine operazioni memoria.</span>
+        <!-- Synchronization Core -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🌟 SYNCHRONIZATION CORE
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔄</div>
+              <div style="font-size: 0.8em">Spinlocks</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔒</div>
+              <div style="font-size: 0.8em">Mutex</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">📊</div>
+              <div style="font-size: 0.8em">Semaphores</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⚡</div>
+              <div style="font-size: 0.8em">Atomic Ops</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Race condition prevention<br />
+            • Deadlock avoidance<br />
+            • Performance optimization
+          </div>
         </div>
 
-        <h3>⚡ ATOMIC OPERATIONS COMPLETE</h3>
-        <div style="background: #e0f2f1; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #009688;">
-            <code style="color: #f57c00; font-weight: bold;">void atomic_inc(atomic_t *v);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Integer operations: inc, dec, add, sub, read, set.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">void set_bit(long nr, volatile unsigned long *addr);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Bit operations: set, clear, test-and-set, test-and-clear.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">xchg(ptr, new);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Pointer operations: exchange, compare-exchange per strutture dati lock-free.</span>
+        <!-- Kernel Subsystems -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              ⚙️ SCHEDULER
+            </div>
+            <div style="font-size: 0.8em; color: #666">Context switching</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              🧠 MEMORY
+            </div>
+            <div style="font-size: 0.8em; color: #666">Page allocation</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              📡 NETWORK
+            </div>
+            <div style="font-size: 0.8em; color: #666">Socket locking</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              🔌 DEVICES
+            </div>
+            <div style="font-size: 0.8em; color: #666">Hardware access</div>
+          </div>
         </div>
 
-        <h3>🔄 RCU (Read-Copy-Update)</h3>
-        <div style="background: #fff9c4; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #f57c00;">
-            <code style="color: #f57c00; font-weight: bold;">void rcu_read_lock(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Marca inizio sezione lettura RCU (letture concorrenti senza lock).</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">void synchronize_rcu(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Attende che tutte le sezioni RCU precedenti terminino prima di liberare memoria.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">void call_rcu(struct rcu_head *head, rcu_callback_t func);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Defer cleanup di strutture dati RCU in modo sicuro.</span>
+        <!-- Hardware Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            ⚡ HARDWARE LAYER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • CPU Cache Coherency<br />
+            • Memory Barriers<br />
+            • Atomic Instructions
+          </div>
         </div>
 
-        <h3>🔢 SEQLOCKS</h3>
-        <div style="background: #fce4ec; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #e91e63;">
-            <code style="color: #e91e63; font-weight: bold;">unsigned read_seqbegin(const seqlock_t *sl);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Inizia lettura sequenziale (può fallire se scrittura in corso).</span><br><br>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • <strong>User Space:</strong> System calls (futex, semop) per
+          applicazioni<br />
+          • <strong>Kernel Space:</strong> Funzioni interne (spin_lock,
+          mutex_lock) per kernel<br />
+          • <strong>Hardware:</strong> Primitive atomiche (test-and-set, memory
+          barriers)<br />
+          • La sincronizzazione garantisce integrità dati in ambienti
+          concorrenti<br />
+          • La scelta del lock giusto è cruciale per le performance
+        </div>
+      </div>
 
-            <code style="color: #9c27b0; font-weight: bold;">void write_seqlock(seqlock_t *sl);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Acquisisce seqlock per scrittura (letture possono continuare).</span><br><br>
+      <h2>🎬 Demo Interattiva: Race Condition</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Accesso concorrente senza sincronizzazione
+        </h3>
 
-            <code style="color: #0288d1; font-weight: bold;">int read_seqretry(const seqlock_t *sl, unsigned start);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Verifica se lettura è valida (nessuna scrittura durante lettura).</span>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              ⚙️ Thread A
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              counter = counter + 1<br />
+              <span style="color: #666">(incrementa contatore globale)</span>
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">⚠️</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #f44336;
+            "
+          >
+            <div style="font-weight: bold; color: #c62828; margin-bottom: 10px">
+              ⚙️ Thread B
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              counter = counter + 1<br />
+              <span style="color: #666">(incrementa stesso contatore)</span>
+            </div>
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando aggiorni una struttura dati condivisa:</strong></p>
-        <ol>
-            <li><code>spin_lock(&my_lock)</code> - Acquisisci lock per protezione</li>
-            <li><code>atomic_inc(&counter)</code> - Modifica atomica del contatore</li>
-            <li>Aggiorna struttura dati condivisa</li>
-            <li><code>spin_unlock(&my_lock)</code> - Rilascia lock</li>
-        </ol>
-        <p><em>La sincronizzazione garantisce che le modifiche siano visibili correttamente a tutti i thread/processi!</em></p>
-
-
-        <h2>🗺️ Mappa Concettuale della Sincronizzazione</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura della Sincronizzazione</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI MULTI-THREADED</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Server web (Apache, Nginx)<br>
-                    • Database (MySQL, PostgreSQL)<br>
-                    • Applicazioni concorrenti
-                </div>
-            </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- System Call Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • pthread_mutex_lock()<br>
-                    • sem_wait() • sem_post()<br>
-                    • futex() per ottimizzazione
-                </div>
-            </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Synchronization Core -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 SYNCHRONIZATION CORE</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔄</div>
-                        <div style="font-size: 0.8em;">Spinlocks</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔒</div>
-                        <div style="font-size: 0.8em;">Mutex</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📊</div>
-                        <div style="font-size: 0.8em;">Semaphores</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
-                        <div style="font-size: 0.8em;">Atomic Ops</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Race condition prevention<br>
-                    • Deadlock avoidance<br>
-                    • Performance optimization
-                </div>
-            </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Kernel Subsystems -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚙️ SCHEDULER</div>
-                    <div style="font-size: 0.8em; color: #666;">Context switching</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🧠 MEMORY</div>
-                    <div style="font-size: 0.8em; color: #666;">Page allocation</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">📡 NETWORK</div>
-                    <div style="font-size: 0.8em; color: #666;">Socket locking</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔌 DEVICES</div>
-                    <div style="font-size: 0.8em; color: #666;">Hardware access</div>
-                </div>
-            </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Hardware Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">⚡ HARDWARE LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • CPU Cache Coherency<br>
-                    • Memory Barriers<br>
-                    • Atomic Instructions
-                </div>
-            </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • <strong>User Space:</strong> System calls (futex, semop) per applicazioni<br>
-                • <strong>Kernel Space:</strong> Funzioni interne (spin_lock, mutex_lock) per kernel<br>
-                • <strong>Hardware:</strong> Primitive atomiche (test-and-set, memory barriers)<br>
-                • La sincronizzazione garantisce integrità dati in ambienti concorrenti<br>
-                • La scelta del lock giusto è cruciale per le performance
-            </div>
+        <div
+          style="
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Problema:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >counter++ non è atomico!</code
+          >
         </div>
 
-        <h2>🎬 Demo Interattiva: Race Condition</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Accesso concorrente senza sincronizzazione</h3>
-
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">⚙️ Thread A</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        counter = counter + 1<br>
-                        <span style="color: #666;">(incrementa contatore globale)</span>
-                    </div>
-                </div>
-
-                <div style="font-size: 2em; color: #f57c00;">⚠️</div>
-
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #f44336;">
-                    <div style="font-weight: bold; color: #c62828; margin-bottom: 10px;">⚙️ Thread B</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        counter = counter + 1<br>
-                        <span style="color: #666;">(incrementa stesso contatore)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Problema:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">counter++ non è atomico!</code>
-            </div>
-
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede senza sincronizzazione:</h4>
-                <ol style="line-height: 1.8;">
-                    <li><strong>1. Thread A legge counter:</strong> valore = 5</li>
-                    <li><strong>2. Thread B legge counter:</strong> valore = 5 (stesso valore!)</li>
-                    <li><strong>3. Thread A incrementa:</strong> counter = 6</li>
-                    <li><strong>4. Thread B incrementa:</strong> counter = 6 (non 7!)</li>
-                    <li><strong>5. Risultato finale:</strong> counter = 6 invece di 7!</li>
-                </ol>
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Soluzione:</strong> Usa <code>atomic_inc(&counter)</code> o proteggi con mutex per garantire atomicità!
-            </div>
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Cosa succede senza sincronizzazione:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li><strong>1. Thread A legge counter:</strong> valore = 5</li>
+            <li>
+              <strong>2. Thread B legge counter:</strong> valore = 5 (stesso
+              valore!)
+            </li>
+            <li><strong>3. Thread A incrementa:</strong> counter = 6</li>
+            <li>
+              <strong>4. Thread B incrementa:</strong> counter = 6 (non 7!)
+            </li>
+            <li>
+              <strong>5. Risultato finale:</strong> counter = 6 invece di 7!
+            </li>
+          </ol>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora la Sincronizzazione</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Soluzione:</strong> Usa <code>atomic_inc(&counter)</code> o
+          proteggi con mutex per garantire atomicità!
+        </div>
+      </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora i lock del kernel</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/lock_stat | head -10<br>
-                        lock_stat version 0.4<br>
-                        -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br>
-                        class name con-bounces contentions [...truncated...]
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi statistiche sui lock del kernel</em></p>
-                </div>
+      <h2>🧪 Laboratorio Pratico: Esplora la Sincronizzazione</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
 
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Traccia chiamate futex</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ strace -f -e trace=futex ./my_program<br>
-                        [pid 1234] futex(0x7f8b8c0049d0, FUTEX_WAIT_PRIVATE, 0, NULL) = 0<br>
-                        [pid 1235] futex(0x7f8b8c0049d0, FUTEX_WAKE_PRIVATE, 1) = 1
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva le chiamate di sincronizzazione</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Verifica il validatore dei lock (lockdep)</h4>
-                    <div style="background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/lockdep_stats | head -5<br>
-                        $ sudo dmesg | grep -i lockdep
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Richiede un kernel compilato con CONFIG_PROVE_LOCKING</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Monitora performance lock</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ perf lock record -a sleep 10<br>
-                        $ perf lock report<br>
-                        [...lock contention statistics...]
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Analizza contese e performance dei lock</em></p>
-                </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📊 Monitora i lock del kernel
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ cat /proc/lock_stat | head -10<br />
+              lock_stat version 0.4<br />
+              -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br />
+              class name con-bounces contentions [...truncated...]
             </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi statistiche sui lock del kernel</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              ⚡ Traccia chiamate futex
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ strace -f -e trace=futex ./my_program<br />
+              [pid 1234] futex(0x7f8b8c0049d0, FUTEX_WAIT_PRIVATE, 0, NULL) =
+              0<br />
+              [pid 1235] futex(0x7f8b8c0049d0, FUTEX_WAKE_PRIVATE, 1) = 1
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Osserva le chiamate di sincronizzazione</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔍 Verifica il validatore dei lock (lockdep)
+            </h4>
+            <div
+              style="
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ cat /proc/lockdep_stats | head -5<br />
+              $ sudo dmesg | grep -i lockdep
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Richiede un kernel compilato con CONFIG_PROVE_LOCKING</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📈 Monitora performance lock
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ perf lock record -a sleep 10<br />
+              $ perf lock report<br />
+              [...lock contention statistics...]
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Analizza contese e performance dei lock</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            ⚠️
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Race Condition
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            Quando due thread accedono contemporaneamente a dati condivisi senza
+            sincronizzazione, causando comportamenti imprevedibili e bug
+            difficili da riprodurre.
+          </p>
         </div>
 
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚠️</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Race Condition</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Quando due thread accedono contemporaneamente a dati condivisi senza sincronizzazione, causando comportamenti imprevedibili e bug difficili da riprodurre.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Atomicità</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Operazioni che appaiono come un singolo passo indivisibile. Le operazioni atomiche sono indivisibili; l'ordine con cui le altre CPU vedono le modifiche si controlla con barriere di memoria o con le varianti _acquire/_release.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Lock Granularity</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    La dimensione del lock determina le performance. Lock fini (fine-grained) permettono maggiore concorrenza ma aumentano overhead. Lock grossi (coarse-grained) sono più semplici ma riducono concorrenza.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚪</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Deadlock</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Situazione in cui processi attendono reciprocamente risorse. Prevenzione: lock ordering, timeout, try-lock con backoff, hierarchy validation.
-                </p>
-            </div>
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔄
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Atomicità
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            Operazioni che appaiono come un singolo passo indivisibile. Le
+            operazioni atomiche sono indivisibili; l'ordine con cui le altre CPU
+            vedono le modifiche si controlla con barriere di memoria o con le
+            varianti _acquire/_release.
+          </p>
         </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔒
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Lock Granularity
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            La dimensione del lock determina le performance. Lock fini
+            (fine-grained) permettono maggiore concorrenza ma aumentano
+            overhead. Lock grossi (coarse-grained) sono più semplici ma riducono
+            concorrenza.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🚪
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Deadlock
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Situazione in cui processi attendono reciprocamente risorse.
+            Prevenzione: lock ordering, timeout, try-lock con backoff, hierarchy
+            validation.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz su Sincronizzazione
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz su Sincronizzazione
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
+        {
+          question:
+            "Quale meccanismo di sincronizzazione NON può essere usato in un interrupt handler perché può mettere il processo in sleep?",
+          options: ["spin_lock()", "spin_trylock()", "atomic_inc()", "Mutex"],
+          correct: 3,
+          explanation:
+            "Il mutex può far dormire chi lo richiede, quindi si usa solo in process context; spinlock e operazioni atomiche non dormono e sono utilizzabili anche negli interrupt handler.",
+        },
+        {
+          question: "Cosa significa RCU nel kernel Linux?",
+          options: [
+            "Read-Copy-Update",
+            "Resource-Control-Unit",
+            "Real-CPU-Unit",
+            "Register-Cache-Unit",
+          ],
+          correct: 0,
+          explanation:
+            "RCU (Read-Copy-Update) è un meccanismo efficiente per letture concorrenti.",
+        },
+        {
+          question:
+            "Quale file mostra i lock sui file (flock/fcntl) attualmente attivi?",
+          options: [
+            "/proc/devices",
+            "/proc/meminfo",
+            "/proc/locks",
+            "/proc/stat",
+          ],
+          correct: 2,
+          explanation:
+            "/proc/locks elenca i lock sui file (POSIX, flock, lease) con tipo, processo proprietario e file interessato.",
+        },
+        {
+          question: "Quale struttura kernel gestisce i mutex?",
+          options: ["mutex_t", "lock_t", "sync_struct", "struct mutex"],
+          correct: 3,
+          explanation:
+            "struct mutex è la struttura standard per mutex nel kernel Linux.",
+        },
+        {
+          question: "Quale primitiva RCU è usata per letture critiche?",
+          options: [
+            "rcu_read_lock()",
+            "synchronize_rcu()",
+            "rcu_synchronize()",
+            "rcu_assign_pointer()",
+          ],
+          correct: 0,
+          explanation:
+            "rcu_read_lock() marca l'inizio di una sezione critica RCU per letture.",
+        },
+        {
+          question: "Cosa fa synchronize_rcu() nel kernel?",
+          options: [
+            "Acquisisce un lock",
+            "Rilascia un semaforo",
+            "Inizia un nuovo RCU cycle",
+            "Attende che tutte le sezioni RCU terminino",
+          ],
+          correct: 3,
+          explanation:
+            "synchronize_rcu() blocca finché tutti i lettori RCU precedenti non terminano.",
+        },
+        {
+          question: "Cosa fa un'operazione come test_and_set_bit()?",
+          options: [
+            "Imposta il bit senza leggerlo",
+            "Legge il vecchio valore del bit e lo imposta in un'unica operazione atomica",
+            "Cancella il bit",
+            "Confronta due interi e li scambia",
+          ],
+          correct: 1,
+          explanation:
+            "test_and_set_bit() restituisce il valore precedente del bit e lo imposta a 1 in modo atomico: è la base di molti lock.",
+        },
+        {
+          question: "Cosa sono le memory barriers?",
+          options: [
+            "Limiti di memoria",
+            "Cache memory",
+            "Istruzioni che garantiscono ordine operazioni memoria",
+            "Barriere fisiche",
+          ],
+          correct: 2,
+          explanation:
+            "Memory barriers (smp_mb(), rmb(), wmb()) garantiscono che operazioni memoria siano visibili in ordine corretto a tutti i processori.",
+        },
+        {
+          question: "Cosa rileva lockdep nel kernel?",
+          options: [
+            "Solo deadlock",
+            "Deadlock potenziali e dipendenze lock a runtime",
+            "Solo race condition",
+            "Solo performance",
+          ],
+          correct: 1,
+          explanation:
+            "Lockdep traccia dipendenze tra lock e rileva deadlock potenziali durante l'esecuzione del kernel.",
+        },
+        {
+          question: "Quando usare spinlock vs mutex?",
+          options: [
+            "Dipende dal programmatore",
+            "Sempre spinlock",
+            "Spinlock per interrupt context, mutex per process context",
+            "Sempre mutex",
+          ],
+          correct: 2,
+          explanation:
+            "Spinlock per contesti che non possono dormire (interrupt handlers), mutex per process context ordinario.",
+        },
+      ];
 
-<script>
-    // Quiz functionality
-                const quizQuestions = [
-        {
-            question: "Quale meccanismo di sincronizzazione NON può essere usato in un interrupt handler perché può mettere il processo in sleep?",
-            options: ["spin_lock()", "spin_trylock()", "atomic_inc()", "Mutex"],
-            correct: 3,
-            explanation: "Il mutex può far dormire chi lo richiede, quindi si usa solo in process context; spinlock e operazioni atomiche non dormono e sono utilizzabili anche negli interrupt handler."
-        },
-        {
-            question: "Cosa significa RCU nel kernel Linux?",
-            options: ["Read-Copy-Update", "Resource-Control-Unit", "Real-CPU-Unit", "Register-Cache-Unit"],
-            correct: 0,
-            explanation: "RCU (Read-Copy-Update) è un meccanismo efficiente per letture concorrenti."
-        },
-        {
-            question: "Quale file mostra i lock sui file (flock/fcntl) attualmente attivi?",
-            options: ["/proc/devices", "/proc/meminfo", "/proc/locks", "/proc/stat"],
-            correct: 2,
-            explanation: "/proc/locks elenca i lock sui file (POSIX, flock, lease) con tipo, processo proprietario e file interessato."
-        },
-        {
-            question: "Quale struttura kernel gestisce i mutex?",
-            options: ["mutex_t", "lock_t", "sync_struct", "struct mutex"],
-            correct: 3,
-            explanation: "struct mutex è la struttura standard per mutex nel kernel Linux."
-        },
-        {
-            question: "Quale primitiva RCU è usata per letture critiche?",
-            options: ["rcu_read_lock()", "synchronize_rcu()", "rcu_synchronize()", "rcu_assign_pointer()"],
-            correct: 0,
-            explanation: "rcu_read_lock() marca l'inizio di una sezione critica RCU per letture."
-        },
-        {
-            question: "Cosa fa synchronize_rcu() nel kernel?",
-            options: ["Acquisisce un lock", "Rilascia un semaforo", "Inizia un nuovo RCU cycle", "Attende che tutte le sezioni RCU terminino"],
-            correct: 3,
-            explanation: "synchronize_rcu() blocca finché tutti i lettori RCU precedenti non terminano."
-        },
-        {
-            question: "Cosa fa un'operazione come test_and_set_bit()?",
-            options: ["Imposta il bit senza leggerlo", "Legge il vecchio valore del bit e lo imposta in un'unica operazione atomica", "Cancella il bit", "Confronta due interi e li scambia"],
-            correct: 1,
-            explanation: "test_and_set_bit() restituisce il valore precedente del bit e lo imposta a 1 in modo atomico: è la base di molti lock."
-        },
-        {
-            question: "Cosa sono le memory barriers?",
-            options: ["Limiti di memoria", "Cache memory", "Istruzioni che garantiscono ordine operazioni memoria", "Barriere fisiche"],
-            correct: 2,
-            explanation: "Memory barriers (smp_mb(), rmb(), wmb()) garantiscono che operazioni memoria siano visibili in ordine corretto a tutti i processori."
-        },
-        {
-            question: "Cosa rileva lockdep nel kernel?",
-            options: ["Solo deadlock", "Deadlock potenziali e dipendenze lock a runtime", "Solo race condition", "Solo performance"],
-            correct: 1,
-            explanation: "Lockdep traccia dipendenze tra lock e rileva deadlock potenziali durante l'esecuzione del kernel."
-        },
-        {
-            question: "Quando usare spinlock vs mutex?",
-            options: ["Dipende dal programmatore", "Sempre spinlock", "Spinlock per interrupt context, mutex per process context", "Sempre mutex"],
-            correct: 2,
-            explanation: "Spinlock per contesti che non possono dormire (interrupt handlers), mutex per process context ordinario."
-        }
-    ];
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Show first 10 questions
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Show first 10 questions
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -598,45 +1355,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -647,45 +1408,48 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione della sincronizzazione! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione della sincronizzazione! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare la sincronizzazione! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a studiare la sincronizzazione! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! La sincronizzazione è cruciale! 📚";
-            color = "#d32f2f";
+          message = "Continua a studiare! La sincronizzazione è cruciale! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -699,52 +1463,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

@@ -1,558 +1,1302 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PAGE CACHE - Dettagli</title>
-     
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>PAGE CACHE</h1>
-        <p class="subtitle">Cache delle Pagine</p>
+      <h1>PAGE CACHE</h1>
+      <p class="subtitle">Cache delle Pagine</p>
     </div>
 
     <div class="content">
-        <span class="badge">📄 CACHE PAGINE</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>La Page Cache è il sistema di caching intelligente che mantiene in memoria RAM le pagine di dati più frequentemente utilizzate, riducendo drasticamente gli accessi al disco.</strong></p>
+      <span class="badge">📄 CACHE PAGINE</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >La Page Cache è il sistema di caching intelligente che mantiene in
+          memoria RAM le pagine di dati più frequentemente utilizzate, riducendo
+          drasticamente gli accessi al disco.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come una biblioteca personale: i libri più letti (dati più usati) vengono tenuti sulla scrivania (RAM) invece che negli scaffali (disco), permettendo accessi immediati senza dover cercare ogni volta.</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come una biblioteca personale: i libri più letti (dati più usati)
+        vengono tenuti sulla scrivania (RAM) invece che negli scaffali (disco),
+        permettendo accessi immediati senza dover cercare ogni volta.
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>La Page Cache è il meccanismo di caching più importante del kernel Linux, mantenendo in memoria le pagine di dati più frequentemente accedute per ridurre drasticamente la latenza di I/O.</strong> Immagina un magazziniere intelligente che anticipa le richieste: tiene sempre a portata di mano gli articoli più popolari, riducendo i tempi di consegna da minuti a millisecondi.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >La Page Cache è il meccanismo di caching più importante del kernel
+          Linux, mantenendo in memoria le pagine di dati più frequentemente
+          accedute per ridurre drasticamente la latenza di I/O.</strong
+        >
+        Immagina un magazziniere intelligente che anticipa le richieste: tiene
+        sempre a portata di mano gli articoli più popolari, riducendo i tempi di
+        consegna da minuti a millisecondi.
+      </p>
 
-        <p>• <strong>Read-ahead prediction</strong> - Pre-carica pagine anticipate che probabilmente saranno richieste</p>
-        <p>• <strong>Write-back buffering</strong> - Accumula scritture per scrivere in batch ottimizzati</p>
-        <p>• <strong>LRU page replacement</strong> - Algoritmi per decidere quali pagine mantenere in cache</p>
-        <p>• <strong>Dirty page tracking</strong> - Traccia pagine modificate da sincronizzare su disco</p>
-        <p>• <strong>Page reference counting</strong> - Gestisce condivisione pagine tra processi</p>
-        <p>• <strong>Memory pressure handling</strong> - Riduce cache sotto pressione di memoria</p>
-        <p><em>• Interazione: Coordina tra VFS, memory manager e dispositivi storage per prestazioni ottimali</em></p>
+      <p>
+        • <strong>Read-ahead prediction</strong> - Pre-carica pagine anticipate
+        che probabilmente saranno richieste
+      </p>
+      <p>
+        • <strong>Write-back buffering</strong> - Accumula scritture per
+        scrivere in batch ottimizzati
+      </p>
+      <p>
+        • <strong>LRU page replacement</strong> - Algoritmi per decidere quali
+        pagine mantenere in cache
+      </p>
+      <p>
+        • <strong>Dirty page tracking</strong> - Traccia pagine modificate da
+        sincronizzare su disco
+      </p>
+      <p>
+        • <strong>Page reference counting</strong> - Gestisce condivisione
+        pagine tra processi
+      </p>
+      <p>
+        • <strong>Memory pressure handling</strong> - Riduce cache sotto
+        pressione di memoria
+      </p>
+      <p>
+        <em
+          >• Interazione: Coordina tra VFS, memory manager e dispositivi storage
+          per prestazioni ottimali</em
+        >
+      </p>
 
-        <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>La Page Cache gestisce quattro aspetti fondamentali del caching intelligente, ciascuno critico per le prestazioni del sistema:</strong></p>
+      <h2>⚙️ Operazioni Principali</h2>
+      <p>
+        <strong
+          >La Page Cache gestisce quattro aspetti fondamentali del caching
+          intelligente, ciascuno critico per le prestazioni del sistema:</strong
+        >
+      </p>
 
-        <h3>📖 Read Operations</h3>
-        <p>• <strong>generic_file_read_iter()</strong> - Lettura file con gestione cache intelligente</p>
-        <p>• <strong>page_cache_read()</strong> - Aggiunge e legge una pagina nella page cache (usata nei page fault)</p>
-        <p>• <strong>filemap_read()</strong> - Implementazione lettura generica</p>
-        <p>• <strong>read_cache_page()</strong> - Carica pagina in cache se necessario</p>
-        <p>• <strong>read_cache_page_gfp()</strong> - Lettura con flags allocazione specifici</p>
+      <h3>📖 Read Operations</h3>
+      <p>
+        • <strong>generic_file_read_iter()</strong> - Lettura file con gestione
+        cache intelligente
+      </p>
+      <p>
+        • <strong>page_cache_read()</strong> - Aggiunge e legge una pagina nella
+        page cache (usata nei page fault)
+      </p>
+      <p>
+        • <strong>filemap_read()</strong> - Implementazione lettura generica
+      </p>
+      <p>
+        • <strong>read_cache_page()</strong> - Carica pagina in cache se
+        necessario
+      </p>
+      <p>
+        • <strong>read_cache_page_gfp()</strong> - Lettura con flags allocazione
+        specifici
+      </p>
 
-        <h3>✏️ Write Operations</h3>
-        <p>• <strong>generic_file_write_iter()</strong> - Scrittura file con buffering intelligente</p>
-        <p>• <strong>generic_perform_write()</strong> - Scrittura diretta nella page cache</p>
-        <p>• <strong>write_cache_pages()</strong> - Scrive pagine dirty in batch</p>
-        <p>• <strong>set_page_dirty()</strong> - Marca pagina come modificata</p>
-        <p>• <strong>balance_dirty_pages_ratelimited()</strong> - Controlla limiti pagine dirty</p>
+      <h3>✏️ Write Operations</h3>
+      <p>
+        • <strong>generic_file_write_iter()</strong> - Scrittura file con
+        buffering intelligente
+      </p>
+      <p>
+        • <strong>generic_perform_write()</strong> - Scrittura diretta nella
+        page cache
+      </p>
+      <p>
+        • <strong>write_cache_pages()</strong> - Scrive pagine dirty in batch
+      </p>
+      <p>• <strong>set_page_dirty()</strong> - Marca pagina come modificata</p>
+      <p>
+        • <strong>balance_dirty_pages_ratelimited()</strong> - Controlla limiti
+        pagine dirty
+      </p>
 
-        <h3>🔄 Cache Management</h3>
-        <p>• <strong>add_to_page_cache_lru()</strong> - Aggiunge pagina alla cache</p>
-        <p>• <strong>find_get_page()</strong> - Trova pagina nella cache</p>
-        <p>• <strong>delete_from_page_cache()</strong> - Rimuove pagina dalla cache</p>
-        <p>• <strong>truncate_inode_pages()</strong> - Tronca pagine cache per file</p>
-        <p>• <strong>invalidate_mapping_pages()</strong> - Invalida pagine di un mapping</p>
+      <h3>🔄 Cache Management</h3>
+      <p>
+        • <strong>add_to_page_cache_lru()</strong> - Aggiunge pagina alla cache
+      </p>
+      <p>• <strong>find_get_page()</strong> - Trova pagina nella cache</p>
+      <p>
+        • <strong>delete_from_page_cache()</strong> - Rimuove pagina dalla cache
+      </p>
+      <p>
+        • <strong>truncate_inode_pages()</strong> - Tronca pagine cache per file
+      </p>
+      <p>
+        • <strong>invalidate_mapping_pages()</strong> - Invalida pagine di un
+        mapping
+      </p>
 
-        <h3>⚡ Performance Tuning</h3>
-        <p>• <strong>page_cache_sync_readahead()</strong> - Read-ahead sincrono intelligente</p>
-        <p>• <strong>page_cache_async_readahead()</strong> - Read-ahead asincrono</p>
-        <p>• <strong>page_cache_ra_unbounded()</strong> - Implementazione read-ahead</p>
-        <p>• <strong>pagevec_lookup()</strong> - Ricerca vettorizzata pagine</p>
-        <p>• <strong>shrink_folio_list()</strong> - Riduce cache sotto pressione memoria</p>
+      <h3>⚡ Performance Tuning</h3>
+      <p>
+        • <strong>page_cache_sync_readahead()</strong> - Read-ahead sincrono
+        intelligente
+      </p>
+      <p>
+        • <strong>page_cache_async_readahead()</strong> - Read-ahead asincrono
+      </p>
+      <p>
+        • <strong>page_cache_ra_unbounded()</strong> - Implementazione
+        read-ahead
+      </p>
+      <p>• <strong>pagevec_lookup()</strong> - Ricerca vettorizzata pagine</p>
+      <p>
+        • <strong>shrink_folio_list()</strong> - Riduce cache sotto pressione
+        memoria
+      </p>
 
-        <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando apri un file come /home/user/documento.txt, ecco cosa succede nella page cache:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong
+          >Quando apri un file come /home/user/documento.txt, ecco cosa succede
+          nella page cache:</strong
+        >
+      </p>
 
-        <h3>🔍 Cache Hit vs Cache Miss</h3>
-        <p>1. Il kernel cerca la pagina richiesta nella page cache usando l'address_space</p>
-        <p>2. Se trova la pagina (cache hit), la restituisce immediatamente dalla RAM</p>
-        <p>3. Se non trova (cache miss), alloca una pagina e la carica dal disco (con mmap questo avviene tramite page fault)</p>
-        <p>4. La pagina caricata viene aggiunta alla cache per accessi futuri</p>
+      <h3>🔍 Cache Hit vs Cache Miss</h3>
+      <p>
+        1. Il kernel cerca la pagina richiesta nella page cache usando
+        l'address_space
+      </p>
+      <p>
+        2. Se trova la pagina (cache hit), la restituisce immediatamente dalla
+        RAM
+      </p>
+      <p>
+        3. Se non trova (cache miss), alloca una pagina e la carica dal disco
+        (con mmap questo avviene tramite page fault)
+      </p>
+      <p>4. La pagina caricata viene aggiunta alla cache per accessi futuri</p>
 
-        <h3>📄 Strutture Dati Chiave</h3>
-        <ul>
-            <li><strong>struct page</strong> - Rappresenta una singola pagina fisica da 4KB contenente dati dalla cache</li>
-            <li><strong>address_space</strong> - Mantiene il mapping tra offset del file e pagine in cache</li>
-            <li><strong>XArray</strong> - Struttura dati efficiente per cercare pagine per offset</li>
-            <li><strong>page flags</strong> - Bit che indicano stato (dirty, uptodate, locked, etc.)</li>
-        </ul>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>struct page</strong> - Rappresenta una singola pagina fisica
+          da 4KB contenente dati dalla cache
+        </li>
+        <li>
+          <strong>address_space</strong> - Mantiene il mapping tra offset del
+          file e pagine in cache
+        </li>
+        <li>
+          <strong>XArray</strong> - Struttura dati efficiente per cercare pagine
+          per offset
+        </li>
+        <li>
+          <strong>page flags</strong> - Bit che indicano stato (dirty, uptodate,
+          locked, etc.)
+        </li>
+      </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare la page cache:</strong></p>
-        <ul>
-            <li><code>cat /proc/meminfo | grep -E "(Cached|Dirty|Writeback)"</code> - Statistiche cache</li>
-            <li><code>vmstat -s | grep "pages"</code> - Pagine in vari stati</li>
-            <li><code>free -h</code> - Memoria totale e cached</li>
-            <li><code>slabtop | grep page</code> - Uso memoria per strutture page</li>
-            <li><code>perf stat -e cache-misses ./program</code> - Conta i miss della cache della CPU (non della page cache)</li>
-        </ul>
+      <h3>💻 Nel Computer: Come Vederlo?</h3>
+      <p><strong>Comandi Linux per esplorare la page cache:</strong></p>
+      <ul>
+        <li>
+          <code>cat /proc/meminfo | grep -E "(Cached|Dirty|Writeback)"</code> -
+          Statistiche cache
+        </li>
+        <li><code>vmstat -s | grep "pages"</code> - Pagine in vari stati</li>
+        <li><code>free -h</code> - Memoria totale e cached</li>
+        <li>
+          <code>slabtop | grep page</code> - Uso memoria per strutture page
+        </li>
+        <li>
+          <code>perf stat -e cache-misses ./program</code> - Conta i miss della
+          cache della CPU (non della page cache)
+        </li>
+      </ul>
 
-        <h3>🎯 Caso Reale: Lettura File Grande</h3>
-        <p>Quando fai <code>cat /var/log/syslog</code>:</p>
-        <ol>
-            <li>Il kernel inizia a leggere dalla page cache</li>
-            <li>Prime pagine: cache miss → caricamento da disco</li>
-            <li>Pagine successive: spesso cache hit → lettura da RAM</li>
-            <li>Read-ahead carica pagine anticipate in background</li>
-            <li>Il file sembra "istantaneo" grazie alla cache</li>
-        </ol>
+      <h3>🎯 Caso Reale: Lettura File Grande</h3>
+      <p>Quando fai <code>cat /var/log/syslog</code>:</p>
+      <ol>
+        <li>Il kernel inizia a leggere dalla page cache</li>
+        <li>Prime pagine: cache miss → caricamento da disco</li>
+        <li>Pagine successive: spesso cache hit → lettura da RAM</li>
+        <li>Read-ahead carica pagine anticipate in background</li>
+        <li>Il file sembra "istantaneo" grazie alla cache</li>
+      </ol>
 
-        <h2>💾 Tipi di Page Cache</h2>
-        <ul>
-            <li><strong>File-backed cache</strong> - Cache per file regolari mappati su disco</li>
-            <li><strong>Anonymous pages</strong> - Pagine di memoria senza file sottostante (heap, stack): non fanno parte della page cache, ma sono gestite insieme dalle liste LRU</li>
-            <li><strong>Shared memory</strong> - Pagine condivise tra processi (System V, POSIX)</li>
-            <li><strong>Memory-mapped files</strong> - File mappati direttamente in memoria virtuale</li>
-            <li><strong>Buffer cache</strong> - Cache per metadata del filesystem (oggi integrata nella page cache)</li>
-        </ul>
+      <h2>💾 Tipi di Page Cache</h2>
+      <ul>
+        <li>
+          <strong>File-backed cache</strong> - Cache per file regolari mappati
+          su disco
+        </li>
+        <li>
+          <strong>Anonymous pages</strong> - Pagine di memoria senza file
+          sottostante (heap, stack): non fanno parte della page cache, ma sono
+          gestite insieme dalle liste LRU
+        </li>
+        <li>
+          <strong>Shared memory</strong> - Pagine condivise tra processi (System
+          V, POSIX)
+        </li>
+        <li>
+          <strong>Memory-mapped files</strong> - File mappati direttamente in
+          memoria virtuale
+        </li>
+        <li>
+          <strong>Buffer cache</strong> - Cache per metadata del filesystem
+          (oggi integrata nella page cache)
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche</h2>
-        <ul>
-            <li><strong>LRU eviction</strong> - Least Recently Used per rimuovere pagine meno usate</li>
-            <li><strong>Write-back</strong> - Scrittura differita per prestazioni ottimali</li>
-            <li><strong>Read-ahead</strong> - Precaricamento intelligente di pagine</li>
-            <li><strong>Dirty tracking</strong> - Monitoraggio pagine modificate da sincronizzare</li>
-            <li><strong>Pressure handling</strong> - Riduzione automatica sotto pressione memoria</li>
-        </ul>
+      <h2>✨ Caratteristiche</h2>
+      <ul>
+        <li>
+          <strong>LRU eviction</strong> - Least Recently Used per rimuovere
+          pagine meno usate
+        </li>
+        <li>
+          <strong>Write-back</strong> - Scrittura differita per prestazioni
+          ottimali
+        </li>
+        <li>
+          <strong>Read-ahead</strong> - Precaricamento intelligente di pagine
+        </li>
+        <li>
+          <strong>Dirty tracking</strong> - Monitoraggio pagine modificate da
+          sincronizzare
+        </li>
+        <li>
+          <strong>Pressure handling</strong> - Riduzione automatica sotto
+          pressione memoria
+        </li>
+      </ul>
 
-        <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>La page cache è il cuore del sistema di I/O del kernel Linux, interagendo con tutti i principali sottosistemi:</strong></p>
+      <h2>🔗 Interazioni Chiave</h2>
+      <p>
+        <strong
+          >La page cache è il cuore del sistema di I/O del kernel Linux,
+          interagendo con tutti i principali sottosistemi:</strong
+        >
+      </p>
 
-        <h3>💽 Block Device Layer</h3>
-        <p>• <strong>Request submission</strong> - Invia richieste I/O per pagine mancanti</p>
-        <p>• <strong>Completion handling</strong> - Riceve dati e aggiorna pagine in cache</p>
+      <h3>💽 Block Device Layer</h3>
+      <p>
+        • <strong>Request submission</strong> - Invia richieste I/O per pagine
+        mancanti
+      </p>
+      <p>
+        • <strong>Completion handling</strong> - Riceve dati e aggiorna pagine
+        in cache
+      </p>
 
-        <h3>🗂️ Virtual File System</h3>
-        <p>• <strong>Address space operations</strong> - Coordina caricamento pagine per file</p>
-        <p>• <strong>Inode integration</strong> - Connette cache alle strutture inode</p>
+      <h3>🗂️ Virtual File System</h3>
+      <p>
+        • <strong>Address space operations</strong> - Coordina caricamento
+        pagine per file
+      </p>
+      <p>
+        • <strong>Inode integration</strong> - Connette cache alle strutture
+        inode
+      </p>
 
-        <h3>🧠 Memory Management</h3>
-        <p>• <strong>Page allocation</strong> - Richiede pagine fisiche per la cache</p>
-        <p>• <strong>Reclaim pressure</strong> - Riduce cache sotto pressione di memoria</p>
+      <h3>🧠 Memory Management</h3>
+      <p>
+        • <strong>Page allocation</strong> - Richiede pagine fisiche per la
+        cache
+      </p>
+      <p>
+        • <strong>Reclaim pressure</strong> - Riduce cache sotto pressione di
+        memoria
+      </p>
 
-        <h3>⚙️ Process Scheduler</h3>
-        <p>• <strong>Page fault handling</strong> - Gestisce fault per pagine non in cache</p>
-        <p>• <strong>Context switching</strong> - Mantiene cache durante cambi processo</p>
+      <h3>⚙️ Process Scheduler</h3>
+      <p>
+        • <strong>Page fault handling</strong> - Gestisce fault per pagine non
+        in cache
+      </p>
+      <p>
+        • <strong>Context switching</strong> - Mantiene cache durante cambi
+        processo
+      </p>
 
-        <h3>⚡ I/O Subsystem</h3>
-        <p>• <strong>Writeback threads</strong> - I flusher thread (kworker/flush-…) sincronizzano le pagine dirty su disco</p>
-        <p>• <strong>Read-ahead</strong> - Precarica pagine anticipate</p>
+      <h3>⚡ I/O Subsystem</h3>
+      <p>
+        • <strong>Writeback threads</strong> - I flusher thread
+        (kworker/flush-…) sincronizzano le pagine dirty su disco
+      </p>
+      <p>• <strong>Read-ahead</strong> - Precarica pagine anticipate</p>
 
-        <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni chiave per gestire la page cache nel kernel Linux:</strong></p>
+      <h2>🛠️ API Principali</h2>
+      <p>
+        <strong
+          >Queste sono le funzioni chiave per gestire la page cache nel kernel
+          Linux:</strong
+        >
+      </p>
 
-        <h3>📖 Cache Operations</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">struct page *find_get_page(struct address_space *mapping, pgoff_t offset);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Trova una pagina nella cache per l'offset specificato.</span><br><br>
+      <h3>📖 Cache Operations</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >struct page *find_get_page(struct address_space *mapping, pgoff_t
+          offset);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Trova una pagina nella cache per l'offset specificato.</span
+        ><br /><br />
 
-            <code style="color: #2e7d32; font-weight: bold;">struct page *page_cache_alloc(struct address_space *mapping);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Alloca una nuova pagina per la cache.</span><br><br>
+        <code style="color: #2e7d32; font-weight: bold"
+          >struct page *page_cache_alloc(struct address_space *mapping);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Alloca una nuova pagina per la cache.</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">int add_to_page_cache_lru(struct page *page, struct address_space *mapping, pgoff_t index, gfp_t gfp_mask);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Aggiunge una pagina alla cache per un address space.</span>
+        <code style="color: #f57c00; font-weight: bold"
+          >int add_to_page_cache_lru(struct page *page, struct address_space
+          *mapping, pgoff_t index, gfp_t gfp_mask);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Aggiunge una pagina alla cache per un address space.</span
+        >
+      </div>
+
+      <h3>✏️ Write Operations</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >void set_page_dirty(struct page *page);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Marca una pagina come modificata (dirty).</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >int write_cache_pages(struct address_space *mapping, struct
+          writeback_control *wbc);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Scrive pagine dirty della cache su disco.</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >void balance_dirty_pages_ratelimited(struct address_space
+          *mapping);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Controlla e bilancia il numero di pagine dirty.</span
+        >
+      </div>
+
+      <h3>🔄 Read-ahead</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >void page_cache_sync_readahead(struct address_space *mapping, struct
+          file_ra_state *ra, struct file *file, pgoff_t offset, unsigned long
+          req_size);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Implementa read-ahead sincrono per accessi sequenziali.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >void page_cache_async_readahead(struct address_space *mapping, struct
+          file_ra_state *ra, struct file *file, struct page *page, pgoff_t
+          offset, unsigned long req_size);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Implementa read-ahead asincrono per prestazioni ottimali.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >void page_cache_ra_unbounded(struct readahead_control *ractl,
+          unsigned long nr_to_read, unsigned long lookahead_size);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Funzione principale per il read-ahead della page cache.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+      <p><strong>Quando un programma legge un file:</strong></p>
+      <ol>
+        <li><code>find_get_page()</code> - Cerca pagina nella cache</li>
+        <li>
+          <code>page_cache_read()</code> - Se trovata, restituisce dati da RAM
+        </li>
+        <li>
+          <code>page_cache_alloc()</code> - Se non trovata, alloca nuova pagina
+        </li>
+        <li>
+          <code>add_to_page_cache_lru()</code> - Aggiunge pagina caricata alla
+          cache
+        </li>
+        <li>Accesso successivo sarà cache hit</li>
+      </ol>
+      <p>
+        <em
+          >La page cache rende trasparenti le differenze tra RAM e storage!</em
+        >
+      </p>
+
+      <h2>🗺️ Mappa Concettuale della Page Cache</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura della Page Cache
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ PROCESSI USER SPACE
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Applicazioni normali<br />
+            • System calls I/O<br />
+            • mmap(), read(), write()
+          </div>
         </div>
 
-        <h3>✏️ Write Operations</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">void set_page_dirty(struct page *page);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Marca una pagina come modificata (dirty).</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">int write_cache_pages(struct address_space *mapping, struct writeback_control *wbc);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scrive pagine dirty della cache su disco.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">void balance_dirty_pages_ratelimited(struct address_space *mapping);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Controlla e bilancia il numero di pagine dirty.</span>
+        <!-- System Call Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔧 SYSTEM CALLS
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • read() • write() • mmap()<br />
+            • Page fault handler<br />
+            • Gestione I/O
+          </div>
         </div>
 
-        <h3>🔄 Read-ahead</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">void page_cache_sync_readahead(struct address_space *mapping, struct file_ra_state *ra, struct file *file, pgoff_t offset, unsigned long req_size);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Implementa read-ahead sincrono per accessi sequenziali.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">void page_cache_async_readahead(struct address_space *mapping, struct file_ra_state *ra, struct file *file, struct page *page, pgoff_t offset, unsigned long req_size);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Implementa read-ahead asincrono per prestazioni ottimali.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">void page_cache_ra_unbounded(struct readahead_control *ractl, unsigned long nr_to_read, unsigned long lookahead_size);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Funzione principale per il read-ahead della page cache.</span>
+        <!-- Page Cache Core -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🌟 PAGE CACHE CORE
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">📄</div>
+              <div style="font-size: 0.8em">struct page</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🗂️</div>
+              <div style="font-size: 0.8em">address_space</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🌳</div>
+              <div style="font-size: 0.8em">XArray</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⚡</div>
+              <div style="font-size: 0.8em">LRU lists</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Cache hit/miss logic<br />
+            • Dirty page tracking<br />
+            • Read-ahead prediction
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando un programma legge un file:</strong></p>
-        <ol>
-            <li><code>find_get_page()</code> - Cerca pagina nella cache</li>
-            <li><code>page_cache_read()</code> - Se trovata, restituisce dati da RAM</li>
-            <li><code>page_cache_alloc()</code> - Se non trovata, alloca nuova pagina</li>
-            <li><code>add_to_page_cache_lru()</code> - Aggiunge pagina caricata alla cache</li>
-            <li>Accesso successivo sarà cache hit</li>
-        </ol>
-        <p><em>La page cache rende trasparenti le differenze tra RAM e storage!</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-
-        <h2>🗺️ Mappa Concettuale della Page Cache</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura della Page Cache</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ PROCESSI USER SPACE</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Applicazioni normali<br>
-                    • System calls I/O<br>
-                    • mmap(), read(), write()
-                </div>
+        <!-- Cache States -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              🟢 CLEAN
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- System Call Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • read() • write() • mmap()<br>
-                    • Page fault handler<br>
-                    • Gestione I/O
-                </div>
+            <div style="font-size: 0.8em; color: #666">
+              Sincronizzate con disco
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Page Cache Core -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 PAGE CACHE CORE</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
-                        <div style="font-size: 0.8em;">struct page</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🗂️</div>
-                        <div style="font-size: 0.8em;">address_space</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌳</div>
-                        <div style="font-size: 0.8em;">XArray</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
-                        <div style="font-size: 0.8em;">LRU lists</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Cache hit/miss logic<br>
-                    • Dirty page tracking<br>
-                    • Read-ahead prediction
-                </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              🟡 DIRTY
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Cache States -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🟢 CLEAN</div>
-                    <div style="font-size: 0.8em; color: #666;">Sincronizzate con disco</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🟡 DIRTY</div>
-                    <div style="font-size: 0.8em; color: #666;">Modificate, da scrivere</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔵 WRITEBACK</div>
-                    <div style="font-size: 0.8em; color: #666;">In scrittura su disco</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔴 ERROR</div>
-                    <div style="font-size: 0.8em; color: #666;">Errore I/O</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">
+              Modificate, da scrivere
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Storage Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💽 BLOCK DEVICE LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Request queue<br>
-                    • I/O scheduler<br>
-                    • Device drivers
-                </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              🔵 WRITEBACK
             </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste I/O<br>
-                • address_space collega file a pagine in cache<br>
-                • XArray permette ricerca efficiente per offset<br>
-                • LRU gestisce l'evizione delle pagine meno usate
+            <div style="font-size: 0.8em; color: #666">
+              In scrittura su disco
             </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              🔴 ERROR
+            </div>
+            <div style="font-size: 0.8em; color: #666">Errore I/O</div>
+          </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funziona la Page Cache</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Lettura di un file con page cache</h3>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📄 File su Disco</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        /var/log/syslog (10MB)<br>
-                        <span style="color: #666;">(device: /dev/sda1, offset: 0x100000)</span>
-                    </div>
-                </div>
-
-                <div style="font-size: 2em; color: #f57c00;">🗂️</div>
-
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🧠 Page Cache</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        Pagine 0x1000-0x2000<br>
-                        <span style="color: #666;">(2560 pagine da 4KB in RAM)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">head -100 /var/log/syslog</code>
-            </div>
-
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
-                <ol style="line-height: 1.8;">
-                    <li><strong>1. Cache lookup:</strong> Kernel cerca pagine 0-3 nell'address_space del file</li>
-                    <li><strong>2. Cache miss:</strong> Prime pagine non in cache → il kernel avvia la lettura da disco</li>
-                    <li><strong>3. I/O request:</strong> Block layer carica pagine dal disco (4KB * 4 = 16KB)</li>
-                    <li><strong>4. Cache population:</strong> Pagine aggiunte alla cache con XArray</li>
-                    <li><strong>5. Read-ahead:</strong> Carica automaticamente pagine successive (predictive)</li>
-                    <li><strong>6. Instant access:</strong> Letture successive sono cache hit da RAM</li>
-                </ol>
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Dopo il primo accesso, il file sembra "istantaneo"! La page cache trasforma I/O lento in accessi RAM veloci!
-            </div>
+        <!-- Storage Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            💽 BLOCK DEVICE LAYER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Request queue<br />
+            • I/O scheduler<br />
+            • Device drivers
+          </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora la Page Cache</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Le frecce mostrano il flusso delle richieste I/O<br />
+          • address_space collega file a pagine in cache<br />
+          • XArray permette ricerca efficiente per offset<br />
+          • LRU gestisce l'evizione delle pagine meno usate
+        </div>
+      </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora la page cache</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/meminfo | grep -E "(Cached|Dirty|Writeback)"<br>
-                        Cached: 2048000 kB<br>
-                        Dirty: 12800 kB<br>
-                        Writeback: 1024 kB<br><br>
-                        $ free -h
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi statistiche della page cache in tempo reale</em></p>
-                </div>
+      <h2>🎬 Demo Interattiva: Come Funziona la Page Cache</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Lettura di un file con page cache
+        </h3>
 
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Misura page fault</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ps -o pid,min_flt,maj_flt $$<br>
-                        PID MINFL MAJFL<br>
-                        1234 1500 25<br><br>
-                        $ perf stat -e page-faults ./program
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Conta page fault minori e maggiori</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Analizza cache hit/miss</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ vmtouch /var/log/syslog<br>
-                        /var/log/syslog<br>
-                        [OOOOOOOOOOOOOOOOOOOO] 100%<br><br>
-                        $ vmtouch -e /var/log/syslog
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quali parti del file sono in cache</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💾 Forza sincronizzazione</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ sync<br>
-                        $ echo 3 | sudo tee /proc/sys/vm/drop_caches<br>
-                        $ free -h<br><br>
-                        $ dd if=/dev/zero of=testfile bs=1M count=100
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Forza scrittura dirty pages e svuota cache</em></p>
-                </div>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              📄 File su Disco
             </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              /var/log/syslog (10MB)<br />
+              <span style="color: #666"
+                >(device: /dev/sda1, offset: 0x100000)</span
+              >
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">🗂️</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              🧠 Page Cache
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Pagine 0x1000-0x2000<br />
+              <span style="color: #666">(2560 pagine da 4KB in RAM)</span>
+            </div>
+          </div>
         </div>
 
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🗂️</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Address Space</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Ogni file ha un address_space che collega offset logici a pagine fisiche in cache. È il "mappatore" tra file e memoria.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Cache Hit/Miss</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Cache hit: dati in RAM, accesso istantaneo. Cache miss: caricamento da disco. Il rapporto hit/miss determina le prestazioni.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Write-Back Policy</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Pagine dirty vengono scritte su disco in background. Bilancia prestazioni (scritture differite) con sicurezza dati (sincronizzazione). I limiti si regolano con vm.dirty_background_ratio (inizio del writeback in background) e vm.dirty_ratio (soglia oltre cui i processi devono scrivere).
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Read-Ahead</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Precaricamento intelligente di pagine anticipate. Pattern sequenziali, casuali, o predetti migliorano drasticamente le prestazioni.
-                </p>
-            </div>
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Comando eseguito:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >head -100 /var/log/syslog</code
+          >
         </div>
+
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Cosa succede dietro le quinte:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. Cache lookup:</strong> Kernel cerca pagine 0-3
+              nell'address_space del file
+            </li>
+            <li>
+              <strong>2. Cache miss:</strong> Prime pagine non in cache → il
+              kernel avvia la lettura da disco
+            </li>
+            <li>
+              <strong>3. I/O request:</strong> Block layer carica pagine dal
+              disco (4KB * 4 = 16KB)
+            </li>
+            <li>
+              <strong>4. Cache population:</strong> Pagine aggiunte alla cache
+              con XArray
+            </li>
+            <li>
+              <strong>5. Read-ahead:</strong> Carica automaticamente pagine
+              successive (predictive)
+            </li>
+            <li>
+              <strong>6. Instant access:</strong> Letture successive sono cache
+              hit da RAM
+            </li>
+          </ol>
+        </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> Dopo il primo accesso, il file sembra
+          "istantaneo"! La page cache trasforma I/O lento in accessi RAM veloci!
+        </div>
+      </div>
+
+      <h2>🧪 Laboratorio Pratico: Esplora la Page Cache</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📊 Monitora la page cache
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ cat /proc/meminfo | grep -E "(Cached|Dirty|Writeback)"<br />
+              Cached: 2048000 kB<br />
+              Dirty: 12800 kB<br />
+              Writeback: 1024 kB<br /><br />
+              $ free -h
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi statistiche della page cache in tempo reale</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              ⚡ Misura page fault
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ps -o pid,min_flt,maj_flt $$<br />
+              PID MINFL MAJFL<br />
+              1234 1500 25<br /><br />
+              $ perf stat -e page-faults ./program
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Conta page fault minori e maggiori</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔍 Analizza cache hit/miss
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ vmtouch /var/log/syslog<br />
+              /var/log/syslog<br />
+              [OOOOOOOOOOOOOOOOOOOO] 100%<br /><br />
+              $ vmtouch -e /var/log/syslog
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi quali parti del file sono in cache</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              💾 Forza sincronizzazione
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ sync<br />
+              $ echo 3 | sudo tee /proc/sys/vm/drop_caches<br />
+              $ free -h<br /><br />
+              $ dd if=/dev/zero of=testfile bs=1M count=100
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Forza scrittura dirty pages e svuota cache</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🗂️
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Address Space
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            Ogni file ha un address_space che collega offset logici a pagine
+            fisiche in cache. È il "mappatore" tra file e memoria.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            ⚡
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Cache Hit/Miss
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            Cache hit: dati in RAM, accesso istantaneo. Cache miss: caricamento
+            da disco. Il rapporto hit/miss determina le prestazioni.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔄
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Write-Back Policy
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            Pagine dirty vengono scritte su disco in background. Bilancia
+            prestazioni (scritture differite) con sicurezza dati
+            (sincronizzazione). I limiti si regolano con
+            vm.dirty_background_ratio (inizio del writeback in background) e
+            vm.dirty_ratio (soglia oltre cui i processi devono scrivere).
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🎯
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Read-Ahead
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Precaricamento intelligente di pagine anticipate. Pattern
+            sequenziali, casuali, o predetti migliorano drasticamente le
+            prestazioni.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz su Page Cache
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz su Page Cache
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
+        {
+          question:
+            "Qual è lo scopo principale del page cache nel kernel Linux?",
+          options: [
+            "Accelerare le operazioni di I/O su disco",
+            "Sincronizzare i processi",
+            "Controllare la CPU frequency",
+            "Gestire la memoria virtuale",
+          ],
+          correct: 0,
+          explanation:
+            "Il page cache memorizza le pagine da disco in RAM per accelerare l'accesso ai dati.",
+        },
+        {
+          question:
+            "Quale struttura collega gli offset di un file alle pagine in cache?",
+          options: [
+            "vm_area_struct",
+            "task_struct",
+            "address_space",
+            "super_block",
+          ],
+          correct: 2,
+          explanation:
+            "Ogni file ha un address_space che associa gli offset del file alle pagine presenti in cache; le pagine sono indicizzate con un XArray (che ha sostituito il radix tree).",
+        },
+        {
+          question: "Cosa fa il sottosistema di writeback della page cache?",
+          options: [
+            "Comprime le pagine in RAM",
+            "Legge in anticipo le pagine dal disco",
+            "Elimina le pagine meno usate",
+            "Scrive su disco le pagine dirty in background, in modo differito",
+          ],
+          correct: 3,
+          explanation:
+            "Il writeback scrive su disco le pagine modificate (dirty) in modo differito, raggruppando le richieste per migliorare le prestazioni.",
+        },
+        {
+          question:
+            "Quale comando mostra le statistiche del page cache in Linux?",
+          options: ["vmstat", "iostat", "top", "cat /proc/meminfo"],
+          correct: 3,
+          explanation:
+            "/proc/meminfo contiene informazioni sul Cached, Dirty, Writeback, e altri stati di cache.",
+        },
+        {
+          question: "Cosa succede in caso di cache miss durante una read()?",
+          options: [
+            "La lettura fallisce con un errore",
+            "Il kernel alloca una pagina e legge il dato dal disco nella page cache",
+            "Il dato viene letto direttamente dalla RAM senza I/O",
+            "Il processo viene terminato",
+          ],
+          correct: 1,
+          explanation:
+            "Con un cache miss la pagina non è in RAM: il kernel ne alloca una, avvia la lettura dal disco e la inserisce nella page cache, così gli accessi successivi saranno cache hit.",
+        },
+        {
+          question:
+            "Quale politica approssima la scelta delle pagine da rimuovere dalla page cache?",
+          options: [
+            "Round Robin",
+            "Casuale",
+            "LRU (Least Recently Used)",
+            "FIFO",
+          ],
+          correct: 2,
+          explanation:
+            "Linux usa un'approssimazione dell'LRU, con liste active/inactive (e, nei kernel recenti, MGLRU) per espellere per prime le pagine meno usate di recente.",
+        },
+        {
+          question: "Quale evento marca una pagina come 'dirty'?",
+          options: [
+            "Lettura da disco",
+            "Creazione della pagina",
+            "Modifica in memoria",
+            "Accesso frequente",
+          ],
+          correct: 2,
+          explanation:
+            "Una pagina diventa dirty quando viene modificata ma non ancora scritta su disco.",
+        },
+        {
+          question:
+            "Quali thread del kernel sincronizzano oggi le pagine dirty della page cache su disco?",
+          options: [
+            "I thread pdflush",
+            "I thread kcompactd",
+            "I thread ksoftirqd",
+            "I thread kworker/flush-… (flusher threads)",
+          ],
+          correct: 3,
+          explanation:
+            "Il writeback è affidato ai flusher thread (kworker/flush-…), che hanno sostituito pdflush nei kernel moderni.",
+        },
+        {
+          question:
+            "Quale parametro di /proc/sys/vm/ imposta la soglia di pagine dirty oltre la quale i processi devono scrivere su disco?",
+          options: [
+            "vm.dirty_ratio",
+            "vm.overcommit_memory",
+            "vm.swappiness",
+            "vm.nr_hugepages",
+          ],
+          correct: 0,
+          explanation:
+            "vm.dirty_ratio è la percentuale di memoria dirty oltre la quale chi scrive viene bloccato e costretto al writeback; vm.dirty_background_ratio è la soglia più bassa a cui parte il writeback in background.",
+        },
+        {
+          question: "Cosa sono i 'clean' pages nel page cache?",
+          options: [
+            "Pagine deframmentate",
+            "Pagine sincronizzate con disco",
+            "Pagine crittografate",
+            "Pagine appena allocate",
+          ],
+          correct: 1,
+          explanation:
+            "Clean pages sono pagine sincronizzate con disco, senza modifiche pendenti.",
+        },
+      ];
 
-<script>
-    // Quiz functionality
-                const quizQuestions = [
-        {
-            question: "Qual è lo scopo principale del page cache nel kernel Linux?",
-            options: ["Accelerare le operazioni di I/O su disco", "Sincronizzare i processi", "Controllare la CPU frequency", "Gestire la memoria virtuale"],
-            correct: 0,
-            explanation: "Il page cache memorizza le pagine da disco in RAM per accelerare l'accesso ai dati."
-        },
-        {
-            question: "Quale struttura collega gli offset di un file alle pagine in cache?",
-            options: ["vm_area_struct", "task_struct", "address_space", "super_block"],
-            correct: 2,
-            explanation: "Ogni file ha un address_space che associa gli offset del file alle pagine presenti in cache; le pagine sono indicizzate con un XArray (che ha sostituito il radix tree)."
-        },
-        {
-            question: "Cosa fa il sottosistema di writeback della page cache?",
-            options: ["Comprime le pagine in RAM", "Legge in anticipo le pagine dal disco", "Elimina le pagine meno usate", "Scrive su disco le pagine dirty in background, in modo differito"],
-            correct: 3,
-            explanation: "Il writeback scrive su disco le pagine modificate (dirty) in modo differito, raggruppando le richieste per migliorare le prestazioni."
-        },
-        {
-            question: "Quale comando mostra le statistiche del page cache in Linux?",
-            options: ["vmstat", "iostat", "top", "cat /proc/meminfo"],
-            correct: 3,
-            explanation: "/proc/meminfo contiene informazioni sul Cached, Dirty, Writeback, e altri stati di cache."
-        },
-        {
-            question: "Cosa succede in caso di cache miss durante una read()?",
-            options: ["La lettura fallisce con un errore", "Il kernel alloca una pagina e legge il dato dal disco nella page cache", "Il dato viene letto direttamente dalla RAM senza I/O", "Il processo viene terminato"],
-            correct: 1,
-            explanation: "Con un cache miss la pagina non è in RAM: il kernel ne alloca una, avvia la lettura dal disco e la inserisce nella page cache, così gli accessi successivi saranno cache hit."
-        },
-        {
-            question: "Quale politica approssima la scelta delle pagine da rimuovere dalla page cache?",
-            options: ["Round Robin", "Casuale", "LRU (Least Recently Used)", "FIFO"],
-            correct: 2,
-            explanation: "Linux usa un'approssimazione dell'LRU, con liste active/inactive (e, nei kernel recenti, MGLRU) per espellere per prime le pagine meno usate di recente."
-        },
-        {
-            question: "Quale evento marca una pagina come 'dirty'?",
-            options: ["Lettura da disco", "Creazione della pagina", "Modifica in memoria", "Accesso frequente"],
-            correct: 2,
-            explanation: "Una pagina diventa dirty quando viene modificata ma non ancora scritta su disco."
-        },
-        {
-            question: "Quali thread del kernel sincronizzano oggi le pagine dirty della page cache su disco?",
-            options: ["I thread pdflush", "I thread kcompactd", "I thread ksoftirqd", "I thread kworker/flush-… (flusher threads)"],
-            correct: 3,
-            explanation: "Il writeback è affidato ai flusher thread (kworker/flush-…), che hanno sostituito pdflush nei kernel moderni."
-        },
-        {
-            question: "Quale parametro di /proc/sys/vm/ imposta la soglia di pagine dirty oltre la quale i processi devono scrivere su disco?",
-            options: ["vm.dirty_ratio", "vm.overcommit_memory", "vm.swappiness", "vm.nr_hugepages"],
-            correct: 0,
-            explanation: "vm.dirty_ratio è la percentuale di memoria dirty oltre la quale chi scrive viene bloccato e costretto al writeback; vm.dirty_background_ratio è la soglia più bassa a cui parte il writeback in background."
-        },
-        {
-            question: "Cosa sono i 'clean' pages nel page cache?",
-            options: ["Pagine deframmentate", "Pagine sincronizzate con disco", "Pagine crittografate", "Pagine appena allocate"],
-            correct: 1,
-            explanation: "Clean pages sono pagine sincronizzate con disco, senza modifiche pendenti."
-        }
-    ];
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -561,45 +1305,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -610,45 +1358,48 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione della page cache! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione della page cache! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a esplorare la page cache! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a esplorare la page cache! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! La page cache è fondamentale! 📚";
-            color = "#d32f2f";
+          message = "Continua a studiare! La page cache è fondamentale! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -662,52 +1413,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

@@ -1,523 +1,1234 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>USER PERIPHERALS - Dettagli</title>
-     
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>USER PERIPHERALS</h1>
-        <p class="subtitle">Periferiche utente</p>
+      <h1>USER PERIPHERALS</h1>
+      <p class="subtitle">Periferiche utente</p>
     </div>
 
     <div class="content">
-        <span class="badge">🖱️ PERIFERICHE UTENTE</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>I User Peripherals rappresentano l'insieme dei dispositivi di input/output che gli utenti utilizzano direttamente per interagire con il sistema Linux. Questo sottosistema gestisce tastiere, mouse, touchscreen, webcam, microfoni, altoparlanti e altri dispositivi che permettono l'interazione umana con il computer attraverso interfacce standardizzate.</strong></p>
-        
-        <h2>CONFRONTO:</h2>
-        <p>Immagina i User Peripherals come i sensi di un organismo vivente: la tastiera e il mouse sono le "mani" per dare comandi, lo schermo è la "vista" per ricevere feedback, gli altoparlanti sono l'"udito" per suoni e notifiche, creando un'interfaccia completa tra uomo e macchina.</p>
-        
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>I User Peripherals implementano driver e protocolli specializzati per dispositivi di interfaccia umana, utilizzando framework come Input Subsystem, ALSA per audio, V4L2 per video, e DRM per grafica. Ogni categoria di dispositivo ha API specifiche ottimizzate per prestazioni real-time e bassa latenza.</strong></p>
-        <p>• <strong>Input Devices</strong> - Gestione eventi da tastiere, mouse, touchscreen con supporto multitouch</p>
-        <p>• <strong>Audio Devices</strong> - Cattura e riproduzione audio con mixing e effetti in tempo reale</p>
-        <p>• <strong>Video Devices</strong> - Webcam e dispositivi di cattura video con supporto compressione</p>
-        <p><em>• Interfaccia principale tra dispositivi fisici e applicazioni userspace</em></p>
+      <span class="badge">🖱️ PERIFERICHE UTENTE</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >I User Peripherals rappresentano l'insieme dei dispositivi di
+          input/output che gli utenti utilizzano direttamente per interagire con
+          il sistema Linux. Questo sottosistema gestisce tastiere, mouse,
+          touchscreen, webcam, microfoni, altoparlanti e altri dispositivi che
+          permettono l'interazione umana con il computer attraverso interfacce
+          standardizzate.</strong
+        >
+      </p>
 
-<h2>⚙️ Operazioni Principali dei User Peripherals</h2>
-<p><strong>I User Peripherals gestiscono operazioni specializzate per dispositivi di interfaccia umana:</strong></p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Immagina i User Peripherals come i sensi di un organismo vivente: la
+        tastiera e il mouse sono le "mani" per dare comandi, lo schermo è la
+        "vista" per ricevere feedback, gli altoparlanti sono l'"udito" per suoni
+        e notifiche, creando un'interfaccia completa tra uomo e macchina.
+      </p>
 
-<h3>⚙️ Input Device Operations</h3>
-<p>• <strong>input_event()</strong> - Invia eventi input (tasto premuto, movimento mouse)</p>
-<p>• <strong>input_register_device()</strong> - Registra nuovo dispositivo input nel sistema</p>
-<p>• <strong>input_allocate_device()</strong> - Alloca struttura per nuovo dispositivo input</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >I User Peripherals implementano driver e protocolli specializzati per
+          dispositivi di interfaccia umana, utilizzando framework come Input
+          Subsystem, ALSA per audio, V4L2 per video, e DRM per grafica. Ogni
+          categoria di dispositivo ha API specifiche ottimizzate per prestazioni
+          real-time e bassa latenza.</strong
+        >
+      </p>
+      <p>
+        • <strong>Input Devices</strong> - Gestione eventi da tastiere, mouse,
+        touchscreen con supporto multitouch
+      </p>
+      <p>
+        • <strong>Audio Devices</strong> - Cattura e riproduzione audio con
+        mixing e effetti in tempo reale
+      </p>
+      <p>
+        • <strong>Video Devices</strong> - Webcam e dispositivi di cattura video
+        con supporto compressione
+      </p>
+      <p>
+        <em
+          >• Interfaccia principale tra dispositivi fisici e applicazioni
+          userspace</em
+        >
+      </p>
 
-<h3>⚙️ Audio Operations</h3>
-<p>• <strong>snd_pcm_writei()</strong> - Scrive dati audio PCM interleaved</p>
-<p>• <strong>snd_pcm_readi()</strong> - Legge dati audio PCM interleaved</p>
-<p>• <strong>snd_mixer_selem_set_playback_volume()</strong> - Imposta volume di riproduzione</p>
+      <h2>⚙️ Operazioni Principali dei User Peripherals</h2>
+      <p>
+        <strong
+          >I User Peripherals gestiscono operazioni specializzate per
+          dispositivi di interfaccia umana:</strong
+        >
+      </p>
 
-<h3>⚙️ Video Operations</h3>
-<p>• <strong>ioctl(VIDIOC_STREAMON)</strong> - Avvia streaming video dalla webcam</p>
-<p>• <strong>ioctl(VIDIOC_QBUF)</strong> - Accoda buffer per cattura video</p>
-<p>• <strong>ioctl(VIDIOC_S_FMT)</strong> - Imposta formato video (risoluzione, pixel format)</p>
+      <h3>⚙️ Input Device Operations</h3>
+      <p>
+        • <strong>input_event()</strong> - Invia eventi input (tasto premuto,
+        movimento mouse)
+      </p>
+      <p>
+        • <strong>input_register_device()</strong> - Registra nuovo dispositivo
+        input nel sistema
+      </p>
+      <p>
+        • <strong>input_allocate_device()</strong> - Alloca struttura per nuovo
+        dispositivo input
+      </p>
 
-<h3>⚙️ Graphics Operations</h3>
-<p>• <strong>drmModeSetCrtc()</strong> - Configura il CRTC (controller di scansione) del display</p>
-<p>• <strong>drm_gem_handle_create()</strong> - Crea oggetto memoria grafica</p>
-<p>• <strong>drm_framebuffer_init()</strong> - Crea framebuffer per display</p>
+      <h3>⚙️ Audio Operations</h3>
+      <p>
+        • <strong>snd_pcm_writei()</strong> - Scrive dati audio PCM interleaved
+      </p>
+      <p>
+        • <strong>snd_pcm_readi()</strong> - Legge dati audio PCM interleaved
+      </p>
+      <p>
+        • <strong>snd_mixer_selem_set_playback_volume()</strong> - Imposta
+        volume di riproduzione
+      </p>
 
-<h2>📋 Esempi Pratici dei User Peripherals</h2>
-<p><strong>I User Peripherals rendono possibile l'interazione umana completa con il sistema Linux:</strong></p>
+      <h3>⚙️ Video Operations</h3>
+      <p>
+        • <strong>ioctl(VIDIOC_STREAMON)</strong> - Avvia streaming video dalla
+        webcam
+      </p>
+      <p>
+        • <strong>ioctl(VIDIOC_QBUF)</strong> - Accoda buffer per cattura video
+      </p>
+      <p>
+        • <strong>ioctl(VIDIOC_S_FMT)</strong> - Imposta formato video
+        (risoluzione, pixel format)
+      </p>
 
-<h3>🔍 Digitazione su Tastiera</h3>
-<p>1. Utente preme tasto 'A' sulla tastiera</p>
-<p>2. Controller tastiera genera interrupt e invia scancode</p>
-<p>3. Driver input converte scancode in keycode e invia evento</p>
-<p>4. Xorg riceve evento e aggiorna display con lettera 'A'</p>
+      <h3>⚙️ Graphics Operations</h3>
+      <p>
+        • <strong>drmModeSetCrtc()</strong> - Configura il CRTC (controller di
+        scansione) del display
+      </p>
+      <p>
+        • <strong>drm_gem_handle_create()</strong> - Crea oggetto memoria
+        grafica
+      </p>
+      <p>
+        • <strong>drm_framebuffer_init()</strong> - Crea framebuffer per display
+      </p>
 
-<h3>📄 Strutture Dati Chiave</h3>
-<ul>
-<li><strong>input_dev</strong> - Struttura principale dispositivo input (tastiera, mouse)</li>
-<li><strong>snd_pcm_substream</strong> - Sottostream audio PCM per playback/capture</li>
-<li><strong>v4l2_device</strong> - Dispositivo V4L2 per webcam e dispositivi video</li>
-<li><strong>drm_device</strong> - Dispositivo DRM per schede grafiche</li>
-<li><strong>fb_info</strong> - Informazioni framebuffer per display diretto</li>
-</ul>
+      <h2>📋 Esempi Pratici dei User Peripherals</h2>
+      <p>
+        <strong
+          >I User Peripherals rendono possibile l'interazione umana completa con
+          il sistema Linux:</strong
+        >
+      </p>
 
-<h3>💻 Comandi Linux Essenziali</h3>
-<ul>
-<li><code>$ xinput list</code> - Lista dispositivi input Xorg</li>
-<li><code>$ amixer set Master 50%</code> - Imposta volume audio</li>
-<li><code>$ v4l2-ctl --list-devices</code> - Mostra dispositivi video V4L2</li>
-<li><code>$ cat /proc/bus/input/devices</code> - Lista dispositivi input kernel</li>
-<li><code>$ speaker-test -c 2 -t sine</code> - Test audio con onda sinusoidale</li>
-</ul>
+      <h3>🔍 Digitazione su Tastiera</h3>
+      <p>1. Utente preme tasto 'A' sulla tastiera</p>
+      <p>2. Controller tastiera genera interrupt e invia scancode</p>
+      <p>3. Driver input converte scancode in keycode e invia evento</p>
+      <p>4. Xorg riceve evento e aggiorna display con lettera 'A'</p>
 
-<h3>🎯 Caso Reale: Videochiamata</h3>
-<p>Quando fai una videochiamata con <code>$ skype</code>:</p>
-<ol>
-<li>V4L2 cattura video dalla webcam in tempo reale</li>
-<li>ALSA cattura audio dal microfono con bassa latenza</li>
-<li>Input subsystem riceve comandi da tastiera/mouse</li>
-<li>DRM gestisce accelerazione video per codifica/decodifica</li>
-</ol>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>input_dev</strong> - Struttura principale dispositivo input
+          (tastiera, mouse)
+        </li>
+        <li>
+          <strong>snd_pcm_substream</strong> - Sottostream audio PCM per
+          playback/capture
+        </li>
+        <li>
+          <strong>v4l2_device</strong> - Dispositivo V4L2 per webcam e
+          dispositivi video
+        </li>
+        <li>
+          <strong>drm_device</strong> - Dispositivo DRM per schede grafiche
+        </li>
+        <li>
+          <strong>fb_info</strong> - Informazioni framebuffer per display
+          diretto
+        </li>
+      </ul>
 
-<h2>💾 Supporto e Compatibilità User Peripherals</h2>
-        <ul>
-            <li><strong>USB HID</strong> - Human Interface Devices (tastiere, mouse, gamepad)</li>
-            <li><strong>Bluetooth</strong> - Dispositivi wireless (mouse, tastiere, auricolari)</li>
-            <li><strong>PS/2</strong> - Legacy keyboard/mouse interface</li>
-            <li><strong>ALSA</strong> - Advanced Linux Sound Architecture per audio</li>
-            <li><strong>V4L2</strong> - Video for Linux 2 per webcam e cattura video</li>
-            <li><strong>DRM/KMS</strong> - Direct Rendering Manager per grafica</li>
-            <li><strong>Input Subsystem</strong> - Framework unificato per dispositivi input</li>
-            <li><strong>Framebuffer</strong> - Direct display access per console</li>
-        </ul>
+      <h3>💻 Comandi Linux Essenziali</h3>
+      <ul>
+        <li><code>$ xinput list</code> - Lista dispositivi input Xorg</li>
+        <li><code>$ amixer set Master 50%</code> - Imposta volume audio</li>
+        <li>
+          <code>$ v4l2-ctl --list-devices</code> - Mostra dispositivi video V4L2
+        </li>
+        <li>
+          <code>$ cat /proc/bus/input/devices</code> - Lista dispositivi input
+          kernel
+        </li>
+        <li>
+          <code>$ speaker-test -c 2 -t sine</code> - Test audio con onda
+          sinusoidale
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche Avanzate</h2>
-<ul>
-<li><strong>Hotplug</strong> - Rilevamento automatico dispositivi collegati</li>
-<li><strong>Multitouch</strong> - Supporto touchscreen multi-dito</li>
-<li><strong>Real-time</strong> - Bassa latenza per audio/video professionale</li>
-<li><strong>Plug & Play</strong> - Configurazione automatica dispositivi</li>
-</ul>
+      <h3>🎯 Caso Reale: Videochiamata</h3>
+      <p>Quando fai una videochiamata con <code>$ skype</code>:</p>
+      <ol>
+        <li>V4L2 cattura video dalla webcam in tempo reale</li>
+        <li>ALSA cattura audio dal microfono con bassa latenza</li>
+        <li>Input subsystem riceve comandi da tastiera/mouse</li>
+        <li>DRM gestisce accelerazione video per codifica/decodifica</li>
+      </ol>
 
-<h2>🔗 Interazioni Chiave dei User Peripherals</h2>
-<p><strong>I User Peripherals collaborano con molteplici sottosistemi per fornire interfaccia completa:</strong></p>
+      <h2>💾 Supporto e Compatibilità User Peripherals</h2>
+      <ul>
+        <li>
+          <strong>USB HID</strong> - Human Interface Devices (tastiere, mouse,
+          gamepad)
+        </li>
+        <li>
+          <strong>Bluetooth</strong> - Dispositivi wireless (mouse, tastiere,
+          auricolari)
+        </li>
+        <li><strong>PS/2</strong> - Legacy keyboard/mouse interface</li>
+        <li>
+          <strong>ALSA</strong> - Advanced Linux Sound Architecture per audio
+        </li>
+        <li>
+          <strong>V4L2</strong> - Video for Linux 2 per webcam e cattura video
+        </li>
+        <li><strong>DRM/KMS</strong> - Direct Rendering Manager per grafica</li>
+        <li>
+          <strong>Input Subsystem</strong> - Framework unificato per dispositivi
+          input
+        </li>
+        <li>
+          <strong>Framebuffer</strong> - Direct display access per console
+        </li>
+      </ul>
 
-<h3>💾 Memory Management</h3>
-<p>• <strong>DMA Operations</strong> - Gestione memoria per trasferimenti diretti dispositivi</p>
-<p>• <strong>Memory Mapping</strong> - Mappatura memoria per framebuffer e buffer audio/video</p>
+      <h2>✨ Caratteristiche Avanzate</h2>
+      <ul>
+        <li>
+          <strong>Hotplug</strong> - Rilevamento automatico dispositivi
+          collegati
+        </li>
+        <li><strong>Multitouch</strong> - Supporto touchscreen multi-dito</li>
+        <li>
+          <strong>Real-time</strong> - Bassa latenza per audio/video
+          professionale
+        </li>
+        <li>
+          <strong>Plug & Play</strong> - Configurazione automatica dispositivi
+        </li>
+      </ul>
 
-<h3>🌐 Process Scheduler</h3>
-<p>• <strong>Real-time Scheduling</strong> - Priorità alta per thread audio/video</p>
-<p>• <strong>Interrupt Handling</strong> - Risposta rapida a eventi dispositivi input</p>
+      <h2>🔗 Interazioni Chiave dei User Peripherals</h2>
+      <p>
+        <strong
+          >I User Peripherals collaborano con molteplici sottosistemi per
+          fornire interfaccia completa:</strong
+        >
+      </p>
 
-<h3>🧠 Device Model</h3>
-<p>• <strong>Hotplug Events</strong> - Notifica connessione/disconnessione dispositivi</p>
-<p>• <strong>Power Management</strong> - Controllo consumo energetico dispositivi</p>
+      <h3>💾 Memory Management</h3>
+      <p>
+        • <strong>DMA Operations</strong> - Gestione memoria per trasferimenti
+        diretti dispositivi
+      </p>
+      <p>
+        • <strong>Memory Mapping</strong> - Mappatura memoria per framebuffer e
+        buffer audio/video
+      </p>
 
-<h2>🛠️ API dei User Peripherals</h2>
-        <p><strong>Le API dei User Peripherals forniscono controllo diretto sui dispositivi di interfaccia umana:</strong></p>
+      <h3>🌐 Process Scheduler</h3>
+      <p>
+        • <strong>Real-time Scheduling</strong> - Priorità alta per thread
+        audio/video
+      </p>
+      <p>
+        • <strong>Interrupt Handling</strong> - Risposta rapida a eventi
+        dispositivi input
+      </p>
 
-        <h3>📂 Input Device API</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int open(const char *pathname, int flags);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre dispositivo input (/dev/input/event0) per lettura eventi.</span><br><br>
+      <h3>🧠 Device Model</h3>
+      <p>
+        • <strong>Hotplug Events</strong> - Notifica connessione/disconnessione
+        dispositivi
+      </p>
+      <p>
+        • <strong>Power Management</strong> - Controllo consumo energetico
+        dispositivi
+      </p>
 
-            <code style="color: #2e7d32; font-weight: bold;">ssize_t read(int fd, struct input_event *events, size_t count);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge eventi input (tasti, movimento mouse) dal dispositivo.</span><br><br>
+      <h2>🛠️ API dei User Peripherals</h2>
+      <p>
+        <strong
+          >Le API dei User Peripherals forniscono controllo diretto sui
+          dispositivi di interfaccia umana:</strong
+        >
+      </p>
 
-            <code style="color: #f57c00; font-weight: bold;">int ioctl(int fd, EVIOCGRAB, int grab);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Cattura esclusivamente eventi da dispositivo (grab input).</span><br><br>
+      <h3>📂 Input Device API</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >int open(const char *pathname, int flags);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Apre dispositivo input (/dev/input/event0) per lettura eventi.</span
+        ><br /><br />
 
-            <code style="color: #9c27b0; font-weight: bold;">int ioctl(int fd, EVIOCGNAME, char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene nome descrittivo del dispositivo input.</span>
+        <code style="color: #2e7d32; font-weight: bold"
+          >ssize_t read(int fd, struct input_event *events, size_t count);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Legge eventi input (tasti, movimento mouse) dal dispositivo.</span
+        ><br /><br />
+
+        <code style="color: #f57c00; font-weight: bold"
+          >int ioctl(int fd, EVIOCGRAB, int grab);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Cattura esclusivamente eventi da dispositivo (grab input).</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >int ioctl(int fd, EVIOCGNAME, char *name);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Ottiene nome descrittivo del dispositivo input.</span
+        >
+      </div>
+
+      <h3>📊 Audio API (ALSA)</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >int snd_pcm_open(snd_pcm_t **pcm, const char *name, snd_pcm_stream_t
+          stream, int mode);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Apre dispositivo PCM per playback o capture audio.</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >int snd_pcm_set_params(snd_pcm_t *pcm, snd_pcm_format_t format,
+          snd_pcm_access_t access, unsigned int channels, unsigned int rate, int
+          soft_resample, unsigned int latency);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Configura parametri hardware del dispositivo audio.</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >snd_pcm_sframes_t snd_pcm_writei(snd_pcm_t *pcm, const void *buffer,
+          snd_pcm_uframes_t size);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Scrive campioni audio interleaved nel dispositivo.</span
+        >
+      </div>
+
+      <h3>💽 Video API (V4L2)</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >int ioctl(int fd, VIDIOC_QUERYCAP, struct v4l2_capability
+          *cap);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Ottiene capacità del dispositivo video (webcam).</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >int ioctl(int fd, VIDIOC_S_FMT, struct v4l2_format *fmt);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Imposta formato video (risoluzione, pixel format).</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >int ioctl(int fd, VIDIOC_STREAMON, int *type);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Avvia cattura video dalla webcam.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Pratico</h3>
+      <p>
+        <strong
+          >Come utilizzare le API dei User Peripherals nelle
+          applicazioni:</strong
+        >
+      </p>
+      <ol>
+        <li>
+          <code>open("/dev/input/event0", O_RDONLY)</code> - Apri dispositivo
+          tastiera per lettura eventi
+        </li>
+        <li>
+          <code
+            >snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0)</code
+          >
+          - Apri dispositivo audio
+        </li>
+        <li>
+          <code>ioctl(fd, VIDIOC_S_FMT, &fmt)</code> - Configura formato video
+          webcam
+        </li>
+        <li>
+          <code>read(input_fd, &event, sizeof(event))</code> - Leggi evento
+          input (tasto premuto)
+        </li>
+      </ol>
+      <p>
+        <em
+          >Queste API forniscono controllo diretto sui dispositivi di
+          interfaccia umana con prestazioni ottimali.</em
+        >
+      </p>
+
+      <h2>🗺️ Architettura dei User Peripherals</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura dei User Peripherals
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ APPLICAZIONI USER SPACE
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Browser, giochi, editor<br />
+            • Librerie SDL, Qt, GTK<br />
+            • X11, Wayland, PulseAudio
+          </div>
         </div>
 
-        <h3>📊 Audio API (ALSA)</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int snd_pcm_open(snd_pcm_t **pcm, const char *name, snd_pcm_stream_t stream, int mode);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre dispositivo PCM per playback o capture audio.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">int snd_pcm_set_params(snd_pcm_t *pcm, snd_pcm_format_t format, snd_pcm_access_t access, unsigned int channels, unsigned int rate, int soft_resample, unsigned int latency);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Configura parametri hardware del dispositivo audio.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">snd_pcm_sframes_t snd_pcm_writei(snd_pcm_t *pcm, const void *buffer, snd_pcm_uframes_t size);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Scrive campioni audio interleaved nel dispositivo.</span>
+        <!-- System Call Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔧 SYSTEM CALLS
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • open() • ioctl() • mmap()<br />
+            • read() • write() • poll()<br />
+            • Accesso dispositivi /dev/*
+          </div>
         </div>
 
-        <h3>💽 Video API (V4L2)</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int ioctl(int fd, VIDIOC_QUERYCAP, struct v4l2_capability *cap);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene capacità del dispositivo video (webcam).</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">int ioctl(int fd, VIDIOC_S_FMT, struct v4l2_format *fmt);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Imposta formato video (risoluzione, pixel format).</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">int ioctl(int fd, VIDIOC_STREAMON, int *type);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Avvia cattura video dalla webcam.</span>
-        </div>
-
-        <h3>🔍 Esempi di Utilizzo Pratico</h3>
-<p><strong>Come utilizzare le API dei User Peripherals nelle applicazioni:</strong></p>
-<ol>
-<li><code>open("/dev/input/event0", O_RDONLY)</code> - Apri dispositivo tastiera per lettura eventi</li>
-<li><code>snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0)</code> - Apri dispositivo audio</li>
-<li><code>ioctl(fd, VIDIOC_S_FMT, &fmt)</code> - Configura formato video webcam</li>
-<li><code>read(input_fd, &event, sizeof(event))</code> - Leggi evento input (tasto premuto)</li>
-</ol>
-<p><em>Queste API forniscono controllo diretto sui dispositivi di interfaccia umana con prestazioni ottimali.</em></p>
-
-<h2>🗺️ Architettura dei User Peripherals</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei User Peripherals</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Browser, giochi, editor<br>
-                    • Librerie SDL, Qt, GTK<br>
-                    • X11, Wayland, PulseAudio
-                </div>
+        <!-- User Peripherals Subsystems -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🖱️ USER PERIPHERALS SUBSYSTEMS
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⌨️</div>
+              <div style="font-size: 0.8em">Input</div>
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- System Call Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • open() • ioctl() • mmap()<br>
-                    • read() • write() • poll()<br>
-                    • Accesso dispositivi /dev/*
-                </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔊</div>
+              <div style="font-size: 0.8em">ALSA</div>
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- User Peripherals Subsystems -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🖱️ USER PERIPHERALS SUBSYSTEMS</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⌨️</div>
-                        <div style="font-size: 0.8em;">Input</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔊</div>
-                        <div style="font-size: 0.8em;">ALSA</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📹</div>
-                        <div style="font-size: 0.8em;">V4L2</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🖼️</div>
-                        <div style="font-size: 0.8em;">DRM</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • API Specializzate<br>
-                    • Real-time Performance<br>
-                    • Device Abstraction
-                </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">📹</div>
+              <div style="font-size: 0.8em">V4L2</div>
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Device Drivers -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">USB Drivers</div>
-                    <div style="font-size: 0.8em; color: #666;">HID, Audio, Video</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">Bluetooth</div>
-                    <div style="font-size: 0.8em; color: #666;">Wireless peripherals</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">PCIe Graphics</div>
-                    <div style="font-size: 0.8em; color: #666;">GPU acceleration</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">Legacy I/O</div>
-                    <div style="font-size: 0.8em; color: #666;">PS/2, Serial</div>
-                </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🖼️</div>
+              <div style="font-size: 0.8em">DRM</div>
             </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • API Specializzate<br />
+            • Real-time Performance<br />
+            • Device Abstraction
+          </div>
+        </div>
 
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <!-- Physical Hardware Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 DISPOSITIVI FISICI</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Tastiere, mouse, touchscreen<br>
-                    • Casse, microfoni, schede audio<br>
-                    • Webcam, dispositivi video<br>
-                    • Monitor, schede grafiche
-                </div>
+        <!-- Device Drivers -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              USB Drivers
             </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Il flusso va dalle applicazioni ai dispositivi fisici<br>
-                • Ogni sottosistema gestisce una categoria specifica di dispositivi<br>
-                • Le API forniscono astrazione uniforme per diversi hardware<br>
-                • Hotplug permette connessione/disconnessione dinamica
+            <div style="font-size: 0.8em; color: #666">HID, Audio, Video</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              Bluetooth
             </div>
-        </div>
-
-        <h2>🎬 Funzionamento dei User Peripherals</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-        <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funzionano i dispositivi di interfaccia utente</h3>
-        
-        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-        <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Evento Hardware</div>
-        <div style="font-family: monospace; font-size: 0.9em;">Utente interagisce con dispositivo (preme tasto, muove mouse)</div>
-        </div>
-        
-        <div style="font-size: 2em; color: #f57c00;">⚡</div>
-        
-        <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-        <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Elaborazione Kernel</div>
-        <div style="font-family: monospace; font-size: 0.9em;">Driver cattura evento, lo elabora e lo inoltra al sottosistema appropriato</div>
-        </div>
-        </div>
-        
-        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <strong>Processo eseguito:</strong> I User Peripherals ricevono eventi hardware grezzi dai dispositivi fisici, li elaborano attraverso driver specializzati, li astraggono in eventi di alto livello e li consegnano alle applicazioni userspace attraverso API standardizzate, garantendo isolamento e prestazioni ottimali.
-        </div>
-        
-        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-        <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Ciclo di vita di un evento periferica:</h4>
-        <ol style="line-height: 1.8;">
-        <li><strong>1. Hardware Interrupt</strong> - Dispositivo genera interrupt su evento (tasto premuto)</li>
-        <li><strong>2. Driver Capture</strong> - Driver specifico cattura dati grezzi dall'hardware</li>
-        <li><strong>3. Event Processing</strong> - Conversione in evento standardizzato (input_event)</li>
-        <li><strong>4. Subsystem Routing</strong> - Inoltro al sottosistema appropriato (input, ALSA, V4L2)</li>
-        <li><strong>5. Userspace Delivery</strong> - Consegna all'applicazione attraverso device file</li>
-        <li><strong>6. Application Response</strong> - Applicazione elabora evento e aggiorna interfaccia</li>
-        </ol>
-        </div>
-        
-        <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-        <strong>🎯 Risultato:</strong> L'utente ottiene un'interfaccia fluida e responsiva con tutti i dispositivi di input/output, indipendentemente dall'hardware sottostante.
-        </div>
-        </div>
-
-<h2>🧪 Utilizzo Pratico dei User Peripherals</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⌨️ Monitora eventi input</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/bus/input/devices<br>
-                        I: Bus=0011 Vendor=0001 Product=0001<br>
-                        N: Name="AT Translated Set 2 keyboard"<br><br>
-                        $ evtest /dev/input/event0
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esplora dispositivi input e monitora eventi in tempo reale</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔊 Test audio ALSA</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ aplay -l<br>
-                        **** List of PLAYBACK Hardware Devices ****<br>
-                        card 0: PCH [HDA Intel PCH], device 0<br><br>
-                        $ speaker-test -c 2 -t sine
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Lista dispositivi audio e testa output con segnale sinusoidale</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📹 Scopri dispositivi video</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ v4l2-ctl --list-devices<br>
-                        Integrated Camera (usb-0000:00:14.0-8):<br>
-                        /dev/video0<br><br>
-                        $ v4l2-ctl --list-formats
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Identifica webcam e dispositivi video con formati supportati</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🖼️ Info accelerazione grafica</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ glxinfo | grep renderer<br>
-                        OpenGL renderer string: Mesa Intel(R)<br><br>
-                        $ ls /dev/dri/
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Verifica supporto OpenGL e dispositivi DRI disponibili</em></p>
-                </div>
+            <div style="font-size: 0.8em; color: #666">
+              Wireless peripherals
             </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              PCIe Graphics
+            </div>
+            <div style="font-size: 0.8em; color: #666">GPU acceleration</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              Legacy I/O
+            </div>
+            <div style="font-size: 0.8em; color: #666">PS/2, Serial</div>
+          </div>
         </div>
 
-        <h2>🎯 Concetti Chiave dei User Peripherals</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-        <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔌</div>
-        <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Hotplug</h4>
-        <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Rilevamento automatico di dispositivi collegati/disconnessi senza riavvio, essenziale per USB e dispositivi wireless.</p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
+
+        <!-- Physical Hardware Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            🔌 DISPOSITIVI FISICI
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Tastiere, mouse, touchscreen<br />
+            • Casse, microfoni, schede audio<br />
+            • Webcam, dispositivi video<br />
+            • Monitor, schede grafiche
+          </div>
         </div>
-        
-        <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
-        <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Real-time I/O</h4>
-        <p style="font-size: 0.9em; text-align: center; color: #bf360c;">Bassa latenza critica per audio/video professionale, garantita da interrupt handling e buffer ottimizzati.</p>
+
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Il flusso va dalle applicazioni ai dispositivi fisici<br />
+          • Ogni sottosistema gestisce una categoria specifica di dispositivi<br />
+          • Le API forniscono astrazione uniforme per diversi hardware<br />
+          • Hotplug permette connessione/disconnessione dinamica
         </div>
-        
-        <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎛️</div>
-        <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Device Abstraction</h4>
-        <p style="font-size: 0.9em; text-align: center; color: #4a148c;">API uniformi che nascondono differenze hardware, permettendo stesso codice su dispositivi diversi.</p>
-        </div>
-        
-        <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-        <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
-        <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Event Processing</h4>
-        <p style="font-size: 0.9em; text-align: center; color: #004d40;">Conversione eventi hardware grezzi in strutture dati standard utilizzabili dalle applicazioni userspace.</p>
-        </div>
-        </div>
-</div>
-<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sui User Peripherals
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
+      </div>
+
+      <h2>🎬 Funzionamento dei User Peripherals</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Come funzionano i dispositivi di interfaccia utente
+        </h3>
+
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              📥 Evento Hardware
             </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Utente interagisce con dispositivo (preme tasto, muove mouse)
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">⚡</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              ⚙️ Elaborazione Kernel
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Driver cattura evento, lo elabora e lo inoltra al sottosistema
+              appropriato
+            </div>
+          </div>
         </div>
+
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Processo eseguito:</strong> I User Peripherals ricevono eventi
+          hardware grezzi dai dispositivi fisici, li elaborano attraverso driver
+          specializzati, li astraggono in eventi di alto livello e li consegnano
+          alle applicazioni userspace attraverso API standardizzate, garantendo
+          isolamento e prestazioni ottimali.
+        </div>
+
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Ciclo di vita di un evento periferica:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. Hardware Interrupt</strong> - Dispositivo genera
+              interrupt su evento (tasto premuto)
+            </li>
+            <li>
+              <strong>2. Driver Capture</strong> - Driver specifico cattura dati
+              grezzi dall'hardware
+            </li>
+            <li>
+              <strong>3. Event Processing</strong> - Conversione in evento
+              standardizzato (input_event)
+            </li>
+            <li>
+              <strong>4. Subsystem Routing</strong> - Inoltro al sottosistema
+              appropriato (input, ALSA, V4L2)
+            </li>
+            <li>
+              <strong>5. Userspace Delivery</strong> - Consegna all'applicazione
+              attraverso device file
+            </li>
+            <li>
+              <strong>6. Application Response</strong> - Applicazione elabora
+              evento e aggiorna interfaccia
+            </li>
+          </ol>
+        </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> L'utente ottiene un'interfaccia fluida
+          e responsiva con tutti i dispositivi di input/output,
+          indipendentemente dall'hardware sottostante.
+        </div>
+      </div>
+
+      <h2>🧪 Utilizzo Pratico dei User Peripherals</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              ⌨️ Monitora eventi input
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ cat /proc/bus/input/devices<br />
+              I: Bus=0011 Vendor=0001 Product=0001<br />
+              N: Name="AT Translated Set 2 keyboard"<br /><br />
+              $ evtest /dev/input/event0
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Esplora dispositivi input e monitora eventi in tempo reale</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔊 Test audio ALSA
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ aplay -l<br />
+              **** List of PLAYBACK Hardware Devices ****<br />
+              card 0: PCH [HDA Intel PCH], device 0<br /><br />
+              $ speaker-test -c 2 -t sine
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Lista dispositivi audio e testa output con segnale
+                sinusoidale</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📹 Scopri dispositivi video
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ v4l2-ctl --list-devices<br />
+              Integrated Camera (usb-0000:00:14.0-8):<br />
+              /dev/video0<br /><br />
+              $ v4l2-ctl --list-formats
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Identifica webcam e dispositivi video con formati
+                supportati</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🖼️ Info accelerazione grafica
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ glxinfo | grep renderer<br />
+              OpenGL renderer string: Mesa Intel(R)<br /><br />
+              $ ls /dev/dri/
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Verifica supporto OpenGL e dispositivi DRI disponibili</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave dei User Peripherals</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔌
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Hotplug
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            Rilevamento automatico di dispositivi collegati/disconnessi senza
+            riavvio, essenziale per USB e dispositivi wireless.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            ⚡
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Real-time I/O
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            Bassa latenza critica per audio/video professionale, garantita da
+            interrupt handling e buffer ottimizzati.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🎛️
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Device Abstraction
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            API uniformi che nascondono differenze hardware, permettendo stesso
+            codice su dispositivi diversi.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔄
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Event Processing
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Conversione eventi hardware grezzi in strutture dati standard
+            utilizzabili dalle applicazioni userspace.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz sui User Peripherals
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
+        </div>
+      </div>
     </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-<script>
-    // Quiz functionality
-    const quizQuestions = [
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
         {
-            question: "Cosa gestisce il sottosistema Input?",
-            options: ["Solo dispositivi wireless", "Solo tastiere", "Solo dispositivi USB", "Tastiere, mouse, touchscreen"],
-            correct: 3,
-            explanation: "L'Input Subsystem gestisce tutti i dispositivi di input: tastiere, mouse, touchscreen, gamepad attraverso API uniformi."
+          question: "Cosa gestisce il sottosistema Input?",
+          options: [
+            "Solo dispositivi wireless",
+            "Solo tastiere",
+            "Solo dispositivi USB",
+            "Tastiere, mouse, touchscreen",
+          ],
+          correct: 3,
+          explanation:
+            "L'Input Subsystem gestisce tutti i dispositivi di input: tastiere, mouse, touchscreen, gamepad attraverso API uniformi.",
         },
         {
-            question: "Quale framework del kernel Linux gestisce l'audio (driver delle schede audio, interfacce PCM e mixer)?",
-            options: ["JACK", "ALSA", "PulseAudio", "Xorg"],
-            correct: 1,
-            explanation: "ALSA (Advanced Linux Sound Architecture) è il framework audio del kernel; PulseAudio e JACK sono server audio in user space che si appoggiano ad ALSA."
+          question:
+            "Quale framework del kernel Linux gestisce l'audio (driver delle schede audio, interfacce PCM e mixer)?",
+          options: ["JACK", "ALSA", "PulseAudio", "Xorg"],
+          correct: 1,
+          explanation:
+            "ALSA (Advanced Linux Sound Architecture) è il framework audio del kernel; PulseAudio e JACK sono server audio in user space che si appoggiano ad ALSA.",
         },
         {
-            question: "Cosa significa V4L2?",
-            options: ["Video for Linux 2", "Virtual Video Layer 2", "Video Library Interface", "Visual Layer for Linux"],
-            correct: 0,
-            explanation: "V4L2 è Video for Linux 2, l'API del kernel per webcam, TV tuner e dispositivi di cattura video."
+          question: "Cosa significa V4L2?",
+          options: [
+            "Video for Linux 2",
+            "Virtual Video Layer 2",
+            "Video Library Interface",
+            "Visual Layer for Linux",
+          ],
+          correct: 0,
+          explanation:
+            "V4L2 è Video for Linux 2, l'API del kernel per webcam, TV tuner e dispositivi di cattura video.",
         },
         {
-            question: "Quale comando lista dispositivi input?",
-            options: ["lsusb", "cat /proc/bus/input/devices", "lsblk", "lspci"],
-            correct: 1,
-            explanation: "cat /proc/bus/input/devices mostra tutti i dispositivi input registrati nel sistema."
+          question: "Quale comando lista dispositivi input?",
+          options: ["lsusb", "cat /proc/bus/input/devices", "lsblk", "lspci"],
+          correct: 1,
+          explanation:
+            "cat /proc/bus/input/devices mostra tutti i dispositivi input registrati nel sistema.",
         },
         {
-            question: "Cosa permette l'hotplug?",
-            options: ["Solo dispositivi Bluetooth", "Solo dispositivi USB", "Connessione/disconnessione dinamica", "Solo dispositivi wired"],
-            correct: 2,
-            explanation: "L'hotplug permette di collegare e scollegare dispositivi senza riavviare il sistema."
+          question: "Cosa permette l'hotplug?",
+          options: [
+            "Solo dispositivi Bluetooth",
+            "Solo dispositivi USB",
+            "Connessione/disconnessione dinamica",
+            "Solo dispositivi wired",
+          ],
+          correct: 2,
+          explanation:
+            "L'hotplug permette di collegare e scollegare dispositivi senza riavviare il sistema.",
         },
         {
-            question: "Quale struttura rappresenta eventi input?",
-            options: ["input_event", "input_handle", "input_dev", "input_handler"],
-            correct: 0,
-            explanation: "input_event è la struttura che rappresenta eventi input standardizzati (tasti, movimento, etc.)."
+          question: "Quale struttura rappresenta eventi input?",
+          options: [
+            "input_event",
+            "input_handle",
+            "input_dev",
+            "input_handler",
+          ],
+          correct: 0,
+          explanation:
+            "input_event è la struttura che rappresenta eventi input standardizzati (tasti, movimento, etc.).",
         },
         {
-            question: "Cosa gestisce DRM?",
-            options: ["Solo dispositivi input", "Solo audio", "Solo rete", "Grafica e display"],
-            correct: 3,
-            explanation: "DRM (Direct Rendering Manager) gestisce accelerazione grafica e configurazione display."
+          question: "Cosa gestisce DRM?",
+          options: [
+            "Solo dispositivi input",
+            "Solo audio",
+            "Solo rete",
+            "Grafica e display",
+          ],
+          correct: 3,
+          explanation:
+            "DRM (Direct Rendering Manager) gestisce accelerazione grafica e configurazione display.",
         },
         {
-            question: "Quale comando testa l'audio?",
-            options: ["alsa-verify", "sound-check", "speaker-test", "audio-test"],
-            correct: 2,
-            explanation: "speaker-test è uno strumento per testare l'output audio attraverso ALSA."
+          question: "Quale comando testa l'audio?",
+          options: ["alsa-verify", "sound-check", "speaker-test", "audio-test"],
+          correct: 2,
+          explanation:
+            "speaker-test è uno strumento per testare l'output audio attraverso ALSA.",
         },
         {
-            question: "Cosa significa HID in USB?",
-            options: ["Hardware Input Driver", "High-speed Interface Device", "Host Interface Device", "Human Interface Device"],
-            correct: 3,
-            explanation: "HID significa Human Interface Device, classe USB per dispositivi come tastiere e mouse."
+          question: "Cosa significa HID in USB?",
+          options: [
+            "Hardware Input Driver",
+            "High-speed Interface Device",
+            "Host Interface Device",
+            "Human Interface Device",
+          ],
+          correct: 3,
+          explanation:
+            "HID significa Human Interface Device, classe USB per dispositivi come tastiere e mouse.",
         },
         {
-            question: "Quale API usa per dispositivi video?",
-            options: ["ioctl(VIDIOC_*)", "poll", "mmap", "read/write"],
-            correct: 0,
-            explanation: "I dispositivi V4L2 usano ioctl con comandi VIDIOC_* per controllo e configurazione."
-        }
-    ];
+          question: "Quale API usa per dispositivi video?",
+          options: ["ioctl(VIDIOC_*)", "poll", "mmap", "read/write"],
+          correct: 0,
+          explanation:
+            "I dispositivi V4L2 usano ioctl con comandi VIDIOC_* per controllo e configurazione.",
+        },
+      ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -526,45 +1237,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -575,45 +1290,49 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione dei User Peripherals! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione dei User Peripherals! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare i User Peripherals! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a studiare i User Peripherals! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! I User Peripherals è complesso ma importante! 📚";
-            color = "#d32f2f";
+          message =
+            "Continua a studiare! I User Peripherals è complesso ma importante! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -627,52 +1346,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

@@ -1,558 +1,1192 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Functionalities - Dettagli</title>
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
 
     <div class="header">
-        <h1>Functionalities</h1>
-        <p class="subtitle">Funzionalità del Kernel</p>
+      <h1>Functionalities</h1>
+      <p class="subtitle">Funzionalità del Kernel</p>
     </div>
 
     <div class="content">
-        <span class="badge">⚙️ FUNZIONALITÀ CORE DEL KERNEL</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>Le funzionalità del kernel Linux rappresentano l'insieme completo dei servizi e delle capacità offerte dal nucleo del sistema operativo, dalla gestione dei processi alla comunicazione con l'hardware.</strong></p>
+      <span class="badge">⚙️ FUNZIONALITÀ CORE DEL KERNEL</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >Le funzionalità del kernel Linux rappresentano l'insieme completo dei
+          servizi e delle capacità offerte dal nucleo del sistema operativo,
+          dalla gestione dei processi alla comunicazione con l'hardware.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come il motore di un'automobile: è nascosto sotto il cofano ma fornisce tutta la potenza necessaria. Le funzionalità del kernel sono il "motore" che fa funzionare tutto il sistema operativo.</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come il motore di un'automobile: è nascosto sotto il cofano ma fornisce
+        tutta la potenza necessaria. Le funzionalità del kernel sono il "motore"
+        che fa funzionare tutto il sistema operativo.
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>Le funzionalità del kernel Linux sono il cuore pulsante del sistema operativo.</strong> Immagina un'orchestra sinfonica dove ogni sezione (processi, memoria, I/O, rete) suona la sua parte sotto la direzione del kernel, creando un'armonia perfetta che permette al sistema di funzionare.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >Le funzionalità del kernel Linux sono il cuore pulsante del sistema
+          operativo.</strong
+        >
+        Immagina un'orchestra sinfonica dove ogni sezione (processi, memoria,
+        I/O, rete) suona la sua parte sotto la direzione del kernel, creando
+        un'armonia perfetta che permette al sistema di funzionare.
+      </p>
 
-        <p>• <strong>Gestione processi</strong> - Creazione, scheduling, sincronizzazione e terminazione dei processi</p>
-        <p>• <strong>Gestione memoria</strong> - Allocazione, protezione e ottimizzazione della memoria fisica e virtuale</p>
-        <p>• <strong>Input/Output</strong> - Interfaccia unificata per tutti i dispositivi di input e output</p>
-        <p>• <strong>Filesystem</strong> - Organizzazione e accesso ai dati su dispositivi di storage</p>
-        <p>• <strong>Networking</strong> - Comunicazione tra sistemi attraverso protocolli di rete</p>
-        <p>• <strong>Sicurezza</strong> - Controlli di accesso, isolamento e protezione del sistema</p>
-        <p><em>• Interazione: Il kernel coordina tutte queste funzionalità per fornire un ambiente stabile e performante alle applicazioni userspace</em></p>
+      <p>
+        • <strong>Gestione processi</strong> - Creazione, scheduling,
+        sincronizzazione e terminazione dei processi
+      </p>
+      <p>
+        • <strong>Gestione memoria</strong> - Allocazione, protezione e
+        ottimizzazione della memoria fisica e virtuale
+      </p>
+      <p>
+        • <strong>Input/Output</strong> - Interfaccia unificata per tutti i
+        dispositivi di input e output
+      </p>
+      <p>
+        • <strong>Filesystem</strong> - Organizzazione e accesso ai dati su
+        dispositivi di storage
+      </p>
+      <p>
+        • <strong>Networking</strong> - Comunicazione tra sistemi attraverso
+        protocolli di rete
+      </p>
+      <p>
+        • <strong>Sicurezza</strong> - Controlli di accesso, isolamento e
+        protezione del sistema
+      </p>
+      <p>
+        <em
+          >• Interazione: Il kernel coordina tutte queste funzionalità per
+          fornire un ambiente stabile e performante alle applicazioni
+          userspace</em
+        >
+      </p>
 
-        <h2>⚙️ Aree Funzionali Principali</h2>
-        <p><strong>Il kernel Linux organizza le sue funzionalità in diverse aree specializzate:</strong></p>
+      <h2>⚙️ Aree Funzionali Principali</h2>
+      <p>
+        <strong
+          >Il kernel Linux organizza le sue funzionalità in diverse aree
+          specializzate:</strong
+        >
+      </p>
 
-        <h3>🚀 Process Management</h3>
-        <p>• <strong>Process scheduling</strong> - Algoritmi di scheduling (CFS/EEVDF, RT, deadline)</p>
-        <p>• <strong>Process lifecycle</strong> - fork, exec, exit, wait</p>
-        <p>• <strong>Inter-process communication</strong> - pipe, signal, shared memory</p>
-        <p>• <strong>Synchronization</strong> - mutex, semaphore, futex</p>
+      <h3>🚀 Process Management</h3>
+      <p>
+        • <strong>Process scheduling</strong> - Algoritmi di scheduling
+        (CFS/EEVDF, RT, deadline)
+      </p>
+      <p>• <strong>Process lifecycle</strong> - fork, exec, exit, wait</p>
+      <p>
+        • <strong>Inter-process communication</strong> - pipe, signal, shared
+        memory
+      </p>
+      <p>• <strong>Synchronization</strong> - mutex, semaphore, futex</p>
 
-        <h3>💾 Memory Management</h3>
-        <p>• <strong>Virtual memory</strong> - Address space isolation e paging</p>
-        <p>• <strong>Physical memory</strong> - Buddy allocator e slab allocator</p>
-        <p>• <strong>Memory mapping</strong> - mmap e gestione delle page table</p>
-        <p>• <strong>Swap</strong> - Gestione dello swap space</p>
+      <h3>💾 Memory Management</h3>
+      <p>
+        • <strong>Virtual memory</strong> - Address space isolation e paging
+      </p>
+      <p>
+        • <strong>Physical memory</strong> - Buddy allocator e slab allocator
+      </p>
+      <p>
+        • <strong>Memory mapping</strong> - mmap e gestione delle page table
+      </p>
+      <p>• <strong>Swap</strong> - Gestione dello swap space</p>
 
-        <h3>🌐 Networking</h3>
-        <p>• <strong>TCP/IP stack</strong> - Implementazione completa dei protocolli</p>
-        <p>• <strong>Socket API</strong> - Interfaccia BSD socket</p>
-        <p>• <strong>Network devices</strong> - Driver per schede di rete</p>
-        <p>• <strong>Firewall</strong> - Netfilter con nftables (e iptables legacy)</p>
+      <h3>🌐 Networking</h3>
+      <p>
+        • <strong>TCP/IP stack</strong> - Implementazione completa dei
+        protocolli
+      </p>
+      <p>• <strong>Socket API</strong> - Interfaccia BSD socket</p>
+      <p>• <strong>Network devices</strong> - Driver per schede di rete</p>
+      <p>
+        • <strong>Firewall</strong> - Netfilter con nftables (e iptables legacy)
+      </p>
 
-        <h3>💽 Storage & Filesystems</h3>
-        <p>• <strong>Virtual File System</strong> - Astrazione unificata dei filesystem</p>
-        <p>• <strong>Block layer</strong> - Gestione dispositivi a blocchi</p>
-        <p>• <strong>Device mapper</strong> - LVM, RAID software, encryption</p>
-        <p>• <strong>Filesystem drivers</strong> - ext4, btrfs, xfs, nfs</p>
+      <h3>💽 Storage & Filesystems</h3>
+      <p>
+        • <strong>Virtual File System</strong> - Astrazione unificata dei
+        filesystem
+      </p>
+      <p>• <strong>Block layer</strong> - Gestione dispositivi a blocchi</p>
+      <p>• <strong>Device mapper</strong> - LVM, RAID software, encryption</p>
+      <p>• <strong>Filesystem drivers</strong> - ext4, btrfs, xfs, nfs</p>
 
-        <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando lanci un'applicazione come Firefox, ecco cosa succede nelle funzionalità del kernel:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong
+          >Quando lanci un'applicazione come Firefox, ecco cosa succede nelle
+          funzionalità del kernel:</strong
+        >
+      </p>
 
-        <h3>🔍 Avvio Applicazione</h3>
-        <p>1. La shell crea un nuovo processo con fork() (process management)</p>
-        <p>2. exec() carica il nuovo programma e sostituisce l'immagine del processo (process management)</p>
-        <p>3. Il loader dinamico mappa il programma e le librerie condivise in memoria (memory management)</p>
-        <p>4. Vengono allocati stack e heap (memory management)</p>
-        <p>5. Si stabiliscono connessioni di rete (networking)</p>
+      <h3>🔍 Avvio Applicazione</h3>
+      <p>1. La shell crea un nuovo processo con fork() (process management)</p>
+      <p>
+        2. exec() carica il nuovo programma e sostituisce l'immagine del
+        processo (process management)
+      </p>
+      <p>
+        3. Il loader dinamico mappa il programma e le librerie condivise in
+        memoria (memory management)
+      </p>
+      <p>4. Vengono allocati stack e heap (memory management)</p>
+      <p>5. Si stabiliscono connessioni di rete (networking)</p>
 
-        <h3>📄 Strutture Dati Chiave</h3>
-        <ul>
-            <li><strong>task_struct</strong> - Descrive un processo o thread</li>
-            <li><strong>mm_struct</strong> - Gestisce lo spazio di memoria virtuale</li>
-            <li><strong>inode</strong> - Rappresenta file e directory</li>
-            <li><strong>socket</strong> - Gestisce connessioni di rete</li>
-        </ul>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li><strong>task_struct</strong> - Descrive un processo o thread</li>
+        <li>
+          <strong>mm_struct</strong> - Gestisce lo spazio di memoria virtuale
+        </li>
+        <li><strong>inode</strong> - Rappresenta file e directory</li>
+        <li><strong>socket</strong> - Gestisce connessioni di rete</li>
+      </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare le funzionalità del kernel:</strong></p>
-        <ul>
-            <li><code>ps aux</code> - Mostra tutti i processi attivi</li>
-            <li><code>free -h</code> - Visualizza uso della memoria</li>
-            <li><code>ss -tuln</code> - Mostra i socket in ascolto</li>
-            <li><code>df -h</code> - Mostra filesystem montati</li>
-            <li><code>top</code> - Monitora processi e risorse</li>
-        </ul>
+      <h3>💻 Nel Computer: Come Vederlo?</h3>
+      <p>
+        <strong>Comandi Linux per esplorare le funzionalità del kernel:</strong>
+      </p>
+      <ul>
+        <li><code>ps aux</code> - Mostra tutti i processi attivi</li>
+        <li><code>free -h</code> - Visualizza uso della memoria</li>
+        <li><code>ss -tuln</code> - Mostra i socket in ascolto</li>
+        <li><code>df -h</code> - Mostra filesystem montati</li>
+        <li><code>top</code> - Monitora processi e risorse</li>
+      </ul>
 
-        <h3>🎯 Caso Reale: Compilazione Programma</h3>
-        <p>Quando fai <code>gcc hello.c -o hello</code>:</p>
-        <ol>
-            <li>Il processo gcc viene schedulato (process scheduling)</li>
-            <li>Legge il file sorgente (filesystem access)</li>
-            <li>Alloca memoria per compilazione (memory management)</li>
-            <li>Scrive il file eseguibile (filesystem access)</li>
-            <li>Gestisce eventuali errori (signal handling)</li>
-        </ol>
+      <h3>🎯 Caso Reale: Compilazione Programma</h3>
+      <p>Quando fai <code>gcc hello.c -o hello</code>:</p>
+      <ol>
+        <li>Il processo gcc viene schedulato (process scheduling)</li>
+        <li>Legge il file sorgente (filesystem access)</li>
+        <li>Alloca memoria per compilazione (memory management)</li>
+        <li>Scrive il file eseguibile (filesystem access)</li>
+        <li>Gestisce eventuali errori (signal handling)</li>
+      </ol>
 
-        <h2>🔧 Architetture e Moduli</h2>
-        <ul>
-            <li><strong>Monolithic kernel</strong> - Tutto compilato insieme (tradizionale)</li>
-            <li><strong>Loadable modules</strong> - Driver e funzionalità caricabili dinamicamente</li>
-            <li><strong>Microkernel</strong> - Solo funzioni core, altri servizi userspace</li>
-            <li><strong>Hybrid approaches</strong> - Combinazioni dei precedenti</li>
-        </ul>
+      <h2>🔧 Architetture e Moduli</h2>
+      <ul>
+        <li>
+          <strong>Monolithic kernel</strong> - Tutto compilato insieme
+          (tradizionale)
+        </li>
+        <li>
+          <strong>Loadable modules</strong> - Driver e funzionalità caricabili
+          dinamicamente
+        </li>
+        <li>
+          <strong>Microkernel</strong> - Solo funzioni core, altri servizi
+          userspace
+        </li>
+        <li>
+          <strong>Hybrid approaches</strong> - Combinazioni dei precedenti
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche</h2>
-        <ul>
-            <li><strong>Modularità</strong> - Caricamento dinamico di moduli</li>
-            <li><strong>Scalabilità</strong> - Supporto da embedded a supercomputer</li>
-            <li><strong>Stabilità</strong> - Architettura robusta e fault-tolerant</li>
-            <li><strong>Performance</strong> - Ottimizzazioni per bassa latenza</li>
-            <li><strong>Sicurezza</strong> - Modello DAC (utenti/gruppi) con Mandatory Access Control opzionale (SELinux, AppArmor)</li>
-        </ul>
+      <h2>✨ Caratteristiche</h2>
+      <ul>
+        <li><strong>Modularità</strong> - Caricamento dinamico di moduli</li>
+        <li>
+          <strong>Scalabilità</strong> - Supporto da embedded a supercomputer
+        </li>
+        <li>
+          <strong>Stabilità</strong> - Architettura robusta e fault-tolerant
+        </li>
+        <li><strong>Performance</strong> - Ottimizzazioni per bassa latenza</li>
+        <li>
+          <strong>Sicurezza</strong> - Modello DAC (utenti/gruppi) con Mandatory
+          Access Control opzionale (SELinux, AppArmor)
+        </li>
+      </ul>
 
-        <h2>🔗 Interazioni tra Funzionalità</h2>
-        <p><strong>Le funzionalità del kernel lavorano insieme in modo coordinato:</strong></p>
+      <h2>🔗 Interazioni tra Funzionalità</h2>
+      <p>
+        <strong
+          >Le funzionalità del kernel lavorano insieme in modo
+          coordinato:</strong
+        >
+      </p>
 
-        <h3>🔄 Process Scheduler</h3>
-        <p>• <strong>Time slicing</strong> - Suddivisione tempo CPU tra processi</p>
-        <p>• <strong>Priority handling</strong> - Gestione priorità e nice values</p>
-        <p>• <strong>Load balancing</strong> - Distribuzione carico su CPU multiple</p>
+      <h3>🔄 Process Scheduler</h3>
+      <p>
+        • <strong>Time slicing</strong> - Suddivisione tempo CPU tra processi
+      </p>
+      <p>
+        • <strong>Priority handling</strong> - Gestione priorità e nice values
+      </p>
+      <p>
+        • <strong>Load balancing</strong> - Distribuzione carico su CPU multiple
+      </p>
 
-        <h3>🧠 Memory Subsystem</h3>
-        <p>• <strong>Demand paging</strong> - Caricamento pagine su richiesta</p>
-        <p>• <strong>Copy-on-write</strong> - Ottimizzazione fork()</p>
-        <p>• <strong>Memory compaction</strong> - Deframmentazione memoria</p>
+      <h3>🧠 Memory Subsystem</h3>
+      <p>• <strong>Demand paging</strong> - Caricamento pagine su richiesta</p>
+      <p>• <strong>Copy-on-write</strong> - Ottimizzazione fork()</p>
+      <p>• <strong>Memory compaction</strong> - Deframmentazione memoria</p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>Zero-copy</strong> - Trasferimenti efficienti senza copia</p>
-        <p>• <strong>Connection tracking</strong> - Monitoraggio connessioni</p>
-        <p>• <strong>Quality of Service</strong> - Prioritizzazione traffico</p>
+      <h3>🌐 Network Stack</h3>
+      <p>• <strong>Zero-copy</strong> - Trasferimenti efficienti senza copia</p>
+      <p>• <strong>Connection tracking</strong> - Monitoraggio connessioni</p>
+      <p>• <strong>Quality of Service</strong> - Prioritizzazione traffico</p>
 
-        <h3>🔒 Security Framework</h3>
-        <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari</p>
-        <p>• <strong>Namespaces</strong> - Isolamento processi</p>
+      <h3>🔒 Security Framework</h3>
+      <p>• <strong>SELinux/AppArmor</strong> - Mandatory Access Control</p>
+      <p>• <strong>Capabilities</strong> - Permessi granulari</p>
+      <p>• <strong>Namespaces</strong> - Isolamento processi</p>
 
-        <h2>🛠️ API e System Calls</h2>
-        <p><strong>Queste sono le interfacce principali che le applicazioni usano per accedere alle funzionalità del kernel:</strong></p>
+      <h2>🛠️ API e System Calls</h2>
+      <p>
+        <strong
+          >Queste sono le interfacce principali che le applicazioni usano per
+          accedere alle funzionalità del kernel:</strong
+        >
+      </p>
 
-        <h3>🚀 Gestione Processi</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">pid_t fork(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea un nuovo processo duplicando quello corrente.</span><br><br>
+      <h3>🚀 Gestione Processi</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold">pid_t fork(void);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea un nuovo processo duplicando quello corrente.</span
+        ><br /><br />
 
-            <code style="color: #2e7d32; font-weight: bold;">int execve(const char *pathname, char *const argv[], char *const envp[]);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Sostituisce l'immagine del processo corrente con un nuovo programma.</span><br><br>
+        <code style="color: #2e7d32; font-weight: bold"
+          >int execve(const char *pathname, char *const argv[], char *const
+          envp[]);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Sostituisce l'immagine del processo corrente con un nuovo
+          programma.</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">pid_t waitpid(pid_t pid, int *wstatus, int options);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Attende la terminazione di un processo figlio.</span><br><br>
+        <code style="color: #f57c00; font-weight: bold"
+          >pid_t waitpid(pid_t pid, int *wstatus, int options);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Attende la terminazione di un processo figlio.</span
+        ><br /><br />
 
-            <code style="color: #9c27b0; font-weight: bold;">int kill(pid_t pid, int sig);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Invia un segnale a un processo specifico.</span>
+        <code style="color: #9c27b0; font-weight: bold"
+          >int kill(pid_t pid, int sig);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Invia un segnale a un processo specifico.</span
+        >
+      </div>
+
+      <h3>💾 Gestione Memoria</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >void *mmap(void *addr, size_t length, int prot, int flags, int fd,
+          off_t offset);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Mappa un file o crea memoria condivisa nello spazio degli
+          indirizzi.</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >void *malloc(size_t size);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Alloca memoria dinamica (funzione di libreria glibc che usa brk e
+          mmap).</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >int mprotect(void *addr, size_t len, int prot);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Modifica la protezione di una regione di memoria.</span
+        >
+      </div>
+
+      <h3>🌐 Networking</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >int socket(int domain, int type, int protocol);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea un endpoint per la comunicazione di rete.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >int bind(int sockfd, const struct sockaddr *addr, socklen_t
+          addrlen);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Associa un socket a un indirizzo specifico.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >int listen(int sockfd, int backlog);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Marca il socket come passivo, pronto ad accettare connessioni.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+      <p><strong>Quando navighi su internet con un browser:</strong></p>
+      <ol>
+        <li><code>socket(AF_INET, SOCK_STREAM, 0)</code> - Crea socket TCP</li>
+        <li><code>connect()</code> - Stabilisce connessione al server web</li>
+        <li><code>send()/recv()</code> - Scambia dati HTTP</li>
+        <li><code>mmap()</code> - Mappa immagini scaricate in memoria</li>
+        <li>
+          <code>fork()</code> - Crea processi per gestire contenuti complessi
+        </li>
+      </ol>
+      <p>
+        <em
+          >Tutto questo sfrutta le funzionalità core del kernel per fornire
+          un'esperienza web fluida e sicura!</em
+        >
+      </p>
+
+      <h2>🗺️ Mappa Concettuale delle Funzionalità del Kernel</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura delle Funzionalità del Kernel Linux
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ APPLICAZIONI USER SPACE
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Browser, Editor<br />
+            • Server, Database<br />
+            • System Tools<br />
+            • User Programs
+          </div>
         </div>
 
-        <h3>💾 Gestione Memoria</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Mappa un file o crea memoria condivisa nello spazio degli indirizzi.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">void *malloc(size_t size);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Alloca memoria dinamica (funzione di libreria glibc che usa brk e mmap).</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">int mprotect(void *addr, size_t len, int prot);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Modifica la protezione di una regione di memoria.</span>
+        <!-- System Call Interface -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔧 SYSTEM CALL INTERFACE
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • fork() • exec() • read()<br />
+            • mmap() • socket() • ioctl()<br />
+            • 300+ system calls
+          </div>
         </div>
 
-        <h3>🌐 Networking</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int socket(int domain, int type, int protocol);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea un endpoint per la comunicazione di rete.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Associa un socket a un indirizzo specifico.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">int listen(int sockfd, int backlog);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Marca il socket come passivo, pronto ad accettare connessioni.</span>
+        <!-- Kernel Functionalities Core -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🌟 KERNEL FUNCTIONALITIES CORE
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🚀</div>
+              <div style="font-size: 0.8em">Process<br />Management</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">💾</div>
+              <div style="font-size: 0.8em">Memory<br />Management</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🌐</div>
+              <div style="font-size: 0.8em">Networking</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">💽</div>
+              <div style="font-size: 0.8em">Storage<br />& FS</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Scheduling & IPC<br />
+            • Virtual Memory<br />
+            • Device Drivers<br />
+            • Security Framework
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando navighi su internet con un browser:</strong></p>
-        <ol>
-            <li><code>socket(AF_INET, SOCK_STREAM, 0)</code> - Crea socket TCP</li>
-            <li><code>connect()</code> - Stabilisce connessione al server web</li>
-            <li><code>send()/recv()</code> - Scambia dati HTTP</li>
-            <li><code>mmap()</code> - Mappa immagini scaricate in memoria</li>
-            <li><code>fork()</code> - Crea processi per gestire contenuti complessi</li>
-        </ol>
-        <p><em>Tutto questo sfrutta le funzionalità core del kernel per fornire un'esperienza web fluida e sicura!</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-
-        <h2>🗺️ Mappa Concettuale delle Funzionalità del Kernel</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Funzionalità del Kernel Linux</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Browser, Editor<br>
-                    • Server, Database<br>
-                    • System Tools<br>
-                    • User Programs
-                </div>
+        <!-- Hardware Abstraction -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              ⚡ CPU
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- System Call Interface -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALL INTERFACE</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • fork() • exec() • read()<br>
-                    • mmap() • socket() • ioctl()<br>
-                    • 300+ system calls
-                </div>
+            <div style="font-size: 0.8em; color: #666">x86, ARM, RISC-V</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              💾 RAM
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Kernel Functionalities Core -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 KERNEL FUNCTIONALITIES CORE</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🚀</div>
-                        <div style="font-size: 0.8em;">Process<br>Management</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">Memory<br>Management</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌐</div>
-                        <div style="font-size: 0.8em;">Networking</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💽</div>
-                        <div style="font-size: 0.8em;">Storage<br>& FS</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Scheduling & IPC<br>
-                    • Virtual Memory<br>
-                    • Device Drivers<br>
-                    • Security Framework
-                </div>
+            <div style="font-size: 0.8em; color: #666">DDR4, LPDDR</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              💽 STORAGE
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Hardware Abstraction -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚡ CPU</div>
-                    <div style="font-size: 0.8em; color: #666;">x86, ARM, RISC-V</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">💾 RAM</div>
-                    <div style="font-size: 0.8em; color: #666;">DDR4, LPDDR</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">💽 STORAGE</div>
-                    <div style="font-size: 0.8em; color: #666;">NVMe, SATA, USB</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🌐 NETWORK</div>
-                    <div style="font-size: 0.8em; color: #666;">Ethernet, Wi-Fi</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">NVMe, SATA, USB</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              🌐 NETWORK
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Hardware Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Motherboard & Chipset<br>
-                    • Peripheral Devices<br>
-                    • Firmware & BIOS<br>
-                    • Physical Interfaces
-                </div>
-            </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste dal software all'hardware<br>
-                • Ogni layer aggiunge astrazione e servizi specializzati<br>
-                • Il kernel è il "orchestratore" che coordina tutte le funzionalità<br>
-                • L'interfaccia system call è il ponte tra user space e kernel space
-            </div>
+            <div style="font-size: 0.8em; color: #666">Ethernet, Wi-Fi</div>
+          </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Funzionamento del Kernel</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Avvio di un'applicazione complessa</h3>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🚀 Applicazione</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        Firefox Browser<br>
-                        <span style="color: #666;">(Processo multi-threaded)</span>
-                    </div>
-                </div>
-
-                <div style="font-size: 2em; color: #f57c00;">⚡</div>
-
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🧠 Kernel Linux</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        Versione 5.15<br>
-                        <span style="color: #666;">(Gestisce risorse)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">firefox &</code>
-            </div>
-
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
-                <ol style="line-height: 1.8;">
-                    <li><strong>1. Process Creation:</strong> fork() crea nuovo processo, exec() carica Firefox</li>
-                    <li><strong>2. Memory Allocation:</strong> mmap() riserva spazio per codice e dati</li>
-                    <li><strong>3. Thread Management:</strong> clone() crea thread per rendering e I/O</li>
-                    <li><strong>4. Network Setup:</strong> socket() per connessioni HTTP/HTTPS</li>
-                    <li><strong>5. Scheduling:</strong> lo scheduler fair (CFS/EEVDF) distribuisce tempo CPU</li>
-                </ol>
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Firefox si avvia e funziona perfettamente grazie alla coordinazione di tutte le funzionalità del kernel Linux!
-            </div>
+        <!-- Hardware Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            🔌 HARDWARE LAYER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Motherboard & Chipset<br />
+            • Peripheral Devices<br />
+            • Firmware & BIOS<br />
+            • Physical Interfaces
+          </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora le Funzionalità del Kernel</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Le frecce mostrano il flusso delle richieste dal software
+          all'hardware<br />
+          • Ogni layer aggiunge astrazione e servizi specializzati<br />
+          • Il kernel è il "orchestratore" che coordina tutte le funzionalità<br />
+          • L'interfaccia system call è il ponte tra user space e kernel space
+        </div>
+      </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🚀 Monitora processi</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ps aux | head -10<br>
-                        USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND<br>
-                        root 1 0.0 0.1 225688 13944 ? Ss gen01 0:01 /sbin/init<br>
-                        root 2 0.0 0.0 0 0 ? S gen01 0:00 [kthreadd]
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutti i processi attivi e le loro risorse</em></p>
-                </div>
+      <h2>🎬 Demo Interattiva: Funzionamento del Kernel</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Avvio di un'applicazione complessa
+        </h3>
 
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💾 Analizza memoria</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ free -h<br>
-                        total used free shared buff/cache available<br>
-                        Mem: 15Gi 8.2Gi 2.1Gi 1.2Gi 4.8Gi 5.3Gi<br>
-                        Swap: 2.0Gi 0B 2.0Gi
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza l'uso della memoria fisica e virtuale</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Esplora rete</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ss -tuln<br>
-                        Netid State Recv-Q Send-Q Local Address:Port Peer Address:Port<br>
-                        tcp LISTEN 0 128 0.0.0.0:22 0.0.0.0:*
-                        tcp LISTEN 0 128 [::]:22 [::]:*
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi tutte le connessioni di rete attive e in ascolto</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Monitora sistema</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ vmstat 1 5<br>
-                        procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----<br>
-                        r b swpd free buff cache si so bi bo in cs us sy id wa st<br>
-                        1 0 0 218764 84532 482344 0 0 0 1 10 8 1 0 99 0 0
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Monitora statistiche virtuali della memoria e I/O</em></p>
-                </div>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              🚀 Applicazione
             </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Firefox Browser<br />
+              <span style="color: #666">(Processo multi-threaded)</span>
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">⚡</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              🧠 Kernel Linux
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Versione 5.15<br />
+              <span style="color: #666">(Gestisce risorse)</span>
+            </div>
+          </div>
         </div>
 
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Process Management</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Il kernel gestisce creazione, scheduling e terminazione dei processi. Ogni processo ha il suo spazio di indirizzi isolato e risorse dedicate.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">💾</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Memory Management</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Virtual memory permette isolamento processi e gestione efficiente della RAM fisica. Demand paging e copy-on-write ottimizzano l'uso delle risorse.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌐</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Networking</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Stack TCP/IP completo con supporto per i principali protocolli di rete. Socket API fornisce interfaccia standard per comunicazione di rete.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Security & Isolation</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Modello di sicurezza basato su utenti/gruppi con supporto per SELinux, capabilities, e namespaces per isolamento avanzato.
-                </p>
-            </div>
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Comando eseguito:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >firefox &</code
+          >
         </div>
+
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Cosa succede dietro le quinte:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. Process Creation:</strong> fork() crea nuovo processo,
+              exec() carica Firefox
+            </li>
+            <li>
+              <strong>2. Memory Allocation:</strong> mmap() riserva spazio per
+              codice e dati
+            </li>
+            <li>
+              <strong>3. Thread Management:</strong> clone() crea thread per
+              rendering e I/O
+            </li>
+            <li>
+              <strong>4. Network Setup:</strong> socket() per connessioni
+              HTTP/HTTPS
+            </li>
+            <li>
+              <strong>5. Scheduling:</strong> lo scheduler fair (CFS/EEVDF)
+              distribuisce tempo CPU
+            </li>
+          </ol>
+        </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> Firefox si avvia e funziona
+          perfettamente grazie alla coordinazione di tutte le funzionalità del
+          kernel Linux!
+        </div>
+      </div>
+
+      <h2>🧪 Laboratorio Pratico: Esplora le Funzionalità del Kernel</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🚀 Monitora processi
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ps aux | head -10<br />
+              USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND<br />
+              root 1 0.0 0.1 225688 13944 ? Ss gen01 0:01 /sbin/init<br />
+              root 2 0.0 0.0 0 0 ? S gen01 0:00 [kthreadd]
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi tutti i processi attivi e le loro risorse</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              💾 Analizza memoria
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ free -h<br />
+              total used free shared buff/cache available<br />
+              Mem: 15Gi 8.2Gi 2.1Gi 1.2Gi 4.8Gi 5.3Gi<br />
+              Swap: 2.0Gi 0B 2.0Gi
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Visualizza l'uso della memoria fisica e virtuale</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">🌐 Esplora rete</h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ss -tuln<br />
+              Netid State Recv-Q Send-Q Local Address:Port Peer Address:Port<br />
+              tcp LISTEN 0 128 0.0.0.0:22 0.0.0.0:* tcp LISTEN 0 128 [::]:22
+              [::]:*
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi tutte le connessioni di rete attive e in ascolto</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📊 Monitora sistema
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ vmstat 1 5<br />
+              procs -----------memory---------- ---swap-- -----io---- -system--
+              ------cpu-----<br />
+              r b swpd free buff cache si so bi bo in cs us sy id wa st<br />
+              1 0 0 218764 84532 482344 0 0 0 1 10 8 1 0 99 0 0
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Monitora statistiche virtuali della memoria e I/O</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🚀
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Process Management
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            Il kernel gestisce creazione, scheduling e terminazione dei
+            processi. Ogni processo ha il suo spazio di indirizzi isolato e
+            risorse dedicate.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            💾
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Memory Management
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            Virtual memory permette isolamento processi e gestione efficiente
+            della RAM fisica. Demand paging e copy-on-write ottimizzano l'uso
+            delle risorse.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🌐
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Networking
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            Stack TCP/IP completo con supporto per i principali protocolli di
+            rete. Socket API fornisce interfaccia standard per comunicazione di
+            rete.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔒
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Security & Isolation
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Modello di sicurezza basato su utenti/gruppi con supporto per
+            SELinux, capabilities, e namespaces per isolamento avanzato.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sulle Funzionalità del Kernel
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz sulle Funzionalità del Kernel
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
+        {
+          question: "Cosa fa principalmente il kernel Linux?",
+          options: [
+            "Esegue programmi utente",
+            "Coordina risorse hardware e software",
+            "Gestisce solo la rete",
+            "Gestisce l'interfaccia grafica",
+          ],
+          correct: 1,
+          explanation:
+            "Il kernel coordina tutte le risorse del sistema: processi, memoria, dispositivi, rete, fornendo un'interfaccia stabile alle applicazioni.",
+        },
+        {
+          question:
+            "Quale area funzionale del kernel gestisce filesystem come ext4, btrfs e xfs?",
+          options: [
+            "Storage &amp; Filesystems",
+            "Process Management",
+            "Networking",
+            "Security Framework",
+          ],
+          correct: 0,
+          explanation:
+            "Storage &amp; Filesystems comprende il Virtual File System, il block layer e i driver dei singoli filesystem (ext4, btrfs, xfs, nfs...).",
+        },
+        {
+          question: "Cosa gestisce il memory management del kernel?",
+          options: [
+            "Solo RAM fisica",
+            "File di configurazione",
+            "Solo dispositivi USB",
+            "Spazio virtuale e fisico con paging",
+          ],
+          correct: 3,
+          explanation:
+            "Il memory management gestisce memoria virtuale (isolamento processi) e fisica (allocazione efficiente) attraverso paging e swapping.",
+        },
+        {
+          question: "Quale componente gestisce la comunicazione di rete?",
+          options: [
+            "TCP/IP stack",
+            "Filesystem driver",
+            "Memory allocator",
+            "Process scheduler",
+          ],
+          correct: 0,
+          explanation:
+            "Il TCP/IP stack implementa i principali protocolli di rete, dalla risoluzione indirizzi alla gestione connessioni.",
+        },
+        {
+          question: "Che tipo di architettura ha il kernel Linux?",
+          options: [
+            "Unikernel",
+            "Exokernel",
+            "Microkernel puro",
+            "Monolitico con moduli caricabili",
+          ],
+          correct: 3,
+          explanation:
+            "Linux è un kernel monolitico: i servizi girano in kernel space, ma driver e funzionalità si possono caricare dinamicamente come moduli.",
+        },
+        {
+          question:
+            "Quale modello di controllo accessi è predefinito in Linux?",
+          options: [
+            "Discretionary Access Control (utenti e gruppi)",
+            "Nessun controllo di accesso",
+            "Solo password",
+            "Mandatory Access Control obbligatorio",
+          ],
+          correct: 0,
+          explanation:
+            "Il modello predefinito è DAC (permessi per utente/gruppo/altri); SELinux e AppArmor aggiungono un MAC opzionale.",
+        },
+        {
+          question:
+            "Quale comando moderno mostra i socket di rete in ascolto (sostituto di netstat)?",
+          options: ["ls", "mount", "ss", "fdisk"],
+          correct: 2,
+          explanation:
+            "ss (iproute2) mostra socket e connessioni di rete ed ha sostituito netstat, ormai deprecato.",
+        },
+        {
+          question: "Quale comando monitora l'uso della memoria?",
+          options: ["df", "free", "netstat", "ps"],
+          correct: 1,
+          explanation:
+            "free mostra l'uso della memoria fisica e virtuale, inclusi buffer e cache.",
+        },
+        {
+          question: "Cosa gestisce lo scheduler fair di Linux (CFS/EEVDF)?",
+          options: ["Memoria", "CPU time", "Rete", "Dischi"],
+          correct: 1,
+          explanation:
+            "Lo scheduler fair (CFS fino al kernel 6.5, EEVDF dal 6.6) distribuisce equamente il tempo CPU tra tutti i processi runnable.",
+        },
+        {
+          question:
+            "Quale system call crea un endpoint (punto di comunicazione) per la comunicazione di rete?",
+          options: ["mmap", "fork", "socket", "kill"],
+          correct: 2,
+          explanation:
+            "socket() crea l'endpoint di comunicazione; poi si usano bind(), listen(), accept() (server) oppure connect() (client) per stabilire la connessione.",
+        },
+      ];
 
-<script>
-    // Quiz functionality
-    const quizQuestions = [
-        {
-            question: "Cosa fa principalmente il kernel Linux?",
-            options: ["Esegue programmi utente", "Coordina risorse hardware e software", "Gestisce solo la rete", "Gestisce l'interfaccia grafica"],
-            correct: 1,
-            explanation: "Il kernel coordina tutte le risorse del sistema: processi, memoria, dispositivi, rete, fornendo un'interfaccia stabile alle applicazioni."
-        },
-        {
-            question: "Quale area funzionale del kernel gestisce filesystem come ext4, btrfs e xfs?",
-            options: ["Storage &amp; Filesystems", "Process Management", "Networking", "Security Framework"],
-            correct: 0,
-            explanation: "Storage &amp; Filesystems comprende il Virtual File System, il block layer e i driver dei singoli filesystem (ext4, btrfs, xfs, nfs...)."
-        },
-        {
-            question: "Cosa gestisce il memory management del kernel?",
-            options: ["Solo RAM fisica", "File di configurazione", "Solo dispositivi USB", "Spazio virtuale e fisico con paging"],
-            correct: 3,
-            explanation: "Il memory management gestisce memoria virtuale (isolamento processi) e fisica (allocazione efficiente) attraverso paging e swapping."
-        },
-        {
-            question: "Quale componente gestisce la comunicazione di rete?",
-            options: ["TCP/IP stack", "Filesystem driver", "Memory allocator", "Process scheduler"],
-            correct: 0,
-            explanation: "Il TCP/IP stack implementa i principali protocolli di rete, dalla risoluzione indirizzi alla gestione connessioni."
-        },
-        {
-            question: "Che tipo di architettura ha il kernel Linux?",
-            options: ["Unikernel", "Exokernel", "Microkernel puro", "Monolitico con moduli caricabili"],
-            correct: 3,
-            explanation: "Linux è un kernel monolitico: i servizi girano in kernel space, ma driver e funzionalità si possono caricare dinamicamente come moduli."
-        },
-        {
-            question: "Quale modello di controllo accessi è predefinito in Linux?",
-            options: ["Discretionary Access Control (utenti e gruppi)", "Nessun controllo di accesso", "Solo password", "Mandatory Access Control obbligatorio"],
-            correct: 0,
-            explanation: "Il modello predefinito è DAC (permessi per utente/gruppo/altri); SELinux e AppArmor aggiungono un MAC opzionale."
-        },
-        {
-            question: "Quale comando moderno mostra i socket di rete in ascolto (sostituto di netstat)?",
-            options: ["ls", "mount", "ss", "fdisk"],
-            correct: 2,
-            explanation: "ss (iproute2) mostra socket e connessioni di rete ed ha sostituito netstat, ormai deprecato."
-        },
-        {
-            question: "Quale comando monitora l'uso della memoria?",
-            options: ["df", "free", "netstat", "ps"],
-            correct: 1,
-            explanation: "free mostra l'uso della memoria fisica e virtuale, inclusi buffer e cache."
-        },
-        {
-            question: "Cosa gestisce lo scheduler fair di Linux (CFS/EEVDF)?",
-            options: ["Memoria", "CPU time", "Rete", "Dischi"],
-            correct: 1,
-            explanation: "Lo scheduler fair (CFS fino al kernel 6.5, EEVDF dal 6.6) distribuisce equamente il tempo CPU tra tutti i processi runnable."
-        },
-        {
-            question: "Quale system call crea un endpoint (punto di comunicazione) per la comunicazione di rete?",
-            options: ["mmap", "fork", "socket", "kill"],
-            correct: 2,
-            explanation: "socket() crea l'endpoint di comunicazione; poi si usano bind(), listen(), accept() (server) oppure connect() (client) per stabilire la connessione."
-        }
-    ];
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -561,45 +1195,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -610,45 +1248,49 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione delle funzionalità del kernel! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione delle funzionalità del kernel! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il kernel Linux! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a studiare il kernel Linux! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il kernel è complesso ma affascinante! 📚";
-            color = "#d32f2f";
+          message =
+            "Continua a studiare! Il kernel è complesso ma affascinante! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -662,52 +1304,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

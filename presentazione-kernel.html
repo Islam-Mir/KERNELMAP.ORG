@@ -1,374 +1,687 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Presentazione Kernel</title>
-    <link rel="stylesheet" href="presentazione.css">
-    
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-    
-</head>
-<body>
-
+    <link rel="stylesheet" href="presentazione.css" />
+  </head>
+  <body>
     <!-- Slide introduttiva mostrata automaticamente all'apertura -->
     <div class="box intro-box" id="introBox">
-        <h2>Prima di esplorare: una storia, due percorsi</h2>
-        <h3>Chi ha creato Linux?</h3>
-        <p>Il kernel Linux nacque nel 1991 grazie a <strong>Linus Torvalds</strong>, allora uno studente finlandese di informatica. Iniziò il progetto come un sistema operativo personale per computer basati su processori Intel 80386 e condivise pubblicamente il suo lavoro: con il contributo di sviluppatori da tutto il mondo, Linux è diventato un progetto open source usato oggi in moltissimi dispositivi e sistemi.</p>
-        <p><strong>Una precisazione:</strong> Torvalds ha creato il kernel Linux, non il concetto di kernel in generale. I kernel esistevano già nei sistemi operativi precedenti.</p>
-        <h3>Questa presentazione è divisa in due parti</h3>
-        <ul>
-            <li><strong>KERNEL:</strong> scopri che cos'è il kernel, perché serve, quali tipi esistono e come gestisce programmi e risorse.</li>
-            <li><strong>KERNELMAP:</strong> esplora la mappa interattiva, la sua struttura, le sezioni e le principali funzionalità del kernel Linux.</li>
-        </ul>
-        <p>Puoi usare i pulsanti di navigazione a sinistra per aprire direttamente gli argomenti, oppure seguire i pulsanti dentro ogni slide per procedere passo dopo passo.</p>
-       
-        <div class="intro-actions">
-            <button class="button" id="startKernelBtn">Scopri come funziona il KERNEL</button>
-            <button class="button" id="startMapBtn">Esplora KERNELMAP</button>
-            <button class="back-button" id="startComponentsBtn"> Inizia l'esplorazione </button>
-        </div>
+      <h2>Prima di esplorare: una storia, due percorsi</h2>
+      <h3>Chi ha creato Linux?</h3>
+      <p>
+        Il kernel Linux nacque nel 1991 grazie a
+        <strong>Linus Torvalds</strong>, allora uno studente finlandese di
+        informatica. Iniziò il progetto come un sistema operativo personale per
+        computer basati su processori Intel 80386 e condivise pubblicamente il
+        suo lavoro: con il contributo di sviluppatori da tutto il mondo, Linux è
+        diventato un progetto open source usato oggi in moltissimi dispositivi e
+        sistemi.
+      </p>
+      <p>
+        <strong>Una precisazione:</strong> Torvalds ha creato il kernel Linux,
+        non il concetto di kernel in generale. I kernel esistevano già nei
+        sistemi operativi precedenti.
+      </p>
+      <h3>Questa presentazione è divisa in due parti</h3>
+      <ul>
+        <li>
+          <strong>KERNEL:</strong> scopri che cos'è il kernel, perché serve,
+          quali tipi esistono e come gestisce programmi e risorse.
+        </li>
+        <li>
+          <strong>KERNELMAP:</strong> esplora la mappa interattiva, la sua
+          struttura, le sezioni e le principali funzionalità del kernel Linux.
+        </li>
+      </ul>
+      <p>
+        Puoi usare i pulsanti di navigazione a sinistra per aprire direttamente
+        gli argomenti, oppure seguire i pulsanti dentro ogni slide per procedere
+        passo dopo passo.
+      </p>
+
+      <div class="intro-actions">
+        <button class="button" id="startKernelBtn">
+          Scopri come funziona il KERNEL
+        </button>
+        <button class="button" id="startMapBtn">Esplora KERNELMAP</button>
+        <button class="back-button" id="startComponentsBtn">
+          Inizia l'esplorazione
+        </button>
+      </div>
     </div>
 
     <div class="nav nav-kernel">
-        <div onclick="showBox('kernelBox')">Cos'è il Kernel</div>
-        <div onclick="showBox('whyBox')">Perché Serve il Kernel</div>
-        <div onclick="showBox('typesBox')">Quanti Tipi Sono</div>
-        <div onclick="showBox('howBox')">Come Funziona</div>
+      <div onclick="showBox('kernelBox')">Cos'è il Kernel</div>
+      <div onclick="showBox('whyBox')">Perché Serve il Kernel</div>
+      <div onclick="showBox('typesBox')">Quanti Tipi Sono</div>
+      <div onclick="showBox('howBox')">Come Funziona</div>
     </div>
     <div class="title" id="mainTitle">KERNEL</div>
     <div class="nav nav-kernelmap">
-        <div onclick="showBox('mapBox')">KERNEL MAP</div>
-        <div onclick="showBox('originBox')">Origine</div>
-        <div onclick="showBox('layoutBox')">Layout e Struttura</div>
-        <div onclick="showBox('whatBox')">Come Studiare</div>
-        
-       <!--
+      <div onclick="showBox('mapBox')">KERNEL MAP</div>
+      <div onclick="showBox('originBox')">Origine</div>
+      <div onclick="showBox('layoutBox')">Layout e Struttura</div>
+      <div onclick="showBox('whatBox')">Come Studiare</div>
+
+      <!--
         <div onclick="showBox('funcBox')">Funzionalità (Parte 1)</div>
         <div onclick="showBox('funcBox2')">Funzionalità (Parte 2)</div>
         <div onclick="showBox('funcBox3')">Funzionalità (Parte 3)</div>
         -->
 
-
-        <div onclick="showBox('pathBox')">Da Dove Iniziare</div>
+      <div onclick="showBox('pathBox')">Da Dove Iniziare</div>
     </div>
 
     <!-- Box for "Cos'è il Kernel" -->
     <div class="box" id="kernelBox">
-        <div class="arrow arrow-left"></div>
-        <h2>Cos'è il Kernel</h2>
-        <p>È il cuore del sistema operativo.</p>
-        <p>Non è un programma come gli altri: all'accensione il firmware (BIOS/UEFI) e il bootloader lo caricano in memoria e da quel momento resta attivo, in background, fino allo spegnimento del computer.</p>
-        <p>Fa tre cose fondamentali:</p>
-        <ul>
-            <li>Gestisce le risorse: CPU, memoria, processi, dischi, periferiche.</li>
-            <li>Protegge: impedisce che un programma blocchi o danneggi gli altri.</li>
-            <li>Traduce: i programmi fanno richieste (le system call) → il kernel le trasforma in operazioni sull'hardware.</li>
-        </ul>
-        <p>Un po' come un direttore d'orchestra: tiene tutti in tempo e impedisce che qualcuno suoni fuori controllo.</p>
-        <p><strong>Nota:</strong> «Linux» è, in senso stretto, il kernel. Un sistema operativo completo (una distribuzione come Ubuntu o Debian) lo affianca a librerie, strumenti e applicazioni.</p>
-        <button class="button" id="whyBtn">Perché serve il Kernel</button>
+      <div class="arrow arrow-left"></div>
+      <h2>Cos'è il Kernel</h2>
+      <p>È il cuore del sistema operativo.</p>
+      <p>
+        Non è un programma come gli altri: all'accensione il firmware
+        (BIOS/UEFI) e il bootloader lo caricano in memoria e da quel momento
+        resta attivo, in background, fino allo spegnimento del computer.
+      </p>
+      <p>Fa tre cose fondamentali:</p>
+      <ul>
+        <li>
+          Gestisce le risorse: CPU, memoria, processi, dischi, periferiche.
+        </li>
+        <li>
+          Protegge: impedisce che un programma blocchi o danneggi gli altri.
+        </li>
+        <li>
+          Traduce: i programmi fanno richieste (le system call) → il kernel le
+          trasforma in operazioni sull'hardware.
+        </li>
+      </ul>
+      <p>
+        Un po' come un direttore d'orchestra: tiene tutti in tempo e impedisce
+        che qualcuno suoni fuori controllo.
+      </p>
+      <p>
+        <strong>Nota:</strong> «Linux» è, in senso stretto, il kernel. Un
+        sistema operativo completo (una distribuzione come Ubuntu o Debian) lo
+        affianca a librerie, strumenti e applicazioni.
+      </p>
+      <button class="button" id="whyBtn">Perché serve il Kernel</button>
     </div>
 
     <!-- Box for "Perché serve il Kernel" -->
     <div class="box" id="whyBox">
-        <div class="arrow arrow-left"></div>
-        <h3>Perché serve il Kernel</h3>
-        <p>Nei primi computer i programmi parlavano direttamente con l'hardware, e questo creava confusione e rischi di errori. Quando sono arrivati i sistemi operativi che eseguono più programmi insieme (sistemi operativi multitasking), è servito un componente centrale che:</p>
+      <div class="arrow arrow-left"></div>
+      <h3>Perché serve il Kernel</h3>
+      <p>
+        Nei primi computer i programmi parlavano direttamente con l'hardware, e
+        questo creava confusione e rischi di errori. Quando sono arrivati i
+        sistemi operativi che eseguono più programmi insieme (sistemi operativi
+        multitasking), è servito un componente centrale che:
+      </p>
 
-        <ul>
-            <li>gestisse le risorse, come CPU, memoria e dispositivi;</li>
-            <li>tenesse i programmi separati, così non si disturbano;</li>
-            <li>fornisse un'interfaccia unica per parlare con l'hardware, invece di mille metodi diversi;</li>
-            <li>garantisse la stabilità e la sicurezza del sistema.</li>
-        </ul>
-        <button class="button" id="typesBtn">Quanti Tipi Sono</button>
+      <ul>
+        <li>gestisse le risorse, come CPU, memoria e dispositivi;</li>
+        <li>tenesse i programmi separati, così non si disturbano;</li>
+        <li>
+          fornisse un'interfaccia unica per parlare con l'hardware, invece di
+          mille metodi diversi;
+        </li>
+        <li>garantisse la stabilità e la sicurezza del sistema.</li>
+      </ul>
+      <button class="button" id="typesBtn">Quanti Tipi Sono</button>
     </div>
 
     <!-- Box for "Quanti Tipi Sono" -->
     <div class="box" id="typesBox">
-        <div class="arrow arrow-left"></div>
+      <div class="arrow arrow-left"></div>
       <!--   <h3>Quanti Tipi Sono</h3> -->
-        <p>Esistono principalmente 3 tipologie di kernel:</p>
-        <h4>1) Monolitico (es. Linux)</h4>
-        <p>Tutte le funzioni principali sono dentro un unico grande blocco. Linux è monolitico ma modulare: molte funzioni (come i driver) si possono caricare e scaricare come moduli.</p>
-        <p>Pro: veloce. Contro: più grande e complesso.</p>
-        <h4>2) Microkernel (es. QNX, Minix)</h4>
-        <p>Il kernel contiene solo le funzioni essenziali (gestione memoria di base, comunicazione tra processi), mentre servizi avanzati come filesystem e driver di rete sono implementati come processi separati nello user space.</p>
-        <p>Pro: molto stabile e sicuro.</p>
-        <p>Contro: può essere un po' più lento per via delle comunicazioni extra tra processi.</p>
-        <h4>3) Ibrido (es. Windows NT, macOS)</h4>
-        <p>Un mix dei due: una base piccola con alcuni servizi inclusi nel kernel per avere più velocità.</p>
-        <p>È un compromesso per unire stabilità e prestazioni.</p>
-        <button class="button" id="howBtn">Come Funziona</button>
+      <p>Esistono principalmente 3 tipologie di kernel:</p>
+      <h4>1) Monolitico (es. Linux)</h4>
+      <p>
+        Tutte le funzioni principali sono dentro un unico grande blocco. Linux è
+        monolitico ma modulare: molte funzioni (come i driver) si possono
+        caricare e scaricare come moduli.
+      </p>
+      <p>Pro: veloce. Contro: più grande e complesso.</p>
+      <h4>2) Microkernel (es. QNX, Minix)</h4>
+      <p>
+        Il kernel contiene solo le funzioni essenziali (gestione memoria di
+        base, comunicazione tra processi), mentre servizi avanzati come
+        filesystem e driver di rete sono implementati come processi separati
+        nello user space.
+      </p>
+      <p>Pro: molto stabile e sicuro.</p>
+      <p>
+        Contro: può essere un po' più lento per via delle comunicazioni extra
+        tra processi.
+      </p>
+      <h4>3) Ibrido (es. Windows NT, macOS)</h4>
+      <p>
+        Un mix dei due: una base piccola con alcuni servizi inclusi nel kernel
+        per avere più velocità.
+      </p>
+      <p>È un compromesso per unire stabilità e prestazioni.</p>
+      <button class="button" id="howBtn">Come Funziona</button>
     </div>
 
     <!-- Box for "Come Funziona" -->
     <div class="box" id="howBox">
-        <div class="arrow arrow-left"></div>
-        <h3>Come Funziona</h3>
-        <p>La CPU può lavorare in due modalità:</p>
-        <ul>
-            <li>Modalità Kernel → poteri completi</li>
-            <li>Modalità Utente → poteri limitati (per non far danni)</li>
-        </ul>
-        <p>Quando un programma vuole fare qualsiasi operazione che richiede privilegi speciali (leggere un file, usare la rete, allocare memoria, ecc.), deve passare attraverso il kernel tramite una system call: è la «porta d'ingresso» controllata che porta dalla modalità utente alla modalità kernel.</p>
-        <p>Il multitasking è una funzionalità del sistema operativo che permette al computer di eseguire più programmi insieme: alternandoli rapidamente sulla stessa CPU oppure in parallelo su più core.</p>
-        <button class="button" id="toKernelMap">KERNEL MAP</button>
+      <div class="arrow arrow-left"></div>
+      <h3>Come Funziona</h3>
+      <p>La CPU può lavorare in due modalità:</p>
+      <ul>
+        <li>Modalità Kernel → poteri completi</li>
+        <li>Modalità Utente → poteri limitati (per non far danni)</li>
+      </ul>
+      <p>
+        Quando un programma vuole fare qualsiasi operazione che richiede
+        privilegi speciali (leggere un file, usare la rete, allocare memoria,
+        ecc.), deve passare attraverso il kernel tramite una system call: è la
+        «porta d'ingresso» controllata che porta dalla modalità utente alla
+        modalità kernel.
+      </p>
+      <p>
+        Il multitasking è una funzionalità del sistema operativo che permette al
+        computer di eseguire più programmi insieme: alternandoli rapidamente
+        sulla stessa CPU oppure in parallelo su più core.
+      </p>
+      <button class="button" id="toKernelMap">KERNEL MAP</button>
     </div>
-
 
     <!-- Box for Kernel Map -->
     <div class="box" id="mapBox">
-        <div class="arrow arrow-left"></div>
-        <h2>Cos'è il Kernel Map</h2>
-        <p>Il "Kernel Map" è una mappa interattiva del kernel Linux.
-Mostra le parti principali (interfacce verso l'utente, sottosistemi, driver, memoria, I/O) e come si collegano tra loro.
-Si può esplorare cliccando gli elementi: ogni funzione o struttura indicata rimanda al codice sorgente corrispondente.
-Serve a capire la struttura del kernel senza leggere tutto il codice. </p>
+      <div class="arrow arrow-left"></div>
+      <h2>Cos'è il Kernel Map</h2>
+      <p>
+        Il "Kernel Map" è una mappa interattiva del kernel Linux. Mostra le
+        parti principali (interfacce verso l'utente, sottosistemi, driver,
+        memoria, I/O) e come si collegano tra loro. Si può esplorare cliccando
+        gli elementi: ogni funzione o struttura indicata rimanda al codice
+        sorgente corrispondente. Serve a capire la struttura del kernel senza
+        leggere tutto il codice.
+      </p>
 
-<p><strong>Funzione principale:</strong> Fornire una visualizzazione chiara della complessa architettura del kernel, rendendola più accessibile.</p>
-<p><strong>Valore educativo: </strong>È uno strumento utile per imparare come i diversi componenti del sistema interagiscono tra loro e come il kernel agisce da ponte tra l'hardware e il software applicativo. </p>
+      <p>
+        <strong>Funzione principale:</strong> Fornire una visualizzazione chiara
+        della complessa architettura del kernel, rendendola più accessibile.
+      </p>
+      <p>
+        <strong>Valore educativo: </strong>È uno strumento utile per imparare
+        come i diversi componenti del sistema interagiscono tra loro e come il
+        kernel agisce da ponte tra l'hardware e il software applicativo.
+      </p>
 
-
-        <button class="button" id="originBtn">Origine</button>
+      <button class="button" id="originBtn">Origine</button>
     </div>
 
     <!-- Box for Origine -->
     <div class="box" id="originBox">
-        <div class="arrow arrow-left"></div>
-        <h3>Origine</h3>
-        <h4>Autore originale</h4>
-        <p>La Linux Kernel Map è stata ideata da <strong>Constantine (Costa) Shulyupin</strong>, che la pubblica dal <strong>2007</strong> (© 2007 Costa Shulyupin) e la aggiorna nel tempo. Esiste anche una versione semplificata, il «Linux kernel diagram», disponibile in formato SVG/PNG (ad esempio nella galleria di Graphviz e su Wikimedia Commons).</p>
+      <div class="arrow arrow-left"></div>
+      <h3>Origine</h3>
+      <h4>Autore originale</h4>
+      <p>
+        La Linux Kernel Map è stata ideata da
+        <strong>Constantine (Costa) Shulyupin</strong>, che la pubblica dal
+        <strong>2007</strong> (© 2007 Costa Shulyupin) e la aggiorna nel tempo.
+        Esiste anche una versione semplificata, il «Linux kernel diagram»,
+        disponibile in formato SVG/PNG (ad esempio nella galleria di Graphviz e
+        su Wikimedia Commons).
+      </p>
 
-        <h4>Sviluppo della mappa interattiva</h4>
-        <p>La versione interattiva è un progetto open source su GitHub (repository <strong>makelinux/linux_kernel_map</strong>), distribuito sotto licenza <strong>GNU GPL v3</strong>. Contiene centinaia di funzioni, strutture dati e file del kernel Linux con le loro relazioni, e permette di cliccare su un elemento per accedere direttamente al codice sorgente.</p>
-        <p>Il sito della mappa interattiva è ospitato su <a href="https://makelinux.github.io/kernel/map/" target="_blank" rel="noopener noreferrer">https://makelinux.github.io/kernel/map/</a> ed è uno strumento educativo per studiare l'architettura del kernel.</p>
+      <h4>Sviluppo della mappa interattiva</h4>
+      <p>
+        La versione interattiva è un progetto open source su GitHub (repository
+        <strong>makelinux/linux_kernel_map</strong>), distribuito sotto licenza
+        <strong>GNU GPL v3</strong>. Contiene centinaia di funzioni, strutture
+        dati e file del kernel Linux con le loro relazioni, e permette di
+        cliccare su un elemento per accedere direttamente al codice sorgente.
+      </p>
+      <p>
+        Il sito della mappa interattiva è ospitato su
+        <a
+          href="https://makelinux.github.io/kernel/map/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >https://makelinux.github.io/kernel/map/</a
+        >
+        ed è uno strumento educativo per studiare l'architettura del kernel.
+      </p>
 
-        <h4>E KERNELMAP.ORG?</h4>
-        <p>Le pagine di KERNELMAP.ORG sono un adattamento didattico indipendente: per aiutare lo studio mantengono lo <strong>stesso schema della mappa originale</strong> (le stesse colonne e gli stessi livelli), mentre testi, esempi, laboratori e quiz sono realizzati per questo sito e non fanno parte della mappa originale.</p>
-        <button class="button" id="layoutBtn">Layout e Struttura</button>
+      <h4>E KERNELMAP.ORG?</h4>
+      <p>
+        Le pagine di KERNELMAP.ORG sono un adattamento didattico indipendente:
+        per aiutare lo studio mantengono lo
+        <strong>stesso schema della mappa originale</strong> (le stesse colonne
+        e gli stessi livelli), mentre testi, esempi, laboratori e quiz sono
+        realizzati per questo sito e non fanno parte della mappa originale.
+      </p>
+      <button class="button" id="layoutBtn">Layout e Struttura</button>
     </div>
 
     <!-- Box for Layout -->
     <div class="box" id="layoutBox">
-        <div class="arrow arrow-left"></div>
-        <h3>Layout e Struttura</h3>
-        <p>La Kernel Map è una griglia: le <strong>colonne</strong> sono le grandi funzioni del kernel, le <strong>righe</strong> sono i livelli di astrazione (i «layers»).</p>
-        <h4>6 colonne, da sinistra a destra</h4>
-        <ul>
-            <li><strong>Human Interfaces (HI):</strong> tastiera, mouse, display e audio, con dispositivi a carattere, sottosistema input e relativi driver.</li>
-            <li><strong>System:</strong> system call, /proc e sysfs, Device Model, avvio e moduli, accesso generico all'hardware, driver dei bus (PCI, USB).</li>
-            <li><strong>Processing:</strong> processi e thread, sincronizzazione, scheduler, interrupt e codice specifico della CPU.</li>
-            <li><strong>Memory:</strong> accesso alla memoria, memoria virtuale, memory mapping, memoria logica, page allocator, MMU e RAM.</li>
-            <li><strong>Storage:</strong> file e directory, VFS, page cache, file system (ext4, xfs…), dispositivi a blocchi e driver.</li>
-            <li><strong>Networking:</strong> socket, famiglie di protocolli, protocolli (TCP, UDP, IP), interfacce e driver di rete.</li>
-        </ul>
-        <h4>6 livelli (layers)</h4>
-        <p>Dall'alto, come è disegnata la mappa: <strong>1. User space interfaces</strong> (system call, socket, file e directory, processi) → <strong>2. Virtual</strong> (interfacce uniformi, come il VFS) → <strong>3. Bridges</strong> (collegano le interfacce uniformi alle diverse implementazioni: Device Model, memory mapping, sincronizzazione) → <strong>4. Logical</strong> (file system, protocolli di rete, scheduler) → <strong>5. Hardware interfaces</strong> (driver, interrupt, page allocator) → <strong>6. Electronics / hardware</strong> (CPU, RAM, dischi, schede di rete, tastiera, display).</p>
-        <button class="button" id="whatBtn">Come Studiare</button>
+      <div class="arrow arrow-left"></div>
+      <h3>Layout e Struttura</h3>
+      <p>
+        La Kernel Map è una griglia: le <strong>colonne</strong> sono le grandi
+        funzioni del kernel, le <strong>righe</strong> sono i livelli di
+        astrazione (i «layers»).
+      </p>
+      <h4>6 colonne, da sinistra a destra</h4>
+      <ul>
+        <li>
+          <strong>Human Interfaces (HI):</strong> tastiera, mouse, display e
+          audio, con dispositivi a carattere, sottosistema input e relativi
+          driver.
+        </li>
+        <li>
+          <strong>System:</strong> system call, /proc e sysfs, Device Model,
+          avvio e moduli, accesso generico all'hardware, driver dei bus (PCI,
+          USB).
+        </li>
+        <li>
+          <strong>Processing:</strong> processi e thread, sincronizzazione,
+          scheduler, interrupt e codice specifico della CPU.
+        </li>
+        <li>
+          <strong>Memory:</strong> accesso alla memoria, memoria virtuale,
+          memory mapping, memoria logica, page allocator, MMU e RAM.
+        </li>
+        <li>
+          <strong>Storage:</strong> file e directory, VFS, page cache, file
+          system (ext4, xfs…), dispositivi a blocchi e driver.
+        </li>
+        <li>
+          <strong>Networking:</strong> socket, famiglie di protocolli,
+          protocolli (TCP, UDP, IP), interfacce e driver di rete.
+        </li>
+      </ul>
+      <h4>6 livelli (layers)</h4>
+      <p>
+        Dall'alto, come è disegnata la mappa:
+        <strong>1. User space interfaces</strong> (system call, socket, file e
+        directory, processi) → <strong>2. Virtual</strong> (interfacce uniformi,
+        come il VFS) → <strong>3. Bridges</strong> (collegano le interfacce
+        uniformi alle diverse implementazioni: Device Model, memory mapping,
+        sincronizzazione) → <strong>4. Logical</strong> (file system, protocolli
+        di rete, scheduler) → <strong>5. Hardware interfaces</strong> (driver,
+        interrupt, page allocator) →
+        <strong>6. Electronics / hardware</strong> (CPU, RAM, dischi, schede di
+        rete, tastiera, display).
+      </p>
+      <button class="button" id="whatBtn">Come Studiare</button>
     </div>
-
 
     <!-- Box for What -->
     <div class="box" id="whatBox">
-        <div class="arrow arrow-left"></div>
-       <!-- <h3>Come Studiare</h3> -->
-        <p>Ogni elemento della mappa rappresenta un componente reale del kernel Linux e rimanda al relativo codice sorgente. Dentro la mappa si trovano:</p>
-        <ul>
-            <li><strong>File e cartelle di codice C</strong> che implementano le funzioni principali del kernel;</li>
-            <li><strong>Strutture dati</strong> importanti: tabelle, liste, buffer e oggetti che rappresentano processi, file, device, reti, interrupt e così via;</li>
-            <li><strong>Funzioni e API interne</strong> che permettono alle diverse parti del kernel di comunicare tra loro;</li>
-            <li><strong>Driver e moduli</strong> che gestiscono hardware e funzionalità specifiche.</li>
-        </ul>
-     <!--      <h4>Come studiare su KERNELMAP.ORG</h4>  
+      <div class="arrow arrow-left"></div>
+      <!-- <h3>Come Studiare</h3> -->
+      <p>
+        Ogni elemento della mappa rappresenta un componente reale del kernel
+        Linux e rimanda al relativo codice sorgente. Dentro la mappa si trovano:
+      </p>
+      <ul>
+        <li>
+          <strong>File e cartelle di codice C</strong> che implementano le
+          funzioni principali del kernel;
+        </li>
+        <li>
+          <strong>Strutture dati</strong> importanti: tabelle, liste, buffer e
+          oggetti che rappresentano processi, file, device, reti, interrupt e
+          così via;
+        </li>
+        <li>
+          <strong>Funzioni e API interne</strong> che permettono alle diverse
+          parti del kernel di comunicare tra loro;
+        </li>
+        <li>
+          <strong>Driver e moduli</strong> che gestiscono hardware e
+          funzionalità specifiche.
+        </li>
+      </ul>
+      <!--      <h4>Come studiare su KERNELMAP.ORG</h4>  
         <p>Per aiutarti nello studio, le pagine mantengono lo <strong>stesso schema della mappa originale</strong>: ogni blocco è una pagina (57 in tutto), ordinate colonna per colonna da sinistra a destra e, dentro ogni colonna, dall'alto verso il basso. Se preferisci studiare dal basso verso l'alto, percorri le pagine di una colonna a ritroso, dall'hardware alle interfacce utente.</p>
      <p>Ogni pagina contiene: descrizione tecnica e operazioni principali, strutture dati e API, esempi pratici ed esperimenti da provare su Linux, concetti chiave da ricordare e un quiz di 10 domande.</p> 
         <p><strong>Come leggere una pagina:</strong> 1) descrizione e concetti chiave; 2) esempi guardando la mappa; 3) prova i comandi degli esperimenti; 4) rispondi al quiz e rileggi le spiegazioni.</p>
-    -->     
-        <h4>In che ordine leggere</h4>
-        <p>È lo stesso schema, letto in due versi:</p>
-        <ul>
-            <li><strong>Dal basso verso l'alto</strong> (come si insegna di solito nei corsi di sistemi operativi): nel modello a strati l'hardware è alla base (livello 0) e l'interfaccia utente in cima; ogni livello è costruito sopra quello inferiore e usa solo i suoi servizi. Si parte dall'hardware e si sale, così si capisce su che cosa si appoggia ogni livello.</li>
-            <li><strong>Dall'alto verso il basso</strong> (come è disegnata la mappa, che i suoi autori descrivono come vista «top-down»): si segue il percorso di una richiesta, dall'utente fino all'hardware; la risposta risale lungo lo stesso percorso.</li>
-        </ul>
-        <p>Esempio, colonna Storage: dal basso si sale da disco → driver dei dispositivi a blocchi → file system → VFS → file e directory; dall'alto si percorre la strada inversa. Le colonne si leggono da sinistra a destra. Nota: Linux non è rigidamente a strati, quindi la divisione in livelli è approssimativa.</p>
-        
+    -->
+      <h4>In che ordine leggere</h4>
+      <p>È lo stesso schema, letto in due versi:</p>
+      <ul>
+        <li>
+          <strong>Dal basso verso l'alto</strong> (come si insegna di solito nei
+          corsi di sistemi operativi): nel modello a strati l'hardware è alla
+          base (livello 0) e l'interfaccia utente in cima; ogni livello è
+          costruito sopra quello inferiore e usa solo i suoi servizi. Si parte
+          dall'hardware e si sale, così si capisce su che cosa si appoggia ogni
+          livello.
+        </li>
+        <li>
+          <strong>Dall'alto verso il basso</strong> (come è disegnata la mappa,
+          che i suoi autori descrivono come vista «top-down»): si segue il
+          percorso di una richiesta, dall'utente fino all'hardware; la risposta
+          risale lungo lo stesso percorso.
+        </li>
+      </ul>
+      <p>
+        Esempio, colonna Storage: dal basso si sale da disco → driver dei
+        dispositivi a blocchi → file system → VFS → file e directory; dall'alto
+        si percorre la strada inversa. Le colonne si leggono da sinistra a
+        destra. Nota: Linux non è rigidamente a strati, quindi la divisione in
+        livelli è approssimativa.
+      </p>
 
-        <button class="button" id="pathBtn">DA DOVE INIZIARE</button>
+      <button class="button" id="pathBtn">DA DOVE INIZIARE</button>
 
-     <!--   <button class="button" id="toFunc">FUNZIONALITÀ PRINCIPALI</button> --> 
+      <!--   <button class="button" id="toFunc">FUNZIONALITÀ PRINCIPALI</button> -->
     </div>
 
     <!-- Box for Functionalities Part 1 -->
     <div class="box" id="funcBox">
-        <div class="arrow arrow-left"></div>
-        <h2>Funzionalità Principali del Kernel (Parte 1)</h2>
-        <h3>1. Process Management (Gestione Processi)</h3>
-        <p>Il kernel del sistema operativo gestisce il ciclo di vita completo dei processi, dall'avvio alla terminazione, tramite chiamate di sistema come fork() (per creare nuovi processi), exec() (per eseguire un nuovo programma) e wait() (per attendere la terminazione di un processo figlio).</p>
-        
+      <div class="arrow arrow-left"></div>
+      <h2>Funzionalità Principali del Kernel (Parte 1)</h2>
+      <h3>1. Process Management (Gestione Processi)</h3>
+      <p>
+        Il kernel del sistema operativo gestisce il ciclo di vita completo dei
+        processi, dall'avvio alla terminazione, tramite chiamate di sistema come
+        fork() (per creare nuovi processi), exec() (per eseguire un nuovo
+        programma) e wait() (per attendere la terminazione di un processo
+        figlio).
+      </p>
 
-        <h3>2. Memory Management (Gestione Memoria)</h3>
-        <p>La gestione della memoria del kernel controlla la RAM e la memoria virtuale.
-Serve a dare memoria ai programmi in modo sicuro, senza farli interferire tra loro.
-Usa tecniche come: paging (per la memoria virtuale), copy-on-write (per creare nuovi processi senza sprechi), buddy allocator (per le pagine di RAM fisica) e lo swap (spazio su disco usato come riserva quando la RAM è sotto pressione).</p>
+      <h3>2. Memory Management (Gestione Memoria)</h3>
+      <p>
+        La gestione della memoria del kernel controlla la RAM e la memoria
+        virtuale. Serve a dare memoria ai programmi in modo sicuro, senza farli
+        interferire tra loro. Usa tecniche come: paging (per la memoria
+        virtuale), copy-on-write (per creare nuovi processi senza sprechi),
+        buddy allocator (per le pagine di RAM fisica) e lo swap (spazio su disco
+        usato come riserva quando la RAM è sotto pressione).
+      </p>
 
-        <h3>3. File System (Filesystem)</h3>
-        <p>Il file system del kernel organizza i dati su disco in file e cartelle.
-Usa il VFS per gestire diversi tipi di filesystem in modo uniforme.
-Gli inode contengono i metadati dei file (permessi, dimensione, posizione dei dati), mentre le dentry aiutano a ricordare la struttura delle cartelle per accedere più velocemente.
-Il journaling mantiene coerente il filesystem in caso di crash o spegnimenti improvvisi.</p>
-        <p><strong>Le directory (o cartelle) contengono file o altre directory, mentre i file contengono i dati effettivi.</strong></p>
+      <h3>3. File System (Filesystem)</h3>
+      <p>
+        Il file system del kernel organizza i dati su disco in file e cartelle.
+        Usa il VFS per gestire diversi tipi di filesystem in modo uniforme. Gli
+        inode contengono i metadati dei file (permessi, dimensione, posizione
+        dei dati), mentre le dentry aiutano a ricordare la struttura delle
+        cartelle per accedere più velocemente. Il journaling mantiene coerente
+        il filesystem in caso di crash o spegnimenti improvvisi.
+      </p>
+      <p>
+        <strong
+          >Le directory (o cartelle) contengono file o altre directory, mentre i
+          file contengono i dati effettivi.</strong
+        >
+      </p>
 
-        <button class="button" id="segueBtn">SEGUE</button>
+      <button class="button" id="segueBtn">SEGUE</button>
     </div>
 
     <!-- Box for Functionalities Part 2 -->
     <div class="box" id="funcBox2">
-        <div class="arrow arrow-left"></div>
-        <h2>Funzionalità Principali del Kernel (Parte 2)</h2>
+      <div class="arrow arrow-left"></div>
+      <h2>Funzionalità Principali del Kernel (Parte 2)</h2>
 
-        <h3>4. Networking (Rete)</h3>
-        <p>La parte di networking del kernel si occupa di far comunicare il computer con altri sistemi.
-Usa protocolli standard come TCP/IP e fornisce strumenti alle applicazioni tramite socket.
-Gestisce anche il routing e il filtraggio dei pacchetti (netfilter, usato da strumenti come iptables e nftables) e supporta sia IPv4 che IPv6.</p>
+      <h3>4. Networking (Rete)</h3>
+      <p>
+        La parte di networking del kernel si occupa di far comunicare il
+        computer con altri sistemi. Usa protocolli standard come TCP/IP e
+        fornisce strumenti alle applicazioni tramite socket. Gestisce anche il
+        routing e il filtraggio dei pacchetti (netfilter, usato da strumenti
+        come iptables e nftables) e supporta sia IPv4 che IPv6.
+      </p>
 
-        <h3>5. Device Drivers (Driver Dispositivi)</h3>
-<p>I driver di dispositivo sono software che consentono al kernel del sistema operativo di comunicare con l'hardware specifico del computer, come tastiere, schede di rete e unità disco. </p>     
-<p>Molti driver sono moduli del kernel: possono essere caricati e scaricati quando servono, rendendo il sistema più efficiente.</p>
-        
+      <h3>5. Device Drivers (Driver Dispositivi)</h3>
+      <p>
+        I driver di dispositivo sono software che consentono al kernel del
+        sistema operativo di comunicare con l'hardware specifico del computer,
+        come tastiere, schede di rete e unità disco.
+      </p>
+      <p>
+        Molti driver sono moduli del kernel: possono essere caricati e scaricati
+        quando servono, rendendo il sistema più efficiente.
+      </p>
 
-        <h3>6. Security Framework (Sicurezza)</h3>
-        <p>Il kernel usa regole e controlli per decidere cosa ogni programma o utente può fare.</p>
+      <h3>6. Security Framework (Sicurezza)</h3>
+      <p>
+        Il kernel usa regole e controlli per decidere cosa ogni programma o
+        utente può fare.
+      </p>
 
-<p>Isolamento dei processi: i programmi vengono separati, così se uno ha problemi non danneggia gli altri.</p>
+      <p>
+        Isolamento dei processi: i programmi vengono separati, così se uno ha
+        problemi non danneggia gli altri.
+      </p>
 
-<p>Controllo degli accessi: solo chi ha permessi può leggere, scrivere o eseguire certe operazioni.</p>
+      <p>
+        Controllo degli accessi: solo chi ha permessi può leggere, scrivere o
+        eseguire certe operazioni.
+      </p>
 
-<p>Strumenti avanzati: SELinux e AppArmor (controllo degli accessi), le capabilities (privilegi suddivisi) e i namespaces (isolamento delle risorse) organizzano risorse e diritti in modo sicuro.</p>
+      <p>
+        Strumenti avanzati: SELinux e AppArmor (controllo degli accessi), le
+        capabilities (privilegi suddivisi) e i namespaces (isolamento delle
+        risorse) organizzano risorse e diritti in modo sicuro.
+      </p>
 
-<p>Verifiche continue: a ogni accesso il kernel controlla l'identità (ID utente e gruppi), i permessi e le regole di sicurezza attive. </p>
+      <p>
+        Verifiche continue: a ogni accesso il kernel controlla l'identità (ID
+        utente e gruppi), i permessi e le regole di sicurezza attive.
+      </p>
 
-        <button class="button" id="segueBtn2">SEGUE</button>
+      <button class="button" id="segueBtn2">SEGUE</button>
     </div>
 
     <!-- Box for Functionalities Part 3 -->
     <div class="box" id="funcBox3">
-        <div class="arrow arrow-left"></div>
-        <h2>Funzionalità Principali del Kernel (Parte 3)</h2>
+      <div class="arrow arrow-left"></div>
+      <h2>Funzionalità Principali del Kernel (Parte 3)</h2>
 
-        <h3>7. Interrupt Handling (Gestione Interrupt)</h3>
-        <p>Il computer riceve continuamente segnali dai dispositivi, come tastiera, mouse o schede di rete.
-La gestione degli interrupt permette al sistema di interrompere temporaneamente quello che sta facendo per rispondere subito a questi segnali.
-Alcuni segnali vengono gestiti subito perché sono molto importanti, altri possono essere rimandati a momenti più tranquilli.
-Così il computer riesce a lavorare velocemente senza bloccare tutto quando arrivano molti eventi insieme.
-Dopo aver gestito il segnale, il sistema riprende normalmente le operazioni che stava facendo.</p>
+      <h3>7. Interrupt Handling (Gestione Interrupt)</h3>
+      <p>
+        Il computer riceve continuamente segnali dai dispositivi, come tastiera,
+        mouse o schede di rete. La gestione degli interrupt permette al sistema
+        di interrompere temporaneamente quello che sta facendo per rispondere
+        subito a questi segnali. Alcuni segnali vengono gestiti subito perché
+        sono molto importanti, altri possono essere rimandati a momenti più
+        tranquilli. Così il computer riesce a lavorare velocemente senza
+        bloccare tutto quando arrivano molti eventi insieme. Dopo aver gestito
+        il segnale, il sistema riprende normalmente le operazioni che stava
+        facendo.
+      </p>
 
-        <h3>8. Scheduling (Pianificazione)</h3>
-        <p>Lo scheduler è la parte del kernel che decide quale programma o attività deve usare la CPU e per quanto tempo.
-Se un programma sta usando troppo la CPU, lo scheduler lo mette in pausa e dà spazio ad altri programmi.
-In questo modo tutti i programmi possono funzionare senza bloccare il computer e il sistema resta veloce e stabile.</p>
-       
+      <h3>8. Scheduling (Pianificazione)</h3>
+      <p>
+        Lo scheduler è la parte del kernel che decide quale programma o attività
+        deve usare la CPU e per quanto tempo. Se un programma sta usando troppo
+        la CPU, lo scheduler lo mette in pausa e dà spazio ad altri programmi.
+        In questo modo tutti i programmi possono funzionare senza bloccare il
+        computer e il sistema resta veloce e stabile.
+      </p>
 
-        <h3>9. Threads (Thread)</h3>
-      
-        <p>Un thread è una piccola unità di lavoro all’interno di un processo.
-Ogni thread può eseguire codice in parallelo con altri thread, condividendo memoria e file del processo.
-Ha però uno stack e registri propri, così può funzionare in modo indipendente.
-Grazie ai thread, un programma può fare più operazioni contemporaneamente in modo più veloce ed efficiente rispetto ai processi separati.</p>
+      <h3>9. Threads (Thread)</h3>
 
-        <button class="button" id="pathBtn">DA DOVE INIZIARE</button>
+      <p>
+        Un thread è una piccola unità di lavoro all’interno di un processo. Ogni
+        thread può eseguire codice in parallelo con altri thread, condividendo
+        memoria e file del processo. Ha però uno stack e registri propri, così
+        può funzionare in modo indipendente. Grazie ai thread, un programma può
+        fare più operazioni contemporaneamente in modo più veloce ed efficiente
+        rispetto ai processi separati.
+      </p>
 
-        <div class="link">
-            <a href="https://kernelmap.org/" target="_blank">ESPLORA DI PIU'</a>
-        </div>
-   
+      <button class="button" id="pathBtn">DA DOVE INIZIARE</button>
+
+      <div class="link">
+        <a href="https://kernelmap.org/" target="_blank">ESPLORA DI PIU'</a>
+      </div>
     </div>
-
 
     <!-- Box for Study path (percorso) -->
     <div class="box" id="pathBox">
-        <div class="arrow arrow-left"></div>
-        <h2>Da Dove Iniziare e Come Proseguire</h2>
-        <ol>
-            <li><strong>Inizia da «Functionalities»</strong>: è la panoramica delle funzioni del kernel (è la pagina a cui porta il pulsante «Inizia l'esplorazione»).</li>
-            <li><strong>Poi i livelli vicini all'utente</strong>: «User Space Interfaces» e «Virtual» spiegano come i programmi entrano nel kernel; seguono le pagine trasversali (Funzionalità trasversali, Funzioni e implementazioni, Registrazione e attivazione dispositivi, Operazioni di I/O e gestione IRQ).</li>
-            <li><strong>Prosegui colonna per colonna</strong>, nell'ordine della mappa: Human Interfaces → System → Processing → Memory → Storage → Networking. In ogni colonna comincia dalla pagina «Header» (la panoramica della colonna) e scendi verso l'hardware.</li>
-            <li><strong>Usa «Pagina precedente» e «Pagina successiva»</strong> per seguire lo stesso ordine, oppure torna alla Kernel Map per scegliere un blocco.</li>
-        </ol>
-        <p><strong>Percorso rapido per iniziare:</strong> Functionalities → User Space Interfaces → Processes → Scheduler → Virtual Memory → VFS → Sockets Access.</p>
-        <p><strong>Per ripassare:</strong> quando hai studiato più pagine, prova il <a href="kernel_quiz.html">Quiz Challenge</a>, che mescola le domande di tutti gli argomenti.</p>
-        <button class="button" id="goStartBtn">INIZIA DA FUNCTIONALITIES</button>
-      
+      <div class="arrow arrow-left"></div>
+      <h2>Da Dove Iniziare e Come Proseguire</h2>
+      <ol>
+        <li>
+          <strong>Inizia da «Functionalities»</strong>: è la panoramica delle
+          funzioni del kernel (è la pagina a cui porta il pulsante «Inizia
+          l'esplorazione»).
+        </li>
+        <li>
+          <strong>Poi i livelli vicini all'utente</strong>: «User Space
+          Interfaces» e «Virtual» spiegano come i programmi entrano nel kernel;
+          seguono le pagine trasversali (Funzionalità trasversali, Funzioni e
+          implementazioni, Registrazione e attivazione dispositivi, Operazioni
+          di I/O e gestione IRQ).
+        </li>
+        <li>
+          <strong>Prosegui colonna per colonna</strong>, nell'ordine della
+          mappa: Human Interfaces → System → Processing → Memory → Storage →
+          Networking. In ogni colonna comincia dalla pagina «Header» (la
+          panoramica della colonna) e scendi verso l'hardware.
+        </li>
+        <li>
+          <strong>Usa «Pagina precedente» e «Pagina successiva»</strong> per
+          seguire lo stesso ordine, oppure torna alla Kernel Map per scegliere
+          un blocco.
+        </li>
+      </ol>
+      <p>
+        <strong>Percorso rapido per iniziare:</strong> Functionalities → User
+        Space Interfaces → Processes → Scheduler → Virtual Memory → VFS →
+        Sockets Access.
+      </p>
+      <p>
+        <strong>Per ripassare:</strong> quando hai studiato più pagine, prova il
+        <a href="kernel_quiz.html">Quiz Challenge</a>, che mescola le domande di
+        tutti gli argomenti.
+      </p>
+      <button class="button" id="goStartBtn">INIZIA DA FUNCTIONALITIES</button>
     </div>
 
     <script>
-        function showBox(boxId) {
-            document.querySelectorAll('.box').forEach(box => box.style.display = 'none');
-            document.getElementById(boxId).style.display = 'block';
-            document.querySelectorAll('.arrow').forEach(arrow => arrow.style.display = 'none');
-            const arrow = document.getElementById(boxId).querySelector('.arrow');
-            if (arrow) arrow.style.display = 'block';
+      function showBox(boxId) {
+        document
+          .querySelectorAll(".box")
+          .forEach((box) => (box.style.display = "none"));
+        document.getElementById(boxId).style.display = "block";
+        document
+          .querySelectorAll(".arrow")
+          .forEach((arrow) => (arrow.style.display = "none"));
+        const arrow = document.getElementById(boxId).querySelector(".arrow");
+        if (arrow) arrow.style.display = "block";
 
-            // Change title based on section
-            const title = document.getElementById('mainTitle');
-            const mapBoxes = ['mapBox', 'originBox', 'layoutBox', 'whatBox' , 'pathBox', 'funcBox', 'funcBox2', 'funcBox3'];
-            if (mapBoxes.includes(boxId)) {
-                title.textContent = 'KERNELMAP';
-            } else {
-                title.textContent = 'KERNEL';
-            }
-
-            // Show navigation
-            document.querySelectorAll('.nav').forEach(nav => nav.style.display = 'flex');
+        // Change title based on section
+        const title = document.getElementById("mainTitle");
+        const mapBoxes = [
+          "mapBox",
+          "originBox",
+          "layoutBox",
+          "whatBox",
+          "pathBox",
+          "funcBox",
+          "funcBox2",
+          "funcBox3",
+        ];
+        if (mapBoxes.includes(boxId)) {
+          title.textContent = "KERNELMAP";
+        } else {
+          title.textContent = "KERNEL";
         }
 
-        document.getElementById('mainTitle').addEventListener('click', () => showBox('kernelBox'));
-        document.getElementById('startKernelBtn').addEventListener('click', () => showBox('kernelBox'));
-        document.getElementById('startMapBtn').addEventListener('click', () => showBox('mapBox'));
-        document.getElementById('startComponentsBtn').addEventListener('click', () => {
-            window.location.href = 'detail-functionalities.html';
+        // Show navigation
+        document
+          .querySelectorAll(".nav")
+          .forEach((nav) => (nav.style.display = "flex"));
+      }
+
+      document
+        .getElementById("mainTitle")
+        .addEventListener("click", () => showBox("kernelBox"));
+      document
+        .getElementById("startKernelBtn")
+        .addEventListener("click", () => showBox("kernelBox"));
+      document
+        .getElementById("startMapBtn")
+        .addEventListener("click", () => showBox("mapBox"));
+      document
+        .getElementById("startComponentsBtn")
+        .addEventListener("click", () => {
+          window.location.href = "detail-functionalities.html";
         });
 
-        // All'avvio mostra la slide introduttiva al posto della schermata iniziale vuota.
-        window.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.box').forEach(box => box.style.display = 'none');
-            document.querySelectorAll('.arrow').forEach(arrow => arrow.style.display = 'none');
-            document.getElementById('introBox').style.display = 'block';
-            document.querySelectorAll('.nav').forEach(nav => nav.style.display = 'flex');
-            document.getElementById('mainTitle').textContent = 'KERNEL';
-        });
-        document.getElementById('whyBtn').addEventListener('click', () => showBox('whyBox'));
-        document.getElementById('typesBtn').addEventListener('click', () => showBox('typesBox'));
-        document.getElementById('howBtn').addEventListener('click', () => showBox('howBox'));
-        document.getElementById('toKernelMap').addEventListener('click', () => showBox('mapBox'));
-        document.getElementById('originBtn').addEventListener('click', () => showBox('originBox'));
-        document.getElementById('layoutBtn').addEventListener('click', () => showBox('layoutBox'));
-        document.getElementById('whatBtn').addEventListener('click', () => showBox('whatBox'));
-    //   document.getElementById('toFunc').addEventListener('click', () => showBox('funcBox'));
-    //    document.getElementById('segueBtn').addEventListener('click', () => showBox('funcBox2'));
-    //    document.getElementById('segueBtn2').addEventListener('click', () => showBox('funcBox3'));
-        document.getElementById('pathBtn').addEventListener('click', () => showBox('pathBox'));
-        document.getElementById('goStartBtn').addEventListener('click', () => {
-            window.location.href = 'detail-functionalities.html';
-        });
+      // All'avvio mostra la slide introduttiva al posto della schermata iniziale vuota.
+      window.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll(".box")
+          .forEach((box) => (box.style.display = "none"));
+        document
+          .querySelectorAll(".arrow")
+          .forEach((arrow) => (arrow.style.display = "none"));
+        document.getElementById("introBox").style.display = "block";
+        document
+          .querySelectorAll(".nav")
+          .forEach((nav) => (nav.style.display = "flex"));
+        document.getElementById("mainTitle").textContent = "KERNEL";
+      });
+      document
+        .getElementById("whyBtn")
+        .addEventListener("click", () => showBox("whyBox"));
+      document
+        .getElementById("typesBtn")
+        .addEventListener("click", () => showBox("typesBox"));
+      document
+        .getElementById("howBtn")
+        .addEventListener("click", () => showBox("howBox"));
+      document
+        .getElementById("toKernelMap")
+        .addEventListener("click", () => showBox("mapBox"));
+      document
+        .getElementById("originBtn")
+        .addEventListener("click", () => showBox("originBox"));
+      document
+        .getElementById("layoutBtn")
+        .addEventListener("click", () => showBox("layoutBox"));
+      document
+        .getElementById("whatBtn")
+        .addEventListener("click", () => showBox("whatBox"));
+      //   document.getElementById('toFunc').addEventListener('click', () => showBox('funcBox'));
+      //    document.getElementById('segueBtn').addEventListener('click', () => showBox('funcBox2'));
+      //    document.getElementById('segueBtn2').addEventListener('click', () => showBox('funcBox3'));
+      document
+        .getElementById("pathBtn")
+        .addEventListener("click", () => showBox("pathBox"));
+      document.getElementById("goStartBtn").addEventListener("click", () => {
+        window.location.href = "detail-functionalities.html";
+      });
     </script>
 
-     <!-- Footer della presentazione -->
+    <!-- Footer della presentazione -->
     <footer class="page-footer">
-        <span> © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.</span>
-        
+      <span>
+        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.</span
+      >
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <button
+          type="button"
+          class="cookie-footer-link"
+          data-cookie-action="preferences"
+        >
+          Preferenze Cookie
+        </button>
+      </div>
     </footer>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>

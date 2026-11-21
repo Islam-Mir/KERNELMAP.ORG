@@ -1,558 +1,1268 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PROTOCOLS - Dettagli</title>
-    
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>PROTOCOLS</h1>
-        <p class="subtitle">Protocolli di Comunicazione</p>
+      <h1>PROTOCOLS</h1>
+      <p class="subtitle">Protocolli di Comunicazione</p>
     </div>
 
     <div class="content">
-        <span class="badge">📡 PROTOCOLLI</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>I Protocolli gestiscono le regole e gli algoritmi di comunicazione tra dispositivi, implementando stack completi per trasmissione affidabile di dati attraverso reti.</strong></p>
+      <span class="badge">📡 PROTOCOLLI</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >I Protocolli gestiscono le regole e gli algoritmi di comunicazione
+          tra dispositivi, implementando stack completi per trasmissione
+          affidabile di dati attraverso reti.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come un sistema di posta elettronica digitale: ogni protocollo è una busta con regole precise (indirizzi, formato, consegna), che garantisce che i messaggi (pacchetti) arrivino a destinazione nel modo corretto e affidabile.</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come un sistema di posta elettronica digitale: ogni protocollo è una
+        busta con regole precise (indirizzi, formato, consegna), che garantisce
+        che i messaggi (pacchetti) arrivino a destinazione nel modo corretto e
+        affidabile.
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>I Protocolli sono l'implementazione delle specifiche di comunicazione di rete nel kernel Linux, gestendo handshake, controllo di flusso, correzione errori e segmentazione dei dati.</strong> Immagina un'orchestra di protocolli che lavorano in armonia: TCP garantisce consegna affidabile, UDP offre velocità, IP instrada pacchetti, mentre Ethernet li trasporta fisicamente attraverso il mezzo.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >I Protocolli sono l'implementazione delle specifiche di comunicazione
+          di rete nel kernel Linux, gestendo handshake, controllo di flusso,
+          correzione errori e segmentazione dei dati.</strong
+        >
+        Immagina un'orchestra di protocolli che lavorano in armonia: TCP
+        garantisce consegna affidabile, UDP offre velocità, IP instrada
+        pacchetti, mentre Ethernet li trasporta fisicamente attraverso il mezzo.
+      </p>
 
-        <p>• <strong>TCP implementation</strong> - Protocollo orientato connessione con controllo flusso e ritrasmissione</p>
-        <p>• <strong>UDP implementation</strong> - Protocollo senza connessione per bassa latenza</p>
-        <p>• <strong>IP routing</strong> - Instradamento pacchetti attraverso reti complesse</p>
-        <p>• <strong>ICMP handling</strong> - Gestione messaggi di controllo e diagnostica</p>
-        <p>• <strong>ARP resolution</strong> - Risoluzione indirizzi IP in MAC address</p>
-        <p>• <strong>Fragmentation/reassembly</strong> - Gestione pacchetti troppo grandi per MTU</p>
-        <p><em>• Interazione: Coordina con socket layer per fornire API di rete affidabili</em></p>
+      <p>
+        • <strong>TCP implementation</strong> - Protocollo orientato connessione
+        con controllo flusso e ritrasmissione
+      </p>
+      <p>
+        • <strong>UDP implementation</strong> - Protocollo senza connessione per
+        bassa latenza
+      </p>
+      <p>
+        • <strong>IP routing</strong> - Instradamento pacchetti attraverso reti
+        complesse
+      </p>
+      <p>
+        • <strong>ICMP handling</strong> - Gestione messaggi di controllo e
+        diagnostica
+      </p>
+      <p>
+        • <strong>ARP resolution</strong> - Risoluzione indirizzi IP in MAC
+        address
+      </p>
+      <p>
+        • <strong>Fragmentation/reassembly</strong> - Gestione pacchetti troppo
+        grandi per MTU
+      </p>
+      <p>
+        <em
+          >• Interazione: Coordina con socket layer per fornire API di rete
+          affidabili</em
+        >
+      </p>
 
-        <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>I Protocolli gestiscono quattro aspetti fondamentali della comunicazione di rete, ciascuno essenziale per trasmissione affidabile:</strong></p>
+      <h2>⚙️ Operazioni Principali</h2>
+      <p>
+        <strong
+          >I Protocolli gestiscono quattro aspetti fondamentali della
+          comunicazione di rete, ciascuno essenziale per trasmissione
+          affidabile:</strong
+        >
+      </p>
 
-        <h3>🔗 Connection Management</h3>
-        <p>• <strong>tcp_connect()</strong> - Stabilisce connessione TCP con three-way handshake</p>
-        <p>• <strong>inet_csk_accept()</strong> - Accetta connessioni in entrata</p>
-        <p>• <strong>tcp_close()</strong> - Chiude connessione con four-way handshake</p>
-        <p>• <strong>tcp_abort()</strong> - Termina connessione forzatamente</p>
-        <p>• <strong>inet_listen()</strong> - Mette socket in ascolto per connessioni</p>
+      <h3>🔗 Connection Management</h3>
+      <p>
+        • <strong>tcp_connect()</strong> - Stabilisce connessione TCP con
+        three-way handshake
+      </p>
+      <p>
+        • <strong>inet_csk_accept()</strong> - Accetta connessioni in entrata
+      </p>
+      <p>
+        • <strong>tcp_close()</strong> - Chiude connessione con four-way
+        handshake
+      </p>
+      <p>• <strong>tcp_abort()</strong> - Termina connessione forzatamente</p>
+      <p>
+        • <strong>inet_listen()</strong> - Mette socket in ascolto per
+        connessioni
+      </p>
 
-        <h3>📦 Data Transmission</h3>
-        <p>• <strong>tcp_sendmsg()</strong> - Invia dati con controllo flusso e ritrasmissione</p>
-        <p>• <strong>tcp_recvmsg()</strong> - Riceve dati con riassemblaggio e ordinamento</p>
-        <p>• <strong>udp_sendmsg()</strong> - Invia datagram UDP senza garanzia consegna</p>
-        <p>• <strong>udp_recvmsg()</strong> - Riceve datagram UDP</p>
-        <p>• <strong>ip_forward()</strong> - Inoltra pacchetti IP tra interfacce</p>
+      <h3>📦 Data Transmission</h3>
+      <p>
+        • <strong>tcp_sendmsg()</strong> - Invia dati con controllo flusso e
+        ritrasmissione
+      </p>
+      <p>
+        • <strong>tcp_recvmsg()</strong> - Riceve dati con riassemblaggio e
+        ordinamento
+      </p>
+      <p>
+        • <strong>udp_sendmsg()</strong> - Invia datagram UDP senza garanzia
+        consegna
+      </p>
+      <p>• <strong>udp_recvmsg()</strong> - Riceve datagram UDP</p>
+      <p>
+        • <strong>ip_forward()</strong> - Inoltra pacchetti IP tra interfacce
+      </p>
 
-        <h3>🛡️ Error Control</h3>
-        <p>• <strong>tcp_retransmit_skb()</strong> - Ritrasmette pacchetti persi</p>
-        <p>• <strong>tcp_ack()</strong> - Invia acknowledgment di ricezione</p>
-        <p>• <strong>tcp_reset()</strong> - Invia segmento RST per errori</p>
-        <p>• <strong>icmp_send()</strong> - Invia messaggi ICMP (ping, errori)</p>
-        <p>• <strong>tcp_keepalive_timer()</strong> - Mantiene connessioni attive</p>
+      <h3>🛡️ Error Control</h3>
+      <p>
+        • <strong>tcp_retransmit_skb()</strong> - Ritrasmette pacchetti persi
+      </p>
+      <p>• <strong>tcp_ack()</strong> - Invia acknowledgment di ricezione</p>
+      <p>• <strong>tcp_reset()</strong> - Invia segmento RST per errori</p>
+      <p>• <strong>icmp_send()</strong> - Invia messaggi ICMP (ping, errori)</p>
+      <p>
+        • <strong>tcp_keepalive_timer()</strong> - Mantiene connessioni attive
+      </p>
 
-        <h3>⚡ Performance Optimization</h3>
-        <p>• <strong>tcp_cong_control()</strong> - Gestisce controllo congestione TCP</p>
-        <p>• <strong>tcp_ack_update_window()</strong> - Aggiorna finestra di ricezione</p>
-        <p>• <strong>tcp_fastretrans_alert()</strong> - Ritrasmissione veloce su duplicate ACK</p>
-        <p>• <strong>tcp_slow_start()</strong> - Algoritmo slow start per evitare congestione</p>
-        <p>• <strong>tcp_nagle_check()</strong> - Algoritmo Nagle per ridurre piccoli pacchetti</p>
+      <h3>⚡ Performance Optimization</h3>
+      <p>
+        • <strong>tcp_cong_control()</strong> - Gestisce controllo congestione
+        TCP
+      </p>
+      <p>
+        • <strong>tcp_ack_update_window()</strong> - Aggiorna finestra di
+        ricezione
+      </p>
+      <p>
+        • <strong>tcp_fastretrans_alert()</strong> - Ritrasmissione veloce su
+        duplicate ACK
+      </p>
+      <p>
+        • <strong>tcp_slow_start()</strong> - Algoritmo slow start per evitare
+        congestione
+      </p>
+      <p>
+        • <strong>tcp_nagle_check()</strong> - Algoritmo Nagle per ridurre
+        piccoli pacchetti
+      </p>
 
-        <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando navighi su un sito web, ecco cosa succede nei protocolli di rete:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong
+          >Quando navighi su un sito web, ecco cosa succede nei protocolli di
+          rete:</strong
+        >
+      </p>
 
-        <h3>🔍 Three-Way Handshake TCP</h3>
-        <p>1. Il browser invia SYN per stabilire connessione TCP</p>
-        <p>2. Il server risponde con SYN-ACK confermando ricezione</p>
-        <p>3. Il browser invia ACK completando l'handshake</p>
-        <p>4. La connessione TCP è ora stabilita e affidabile</p>
+      <h3>🔍 Three-Way Handshake TCP</h3>
+      <p>1. Il browser invia SYN per stabilire connessione TCP</p>
+      <p>2. Il server risponde con SYN-ACK confermando ricezione</p>
+      <p>3. Il browser invia ACK completando l'handshake</p>
+      <p>4. La connessione TCP è ora stabilita e affidabile</p>
 
-        <h3>📄 Strutture Dati Chiave</h3>
-        <ul>
-            <li><strong>struct sock</strong> - Rappresenta un socket con indirizzi, porte, stati connessione</li>
-            <li><strong>struct tcp_sock</strong> - Estende sock con sequence numbers, window sizes, timers TCP</li>
-            <li><strong>struct sk_buff</strong> - Buffer per pacchetti di rete con headers e payload</li>
-            <li><strong>struct net_device</strong> - Descrive interfaccia di rete con indirizzo MAC e MTU</li>
-        </ul>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>struct sock</strong> - Rappresenta un socket con indirizzi,
+          porte, stati connessione
+        </li>
+        <li>
+          <strong>struct tcp_sock</strong> - Estende sock con sequence numbers,
+          window sizes, timers TCP
+        </li>
+        <li>
+          <strong>struct sk_buff</strong> - Buffer per pacchetti di rete con
+          headers e payload
+        </li>
+        <li>
+          <strong>struct net_device</strong> - Descrive interfaccia di rete con
+          indirizzo MAC e MTU
+        </li>
+      </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare i protocolli:</strong></p>
-        <ul>
-            <li><code>ss -tuln</code> - Mostra socket TCP/UDP in ascolto</li>
-            <li><code>netstat -antp</code> - Visualizza connessioni TCP attive</li>
-            <li><code>tcpdump -i eth0 tcp port 80</code> - Cattura pacchetti TCP sulla porta 80</li>
-            <li><code>ping google.com</code> - Test ICMP connectivity</li>
-            <li><code>traceroute google.com</code> - Mostra instradamento IP</li>
-        </ul>
+      <h3>💻 Nel Computer: Come Vederlo?</h3>
+      <p><strong>Comandi Linux per esplorare i protocolli:</strong></p>
+      <ul>
+        <li><code>ss -tuln</code> - Mostra socket TCP/UDP in ascolto</li>
+        <li><code>netstat -antp</code> - Visualizza connessioni TCP attive</li>
+        <li>
+          <code>tcpdump -i eth0 tcp port 80</code> - Cattura pacchetti TCP sulla
+          porta 80
+        </li>
+        <li><code>ping google.com</code> - Test ICMP connectivity</li>
+        <li><code>traceroute google.com</code> - Mostra instradamento IP</li>
+      </ul>
 
-        <h3>🎯 Caso Reale: Download File HTTP</h3>
-        <p>Quando scarichi un file da un server web:</p>
-        <ol>
-            <li>DNS risolve nome dominio in indirizzo IP</li>
-            <li>TCP stabilisce connessione affidabile (three-way handshake)</li>
-            <li>HTTP invia richiesta GET per il file</li>
-            <li>Server risponde con contenuto del file</li>
-            <li>TCP garantisce consegna ordinata e ritrasmette se necessario</li>
-            <li>Connessione viene chiusa con four-way handshake</li>
-        </ol>
+      <h3>🎯 Caso Reale: Download File HTTP</h3>
+      <p>Quando scarichi un file da un server web:</p>
+      <ol>
+        <li>DNS risolve nome dominio in indirizzo IP</li>
+        <li>TCP stabilisce connessione affidabile (three-way handshake)</li>
+        <li>HTTP invia richiesta GET per il file</li>
+        <li>Server risponde con contenuto del file</li>
+        <li>TCP garantisce consegna ordinata e ritrasmette se necessario</li>
+        <li>Connessione viene chiusa con four-way handshake</li>
+      </ol>
 
-        <h2>📡 Protocolli Supportati</h2>
-        <ul>
-            <li><strong>TCP (Transmission Control Protocol)</strong> - Consegna affidabile e ordinata</li>
-            <li><strong>UDP (User Datagram Protocol)</strong> - Trasferimento veloce senza garanzia</li>
-            <li><strong>IP (Internet Protocol)</strong> - Instradamento pacchetti attraverso reti</li>
-            <li><strong>ICMP (Internet Control Message Protocol)</strong> - Messaggi di controllo e diagnostica</li>
-            <li><strong>ARP (Address Resolution Protocol)</strong> - Risoluzione IP in indirizzi MAC</li>
-        </ul>
+      <h2>📡 Protocolli Supportati</h2>
+      <ul>
+        <li>
+          <strong>TCP (Transmission Control Protocol)</strong> - Consegna
+          affidabile e ordinata
+        </li>
+        <li>
+          <strong>UDP (User Datagram Protocol)</strong> - Trasferimento veloce
+          senza garanzia
+        </li>
+        <li>
+          <strong>IP (Internet Protocol)</strong> - Instradamento pacchetti
+          attraverso reti
+        </li>
+        <li>
+          <strong>ICMP (Internet Control Message Protocol)</strong> - Messaggi
+          di controllo e diagnostica
+        </li>
+        <li>
+          <strong>ARP (Address Resolution Protocol)</strong> - Risoluzione IP in
+          indirizzi MAC
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche</h2>
-        <ul>
-            <li><strong>Reliability</strong> - TCP garantisce consegna affidabile con ritrasmissione</li>
-            <li><strong>Flow Control</strong> - Gestione congestione e controllo flusso adattivo</li>
-            <li><strong>Error Detection</strong> - Checksum per rilevare gli errori (la correzione avviene tramite ritrasmissione)</li>
-            <li><strong>Connection Management</strong> - Handshake e teardown strutturato</li>
-            <li><strong>Performance Optimization</strong> - Algoritmi slow-start e congestion avoidance (CUBIC è l'algoritmo predefinito in Linux)</li>
-        </ul>
+      <h2>✨ Caratteristiche</h2>
+      <ul>
+        <li>
+          <strong>Reliability</strong> - TCP garantisce consegna affidabile con
+          ritrasmissione
+        </li>
+        <li>
+          <strong>Flow Control</strong> - Gestione congestione e controllo
+          flusso adattivo
+        </li>
+        <li>
+          <strong>Error Detection</strong> - Checksum per rilevare gli errori
+          (la correzione avviene tramite ritrasmissione)
+        </li>
+        <li>
+          <strong>Connection Management</strong> - Handshake e teardown
+          strutturato
+        </li>
+        <li>
+          <strong>Performance Optimization</strong> - Algoritmi slow-start e
+          congestion avoidance (CUBIC è l'algoritmo predefinito in Linux)
+        </li>
+      </ul>
 
-        <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>I protocolli sono il livello fondamentale dello stack di rete del kernel Linux:</strong></p>
+      <h2>🔗 Interazioni Chiave</h2>
+      <p>
+        <strong
+          >I protocolli sono il livello fondamentale dello stack di rete del
+          kernel Linux:</strong
+        >
+      </p>
 
-        <h3>🔌 Socket Layer</h3>
-        <p>• <strong>System calls</strong> - socket(), bind(), connect(), send(), recv() interfacciano con protocolli</p>
-        <p>• <strong>Socket buffers</strong> - Gestione code di trasmissione e ricezione</p>
+      <h3>🔌 Socket Layer</h3>
+      <p>
+        • <strong>System calls</strong> - socket(), bind(), connect(), send(),
+        recv() interfacciano con protocolli
+      </p>
+      <p>
+        • <strong>Socket buffers</strong> - Gestione code di trasmissione e
+        ricezione
+      </p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>IP layer</strong> - Instradamento e forwarding pacchetti tra interfacce</p>
-        <p>• <strong>Netfilter</strong> - Firewalling e NAT attraverso hook nei protocolli</p>
+      <h3>🌐 Network Stack</h3>
+      <p>
+        • <strong>IP layer</strong> - Instradamento e forwarding pacchetti tra
+        interfacce
+      </p>
+      <p>
+        • <strong>Netfilter</strong> - Firewalling e NAT attraverso hook nei
+        protocolli
+      </p>
 
-        <h3>🧠 Memory Management</h3>
-        <p>• <strong>SKB allocation</strong> - Gestione buffer per pacchetti di rete</p>
-        <p>• <strong>Page allocation</strong> - Memoria per strutture protocollo e code</p>
+      <h3>🧠 Memory Management</h3>
+      <p>
+        • <strong>SKB allocation</strong> - Gestione buffer per pacchetti di
+        rete
+      </p>
+      <p>
+        • <strong>Page allocation</strong> - Memoria per strutture protocollo e
+        code
+      </p>
 
-        <h3>⚙️ Device Drivers</h3>
-        <p>• <strong>Network drivers</strong> - Interfaccia con hardware di rete (NIC)</p>
-        <p>• <strong>Interrupt handling</strong> - Gestione eventi hardware di rete</p>
+      <h3>⚙️ Device Drivers</h3>
+      <p>
+        • <strong>Network drivers</strong> - Interfaccia con hardware di rete
+        (NIC)
+      </p>
+      <p>
+        • <strong>Interrupt handling</strong> - Gestione eventi hardware di rete
+      </p>
 
-        <h3>🔐 Security Framework</h3>
-        <p>• <strong>Netfilter hooks</strong> - Filtri di sicurezza integrati nei protocolli</p>
-        <p>• <strong>TCP options</strong> - Estensioni sicurezza come TCP MD5</p>
+      <h3>🔐 Security Framework</h3>
+      <p>
+        • <strong>Netfilter hooks</strong> - Filtri di sicurezza integrati nei
+        protocolli
+      </p>
+      <p>• <strong>TCP options</strong> - Estensioni sicurezza come TCP MD5</p>
 
-        <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni chiave per gestire i protocolli di rete nel kernel Linux:</strong></p>
+      <h2>🛠️ API Principali</h2>
+      <p>
+        <strong
+          >Queste sono le funzioni chiave per gestire i protocolli di rete nel
+          kernel Linux:</strong
+        >
+      </p>
 
-        <h3>🔌 Socket Operations</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int sock_create(int family, int type, int protocol, struct socket **res);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea un nuovo socket per il protocollo specificato.</span><br><br>
+      <h3>🔌 Socket Operations</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >int sock_create(int family, int type, int protocol, struct socket
+          **res);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea un nuovo socket per il protocollo specificato.</span
+        ><br /><br />
 
-            <code style="color: #2e7d32; font-weight: bold;">int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Associa un indirizzo locale al socket.</span><br><br>
+        <code style="color: #2e7d32; font-weight: bold"
+          >int inet_bind(struct socket *sock, struct sockaddr *uaddr, int
+          addr_len);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Associa un indirizzo locale al socket.</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Stabilisce connessione TCP con three-way handshake.</span>
+        <code style="color: #f57c00; font-weight: bold"
+          >int tcp_v4_connect(struct sock *sk, struct sockaddr *uaddr, int
+          addr_len);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Stabilisce connessione TCP con three-way handshake.</span
+        >
+      </div>
+
+      <h3>📦 Data Transmission</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >int tcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t
+          size);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Invia dati TCP con controllo flusso e ritrasmissione.</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >int tcp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int
+          flags);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Riceve dati TCP con riassemblaggio e ordinamento.</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t
+          len);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Invia datagram UDP senza garanzia consegna.</span
+        >
+      </div>
+
+      <h3>⚙️ Protocol Management</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >void tcp_retransmit_timer(struct sock *sk);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Gestisce ritrasmissione pacchetti TCP persi.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >void tcp_cong_control(struct sock *sk, u32 ack, u32 acked_sacked, int
+          flag, const struct rate_sample *rs);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Applica algoritmi controllo congestione TCP.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >int icmp_send(struct sk_buff *skb, int type, int code);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Invia messaggi ICMP per diagnostica e controllo.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+      <p><strong>Quando fai wget http://example.com/file.zip:</strong></p>
+      <ol>
+        <li>
+          <code>sock_create(AF_INET, SOCK_STREAM, IPPROTO_TCP)</code> - Crea
+          socket TCP
+        </li>
+        <li><code>tcp_connect()</code> - Three-way handshake con server</li>
+        <li><code>tcp_sendmsg()</code> - Invia richiesta HTTP</li>
+        <li>
+          <code>tcp_recvmsg()</code> - Riceve risposta con ritrasmissione
+          automatica
+        </li>
+        <li>Connessione chiusa con four-way handshake</li>
+      </ol>
+      <p>
+        <em
+          >I protocolli rendono affidabile la comunicazione di rete nonostante
+          perdite e ritardi!</em
+        >
+      </p>
+
+      <h2>🗺️ Mappa Concettuale dei Protocolli</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura dei Protocolli di Rete
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ APPLICAZIONI USER SPACE
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Browser, SSH, FTP<br />
+            • Server web, database<br />
+            • Socket API
+          </div>
         </div>
 
-        <h3>📦 Data Transmission</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int tcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t size);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Invia dati TCP con controllo flusso e ritrasmissione.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">int tcp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int flags);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Riceve dati TCP con riassemblaggio e ordinamento.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Invia datagram UDP senza garanzia consegna.</span>
+        <!-- Socket Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔌 SOCKET LAYER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • socket(), bind(), connect()<br />
+            • send(), recv(), close()<br />
+            • Socket buffers
+          </div>
         </div>
 
-        <h3>⚙️ Protocol Management</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">void tcp_retransmit_timer(struct sock *sk);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Gestisce ritrasmissione pacchetti TCP persi.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">void tcp_cong_control(struct sock *sk, u32 ack, u32 acked_sacked, int flag, const struct rate_sample *rs);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Applica algoritmi controllo congestione TCP.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">int icmp_send(struct sk_buff *skb, int type, int code);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Invia messaggi ICMP per diagnostica e controllo.</span>
+        <!-- Protocol Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            📡 PROTOCOL LAYER
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔒</div>
+              <div style="font-size: 0.8em">TCP</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⚡</div>
+              <div style="font-size: 0.8em">UDP</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🌐</div>
+              <div style="font-size: 0.8em">IP</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">📢</div>
+              <div style="font-size: 0.8em">ICMP</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Connection management<br />
+            • Error control<br />
+            • Flow control
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando fai wget http://example.com/file.zip:</strong></p>
-        <ol>
-            <li><code>sock_create(AF_INET, SOCK_STREAM, IPPROTO_TCP)</code> - Crea socket TCP</li>
-            <li><code>tcp_connect()</code> - Three-way handshake con server</li>
-            <li><code>tcp_sendmsg()</code> - Invia richiesta HTTP</li>
-            <li><code>tcp_recvmsg()</code> - Riceve risposta con ritrasmissione automatica</li>
-            <li>Connessione chiusa con four-way handshake</li>
-        </ol>
-        <p><em>I protocolli rendono affidabile la comunicazione di rete nonostante perdite e ritardi!</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-
-        <h2>🗺️ Mappa Concettuale dei Protocolli</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dei Protocolli di Rete</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Browser, SSH, FTP<br>
-                    • Server web, database<br>
-                    • Socket API
-                </div>
+        <!-- Network Interface -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              🖧 Ethernet
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Socket Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔌 SOCKET LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • socket(), bind(), connect()<br>
-                    • send(), recv(), close()<br>
-                    • Socket buffers
-                </div>
+            <div style="font-size: 0.8em; color: #666">Frame, MAC</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              📶 Wi-Fi
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Protocol Layer -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">📡 PROTOCOL LAYER</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔒</div>
-                        <div style="font-size: 0.8em;">TCP</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
-                        <div style="font-size: 0.8em;">UDP</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌐</div>
-                        <div style="font-size: 0.8em;">IP</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📢</div>
-                        <div style="font-size: 0.8em;">ICMP</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Connection management<br>
-                    • Error control<br>
-                    • Flow control
-                </div>
+            <div style="font-size: 0.8em; color: #666">802.11, BSS</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              🔗 PPP
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Network Interface -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🖧 Ethernet</div>
-                    <div style="font-size: 0.8em; color: #666;">Frame, MAC</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">📶 Wi-Fi</div>
-                    <div style="font-size: 0.8em; color: #666;">802.11, BSS</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔗 PPP</div>
-                    <div style="font-size: 0.8em; color: #666;">Point-to-Point</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🌐 Loopback</div>
-                    <div style="font-size: 0.8em; color: #666;">127.0.0.1</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">Point-to-Point</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              🌐 Loopback
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Hardware Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🔌 HARDWARE LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Network Interface Cards<br>
-                    • Physical media (copper, fiber)<br>
-                    • Link layer protocols
-                </div>
-            </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso dei pacchetti dalla applicazione all'hardware<br>
-                • Ogni layer aggiunge funzionalità specifiche (affidabilità, instradamento, framing)<br>
-                • I protocolli lavorano insieme per fornire comunicazione end-to-end<br>
-                • TCP/IP è lo stack fondamentale di Internet
-            </div>
+            <div style="font-size: 0.8em; color: #666">127.0.0.1</div>
+          </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funzionano i Protocolli</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Connessione TCP a un server web</h3>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🌐 Client Browser</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        192.168.1.100:54321<br>
-                        <span style="color: #666;">(porta effimera)</span>
-                    </div>
-                </div>
-
-                <div style="font-size: 2em; color: #f57c00;">🔗</div>
-
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🖥️ Web Server</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        93.184.216.34:80<br>
-                        <span style="color: #666;">(porta HTTP)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando eseguito:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">curl http://example.com</code>
-            </div>
-
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
-                <ol style="line-height: 1.8;">
-                    <li><strong>1. DNS Resolution:</strong> Risoluzione nome dominio in indirizzo IP</li>
-                    <li><strong>2. Three-way Handshake:</strong> SYN → SYN-ACK → ACK per stabilire connessione TCP</li>
-                    <li><strong>3. HTTP Request:</strong> Invio richiesta GET attraverso connessione affidabile</li>
-                    <li><strong>4. TCP Transmission:</strong> Controllo flusso, ritrasmissione se necessario</li>
-                    <li><strong>5. HTTP Response:</strong> Ricezione risposta con riassemblaggio pacchetti</li>
-                    <li><strong>6. Four-way Teardown:</strong> Chiusura connessione FIN → ACK → FIN → ACK</li>
-                </ol>
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Da richiesta semplice a comunicazione complessa! I protocolli rendono affidabile la comunicazione nonostante perdite e congestione di rete!
-            </div>
+        <!-- Hardware Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            🔌 HARDWARE LAYER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Network Interface Cards<br />
+            • Physical media (copper, fiber)<br />
+            • Link layer protocols
+          </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora i Protocolli</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Le frecce mostrano il flusso dei pacchetti dalla applicazione
+          all'hardware<br />
+          • Ogni layer aggiunge funzionalità specifiche (affidabilità,
+          instradamento, framing)<br />
+          • I protocolli lavorano insieme per fornire comunicazione
+          end-to-end<br />
+          • TCP/IP è lo stack fondamentale di Internet
+        </div>
+      </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Monitora connessioni TCP</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ss -t<br>
-                        State      Recv-Q Send-Q Local Address:Port<br>
-                        ESTAB      0      0      192.168.1.100:ssh<br><br>
-                        $ ss -ant | grep ESTAB
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi connessioni TCP attive e stati</em></p>
-                </div>
+      <h2>🎬 Demo Interattiva: Come Funzionano i Protocolli</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Connessione TCP a un server web
+        </h3>
 
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📡 Cattura pacchetti TCP</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ sudo tcpdump -i eth0 tcp port 80 -c 5<br>
-                        10:30:45.123456 IP client.54321 > server.80: Flags [S]<br>
-                        10:30:45.123467 IP server.80 > client.54321: Flags [S.]<br>
-                        10:30:45.123478 IP client.54321 > server.80: Flags [.]
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Osserva three-way handshake TCP in tempo reale</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Test ICMP e routing</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ping -c 3 google.com<br>
-                        PING google.com (142.250.184.206) 56(84) bytes<br>
-                        64 bytes from 142.250.184.206: icmp_seq=1 ttl=118<br><br>
-                        $ traceroute google.com
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Test ICMP echo e instradamento IP</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Analizza socket kernel</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/net/tcp<br>
-                        sl  local_address rem_address   st tx_queue rx_queue<br>
-                        0: 0100007F:0016 00000000:0000 0A 00000000:00000000<br><br>
-                        $ lsof -i :22
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina strutture dati socket del kernel</em></p>
-                </div>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              🌐 Client Browser
             </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              192.168.1.100:54321<br />
+              <span style="color: #666">(porta effimera)</span>
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">🔗</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              🖥️ Web Server
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              93.184.216.34:80<br />
+              <span style="color: #666">(porta HTTP)</span>
+            </div>
+          </div>
         </div>
 
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">TCP Reliability</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    TCP garantisce consegna affidabile attraverso acknowledgment, ritrasmissione e controllo di flusso. Ogni pacchetto viene confermato!
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">UDP Performance</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    UDP offre velocità massima senza overhead di affidabilità. Perfetto per streaming, gaming, DNS dove velocità > affidabilità.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🌐</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">IP Routing</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    IP instrada pacchetti attraverso reti complesse usando tabelle di routing. Ogni router decide il percorso ottimale.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📢</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">ICMP Control</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    ICMP fornisce messaggi di controllo e diagnostica. Ping usa ICMP Echo, traceroute usa TTL expiration.
-                </p>
-            </div>
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Comando eseguito:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >curl http://example.com</code
+          >
         </div>
+
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Cosa succede dietro le quinte:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. DNS Resolution:</strong> Risoluzione nome dominio in
+              indirizzo IP
+            </li>
+            <li>
+              <strong>2. Three-way Handshake:</strong> SYN → SYN-ACK → ACK per
+              stabilire connessione TCP
+            </li>
+            <li>
+              <strong>3. HTTP Request:</strong> Invio richiesta GET attraverso
+              connessione affidabile
+            </li>
+            <li>
+              <strong>4. TCP Transmission:</strong> Controllo flusso,
+              ritrasmissione se necessario
+            </li>
+            <li>
+              <strong>5. HTTP Response:</strong> Ricezione risposta con
+              riassemblaggio pacchetti
+            </li>
+            <li>
+              <strong>6. Four-way Teardown:</strong> Chiusura connessione FIN →
+              ACK → FIN → ACK
+            </li>
+          </ol>
+        </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> Da richiesta semplice a comunicazione
+          complessa! I protocolli rendono affidabile la comunicazione nonostante
+          perdite e congestione di rete!
+        </div>
+      </div>
+
+      <h2>🧪 Laboratorio Pratico: Esplora i Protocolli</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔍 Monitora connessioni TCP
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ss -t<br />
+              State Recv-Q Send-Q Local Address:Port<br />
+              ESTAB 0 0 192.168.1.100:ssh<br /><br />
+              $ ss -ant | grep ESTAB
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi connessioni TCP attive e stati</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📡 Cattura pacchetti TCP
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ sudo tcpdump -i eth0 tcp port 80 -c 5<br />
+              10:30:45.123456 IP client.54321 > server.80: Flags [S]<br />
+              10:30:45.123467 IP server.80 > client.54321: Flags [S.]<br />
+              10:30:45.123478 IP client.54321 > server.80: Flags [.]
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Osserva three-way handshake TCP in tempo reale</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🌐 Test ICMP e routing
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ping -c 3 google.com<br />
+              PING google.com (142.250.184.206) 56(84) bytes<br />
+              64 bytes from 142.250.184.206: icmp_seq=1 ttl=118<br /><br />
+              $ traceroute google.com
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Test ICMP echo e instradamento IP</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              ⚙️ Analizza socket kernel
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ cat /proc/net/tcp<br />
+              sl local_address rem_address st tx_queue rx_queue<br />
+              0: 0100007F:0016 00000000:0000 0A 00000000:00000000<br /><br />
+              $ lsof -i :22
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Esamina strutture dati socket del kernel</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔒
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            TCP Reliability
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            TCP garantisce consegna affidabile attraverso acknowledgment,
+            ritrasmissione e controllo di flusso. Ogni pacchetto viene
+            confermato!
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            ⚡
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            UDP Performance
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            UDP offre velocità massima senza overhead di affidabilità. Perfetto
+            per streaming, gaming, DNS dove velocità > affidabilità.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🌐
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            IP Routing
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            IP instrada pacchetti attraverso reti complesse usando tabelle di
+            routing. Ogni router decide il percorso ottimale.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            📢
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            ICMP Control
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            ICMP fornisce messaggi di controllo e diagnostica. Ping usa ICMP
+            Echo, traceroute usa TTL expiration.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz su Protocolli
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz su Protocolli
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
-
-    <div class="footer" style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+    <div
+      class="footer"
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
     </div>
 
-<script>
-    // Quiz functionality
-                const quizQuestions = [
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
         {
-            question: "Quale è il ruolo principale di TCP nel networking?",
-            options: ["Effettuare routing", "Garantire consegna ordinata e affidabile", "Gestire indirizzi IP", "Consegnare dati velocemente"],
-            correct: 1,
-            explanation: "TCP (Transmission Control Protocol) garantisce consegna ordinata e affidabile dei dati."
+          question: "Quale è il ruolo principale di TCP nel networking?",
+          options: [
+            "Effettuare routing",
+            "Garantire consegna ordinata e affidabile",
+            "Gestire indirizzi IP",
+            "Consegnare dati velocemente",
+          ],
+          correct: 1,
+          explanation:
+            "TCP (Transmission Control Protocol) garantisce consegna ordinata e affidabile dei dati.",
         },
         {
-            question: "Come viene stabilita una connessione TCP?",
-            options: ["Three-way handshake (SYN, SYN-ACK, ACK)", "No handshake", "One-way handshake", "Four-way handshake"],
-            correct: 0,
-            explanation: "TCP usa un three-way handshake: SYN, SYN-ACK, ACK per stabilire connessioni."
+          question: "Come viene stabilita una connessione TCP?",
+          options: [
+            "Three-way handshake (SYN, SYN-ACK, ACK)",
+            "No handshake",
+            "One-way handshake",
+            "Four-way handshake",
+          ],
+          correct: 0,
+          explanation:
+            "TCP usa un three-way handshake: SYN, SYN-ACK, ACK per stabilire connessioni.",
         },
         {
-            question: "Qual è la differenza principale tra TCP e UDP?",
-            options: ["UDP garantisce la ritrasmissione e TCP no", "TCP è orientato alla connessione e garantisce consegna ordinata; UDP è senza connessione e senza garanzie", "Non c'è alcuna differenza sostanziale", "TCP è senza connessione e UDP orientato alla connessione"],
-            correct: 1,
-            explanation: "TCP stabilisce una connessione e garantisce consegna affidabile e ordinata (ack, ritrasmissioni, controllo di flusso); UDP invia datagrammi indipendenti con meno overhead e senza garanzie."
+          question: "Qual è la differenza principale tra TCP e UDP?",
+          options: [
+            "UDP garantisce la ritrasmissione e TCP no",
+            "TCP è orientato alla connessione e garantisce consegna ordinata; UDP è senza connessione e senza garanzie",
+            "Non c'è alcuna differenza sostanziale",
+            "TCP è senza connessione e UDP orientato alla connessione",
+          ],
+          correct: 1,
+          explanation:
+            "TCP stabilisce una connessione e garantisce consegna affidabile e ordinata (ack, ritrasmissioni, controllo di flusso); UDP invia datagrammi indipendenti con meno overhead e senza garanzie.",
         },
         {
-            question: "Quale comando usa i messaggi ICMP Echo per verificare la raggiungibilità di un host?",
-            options: ["ip route", "netstat", "ss", "ping"],
-            correct: 3,
-            explanation: "ping invia ICMP Echo Request e attende l'Echo Reply; traceroute usa invece la scadenza del TTL e i messaggi ICMP Time Exceeded."
+          question:
+            "Quale comando usa i messaggi ICMP Echo per verificare la raggiungibilità di un host?",
+          options: ["ip route", "netstat", "ss", "ping"],
+          correct: 3,
+          explanation:
+            "ping invia ICMP Echo Request e attende l'Echo Reply; traceroute usa invece la scadenza del TTL e i messaggi ICMP Time Exceeded.",
         },
         {
-            question: "Cosa fa l'algoritmo di congestione di TCP?",
-            options: ["Comprime i dati", "Cripta i pacchetti", "Adatta la velocità di trasmissione", "Ordina i dati"],
-            correct: 2,
-            explanation: "Il controllo di congestione riduce la velocità quando il network è saturo."
+          question: "Cosa fa l'algoritmo di congestione di TCP?",
+          options: [
+            "Comprime i dati",
+            "Cripta i pacchetti",
+            "Adatta la velocità di trasmissione",
+            "Ordina i dati",
+          ],
+          correct: 2,
+          explanation:
+            "Il controllo di congestione riduce la velocità quando il network è saturo.",
         },
         {
-            question: "Quale è l'algoritmo di controllo congestione default in Linux?",
-            options: ["Vegas", "Reno", "NewReno", "CUBIC"],
-            correct: 3,
-            explanation: "CUBIC è l'algoritmo di controllo congestione predefinito in Linux moderno."
+          question:
+            "Quale è l'algoritmo di controllo congestione default in Linux?",
+          options: ["Vegas", "Reno", "NewReno", "CUBIC"],
+          correct: 3,
+          explanation:
+            "CUBIC è l'algoritmo di controllo congestione predefinito in Linux moderno.",
         },
         {
-            question: "Come identifica TCP i pacchetti in arrivo?",
-            options: ["Combinazione IP:porta", "Sequence number", "Porta TCP", "Indirizzo IP"],
-            correct: 0,
-            explanation: "TCP usa la combinazione di IP sorgente/destinazione e porte per identificare flussi."
+          question: "Come identifica TCP i pacchetti in arrivo?",
+          options: [
+            "Combinazione IP:porta",
+            "Sequence number",
+            "Porta TCP",
+            "Indirizzo IP",
+          ],
+          correct: 0,
+          explanation:
+            "TCP usa la combinazione di IP sorgente/destinazione e porte per identificare flussi.",
         },
         {
-            question: "Quale funzione ha l'acknowledgment (ACK) in TCP?",
-            options: ["Cifra i dati", "Conferma al mittente la ricezione dei dati", "Risolve i nomi host", "Instrada i pacchetti"],
-            correct: 1,
-            explanation: "L'ACK conferma al mittente fino a quale byte i dati sono stati ricevuti; i dati non confermati vengono ritrasmessi. Lo spazio disponibile nel buffer è comunicato dalla finestra (window)."
+          question: "Quale funzione ha l'acknowledgment (ACK) in TCP?",
+          options: [
+            "Cifra i dati",
+            "Conferma al mittente la ricezione dei dati",
+            "Risolve i nomi host",
+            "Instrada i pacchetti",
+          ],
+          correct: 1,
+          explanation:
+            "L'ACK conferma al mittente fino a quale byte i dati sono stati ricevuti; i dati non confermati vengono ritrasmessi. Lo spazio disponibile nel buffer è comunicato dalla finestra (window).",
         },
         {
-            question: "Cosa rappresenta il window size in TCP?",
-            options: ["Dimensione dello schermo", "Numero di pacchetti", "Spazio disponibile nel buffer ricevente", "Timeout"],
-            correct: 2,
-            explanation: "Il window size comunica quanto spazio è disponibile nel buffer ricevente."
+          question: "Cosa rappresenta il window size in TCP?",
+          options: [
+            "Dimensione dello schermo",
+            "Numero di pacchetti",
+            "Spazio disponibile nel buffer ricevente",
+            "Timeout",
+          ],
+          correct: 2,
+          explanation:
+            "Il window size comunica quanto spazio è disponibile nel buffer ricevente.",
         },
         {
-            question: "Come gestisce UDP la perdita di pacchetti?",
-            options: ["Usa ritrasmissione", "Ritenta automaticamente", "Non garantisce consegna", "Usa TCP fallback"],
-            correct: 2,
-            explanation: "UDP è connectionless e non garantisce consegna; la gestione errori spetta all'applicazione."
-        }
-    ];
+          question: "Come gestisce UDP la perdita di pacchetti?",
+          options: [
+            "Usa ritrasmissione",
+            "Ritenta automaticamente",
+            "Non garantisce consegna",
+            "Usa TCP fallback",
+          ],
+          correct: 2,
+          explanation:
+            "UDP è connectionless e non garantisce consegna; la gestione errori spetta all'applicazione.",
+        },
+      ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -561,45 +1271,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -610,45 +1324,48 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione dei protocolli! 🎉";
-            color = "#2e7d32";
+          message = "Eccellente! Hai una buona comprensione dei protocolli! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a esplorare i protocolli di rete! 👍";
-            color = "#f57c00";
+          message =
+            "Buon lavoro! Continua a esplorare i protocolli di rete! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! I protocolli sono fondamentali! 📚";
-            color = "#d32f2f";
+          message = "Continua a studiare! I protocolli sono fondamentali! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -662,52 +1379,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

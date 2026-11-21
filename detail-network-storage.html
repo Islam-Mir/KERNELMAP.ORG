@@ -1,538 +1,1229 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NETWORK STORAGE - Dettagli</title>
-    
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>NETWORK STORAGE</h1>
-        <p class="subtitle">Storage di rete</p>
+      <h1>NETWORK STORAGE</h1>
+      <p class="subtitle">Storage di rete</p>
     </div>
 
     <div class="content">
-        <span class="badge">💾 STORAGE RETE</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>Il Network Storage subsystem gestisce l'accesso allo storage di rete nel kernel Linux, implementando protocolli come NFS, CIFS/SMB, iSCSI e altri sistemi di storage distribuito. Coordina la comunicazione tra client e server di storage attraverso la rete.</strong></p>
-        
-        <h2>CONFRONTO:</h2>
-        <p>Immagina il Network Storage come un magazzino remoto: invece di avere gli scatoloni (dati) nel tuo garage, li tieni in un deposito esterno accessibile via strada (rete). Puoi andare a prendere quello che ti serve quando vuoi, ma devi considerare il traffico e i tempi di consegna.</p>
-        
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>Il Network Storage subsystem è responsabile dell'implementazione dei protocolli di rete per l'accesso ai dispositivi di storage remoti. Include client e server per filesystem distribuiti, block storage over IP, e meccanismi di caching per ottimizzare le prestazioni.</strong></p>
-        <p>• <strong>Protocol Implementation</strong> - Implementazione protocolli NFS, CIFS, iSCSI</p>
-        <p>• <strong>Remote File Access</strong> - Accesso trasparente a file su server remoti</p>
-        <p>• <strong>Block Storage over IP</strong> - Trasmissione blocchi dati via rete</p>
-        <p><em>• Interfaccia principale per storage distribuito</em></p>
+      <span class="badge">💾 STORAGE RETE</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >Il Network Storage subsystem gestisce l'accesso allo storage di rete
+          nel kernel Linux, implementando protocolli come NFS, CIFS/SMB, iSCSI e
+          altri sistemi di storage distribuito. Coordina la comunicazione tra
+          client e server di storage attraverso la rete.</strong
+        >
+      </p>
 
-<h2>⚙️ Operazioni Principali del Network Storage</h2>
-<p><strong>Il Network Storage esegue operazioni critiche per l'accesso allo storage remoto:</strong></p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Immagina il Network Storage come un magazzino remoto: invece di avere
+        gli scatoloni (dati) nel tuo garage, li tieni in un deposito esterno
+        accessibile via strada (rete). Puoi andare a prendere quello che ti
+        serve quando vuoi, ma devi considerare il traffico e i tempi di
+        consegna.
+      </p>
 
-<h3>⚙️ NFS Operations</h3>
-<p>• <strong>nfs_getattr()</strong> - Ottiene attributi file dal server NFS</p>
-<p>• <strong>nfs_lookup()</strong> - Risolve pathname su server remoto</p>
-<p>• <strong>nfs_read_folio()</strong> - Legge pagine da file NFS</p>
-<p>• <strong>nfs_writepage()</strong> - Scrive pagine su file NFS</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >Il Network Storage subsystem è responsabile dell'implementazione dei
+          protocolli di rete per l'accesso ai dispositivi di storage remoti.
+          Include client e server per filesystem distribuiti, block storage over
+          IP, e meccanismi di caching per ottimizzare le prestazioni.</strong
+        >
+      </p>
+      <p>
+        • <strong>Protocol Implementation</strong> - Implementazione protocolli
+        NFS, CIFS, iSCSI
+      </p>
+      <p>
+        • <strong>Remote File Access</strong> - Accesso trasparente a file su
+        server remoti
+      </p>
+      <p>
+        • <strong>Block Storage over IP</strong> - Trasmissione blocchi dati via
+        rete
+      </p>
+      <p><em>• Interfaccia principale per storage distribuito</em></p>
 
-<h3>⚙️ CIFS/SMB Operations</h3>
-<p>• <strong>cifs_reconnect()</strong> - Riconnette sessioni SMB interrotte</p>
-<p>• <strong>cifs_readv()</strong> - Lettura vettoriale da share SMB</p>
-<p>• <strong>cifs_writev()</strong> - Scrittura vettoriale su share SMB</p>
-<p>• <strong>cifs_mkdir()</strong> - Crea directory su share remoto</p>
+      <h2>⚙️ Operazioni Principali del Network Storage</h2>
+      <p>
+        <strong
+          >Il Network Storage esegue operazioni critiche per l'accesso allo
+          storage remoto:</strong
+        >
+      </p>
 
-<h3>⚙️ iSCSI Operations</h3>
-<p>• <strong>iscsi_queuecommand()</strong> - Invia comandi SCSI via rete</p>
-<p>• <strong>iscsi_session_recovery()</strong> - Recupero sessioni iSCSI</p>
-<p>• <strong>iscsi_host_alloc()</strong> - Alloca host iSCSI</p>
-<p>• <strong>iscsi_conn_bind()</strong> - Associa connessioni iSCSI</p>
+      <h3>⚙️ NFS Operations</h3>
+      <p>
+        • <strong>nfs_getattr()</strong> - Ottiene attributi file dal server NFS
+      </p>
+      <p>• <strong>nfs_lookup()</strong> - Risolve pathname su server remoto</p>
+      <p>• <strong>nfs_read_folio()</strong> - Legge pagine da file NFS</p>
+      <p>• <strong>nfs_writepage()</strong> - Scrive pagine su file NFS</p>
 
-<h3>⚙️ Caching e Performance</h3>
-<p>• <strong>nfs_fscache_enable()</strong> - Abilita cache FSC per NFS</p>
-<p>• <strong>cifs_readdata_to_iov()</strong> - Ottimizza lettura dati SMB</p>
-<p>• <strong>iscsi_tcp_segment_done()</strong> - Gestisce segmentazione TCP</p>
-<p>• <strong>nfs_pageio_init()</strong> - Inizializza I/O pagine asincrono</p>
+      <h3>⚙️ CIFS/SMB Operations</h3>
+      <p>
+        • <strong>cifs_reconnect()</strong> - Riconnette sessioni SMB interrotte
+      </p>
+      <p>• <strong>cifs_readv()</strong> - Lettura vettoriale da share SMB</p>
+      <p>
+        • <strong>cifs_writev()</strong> - Scrittura vettoriale su share SMB
+      </p>
+      <p>• <strong>cifs_mkdir()</strong> - Crea directory su share remoto</p>
 
-<h2>📋 Esempi Pratici del Network Storage</h2>
-<p><strong>Il Network Storage opera in ogni accesso a file remoti:</strong></p>
+      <h3>⚙️ iSCSI Operations</h3>
+      <p>
+        • <strong>iscsi_queuecommand()</strong> - Invia comandi SCSI via rete
+      </p>
+      <p>
+        • <strong>iscsi_session_recovery()</strong> - Recupero sessioni iSCSI
+      </p>
+      <p>• <strong>iscsi_host_alloc()</strong> - Alloca host iSCSI</p>
+      <p>• <strong>iscsi_conn_bind()</strong> - Associa connessioni iSCSI</p>
 
-<h3>🔍 Montaggio NFS</h3>
-<p>1. Il client contatta il server NFS (con NFSv3 tramite il protocollo MOUNT, con NFSv4 direttamente)</p>
-<p>2. Server risponde con handle del filesystem</p>
-<p>3. Client crea superblock NFS e dentry cache</p>
-<p>4. File remoti diventano accessibili localmente</p>
+      <h3>⚙️ Caching e Performance</h3>
+      <p>• <strong>nfs_fscache_enable()</strong> - Abilita cache FSC per NFS</p>
+      <p>
+        • <strong>cifs_readdata_to_iov()</strong> - Ottimizza lettura dati SMB
+      </p>
+      <p>
+        • <strong>iscsi_tcp_segment_done()</strong> - Gestisce segmentazione TCP
+      </p>
+      <p>
+        • <strong>nfs_pageio_init()</strong> - Inizializza I/O pagine asincrono
+      </p>
 
-<h3>📄 Strutture Dati Chiave</h3>
-<ul>
-<li><strong>struct nfs_server</strong> - Gestisce connessione a server NFS, include indirizzo, versione protocollo, mount options</li>
-<li><strong>struct cifs_sb_info</strong> - Informazioni superblock per share CIFS, contiene credenziali e opzioni mount</li>
-<li><strong>struct iscsi_session</strong> - Sessione iSCSI con parametri connessione, autenticazione, timeout</li>
-<li><strong>struct nfs_inode</strong> - Estende inode standard con attributi NFS (filehandle, cache timeout)</li>
-<li><strong>struct cifsFileInfo</strong> - Informazioni file CIFS aperto, include handle server e lock status</li>
-</ul>
+      <h2>📋 Esempi Pratici del Network Storage</h2>
+      <p>
+        <strong>Il Network Storage opera in ogni accesso a file remoti:</strong>
+      </p>
 
-<h3>💻 Comandi Linux Essenziali</h3>
-<ul>
-<li><code>$ mount -t nfs server:/share /mnt/nfs</code> - Monta share NFS</li>
-<li><code>$ mount -t cifs //server/share /mnt/smb -o username=user</code> - Monta share SMB/CIFS</li>
-<li><code>$ showmount -e server</code> - Mostra export NFS disponibili</li>
-<li><code>$ smbclient -L server</code> - Lista share SMB disponibili</li>
-<li><code>$ iscsiadm -m discovery -t sendtargets -p server</code> - Scopre target iSCSI</li>
-</ul>
+      <h3>🔍 Montaggio NFS</h3>
+      <p>
+        1. Il client contatta il server NFS (con NFSv3 tramite il protocollo
+        MOUNT, con NFSv4 direttamente)
+      </p>
+      <p>2. Server risponde con handle del filesystem</p>
+      <p>3. Client crea superblock NFS e dentry cache</p>
+      <p>4. File remoti diventano accessibili localmente</p>
 
-<h3>🎯 Caso Reale: Accesso File Remoto</h3>
-<p>Quando fai <code>$ cat /mnt/nfs/remotefile.txt</code>:</p>
-<ol>
-<li>VFS inoltra richiesta a NFS client</li>
-<li>NFS client invia RPC GETATTR al server</li>
-<li>Server risponde con attributi file</li>
-<li>NFS client richiede READ con offset</li>
-<li>Dati trasferiti via rete e cachati localmente</li>
-</ol>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>struct nfs_server</strong> - Gestisce connessione a server
+          NFS, include indirizzo, versione protocollo, mount options
+        </li>
+        <li>
+          <strong>struct cifs_sb_info</strong> - Informazioni superblock per
+          share CIFS, contiene credenziali e opzioni mount
+        </li>
+        <li>
+          <strong>struct iscsi_session</strong> - Sessione iSCSI con parametri
+          connessione, autenticazione, timeout
+        </li>
+        <li>
+          <strong>struct nfs_inode</strong> - Estende inode standard con
+          attributi NFS (filehandle, cache timeout)
+        </li>
+        <li>
+          <strong>struct cifsFileInfo</strong> - Informazioni file CIFS aperto,
+          include handle server e lock status
+        </li>
+      </ul>
 
-<h2>💾 Supporto e Compatibilità Network Storage</h2>
-        <ul>
-            <li><strong>NFSv4.2</strong> - Network File System con supporto avanzato</li>
-            <li><strong>CIFS/SMB3</strong> - Protocollo Microsoft con sicurezza avanzata</li>
-            <li><strong>iSCSI</strong> - Block storage over IP con estensioni</li>
-            <li><strong>Ceph/RADOS</strong> - Storage distribuito scalabile</li>
-            <li><strong>GlusterFS</strong> - Filesystem distribuito</li>
-            <li><strong>pNFS</strong> - NFS parallelo per cluster</li>
-            <li><strong>FSCache</strong> - Framework caching per storage remoto</li>
-            <li><strong>9P</strong> - Protocollo Plan 9 per virtualizzazione</li>
-        </ul>
+      <h3>💻 Comandi Linux Essenziali</h3>
+      <ul>
+        <li>
+          <code>$ mount -t nfs server:/share /mnt/nfs</code> - Monta share NFS
+        </li>
+        <li>
+          <code>$ mount -t cifs //server/share /mnt/smb -o username=user</code>
+          - Monta share SMB/CIFS
+        </li>
+        <li>
+          <code>$ showmount -e server</code> - Mostra export NFS disponibili
+        </li>
+        <li>
+          <code>$ smbclient -L server</code> - Lista share SMB disponibili
+        </li>
+        <li>
+          <code>$ iscsiadm -m discovery -t sendtargets -p server</code> - Scopre
+          target iSCSI
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche Avanzate</h2>
-<ul>
-<li><strong>Transparent Caching</strong> - Cache locale trasparente per prestazioni</li>
-<li><strong>Failover automatico</strong> - Recupero trasparente in caso di guasto</li>
-<li><strong>Load Balancing</strong> - Distribuzione carico su multiple connessioni</li>
-<li><strong>Security Integration</strong> - Integrazione con Kerberos e autenticazione</li>
-</ul>
+      <h3>🎯 Caso Reale: Accesso File Remoto</h3>
+      <p>Quando fai <code>$ cat /mnt/nfs/remotefile.txt</code>:</p>
+      <ol>
+        <li>VFS inoltra richiesta a NFS client</li>
+        <li>NFS client invia RPC GETATTR al server</li>
+        <li>Server risponde con attributi file</li>
+        <li>NFS client richiede READ con offset</li>
+        <li>Dati trasferiti via rete e cachati localmente</li>
+      </ol>
 
-<h2>🔗 Interazioni Chiave del Network Storage</h2>
-<p><strong>Il Network Storage collabora con molti componenti del kernel:</strong></p>
+      <h2>💾 Supporto e Compatibilità Network Storage</h2>
+      <ul>
+        <li>
+          <strong>NFSv4.2</strong> - Network File System con supporto avanzato
+        </li>
+        <li>
+          <strong>CIFS/SMB3</strong> - Protocollo Microsoft con sicurezza
+          avanzata
+        </li>
+        <li><strong>iSCSI</strong> - Block storage over IP con estensioni</li>
+        <li><strong>Ceph/RADOS</strong> - Storage distribuito scalabile</li>
+        <li><strong>GlusterFS</strong> - Filesystem distribuito</li>
+        <li><strong>pNFS</strong> - NFS parallelo per cluster</li>
+        <li><strong>FSCache</strong> - Framework caching per storage remoto</li>
+        <li><strong>9P</strong> - Protocollo Plan 9 per virtualizzazione</li>
+      </ul>
 
-<h3>💾 Virtual File System</h3>
-<p>• <strong>VFS Integration</strong> - Registra filesystem di rete come NFS, CIFS</p>
-<p>• <strong>Dentry Cache</strong> - Cache nomi file remoti per prestazioni</p>
+      <h2>✨ Caratteristiche Avanzate</h2>
+      <ul>
+        <li>
+          <strong>Transparent Caching</strong> - Cache locale trasparente per
+          prestazioni
+        </li>
+        <li>
+          <strong>Failover automatico</strong> - Recupero trasparente in caso di
+          guasto
+        </li>
+        <li>
+          <strong>Load Balancing</strong> - Distribuzione carico su multiple
+          connessioni
+        </li>
+        <li>
+          <strong>Security Integration</strong> - Integrazione con Kerberos e
+          autenticazione
+        </li>
+      </ul>
 
-<h3>🌐 Network Stack</h3>
-<p>• <strong>RPC Layer</strong> - Remote Procedure Calls per NFS</p>
-<p>• <strong>TCP/UDP</strong> - Trasporto dati affidabile/non-affidabile</p>
+      <h2>🔗 Interazioni Chiave del Network Storage</h2>
+      <p>
+        <strong
+          >Il Network Storage collabora con molti componenti del kernel:</strong
+        >
+      </p>
 
-<h3>🧠 Memory Management</h3>
-<p>• <strong>Page Cache</strong> - Cache pagine per file remoti</p>
-<p>• <strong>FSCache</strong> - Framework caching avanzato</p>
+      <h3>💾 Virtual File System</h3>
+      <p>
+        • <strong>VFS Integration</strong> - Registra filesystem di rete come
+        NFS, CIFS
+      </p>
+      <p>
+        • <strong>Dentry Cache</strong> - Cache nomi file remoti per prestazioni
+      </p>
 
-<h3>🔒 Security Framework</h3>
-<p>• <strong>Kerberos</strong> - Autenticazione sicura per NFS/CIFS</p>
-<p>• <strong>Access Control</strong> - Controllo permessi su file remoti</p>
+      <h3>🌐 Network Stack</h3>
+      <p>• <strong>RPC Layer</strong> - Remote Procedure Calls per NFS</p>
+      <p>
+        • <strong>TCP/UDP</strong> - Trasporto dati affidabile/non-affidabile
+      </p>
 
-<h2>🛠️ API del Network Storage</h2>
-        <p><strong>Le principali funzioni per lavorare con lo storage di rete:</strong></p>
+      <h3>🧠 Memory Management</h3>
+      <p>• <strong>Page Cache</strong> - Cache pagine per file remoti</p>
+      <p>• <strong>FSCache</strong> - Framework caching avanzato</p>
 
-        <h3>🔗 NFS Client API</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">struct nfs_server *nfs_create_server(struct nfs_mount_info *mount_info);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea connessione a server NFS con parametri di mount.</span><br><br>
+      <h3>🔒 Security Framework</h3>
+      <p>• <strong>Kerberos</strong> - Autenticazione sicura per NFS/CIFS</p>
+      <p>
+        • <strong>Access Control</strong> - Controllo permessi su file remoti
+      </p>
 
-            <code style="color: #2e7d32; font-weight: bold;">int nfs_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene attributi file dal server NFS remoto.</span><br><br>
+      <h2>🛠️ API del Network Storage</h2>
+      <p>
+        <strong
+          >Le principali funzioni per lavorare con lo storage di rete:</strong
+        >
+      </p>
 
-            <code style="color: #f57c00; font-weight: bold;">int nfs_open(struct inode *inode, struct file *filp);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Apre file NFS remoto e stabilisce connessione dati.</span><br><br>
+      <h3>🔗 NFS Client API</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >struct nfs_server *nfs_create_server(struct nfs_mount_info
+          *mount_info);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea connessione a server NFS con parametri di mount.</span
+        ><br /><br />
 
-            <code style="color: #9c27b0; font-weight: bold;">ssize_t nfs_file_read(struct file *filp, char __user *buf, size_t count, loff_t *pos);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Legge dati da file NFS con caching intelligente.</span>
+        <code style="color: #2e7d32; font-weight: bold"
+          >int nfs_getattr(struct vfsmount *mnt, struct dentry *dentry, struct
+          kstat *stat);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Ottiene attributi file dal server NFS remoto.</span
+        ><br /><br />
+
+        <code style="color: #f57c00; font-weight: bold"
+          >int nfs_open(struct inode *inode, struct file *filp);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Apre file NFS remoto e stabilisce connessione dati.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >ssize_t nfs_file_read(struct file *filp, char __user *buf, size_t
+          count, loff_t *pos);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Legge dati da file NFS con caching intelligente.</span
+        >
+      </div>
+
+      <h3>💼 CIFS/SMB API</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >struct cifs_sb_info *cifs_get_sb_info(struct super_block *sb);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Ottiene informazioni superblock per share CIFS.</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >int cifs_mount(struct cifs_sb_info *cifs_sb, struct smb_vol
+          *vol);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Monta share SMB con autenticazione e opzioni.</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >int cifs_reconnect(struct TCP_Server_Info *server);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Riconnette sessioni SMB interrotte automaticamente.</span
+        >
+      </div>
+
+      <h3>💽 iSCSI API</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >struct iscsi_session *iscsi_create_session(struct Scsi_Host *shost,
+          struct iscsi_transport *transport, int initial_cmdsn);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea sessione iSCSI per accesso block storage remoto.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >int iscsi_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd
+          *cmd);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Invia comandi SCSI incapsulati via rete iSCSI.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >int iscsi_conn_bind(struct iscsi_session *session, struct iscsi_conn
+          *conn, int is_leading);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Associa connessione TCP a sessione iSCSI.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Pratico</h3>
+      <p><strong>Come utilizzare le API dello storage di rete:</strong></p>
+      <ol>
+        <li>
+          <code>mount -t nfs server:/share /mnt</code> - Monta filesystem NFS
+        </li>
+        <li>
+          <code>mount -t cifs //server/share /mnt</code> - Monta share SMB
+        </li>
+        <li><code>iscsiadm -m node -l</code> - Connette target iSCSI</li>
+        <li><code>showmount -e server</code> - Esplora export NFS</li>
+      </ol>
+      <p>
+        <em>Queste API forniscono accesso trasparente allo storage remoto</em>
+      </p>
+
+      <h2>🗺️ Architettura del Network Storage</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura dello Storage di Rete
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ APPLICAZIONI USER SPACE
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • File managers (Nautilus, Dolphin)<br />
+            • Database engines (PostgreSQL, MySQL)<br />
+            • Backup tools (rsync, tar)<br />
+            • Mount commands
+          </div>
         </div>
 
-        <h3>💼 CIFS/SMB API</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">struct cifs_sb_info *cifs_get_sb_info(struct super_block *sb);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene informazioni superblock per share CIFS.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">int cifs_mount(struct cifs_sb_info *cifs_sb, struct smb_vol *vol);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Monta share SMB con autenticazione e opzioni.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">int cifs_reconnect(struct TCP_Server_Info *server);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Riconnette sessioni SMB interrotte automaticamente.</span>
+        <!-- VFS Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🌟 VIRTUAL FILE SYSTEM
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • NFS filesystem<br />
+            • CIFS filesystem<br />
+            • 9P filesystem<br />
+            • Interfaccia uniforme
+          </div>
         </div>
 
-        <h3>💽 iSCSI API</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">struct iscsi_session *iscsi_create_session(struct Scsi_Host *shost, struct iscsi_transport *transport, int initial_cmdsn);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea sessione iSCSI per accesso block storage remoto.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">int iscsi_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmd);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Invia comandi SCSI incapsulati via rete iSCSI.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">int iscsi_conn_bind(struct iscsi_session *session, struct iscsi_conn *conn, int is_leading);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Associa connessione TCP a sessione iSCSI.</span>
+        <!-- Network Storage Core -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🌐 NETWORK STORAGE CORE
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔗</div>
+              <div style="font-size: 0.8em">NFS Client</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">💼</div>
+              <div style="font-size: 0.8em">CIFS/SMB</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">💽</div>
+              <div style="font-size: 0.8em">iSCSI</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⚡</div>
+              <div style="font-size: 0.8em">RPC Layer</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Protocol Implementation<br />
+            • Connection Management<br />
+            • Caching & Performance<br />
+            • Failover & Recovery
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Pratico</h3>
-<p><strong>Come utilizzare le API dello storage di rete:</strong></p>
-<ol>
-<li><code>mount -t nfs server:/share /mnt</code> - Monta filesystem NFS</li>
-<li><code>mount -t cifs //server/share /mnt</code> - Monta share SMB</li>
-<li><code>iscsiadm -m node -l</code> - Connette target iSCSI</li>
-<li><code>showmount -e server</code> - Esplora export NFS</li>
-</ol>
-<p><em>Queste API forniscono accesso trasparente allo storage remoto</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-<h2>🗺️ Architettura del Network Storage</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura dello Storage di Rete</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • File managers (Nautilus, Dolphin)<br>
-                    • Database engines (PostgreSQL, MySQL)<br>
-                    • Backup tools (rsync, tar)<br>
-                    • Mount commands
-                </div>
+        <!-- Network Protocols -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              TCP/IP
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- VFS Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🌟 VIRTUAL FILE SYSTEM</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • NFS filesystem<br>
-                    • CIFS filesystem<br>
-                    • 9P filesystem<br>
-                    • Interfaccia uniforme
-                </div>
+            <div style="font-size: 0.8em; color: #666">
+              Trasporto affidabile
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Network Storage Core -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌐 NETWORK STORAGE CORE</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔗</div>
-                        <div style="font-size: 0.8em;">NFS Client</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💼</div>
-                        <div style="font-size: 0.8em;">CIFS/SMB</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💽</div>
-                        <div style="font-size: 0.8em;">iSCSI</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
-                        <div style="font-size: 0.8em;">RPC Layer</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Protocol Implementation<br>
-                    • Connection Management<br>
-                    • Caching & Performance<br>
-                    • Failover & Recovery
-                </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              RPC
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Network Protocols -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">TCP/IP</div>
-                    <div style="font-size: 0.8em; color: #666;">Trasporto affidabile</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">RPC</div>
-                    <div style="font-size: 0.8em; color: #666;">Remote Procedure Calls</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">XDR</div>
-                    <div style="font-size: 0.8em; color: #666;">External Data Representation</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">Kerberos</div>
-                    <div style="font-size: 0.8em; color: #666;">Autenticazione sicura</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">
+              Remote Procedure Calls
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Remote Storage -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">🖥️ SERVER REMOTI</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • NFS Server (Linux/Unix)<br>
-                    • Samba Server (Windows)<br>
-                    • iSCSI Targets<br>
-                    • Storage Arrays (SAN/NAS)
-                </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              XDR
             </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso delle richieste di storage remoto<br>
-                • Ogni layer astrae la complessità del protocollo sottostante<br>
-                • Il Network Storage rende trasparente l'accesso a file remoti<br>
-                • I protocolli diversi (NFS, CIFS, iSCSI) condividono l'architettura comune
+            <div style="font-size: 0.8em; color: #666">
+              External Data Representation
             </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              Kerberos
+            </div>
+            <div style="font-size: 0.8em; color: #666">
+              Autenticazione sicura
+            </div>
+          </div>
         </div>
 
-        <h2>🎬 Funzionamento</h2>
-<div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-<h3 style="color: #f57c00; margin-bottom: 15px;">💻 Come funziona il NETWORK STORAGE</h3>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-<div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-<div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-<div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">📥 Input</div>
-<div style="font-family: monospace; font-size: 0.9em;">cp file su /mnt/nfs</div>
-</div>
-
-<div style="font-size: 2em; color: #f57c00;">⚡</div>
-
-<div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-<div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">⚙️ Processing</div>
-<div style="font-family: monospace; font-size: 0.9em;">Conversione della richiesta di copia file in chiamate di procedura remota (RPC) per il trasferimento dei blocchi di dati via rete.</div>
-</div>
-</div>
-
-<div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-<strong>Processo eseguito:</strong> Trasferimento di un file su un filesystem di rete remoto attraverso il sottosistema Network Storage del kernel.
-</div>
-
-<div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-<h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Fasi di elaborazione:</h4>
-<ol style="line-height: 1.8;">
-<li><strong>1. VFS passa la richiesta al client NFS</strong> - Il sottosistema VFS intercetta la chiamata di scrittura e la inoltra al driver o client del filesystem di rete specifico (es. NFS).</li>
-<li><strong>2. Il client costruisce una RPC READ/WRITE</strong> - Il client NFS incapsula l'operazione di I/O all'interno di una chiamata di procedura remota (RPC).</li>
-<li><strong>3. La RPC viaggia su TCP verso il server</strong> - I pacchetti RPC vengono trasmessi attraverso lo stack di rete utilizzando il protocollo di trasporto TCP.</li>
-<li><strong>4. I dati tornano e vanno nella page cache</strong> - Il server risponde confermando l'operazione e i dati/metadati vengono memorizzati nella page cache locale.</li>
-</ol>
-</div>
-
-<div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-<strong>🎯 Risultato:</strong> Il file viene copiato con successo sulla condivisione di rete con l'assistenza della cache locale.
-</div>
-</div>
-
-<h2>🧪 Utilizzo Pratico</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🌐 Esplora gli export NFS</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ showmount -e server<br>
-                        Export list for server:<br>
-                        /var/nfs/shared 192.168.1.0/24
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza le risorse condivise disponibili su un server NFS</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Monta un filesystem NFS</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ sudo mount -t nfs server:/share /mnt/nfs<br>$ mount | grep nfs
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Monta una condivisione remota e verifica lo stato del mount</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📈 Statistiche del client NFS</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ nfsstat -c<br>
-                        Client rpc stats:<br>
-                        calls      badcalls   retrans    authrefresh<br>
-                        1420       0          0          0
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Monitora le chiamate RPC e le statistiche di errore del client NFS</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Gestisci le sessioni iSCSI</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ sudo iscsiadm -m session<br>
-                        tcp: [1] 192.168.1.50:3260,1 iqn.2003-01.org.linux-iscsi...
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Verifica le sessioni attive per lo storage a blocchi over IP</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💼 Elenca share SMB/CIFS</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ smbclient -L //server -U guest<br>
-                        Sharename       Type      Comment<br>
-                        ---------       ----      -------<br>
-                        Public          Disk      Shared folder
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esplora le risorse condivise su server SMB/Windows in rete</em></p>
-                </div>
-            </div>
+        <!-- Remote Storage -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            🖥️ SERVER REMOTI
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • NFS Server (Linux/Unix)<br />
+            • Samba Server (Windows)<br />
+            • iSCSI Targets<br />
+            • Storage Arrays (SAN/NAS)
+          </div>
         </div>
 
-        <h2>🎯 Concetti Chiave</h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎭</div>
-<h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Protocolli di Rete (NFS/SMB/iSCSI)</h4>
-<p style="font-size: 0.9em; text-align: center; color: #1b5e20;">Tecnologie e standard utilizzati per trasportare richieste di file o blocchi attraverso la rete IP tra client e server di storage.</p>
-</div>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Le frecce mostrano il flusso delle richieste di storage remoto<br />
+          • Ogni layer astrae la complessità del protocollo sottostante<br />
+          • Il Network Storage rende trasparente l'accesso a file remoti<br />
+          • I protocolli diversi (NFS, CIFS, iSCSI) condividono l'architettura
+          comune
+        </div>
+      </div>
 
-<div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-<h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">File-level vs Block-level</h4>
-<p style="font-size: 0.9em; text-align: center; color: #bf360c;">Differenza fondamentale tra storage basato su file (NFS, SMB) in cui il client gestisce file e cartelle, e storage a blocchi (iSCSI) che espone dischi grezzi.</p>
-</div>
+      <h2>🎬 Funzionamento</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Come funziona il NETWORK STORAGE
+        </h3>
 
-<div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-<h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Caching e Coerenza</h4>
-<p style="font-size: 0.9em; text-align: center; color: #4a148c;">Meccanismi locali per accelerare le letture/scritture e protocolli di validazione per mantenere la coerenza dei dati condivisi tra più client.</p>
-</div>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              📥 Input
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              cp file su /mnt/nfs
+            </div>
+          </div>
 
-<div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔒</div>
-<h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Sicurezza (Kerberos, TLS)</h4>
-<p style="font-size: 0.9em; text-align: center; color: #004d40;">Sistemi di autenticazione forte e crittografia in transito per proteggere i dati che viaggiano sulle condivisioni di rete.</p>
-</div>
-</div>
+          <div style="font-size: 2em; color: #f57c00">⚡</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              ⚙️ Processing
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Conversione della richiesta di copia file in chiamate di procedura
+              remota (RPC) per il trasferimento dei blocchi di dati via rete.
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Processo eseguito:</strong> Trasferimento di un file su un
+          filesystem di rete remoto attraverso il sottosistema Network Storage
+          del kernel.
+        </div>
+
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Fasi di elaborazione:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. VFS passa la richiesta al client NFS</strong> - Il
+              sottosistema VFS intercetta la chiamata di scrittura e la inoltra
+              al driver o client del filesystem di rete specifico (es. NFS).
+            </li>
+            <li>
+              <strong>2. Il client costruisce una RPC READ/WRITE</strong> - Il
+              client NFS incapsula l'operazione di I/O all'interno di una
+              chiamata di procedura remota (RPC).
+            </li>
+            <li>
+              <strong>3. La RPC viaggia su TCP verso il server</strong> - I
+              pacchetti RPC vengono trasmessi attraverso lo stack di rete
+              utilizzando il protocollo di trasporto TCP.
+            </li>
+            <li>
+              <strong>4. I dati tornano e vanno nella page cache</strong> - Il
+              server risponde confermando l'operazione e i dati/metadati vengono
+              memorizzati nella page cache locale.
+            </li>
+          </ol>
+        </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> Il file viene copiato con successo
+          sulla condivisione di rete con l'assistenza della cache locale.
+        </div>
+      </div>
+
+      <h2>🧪 Utilizzo Pratico</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🌐 Esplora gli export NFS
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ showmount -e server<br />
+              Export list for server:<br />
+              /var/nfs/shared 192.168.1.0/24
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Visualizza le risorse condivise disponibili su un server
+                NFS</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              💽 Monta un filesystem NFS
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ sudo mount -t nfs server:/share /mnt/nfs<br />$ mount | grep nfs
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Monta una condivisione remota e verifica lo stato del mount</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📈 Statistiche del client NFS
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ nfsstat -c<br />
+              Client rpc stats:<br />
+              calls badcalls retrans authrefresh<br />
+              1420 0 0 0
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Monitora le chiamate RPC e le statistiche di errore del client
+                NFS</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔍 Gestisci le sessioni iSCSI
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ sudo iscsiadm -m session<br />
+              tcp: [1] 192.168.1.50:3260,1 iqn.2003-01.org.linux-iscsi...
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Verifica le sessioni attive per lo storage a blocchi over
+                IP</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              💼 Elenca share SMB/CIFS
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ smbclient -L //server -U guest<br />
+              Sharename Type Comment<br />
+              --------- ---- -------<br />
+              Public Disk Shared folder
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Esplora le risorse condivise su server SMB/Windows in rete</em
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🎭
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Protocolli di Rete (NFS/SMB/iSCSI)
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            Tecnologie e standard utilizzati per trasportare richieste di file o
+            blocchi attraverso la rete IP tra client e server di storage.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🚀
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            File-level vs Block-level
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            Differenza fondamentale tra storage basato su file (NFS, SMB) in cui
+            il client gestisce file e cartelle, e storage a blocchi (iSCSI) che
+            espone dischi grezzi.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔧
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Caching e Coerenza
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            Meccanismi locali per accelerare le letture/scritture e protocolli
+            di validazione per mantenere la coerenza dei dati condivisi tra più
+            client.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔒
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Sicurezza (Kerberos, TLS)
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Sistemi di autenticazione forte e crittografia in transito per
+            proteggere i dati che viaggiano sulle condivisioni di rete.
+          </p>
+        </div>
+      </div>
     </div>
-<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sul NETWORK STORAGE
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz sul NETWORK STORAGE
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-<script>
-    // Quiz functionality
-    const quizQuestions = [
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
         {
-            question: "Cosa permette NFS?",
-            options: ["Crittografia automatica", "Condivisione file in rete", "Compressione dati", "Accesso a file locali"],
-            correct: 1,
-            explanation: "NFS (Network File System) permette di condividere e accedere a file attraverso la rete come se fossero locali."
+          question: "Cosa permette NFS?",
+          options: [
+            "Crittografia automatica",
+            "Condivisione file in rete",
+            "Compressione dati",
+            "Accesso a file locali",
+          ],
+          correct: 1,
+          explanation:
+            "NFS (Network File System) permette di condividere e accedere a file attraverso la rete come se fossero locali.",
         },
         {
-            question: "Quale protocollo usa CIFS?",
-            options: ["SMB (Server Message Block)", "HTTP", "FTP", "TCP diretto"],
-            correct: 0,
-            explanation: "CIFS implementa il protocollo SMB per l'accesso a risorse condivise in reti Windows."
+          question: "Quale protocollo usa CIFS?",
+          options: ["SMB (Server Message Block)", "HTTP", "FTP", "TCP diretto"],
+          correct: 0,
+          explanation:
+            "CIFS implementa il protocollo SMB per l'accesso a risorse condivise in reti Windows.",
         },
         {
-            question: "Cosa trasporta iSCSI?",
-            options: ["File system", "Video streaming", "Comandi SCSI via IP", "Database"],
-            correct: 2,
-            explanation: "iSCSI trasporta comandi SCSI incapsulati via protocollo IP per accesso remoto a storage a blocchi."
+          question: "Cosa trasporta iSCSI?",
+          options: [
+            "File system",
+            "Video streaming",
+            "Comandi SCSI via IP",
+            "Database",
+          ],
+          correct: 2,
+          explanation:
+            "iSCSI trasporta comandi SCSI incapsulati via protocollo IP per accesso remoto a storage a blocchi.",
         },
         {
-            question: "Quale comando monta un filesystem NFS?",
-            options: ["smbclient", "mount -t nfs", "nfs mount", "iscsiadm"],
-            correct: 1,
-            explanation: "mount -t nfs server:/share /mnt monta un export NFS nel punto di mount specificato."
+          question: "Quale comando monta un filesystem NFS?",
+          options: ["smbclient", "mount -t nfs", "nfs mount", "iscsiadm"],
+          correct: 1,
+          explanation:
+            "mount -t nfs server:/share /mnt monta un export NFS nel punto di mount specificato.",
         },
         {
-            question: "Cosa significa RPC in NFS?",
-            options: ["Rapid Packet Control", "Resource Pool Cache", "Reliable Protocol Connection", "Remote Procedure Call"],
-            correct: 3,
-            explanation: "RPC (Remote Procedure Call) è il meccanismo che permette a NFS di eseguire procedure remote attraverso la rete."
+          question: "Cosa significa RPC in NFS?",
+          options: [
+            "Rapid Packet Control",
+            "Resource Pool Cache",
+            "Reliable Protocol Connection",
+            "Remote Procedure Call",
+          ],
+          correct: 3,
+          explanation:
+            "RPC (Remote Procedure Call) è il meccanismo che permette a NFS di eseguire procedure remote attraverso la rete.",
         },
         {
-            question: "Quale tool esplora share SMB?",
-            options: ["smbclient -L", "iscsiadm", "showmount", "nfsstat"],
-            correct: 0,
-            explanation: "smbclient -L server elenca tutti gli share disponibili su un server SMB/CIFS."
+          question: "Quale tool esplora share SMB?",
+          options: ["smbclient -L", "iscsiadm", "showmount", "nfsstat"],
+          correct: 0,
+          explanation:
+            "smbclient -L server elenca tutti gli share disponibili su un server SMB/CIFS.",
         },
         {
-            question: "Cosa fa iscsiadm?",
-            options: ["Monitora rete", "Monta NFS", "Gestisce connessioni iSCSI", "Configura Samba"],
-            correct: 2,
-            explanation: "iscsiadm è l'utility per scoprire, gestire e configurare connessioni iSCSI."
+          question: "Cosa fa iscsiadm?",
+          options: [
+            "Monitora rete",
+            "Monta NFS",
+            "Gestisce connessioni iSCSI",
+            "Configura Samba",
+          ],
+          correct: 2,
+          explanation:
+            "iscsiadm è l'utility per scoprire, gestire e configurare connessioni iSCSI.",
         },
         {
-            question: "Quale sistema di autenticazione forte può essere usato con NFS e CIFS?",
-            options: ["SNMP v1", "Telnet", "Wake-on-LAN", "Kerberos"],
-            correct: 3,
-            explanation: "Kerberos fornisce autenticazione forte per NFS (RPCSEC_GSS) e CIFS/SMB; insieme a TLS o alla cifratura in transito protegge l'accesso alle condivisioni di rete."
+          question:
+            "Quale sistema di autenticazione forte può essere usato con NFS e CIFS?",
+          options: ["SNMP v1", "Telnet", "Wake-on-LAN", "Kerberos"],
+          correct: 3,
+          explanation:
+            "Kerberos fornisce autenticazione forte per NFS (RPCSEC_GSS) e CIFS/SMB; insieme a TLS o alla cifratura in transito protegge l'accesso alle condivisioni di rete.",
         },
         {
-            question: "Qual è la differenza tra storage file-level e block-level?",
-            options: ["Il file-level (NFS, SMB) espone file e cartelle; il block-level (iSCSI) espone dischi grezzi", "Il file-level è sempre più veloce", "Il block-level espone solo file di testo", "Non c'è alcuna differenza"],
-            correct: 0,
-            explanation: "Con NFS e SMB il client lavora su file e directory gestiti dal server; con iSCSI il client vede un disco a blocchi e vi crea il proprio filesystem."
+          question:
+            "Qual è la differenza tra storage file-level e block-level?",
+          options: [
+            "Il file-level (NFS, SMB) espone file e cartelle; il block-level (iSCSI) espone dischi grezzi",
+            "Il file-level è sempre più veloce",
+            "Il block-level espone solo file di testo",
+            "Non c'è alcuna differenza",
+          ],
+          correct: 0,
+          explanation:
+            "Con NFS e SMB il client lavora su file e directory gestiti dal server; con iSCSI il client vede un disco a blocchi e vi crea il proprio filesystem.",
         },
         {
-            question: "Quale comando mostra le statistiche delle chiamate RPC del client NFS?",
-            options: ["smbclient -L", "showmount -e", "iscsiadm -m session", "nfsstat -c"],
-            correct: 3,
-            explanation: "nfsstat -c riporta le statistiche del client NFS (chiamate RPC, errori, ritrasmissioni)."
-        }
-    ];
+          question:
+            "Quale comando mostra le statistiche delle chiamate RPC del client NFS?",
+          options: [
+            "smbclient -L",
+            "showmount -e",
+            "iscsiadm -m session",
+            "nfsstat -c",
+          ],
+          correct: 3,
+          explanation:
+            "nfsstat -c riporta le statistiche del client NFS (chiamate RPC, errori, ritrasmissioni).",
+        },
+      ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -541,45 +1232,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)})${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -590,45 +1285,49 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione del Network Storage! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione del Network Storage! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il Network Storage! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a studiare il Network Storage! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il Network Storage è complesso ma importante! 📚";
-            color = "#d32f2f";
+          message =
+            "Continua a studiare! Il Network Storage è complesso ma importante! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -642,41 +1341,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>

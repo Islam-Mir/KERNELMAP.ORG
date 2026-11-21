@@ -1,552 +1,1227 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SYSTEM RUN - Dettagli</title>
-     
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>SYSTEM RUN</h1>
-        <p class="subtitle">Esecuzione del Sistema</p>
+      <h1>SYSTEM RUN</h1>
+      <p class="subtitle">Esecuzione del Sistema</p>
     </div>
 
     <div class="content">
-        <span class="badge">⚙️ ESECUZIONE SISTEMA</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>Il System Run gestisce l'avvio, l'inizializzazione e l'esecuzione continua del sistema operativo Linux, coordinando tutti i sottosistemi per un funzionamento armonioso.</strong></p>
+      <span class="badge">⚙️ ESECUZIONE SISTEMA</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >Il System Run gestisce l'avvio, l'inizializzazione e l'esecuzione
+          continua del sistema operativo Linux, coordinando tutti i sottosistemi
+          per un funzionamento armonioso.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come l'accensione e il funzionamento di un'automobile: dal giro della chiave (boot) alla guida fluida (runtime), passando per tutti i controlli e regolazioni automatiche del motore.</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come l'accensione e il funzionamento di un'automobile: dal giro della
+        chiave (boot) alla guida fluida (runtime), passando per tutti i
+        controlli e regolazioni automatiche del motore.
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>Il System Run coordina l'avvio completo del sistema operativo Linux, dall'accensione hardware fino all'esecuzione dei servizi utente.</strong> Immagina un'orchestra sinfonica che si prepara per un concerto: ogni musicista (sottosistema) deve essere pronto al suo posto prima che il direttore (init system) dia il via alla performance.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >Il System Run coordina l'avvio completo del sistema operativo Linux,
+          dall'accensione hardware fino all'esecuzione dei servizi
+          utente.</strong
+        >
+        Immagina un'orchestra sinfonica che si prepara per un concerto: ogni
+        musicista (sottosistema) deve essere pronto al suo posto prima che il
+        direttore (init system) dia il via alla performance.
+      </p>
 
-        <p>• <strong>Boot sequence</strong> - Sequenza ordinata di inizializzazione da BIOS/UEFI al kernel</p>
-        <p>• <strong>Init system</strong> - Sistema di inizializzazione (systemd, SysV init) che avvia i servizi</p>
-        <p>• <strong>Runlevels/Targets</strong> - Stati del sistema che definiscono quali servizi eseguire</p>
-        <p>• <strong>Service management</strong> - Gestione dei demoni e servizi di sistema</p>
-        <p>• <strong>Shutdown sequence</strong> - Spegnimento ordinato che salva dati e chiude servizi</p>
-        <p>• <strong>Runtime monitoring</strong> - Monitoraggio continuo dello stato di salute del sistema</p>
-        <p><em>• Interazione: Coordina kernel, init system e servizi per mantenere il sistema operativo funzionante</em></p>
+      <p>
+        • <strong>Boot sequence</strong> - Sequenza ordinata di inizializzazione
+        da BIOS/UEFI al kernel
+      </p>
+      <p>
+        • <strong>Init system</strong> - Sistema di inizializzazione (systemd,
+        SysV init) che avvia i servizi
+      </p>
+      <p>
+        • <strong>Runlevels/Targets</strong> - Stati del sistema che definiscono
+        quali servizi eseguire
+      </p>
+      <p>
+        • <strong>Service management</strong> - Gestione dei demoni e servizi di
+        sistema
+      </p>
+      <p>
+        • <strong>Shutdown sequence</strong> - Spegnimento ordinato che salva
+        dati e chiude servizi
+      </p>
+      <p>
+        • <strong>Runtime monitoring</strong> - Monitoraggio continuo dello
+        stato di salute del sistema
+      </p>
+      <p>
+        <em
+          >• Interazione: Coordina kernel, init system e servizi per mantenere
+          il sistema operativo funzionante</em
+        >
+      </p>
 
-        <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>Il System Run gestisce quattro fasi critiche dell'esecuzione del sistema, ciascuna essenziale per il funzionamento:</strong></p>
+      <h2>⚙️ Operazioni Principali</h2>
+      <p>
+        <strong
+          >Il System Run gestisce quattro fasi critiche dell'esecuzione del
+          sistema, ciascuna essenziale per il funzionamento:</strong
+        >
+      </p>
 
-        <h3>🚀 Boot Process</h3>
-        <p>• <strong>BIOS/UEFI</strong> - Inizializzazione hardware e caricamento bootloader</p>
-        <p>• <strong>GRUB/LILO</strong> - Bootloader che carica il kernel in memoria</p>
-        <p>• <strong>start_kernel()</strong> - Inizializzazione del kernel e setup memoria</p>
-        <p>• <strong>initrd</strong> - Ramdisk iniziale per moduli essenziali</p>
-        <p>• <strong>rootfs mount</strong> - Montaggio del filesystem root</p>
+      <h3>🚀 Boot Process</h3>
+      <p>
+        • <strong>BIOS/UEFI</strong> - Inizializzazione hardware e caricamento
+        bootloader
+      </p>
+      <p>
+        • <strong>GRUB/LILO</strong> - Bootloader che carica il kernel in
+        memoria
+      </p>
+      <p>
+        • <strong>start_kernel()</strong> - Inizializzazione del kernel e setup
+        memoria
+      </p>
+      <p>• <strong>initrd</strong> - Ramdisk iniziale per moduli essenziali</p>
+      <p>• <strong>rootfs mount</strong> - Montaggio del filesystem root</p>
 
-        <h3>⚙️ Init System</h3>
-        <p>• <strong>systemd/init</strong> - Sistema di inizializzazione principale</p>
-        <p>• <strong>service start</strong> - Avvio ordinato dei servizi di sistema</p>
-        <p>• <strong>dependency resolution</strong> - Risoluzione dipendenze tra servizi</p>
-        <p>• <strong>target management</strong> - Gestione degli obiettivi di runlevel</p>
-        <p>• <strong>socket activation</strong> - Attivazione servizi su richiesta</p>
+      <h3>⚙️ Init System</h3>
+      <p>
+        • <strong>systemd/init</strong> - Sistema di inizializzazione principale
+      </p>
+      <p>
+        • <strong>service start</strong> - Avvio ordinato dei servizi di sistema
+      </p>
+      <p>
+        • <strong>dependency resolution</strong> - Risoluzione dipendenze tra
+        servizi
+      </p>
+      <p>
+        • <strong>target management</strong> - Gestione degli obiettivi di
+        runlevel
+      </p>
+      <p>
+        • <strong>socket activation</strong> - Attivazione servizi su richiesta
+      </p>
 
-        <h3>🔄 Runtime Management</h3>
-        <p>• <strong>process supervision</strong> - Monitoraggio processi e riavvio automatico</p>
-        <p>• <strong>resource limits</strong> - Controllo limiti risorse per processi</p>
-        <p>• <strong>logging</strong> - Raccolta e gestione log di sistema</p>
-        <p>• <strong>performance monitoring</strong> - Monitoraggio prestazioni sistema</p>
-        <p>• <strong>security policies</strong> - Applicazione politiche di sicurezza</p>
+      <h3>🔄 Runtime Management</h3>
+      <p>
+        • <strong>process supervision</strong> - Monitoraggio processi e riavvio
+        automatico
+      </p>
+      <p>
+        • <strong>resource limits</strong> - Controllo limiti risorse per
+        processi
+      </p>
+      <p>• <strong>logging</strong> - Raccolta e gestione log di sistema</p>
+      <p>
+        • <strong>performance monitoring</strong> - Monitoraggio prestazioni
+        sistema
+      </p>
+      <p>
+        • <strong>security policies</strong> - Applicazione politiche di
+        sicurezza
+      </p>
 
-        <h3>🛑 Shutdown Process</h3>
-        <p>• <strong>service stop</strong> - Arresto ordinato dei servizi</p>
-        <p>• <strong>filesystem sync</strong> - Sincronizzazione dati su disco</p>
-        <p>• <strong>unmount</strong> - Smontaggio sicuro dei filesystem</p>
-        <p>• <strong>poweroff/halt</strong> - Spegnimento o riavvio del sistema</p>
-        <p>• <strong>ACPI calls</strong> - Chiamate ACPI per gestione energia</p>
+      <h3>🛑 Shutdown Process</h3>
+      <p>• <strong>service stop</strong> - Arresto ordinato dei servizi</p>
+      <p>• <strong>filesystem sync</strong> - Sincronizzazione dati su disco</p>
+      <p>• <strong>unmount</strong> - Smontaggio sicuro dei filesystem</p>
+      <p>
+        • <strong>poweroff/halt</strong> - Spegnimento o riavvio del sistema
+      </p>
+      <p>• <strong>ACPI calls</strong> - Chiamate ACPI per gestione energia</p>
 
-        <h2>📋 Esempi Pratici</h2>
-        <p><strong>Esempi concreti di gestione del system run in Linux:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong>Esempi concreti di gestione del system run in Linux:</strong>
+      </p>
 
-        <h3>🔍 Gestione Servizi</h3>
-        <p>Per controllare i servizi di sistema:</p>
-        <ul>
-            <li><code>systemctl start apache2</code> - Avvia il web server Apache</li>
-            <li><code>systemctl enable mysql</code> - Abilita avvio automatico del database</li>
-            <li><code>systemctl stop nginx</code> - Ferma il web server Nginx</li>
-            <li><code>systemctl restart sshd</code> - Riavvia il servizio SSH</li>
-        </ul>
+      <h3>🔍 Gestione Servizi</h3>
+      <p>Per controllare i servizi di sistema:</p>
+      <ul>
+        <li>
+          <code>systemctl start apache2</code> - Avvia il web server Apache
+        </li>
+        <li>
+          <code>systemctl enable mysql</code> - Abilita avvio automatico del
+          database
+        </li>
+        <li><code>systemctl stop nginx</code> - Ferma il web server Nginx</li>
+        <li><code>systemctl restart sshd</code> - Riavvia il servizio SSH</li>
+      </ul>
 
-        <h3>📄 Strutture Dati Chiave</h3>
-        <ul>
-            <li><strong>systemd units</strong> - File .service, .target, .mount che definiscono unità di sistema</li>
-            <li><strong>targets</strong> - Stati del sistema (multi-user.target, graphical.target)</li>
-            <li><strong>dependencies</strong> - Relazioni "Wants=", "Requires=", "After=" tra unità</li>
-            <li><strong>sockets</strong> - File .socket per socket activation</li>
-        </ul>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>systemd units</strong> - File .service, .target, .mount che
+          definiscono unità di sistema
+        </li>
+        <li>
+          <strong>targets</strong> - Stati del sistema (multi-user.target,
+          graphical.target)
+        </li>
+        <li>
+          <strong>dependencies</strong> - Relazioni "Wants=", "Requires=",
+          "After=" tra unità
+        </li>
+        <li><strong>sockets</strong> - File .socket per socket activation</li>
+      </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare il system run:</strong></p>
-        <ul>
-            <li><code>systemctl list-units --type=service</code> - Lista tutti i servizi attivi</li>
-            <li><code>systemctl status NetworkManager</code> - Stato dettagliato di un servizio</li>
-            <li><code>journalctl -u apache2 --since "1 hour ago"</code> - Log recenti di un servizio</li>
-            <li><code>systemctl get-default</code> - Target di default del sistema</li>
-            <li><code>systemd-analyze blame</code> - Tempi di avvio dei servizi</li>
-        </ul>
+      <h3>💻 Nel Computer: Come Vederlo?</h3>
+      <p><strong>Comandi Linux per esplorare il system run:</strong></p>
+      <ul>
+        <li>
+          <code>systemctl list-units --type=service</code> - Lista tutti i
+          servizi attivi
+        </li>
+        <li>
+          <code>systemctl status NetworkManager</code> - Stato dettagliato di un
+          servizio
+        </li>
+        <li>
+          <code>journalctl -u apache2 --since "1 hour ago"</code> - Log recenti
+          di un servizio
+        </li>
+        <li>
+          <code>systemctl get-default</code> - Target di default del sistema
+        </li>
+        <li><code>systemd-analyze blame</code> - Tempi di avvio dei servizi</li>
+      </ul>
 
-        <h3>🎯 Caso Reale: Configurazione Server Web</h3>
-        <p>Per configurare un server LAMP (Linux, Apache, MySQL, PHP):</p>
-        <ol>
-            <li><code>systemctl enable apache2 mysql</code> - Abilita servizi per avvio automatico</li>
-            <li><code>systemctl start apache2 mysql</code> - Avvia i servizi</li>
-            <li><code>systemctl status apache2 mysql</code> - Verifica che siano attivi</li>
-            <li><code>journalctl -u apache2 -f</code> - Monitora log in tempo reale</li>
-            <li><code>systemctl reload apache2</code> - Ricarica configurazione senza interrompere</li>
-        </ol>
+      <h3>🎯 Caso Reale: Configurazione Server Web</h3>
+      <p>Per configurare un server LAMP (Linux, Apache, MySQL, PHP):</p>
+      <ol>
+        <li>
+          <code>systemctl enable apache2 mysql</code> - Abilita servizi per
+          avvio automatico
+        </li>
+        <li><code>systemctl start apache2 mysql</code> - Avvia i servizi</li>
+        <li>
+          <code>systemctl status apache2 mysql</code> - Verifica che siano
+          attivi
+        </li>
+        <li>
+          <code>journalctl -u apache2 -f</code> - Monitora log in tempo reale
+        </li>
+        <li>
+          <code>systemctl reload apache2</code> - Ricarica configurazione senza
+          interrompere
+        </li>
+      </ol>
 
-        <h2>💾 Init Systems Supportati</h2>
-        <ul>
-            <li><strong>systemd</strong> - Init system moderno con parallelizzazione e dependency management</li>
-            <li><strong>SysV init</strong> - Sistema tradizionale con runlevels e script di init</li>
-            <li><strong>Upstart</strong> - Event-based init system (legacy)</li>
-            <li><strong>OpenRC</strong> - Init system indipendente da specifiche distribuzioni</li>
-            <li><strong>runit</strong> - Init system semplice e sicuro</li>
-        </ul>
+      <h2>💾 Init Systems Supportati</h2>
+      <ul>
+        <li>
+          <strong>systemd</strong> - Init system moderno con parallelizzazione e
+          dependency management
+        </li>
+        <li>
+          <strong>SysV init</strong> - Sistema tradizionale con runlevels e
+          script di init
+        </li>
+        <li><strong>Upstart</strong> - Event-based init system (legacy)</li>
+        <li>
+          <strong>OpenRC</strong> - Init system indipendente da specifiche
+          distribuzioni
+        </li>
+        <li><strong>runit</strong> - Init system semplice e sicuro</li>
+      </ul>
 
-        <h2>✨ Caratteristiche</h2>
-        <ul>
-            <li><strong>Parallelizzazione</strong> - Avvio servizi in parallelo per velocità</li>
-            <li><strong>Dependency management</strong> - Risoluzione automatica dipendenze</li>
-            <li><strong>Socket activation</strong> - Servizi avviati su richiesta</li>
-            <li><strong>Resource control</strong> - Limiti e controllo risorse per processi</li>
-            <li><strong>Logging integrato</strong> - Sistema di logging unificato</li>
-        </ul>
+      <h2>✨ Caratteristiche</h2>
+      <ul>
+        <li>
+          <strong>Parallelizzazione</strong> - Avvio servizi in parallelo per
+          velocità
+        </li>
+        <li>
+          <strong>Dependency management</strong> - Risoluzione automatica
+          dipendenze
+        </li>
+        <li>
+          <strong>Socket activation</strong> - Servizi avviati su richiesta
+        </li>
+        <li>
+          <strong>Resource control</strong> - Limiti e controllo risorse per
+          processi
+        </li>
+        <li>
+          <strong>Logging integrato</strong> - Sistema di logging unificato
+        </li>
+      </ul>
 
-        <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Il System Run coordina molteplici sottosistemi del kernel e userspace:</strong></p>
+      <h2>🔗 Interazioni Chiave</h2>
+      <p>
+        <strong
+          >Il System Run coordina molteplici sottosistemi del kernel e
+          userspace:</strong
+        >
+      </p>
 
-        <h3>⚙️ Kernel Subsystems</h3>
-        <p>• <strong>Process scheduler</strong> - Gestisce l'esecuzione di init e servizi di sistema</p>
-        <p>• <strong>Memory manager</strong> - Alloca risorse per processi di sistema</p>
-        <p>• <strong>Device drivers</strong> - Inizializza driver essenziali durante il boot</p>
+      <h3>⚙️ Kernel Subsystems</h3>
+      <p>
+        • <strong>Process scheduler</strong> - Gestisce l'esecuzione di init e
+        servizi di sistema
+      </p>
+      <p>
+        • <strong>Memory manager</strong> - Alloca risorse per processi di
+        sistema
+      </p>
+      <p>
+        • <strong>Device drivers</strong> - Inizializza driver essenziali
+        durante il boot
+      </p>
 
-        <h3>🌐 Network Stack</h3>
-        <p>• <strong>Network configuration</strong> - Configura interfacce durante l'avvio</p>
-        <p>• <strong>Service networking</strong> - Abilita servizi di rete (sshd, httpd)</p>
-        <p>• <strong>DNS resolution</strong> - Configura risoluzione nomi</p>
+      <h3>🌐 Network Stack</h3>
+      <p>
+        • <strong>Network configuration</strong> - Configura interfacce durante
+        l'avvio
+      </p>
+      <p>
+        • <strong>Service networking</strong> - Abilita servizi di rete (sshd,
+        httpd)
+      </p>
+      <p>• <strong>DNS resolution</strong> - Configura risoluzione nomi</p>
 
-        <h3>💾 Storage Layer</h3>
-        <p>• <strong>Filesystem mounting</strong> - Monta filesystem necessari per il boot</p>
-        <p>• <strong>Device enumeration</strong> - Rileva dispositivi di storage</p>
-        <p>• <strong>Swap activation</strong> - Abilita spazio di swap</p>
+      <h3>💾 Storage Layer</h3>
+      <p>
+        • <strong>Filesystem mounting</strong> - Monta filesystem necessari per
+        il boot
+      </p>
+      <p>
+        • <strong>Device enumeration</strong> - Rileva dispositivi di storage
+      </p>
+      <p>• <strong>Swap activation</strong> - Abilita spazio di swap</p>
 
-        <h3>🔐 Security Framework</h3>
-        <p>• <strong>User authentication</strong> - Configura utenti e gruppi di sistema</p>
-        <p>• <strong>Permission setup</strong> - Imposta permessi per file e directory</p>
-        <p>• <strong>SELinux/AppArmor</strong> - Carica politiche di sicurezza</p>
+      <h3>🔐 Security Framework</h3>
+      <p>
+        • <strong>User authentication</strong> - Configura utenti e gruppi di
+        sistema
+      </p>
+      <p>
+        • <strong>Permission setup</strong> - Imposta permessi per file e
+        directory
+      </p>
+      <p>• <strong>SELinux/AppArmor</strong> - Carica politiche di sicurezza</p>
 
-        <h3>📊 System Monitoring</h3>
-        <p>• <strong>Logging systems</strong> - Avvia syslog e journald</p>
-        <p>• <strong>Performance monitoring</strong> - Abilita monitoraggio risorse</p>
-        <p>• <strong>Health checks</strong> - Verifica integrità del sistema</p>
+      <h3>📊 System Monitoring</h3>
+      <p>• <strong>Logging systems</strong> - Avvia syslog e journald</p>
+      <p>
+        • <strong>Performance monitoring</strong> - Abilita monitoraggio risorse
+      </p>
+      <p>• <strong>Health checks</strong> - Verifica integrità del sistema</p>
 
-        <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le interfacce principali per gestire il system run:</strong></p>
+      <h2>🛠️ API Principali</h2>
+      <p>
+        <strong
+          >Queste sono le interfacce principali per gestire il system
+          run:</strong
+        >
+      </p>
 
-        <h3>⚙️ Systemd Service Management</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">systemctl start service</code><br>
-            <span style="color: #666; font-size: 0.9em;">Avvia un servizio di sistema</span><br><br>
+      <h3>⚙️ Systemd Service Management</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >systemctl start service</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Avvia un servizio di sistema</span
+        ><br /><br />
 
-            <code style="color: #2e7d32; font-weight: bold;">systemctl enable service</code><br>
-            <span style="color: #666; font-size: 0.9em;">Abilita un servizio per l'avvio automatico</span><br><br>
+        <code style="color: #2e7d32; font-weight: bold"
+          >systemctl enable service</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Abilita un servizio per l'avvio automatico</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">systemctl status service</code><br>
-            <span style="color: #666; font-size: 0.9em;">Mostra lo stato di un servizio</span><br><br>
+        <code style="color: #f57c00; font-weight: bold"
+          >systemctl status service</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Mostra lo stato di un servizio</span
+        ><br /><br />
 
-            <code style="color: #9c27b0; font-weight: bold;">systemctl list-units</code><br>
-            <span style="color: #666; font-size: 0.9em;">Elenca tutte le unit systemd</span>
+        <code style="color: #9c27b0; font-weight: bold"
+          >systemctl list-units</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Elenca tutte le unit systemd</span
+        >
+      </div>
+
+      <h3>📊 System Monitoring</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >journalctl -u service</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Visualizza log di un servizio specifico</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold">systemd-analyze</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Analizza i tempi di boot del sistema</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold">uptime</code><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Mostra da quanto tempo il sistema è attivo</span
+        >
+      </div>
+
+      <h3>💽 Boot Management</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >systemctl isolate target</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Cambia il target di runlevel del sistema</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold">systemctl reboot</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em">Riavvia il sistema</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold">systemctl poweroff</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em">Spegne il sistema</span>
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+      <p><strong>Quando avvii un servizio come SSH:</strong></p>
+      <ol>
+        <li><code>systemctl start sshd</code> - Avvia il demone SSH</li>
+        <li>
+          <code>systemctl enable sshd</code> - Lo abilita per l'avvio automatico
+        </li>
+        <li><code>systemctl status sshd</code> - Verifica che sia attivo</li>
+        <li><code>journalctl -u sshd</code> - Controlla i log del servizio</li>
+      </ol>
+      <p>
+        <em
+          >systemd gestisce tutto il ciclo di vita dei servizi, dalla dipendenza
+          alla supervisione!</em
+        >
+      </p>
+
+      <h2>🗺️ Mappa Concettuale del System Run</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura del System Run
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ APPLICAZIONI USER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • systemctl commands<br />
+            • System administration<br />
+            • Service management
+          </div>
         </div>
 
-        <h3>📊 System Monitoring</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">journalctl -u service</code><br>
-            <span style="color: #666; font-size: 0.9em;">Visualizza log di un servizio specifico</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">systemd-analyze</code><br>
-            <span style="color: #666; font-size: 0.9em;">Analizza i tempi di boot del sistema</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">uptime</code><br>
-            <span style="color: #666; font-size: 0.9em;">Mostra da quanto tempo il sistema è attivo</span>
+        <!-- System Call Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔧 INIT SYSTEM (USER SPACE)
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • systemd • SysV init<br />
+            • Service units • Targets<br />
+            • Dependency management
+          </div>
         </div>
 
-        <h3>💽 Boot Management</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">systemctl isolate target</code><br>
-            <span style="color: #666; font-size: 0.9em;">Cambia il target di runlevel del sistema</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">systemctl reboot</code><br>
-            <span style="color: #666; font-size: 0.9em;">Riavvia il sistema</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">systemctl poweroff</code><br>
-            <span style="color: #666; font-size: 0.9em;">Spegne il sistema</span>
+        <!-- Kernel Core -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🌟 KERNEL CORE
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🚀</div>
+              <div style="font-size: 0.8em">Boot</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⚙️</div>
+              <div style="font-size: 0.8em">Scheduler</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🧠</div>
+              <div style="font-size: 0.8em">Memory</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔌</div>
+              <div style="font-size: 0.8em">Devices</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Process management<br />
+            • Resource allocation<br />
+            • System initialization
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando avvii un servizio come SSH:</strong></p>
-        <ol>
-            <li><code>systemctl start sshd</code> - Avvia il demone SSH</li>
-            <li><code>systemctl enable sshd</code> - Lo abilita per l'avvio automatico</li>
-            <li><code>systemctl status sshd</code> - Verifica che sia attivo</li>
-            <li><code>journalctl -u sshd</code> - Controlla i log del servizio</li>
-        </ol>
-        <p><em>systemd gestisce tutto il ciclo di vita dei servizi, dalla dipendenza alla supervisione!</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-
-        <h2>🗺️ Mappa Concettuale del System Run</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura del System Run</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • systemctl commands<br>
-                    • System administration<br>
-                    • Service management
-                </div>
+        <!-- Hardware Layer -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              🔌 HARDWARE
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- System Call Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 INIT SYSTEM (USER SPACE)</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • systemd • SysV init<br>
-                    • Service units • Targets<br>
-                    • Dependency management
-                </div>
+            <div style="font-size: 0.8em; color: #666">CPU, RAM, Storage</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              🌐 FIRMWARE
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Kernel Core -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 KERNEL CORE</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🚀</div>
-                        <div style="font-size: 0.8em;">Boot</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
-                        <div style="font-size: 0.8em;">Scheduler</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🧠</div>
-                        <div style="font-size: 0.8em;">Memory</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔌</div>
-                        <div style="font-size: 0.8em;">Devices</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Process management<br>
-                    • Resource allocation<br>
-                    • System initialization
-                </div>
+            <div style="font-size: 0.8em; color: #666">BIOS/UEFI</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              💽 BOOTLOADER
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Hardware Layer -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🔌 HARDWARE</div>
-                    <div style="font-size: 0.8em; color: #666;">CPU, RAM, Storage</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🌐 FIRMWARE</div>
-                    <div style="font-size: 0.8em; color: #666;">BIOS/UEFI</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">💽 BOOTLOADER</div>
-                    <div style="font-size: 0.8em; color: #666;">GRUB, LILO</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🗄️ INITRD</div>
-                    <div style="font-size: 0.8em; color: #666;">Initial RAM disk</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">GRUB, LILO</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              🗄️ INITRD
             </div>
-
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano la sequenza di boot del sistema<br>
-                • Ogni layer dipende dal precedente per funzionare<br>
-                • Il kernel è il cuore che coordina tutto il system run<br>
-                • L'init system gestisce la fase userspace del boot
-            </div>
+            <div style="font-size: 0.8em; color: #666">Initial RAM disk</div>
+          </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Sequenza di Boot</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Avvio del sistema Linux</h3>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Le frecce mostrano la sequenza di boot del sistema<br />
+          • Ogni layer dipende dal precedente per funzionare<br />
+          • Il kernel è il cuore che coordina tutto il system run<br />
+          • L'init system gestisce la fase userspace del boot
+        </div>
+      </div>
 
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🔌 Hardware</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        CPU: Intel i7<br>
-                        RAM: 16GB<br>
-                        <span style="color: #666;">(BIOS/UEFI pronto)</span>
-                    </div>
-                </div>
+      <h2>🎬 Demo Interattiva: Sequenza di Boot</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Avvio del sistema Linux
+        </h3>
 
-                <div style="font-size: 2em; color: #f57c00;">⚡</div>
-
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🐧 Sistema Linux</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        Kernel 5.15<br>
-                        systemd init<br>
-                        <span style="color: #666;">(tutti i servizi attivi)</span>
-                    </div>
-                </div>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              🔌 Hardware
             </div>
-
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comando per vedere il boot:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">journalctl -b</code>
+            <div style="font-family: monospace; font-size: 0.9em">
+              CPU: Intel i7<br />
+              RAM: 16GB<br />
+              <span style="color: #666">(BIOS/UEFI pronto)</span>
             </div>
+          </div>
 
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza di boot:</h4>
-                <ol style="line-height: 1.8;">
-                    <li><strong>1. POST (Power-On Self-Test):</strong> BIOS testa l'hardware</li>
-                    <li><strong>2. Bootloader:</strong> GRUB carica kernel e initrd</li>
-                    <li><strong>3. Kernel init:</strong> Inizializzazione memoria e dispositivi</li>
-                    <li><strong>4. Root filesystem:</strong> Montaggio del disco root</li>
-                    <li><strong>5. Systemd:</strong> Avvio parallelo di tutti i servizi</li>
-                </ol>
-            </div>
+          <div style="font-size: 2em; color: #f57c00">⚡</div>
 
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> In pochi secondi il sistema passa da hardware spento a desktop Linux completamente funzionale!
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              🐧 Sistema Linux
             </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Kernel 5.15<br />
+              systemd init<br />
+              <span style="color: #666">(tutti i servizi attivi)</span>
+            </div>
+          </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora il System Run</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Gestisci servizi systemd</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ systemctl list-units --type=service<br>
-                        $ systemctl status sshd<br>
-                        $ systemctl start/stop/enable/disable apache2
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Controlla e gestisci i servizi di sistema</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza i tempi di boot</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ systemd-analyze<br>
-                        $ systemd-analyze blame<br>
-                        $ systemd-analyze plot > boot.svg
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi quanto tempo impiegano i servizi per avviarsi</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📋 Leggi i log di sistema</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ journalctl -b<br>
-                        $ journalctl -u nginx<br>
-                        $ journalctl --since "1 hour ago"
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina i log del sistema e dei servizi</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔄 Cambia runlevel/target</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ systemctl get-default<br>
-                        $ systemctl set-default multi-user.target<br>
-                        $ systemctl isolate graphical.target
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Modifica lo stato di esecuzione del sistema</em></p>
-                </div>
-            </div>
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Comando per vedere il boot:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >journalctl -b</code
+          >
         </div>
 
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🚀</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Sequenza Ordinata</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Il boot segue una sequenza precisa: hardware → firmware → bootloader → kernel → init system → servizi.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚙️</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Init System Moderno</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    systemd gestisce servizi, targets, logging e monitoraggio con avvio parallelo e dependency resolution.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📊</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Logging Unificato</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    journald raccoglie log da kernel, servizi e applicazioni in un sistema centralizzato e strutturato.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Runtime Management</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Oltre l'avvio, il system run gestisce monitoraggio, riavvii automatici e transizioni tra stati del sistema.
-                </p>
-            </div>
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Sequenza di boot:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. POST (Power-On Self-Test):</strong> BIOS testa
+              l'hardware
+            </li>
+            <li><strong>2. Bootloader:</strong> GRUB carica kernel e initrd</li>
+            <li>
+              <strong>3. Kernel init:</strong> Inizializzazione memoria e
+              dispositivi
+            </li>
+            <li>
+              <strong>4. Root filesystem:</strong> Montaggio del disco root
+            </li>
+            <li>
+              <strong>5. Systemd:</strong> Avvio parallelo di tutti i servizi
+            </li>
+          </ol>
         </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> In pochi secondi il sistema passa da
+          hardware spento a desktop Linux completamente funzionale!
+        </div>
+      </div>
+
+      <h2>🧪 Laboratorio Pratico: Esplora il System Run</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              ⚙️ Gestisci servizi systemd
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ systemctl list-units --type=service<br />
+              $ systemctl status sshd<br />
+              $ systemctl start/stop/enable/disable apache2
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Controlla e gestisci i servizi di sistema</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📊 Analizza i tempi di boot
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ systemd-analyze<br />
+              $ systemd-analyze blame<br />
+              $ systemd-analyze plot > boot.svg
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi quanto tempo impiegano i servizi per avviarsi</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📋 Leggi i log di sistema
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ journalctl -b<br />
+              $ journalctl -u nginx<br />
+              $ journalctl --since "1 hour ago"
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Esamina i log del sistema e dei servizi</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔄 Cambia runlevel/target
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ systemctl get-default<br />
+              $ systemctl set-default multi-user.target<br />
+              $ systemctl isolate graphical.target
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Modifica lo stato di esecuzione del sistema</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🚀
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Sequenza Ordinata
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            Il boot segue una sequenza precisa: hardware → firmware → bootloader
+            → kernel → init system → servizi.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            ⚙️
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Init System Moderno
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            systemd gestisce servizi, targets, logging e monitoraggio con avvio
+            parallelo e dependency resolution.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            📊
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Logging Unificato
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            journald raccoglie log da kernel, servizi e applicazioni in un
+            sistema centralizzato e strutturato.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔄
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Runtime Management
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Oltre l'avvio, il system run gestisce monitoraggio, riavvii
+            automatici e transizioni tra stati del sistema.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sul System Run
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz sul System Run
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
+        {
+          question: "Cosa gestisce il System Run nel kernel Linux?",
+          options: [
+            "Solo la memoria",
+            "Avvio, inizializzazione e esecuzione del sistema",
+            "Solo la rete",
+            "Solo i dispositivi",
+          ],
+          correct: 1,
+          explanation:
+            "Il System Run coordina l'avvio completo del sistema dall'accensione fino all'esecuzione dei servizi.",
+        },
+        {
+          question: "Quale componente avvia i servizi di sistema in ordine?",
+          options: ["Bootloader", "Init system (systemd)", "BIOS", "Kernel"],
+          correct: 1,
+          explanation:
+            "L'init system (come systemd) gestisce l'avvio ordinato dei servizi risolvendo le dipendenze.",
+        },
+        {
+          question: "Cosa fa GRUB durante il boot?",
+          options: [
+            "Configura la rete",
+            "Inizializza la RAM",
+            "Avvia i servizi",
+            "Carica il kernel in memoria",
+          ],
+          correct: 3,
+          explanation:
+            "GRUB è il bootloader che carica il kernel Linux e l'initrd nella memoria.",
+        },
+        {
+          question:
+            "Quale comando mostra i log di systemd-journald relativi al boot corrente (kernel e servizi)?",
+          options: ["dmesg", "uptime", "systemctl status", "journalctl -b"],
+          correct: 3,
+          explanation:
+            "journalctl -b mostra i messaggi raccolti da journald dal boot corrente, sia del kernel sia dei servizi; dmesg mostra invece solo il kernel ring buffer.",
+        },
+        {
+          question: "Cosa rappresenta un 'target' in systemd?",
+          options: [
+            "Un dispositivo",
+            "Un file di configurazione",
+            "Uno stato del sistema (es. multi-user.target)",
+            "Un processo",
+          ],
+          correct: 2,
+          explanation:
+            "I target sono stati del sistema che definiscono quali servizi devono essere attivi.",
+        },
+        {
+          question:
+            "Quale fase del boot avviene prima del caricamento del kernel?",
+          options: [
+            "BIOS/UEFI POST",
+            "Service start",
+            "Filesystem mount",
+            "Init system",
+          ],
+          correct: 0,
+          explanation:
+            "BIOS/UEFI esegue il POST e inizializza l'hardware prima di passare al bootloader.",
+        },
+        {
+          question: "Cosa fa systemd-analyze?",
+          options: [
+            "Analizza i tempi di boot",
+            "Avvia servizi",
+            "Cambia target",
+            "Mostra log",
+          ],
+          correct: 0,
+          explanation:
+            "systemd-analyze misura e mostra i tempi impiegati da ciascun servizio durante l'avvio.",
+        },
+        {
+          question: "Quale comando abilita un servizio per l'avvio automatico?",
+          options: [
+            "systemctl start",
+            "systemctl status",
+            "systemctl enable",
+            "systemctl list-units",
+          ],
+          correct: 2,
+          explanation:
+            "systemctl enable crea i link simbolici necessari per avviare il servizio automaticamente.",
+        },
+        {
+          question:
+            "Cosa fa lo shutdown ordinato prima di spegnere la macchina?",
+          options: [
+            "Arresta i servizi, sincronizza i dati su disco e smonta i filesystem",
+            "Ricarica il kernel dal bootloader",
+            "Toglie subito l'alimentazione senza salvare nulla",
+            "Cancella RAM e disco",
+          ],
+          correct: 0,
+          explanation:
+            "Lo shutdown ordinato ferma i servizi, sincronizza i dati su disco e smonta i filesystem prima di richiedere lo spegnimento (poweroff/halt) o il riavvio.",
+        },
+        {
+          question:
+            "Quali file definiscono le unità di systemd (servizi, target, mount)?",
+          options: [
+            ".ko e .so",
+            ".conf e .ini",
+            ".log e .txt",
+            ".service, .target e .mount",
+          ],
+          correct: 3,
+          explanation:
+            "systemd descrive servizi, target, mount e socket con file di unità: .service, .target, .mount, .socket e così via.",
+        },
+      ];
 
-<script>
-    // Quiz functionality
-                const quizQuestions = [
-        {
-            question: "Cosa gestisce il System Run nel kernel Linux?",
-            options: ["Solo la memoria", "Avvio, inizializzazione e esecuzione del sistema", "Solo la rete", "Solo i dispositivi"],
-            correct: 1,
-            explanation: "Il System Run coordina l'avvio completo del sistema dall'accensione fino all'esecuzione dei servizi."
-        },
-        {
-            question: "Quale componente avvia i servizi di sistema in ordine?",
-            options: ["Bootloader", "Init system (systemd)", "BIOS", "Kernel"],
-            correct: 1,
-            explanation: "L'init system (come systemd) gestisce l'avvio ordinato dei servizi risolvendo le dipendenze."
-        },
-        {
-            question: "Cosa fa GRUB durante il boot?",
-            options: ["Configura la rete", "Inizializza la RAM", "Avvia i servizi", "Carica il kernel in memoria"],
-            correct: 3,
-            explanation: "GRUB è il bootloader che carica il kernel Linux e l'initrd nella memoria."
-        },
-        {
-            question: "Quale comando mostra i log di systemd-journald relativi al boot corrente (kernel e servizi)?",
-            options: ["dmesg", "uptime", "systemctl status", "journalctl -b"],
-            correct: 3,
-            explanation: "journalctl -b mostra i messaggi raccolti da journald dal boot corrente, sia del kernel sia dei servizi; dmesg mostra invece solo il kernel ring buffer."
-        },
-        {
-            question: "Cosa rappresenta un 'target' in systemd?",
-            options: ["Un dispositivo", "Un file di configurazione", "Uno stato del sistema (es. multi-user.target)", "Un processo"],
-            correct: 2,
-            explanation: "I target sono stati del sistema che definiscono quali servizi devono essere attivi."
-        },
-        {
-            question: "Quale fase del boot avviene prima del caricamento del kernel?",
-            options: ["BIOS/UEFI POST", "Service start", "Filesystem mount", "Init system"],
-            correct: 0,
-            explanation: "BIOS/UEFI esegue il POST e inizializza l'hardware prima di passare al bootloader."
-        },
-        {
-            question: "Cosa fa systemd-analyze?",
-            options: ["Analizza i tempi di boot", "Avvia servizi", "Cambia target", "Mostra log"],
-            correct: 0,
-            explanation: "systemd-analyze misura e mostra i tempi impiegati da ciascun servizio durante l'avvio."
-        },
-        {
-            question: "Quale comando abilita un servizio per l'avvio automatico?",
-            options: ["systemctl start", "systemctl status", "systemctl enable", "systemctl list-units"],
-            correct: 2,
-            explanation: "systemctl enable crea i link simbolici necessari per avviare il servizio automaticamente."
-        },
-        {
-            question: "Cosa fa lo shutdown ordinato prima di spegnere la macchina?",
-            options: ["Arresta i servizi, sincronizza i dati su disco e smonta i filesystem", "Ricarica il kernel dal bootloader", "Toglie subito l'alimentazione senza salvare nulla", "Cancella RAM e disco"],
-            correct: 0,
-            explanation: "Lo shutdown ordinato ferma i servizi, sincronizza i dati su disco e smonta i filesystem prima di richiedere lo spegnimento (poweroff/halt) o il riavvio."
-        },
-        {
-            question: "Quali file definiscono le unità di systemd (servizi, target, mount)?",
-            options: [".ko e .so", ".conf e .ini", ".log e .txt", ".service, .target e .mount"],
-            correct: 3,
-            explanation: "systemd descrive servizi, target, mount e socket con file di unità: .service, .target, .mount, .socket e così via."
-        }
-    ];
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -555,45 +1230,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -604,45 +1283,47 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione del System Run! 🎉";
-            color = "#2e7d32";
+          message = "Eccellente! Hai una buona comprensione del System Run! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare il system run! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a studiare il system run! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! Il system run è fondamentale! 📚";
-            color = "#d32f2f";
+          message = "Continua a studiare! Il system run è fondamentale! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -656,52 +1337,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-      const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

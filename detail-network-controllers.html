@@ -1,542 +1,1272 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NETWORK CONTROLLERS - Dettagli</title>
-    
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>NETWORK CONTROLLERS</h1>
-        <p class="subtitle">Controller di rete</p>
+      <h1>NETWORK CONTROLLERS</h1>
+      <p class="subtitle">Controller di rete</p>
     </div>
 
     <div class="content">
-        <span class="badge">🌐 CONTROLLER RETE</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>I Network Controllers sono dispositivi hardware specializzati che gestiscono l'elaborazione e l'inoltro dei pacchetti di rete, fornendo le funzionalità fondamentali per la comunicazione in rete nei sistemi Linux moderni.</strong></p>
+      <span class="badge">🌐 CONTROLLER RETE</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >I Network Controllers sono dispositivi hardware specializzati che
+          gestiscono l'elaborazione e l'inoltro dei pacchetti di rete, fornendo
+          le funzionalità fondamentali per la comunicazione in rete nei sistemi
+          Linux moderni.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come un cervello elettronico dedicato alla rete: mentre la CPU principale gestisce applicazioni e sistema operativo, il network controller è specializzato esclusivamente nell'elaborazione dei pacchetti, come un co-processore matematico dedicato ai calcoli floating-point.</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come un cervello elettronico dedicato alla rete: mentre la CPU
+        principale gestisce applicazioni e sistema operativo, il network
+        controller è specializzato esclusivamente nell'elaborazione dei
+        pacchetti, come un co-processore matematico dedicato ai calcoli
+        floating-point.
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>I Network Controllers rappresentano l'hardware dedicato che implementa le funzionalità di rete a livello fisico e di collegamento dati, scaricando la CPU principale dalle operazioni intensive di rete.</strong> Sono i "motori" che fanno girare la rete, con processori dedicati, memoria specializzata, e interfacce ottimizzate per il throughput elevato.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >I Network Controllers rappresentano l'hardware dedicato che
+          implementa le funzionalità di rete a livello fisico e di collegamento
+          dati, scaricando la CPU principale dalle operazioni intensive di
+          rete.</strong
+        >
+        Sono i "motori" che fanno girare la rete, con processori dedicati,
+        memoria specializzata, e interfacce ottimizzate per il throughput
+        elevato.
+      </p>
 
-        <p>• <strong>Packet processing acceleration</strong> - Elaborazione pacchetti ad alta velocità con hardware dedicato</p>
-        <p>• <strong>Offload capabilities</strong> - Scarico CPU per operazioni crittografiche e di segmentazione</p>
-        <p>• <strong>Multi-queue support</strong> - Code multiple per distribuzione intelligente del carico</p>
-        <p>• <strong>Quality of Service</strong> - Prioritizzazione traffico e shaping in hardware</p>
-        <p>• <strong>Link management</strong> - Controllo automatico velocità, duplex, e negoziazione</p>
-        <p>• <strong>Statistics collection</strong> - Monitoraggio prestazioni e diagnostica integrata</p>
-        <p><em>• Interazione: Ricevono pacchetti dal driver del kernel e li elaborano con algoritmi hardware-accelerated prima di trasmetterli</em></p>
+      <p>
+        • <strong>Packet processing acceleration</strong> - Elaborazione
+        pacchetti ad alta velocità con hardware dedicato
+      </p>
+      <p>
+        • <strong>Offload capabilities</strong> - Scarico CPU per operazioni
+        crittografiche e di segmentazione
+      </p>
+      <p>
+        • <strong>Multi-queue support</strong> - Code multiple per distribuzione
+        intelligente del carico
+      </p>
+      <p>
+        • <strong>Quality of Service</strong> - Prioritizzazione traffico e
+        shaping in hardware
+      </p>
+      <p>
+        • <strong>Link management</strong> - Controllo automatico velocità,
+        duplex, e negoziazione
+      </p>
+      <p>
+        • <strong>Statistics collection</strong> - Monitoraggio prestazioni e
+        diagnostica integrata
+      </p>
+      <p>
+        <em
+          >• Interazione: Ricevono pacchetti dal driver del kernel e li
+          elaborano con algoritmi hardware-accelerated prima di trasmetterli</em
+        >
+      </p>
 
-<h2>⚙️ Funzionalità Core</h2>
-<p><strong>I Network Controllers implementano quattro categorie fondamentali di operazioni che costituiscono il cuore dell'elaborazione di rete:</strong></p>
+      <h2>⚙️ Funzionalità Core</h2>
+      <p>
+        <strong
+          >I Network Controllers implementano quattro categorie fondamentali di
+          operazioni che costituiscono il cuore dell'elaborazione di
+          rete:</strong
+        >
+      </p>
 
-<h3>🔄 Packet Processing Pipeline</h3>
-<p>• <strong>Receive processing</strong> - Validazione checksum, parsing header, e forwarding decision</p>
-<p>• <strong>Transmit scheduling</strong> - Queue management, priority handling, e rate limiting</p>
-<p>• <strong>Traffic shaping</strong> - Bandwidth allocation e QoS enforcement in hardware</p>
+      <h3>🔄 Packet Processing Pipeline</h3>
+      <p>
+        • <strong>Receive processing</strong> - Validazione checksum, parsing
+        header, e forwarding decision
+      </p>
+      <p>
+        • <strong>Transmit scheduling</strong> - Queue management, priority
+        handling, e rate limiting
+      </p>
+      <p>
+        • <strong>Traffic shaping</strong> - Bandwidth allocation e QoS
+        enforcement in hardware
+      </p>
 
-<h3>🔐 Security & Encryption</h3>
-<p>• <strong>IPsec offload</strong> - Crittografia/decrittografia pacchetti IPsec in hardware</p>
-<p>• <strong>TLS acceleration</strong> - Accelerazione handshake e bulk encryption SSL/TLS</p>
-<p>• <strong>Deep packet inspection</strong> - Pattern matching e filtering avanzato</p>
+      <h3>🔐 Security & Encryption</h3>
+      <p>
+        • <strong>IPsec offload</strong> - Crittografia/decrittografia pacchetti
+        IPsec in hardware
+      </p>
+      <p>
+        • <strong>TLS acceleration</strong> - Accelerazione handshake e bulk
+        encryption SSL/TLS
+      </p>
+      <p>
+        • <strong>Deep packet inspection</strong> - Pattern matching e filtering
+        avanzato
+      </p>
 
-<h3>📊 Monitoring & Diagnostics</h3>
-<p>• <strong>Statistics collection</strong> - Contatori pacchetti, errori, e performance metrics</p>
-<p>• <strong>Health monitoring</strong> - Link status, temperature, e diagnostic information</p>
-<p>• <strong>Debug capabilities</strong> - Packet capture e analysis tools integrati</p>
+      <h3>📊 Monitoring & Diagnostics</h3>
+      <p>
+        • <strong>Statistics collection</strong> - Contatori pacchetti, errori,
+        e performance metrics
+      </p>
+      <p>
+        • <strong>Health monitoring</strong> - Link status, temperature, e
+        diagnostic information
+      </p>
+      <p>
+        • <strong>Debug capabilities</strong> - Packet capture e analysis tools
+        integrati
+      </p>
 
-<h3>⚙️ Configuration & Control</h3>
-<p>• <strong>Link configuration</strong> - Auto-negotiation, velocità, duplex, e flow control</p>
-<p>• <strong>Filter programming</strong> - MAC address filtering e VLAN processing</p>
-<p>• <strong>Interrupt management</strong> - Configurazione coalescenza e moderation</p>
+      <h3>⚙️ Configuration & Control</h3>
+      <p>
+        • <strong>Link configuration</strong> - Auto-negotiation, velocità,
+        duplex, e flow control
+      </p>
+      <p>
+        • <strong>Filter programming</strong> - MAC address filtering e VLAN
+        processing
+      </p>
+      <p>
+        • <strong>Interrupt management</strong> - Configurazione coalescenza e
+        moderation
+      </p>
 
-<h2>📋 Esempi Pratici</h2>
-<p><strong>Quando navighi su un sito HTTPS sicuro, ecco come il network controller accelera ogni aspetto della connessione:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong
+          >Quando navighi su un sito HTTPS sicuro, ecco come il network
+          controller accelera ogni aspetto della connessione:</strong
+        >
+      </p>
 
-<h3>🔍 HTTPS Connection Acceleration</h3>
-<p>1. TCP handshake con TSO (TCP Segmentation Offload) per ridurre interrupt</p>
-<p>2. TLS handshake con hardware acceleration per chiave exchange</p>
-<p>3. Bulk encryption/decryption offloaded al controller</p>
-<p>4. Checksum validation in hardware per ogni pacchetto</p>
+      <h3>🔍 HTTPS Connection Acceleration</h3>
+      <p>
+        1. TCP handshake con TSO (TCP Segmentation Offload) per ridurre
+        interrupt
+      </p>
+      <p>2. TLS handshake con hardware acceleration per chiave exchange</p>
+      <p>3. Bulk encryption/decryption offloaded al controller</p>
+      <p>4. Checksum validation in hardware per ogni pacchetto</p>
 
-<h3>📄 Architetture Controller</h3>
-<ul>
-<li><strong>ASIC-based controllers</strong> - Circuiti integrati specifici per applicazioni di rete ad alte prestazioni</li>
-<li><strong>FPGA-programmable</strong> - Field Programmable Gate Arrays per customizzazioni specifiche</li>
-<li><strong>SmartNICs</strong> - Network Interface Cards con CPU integrate per processamento avanzato</li>
-<li><strong>DPUs (Data Processing Units)</strong> - Unità dedicate al processamento dati di rete</li>
-</ul>
+      <h3>📄 Architetture Controller</h3>
+      <ul>
+        <li>
+          <strong>ASIC-based controllers</strong> - Circuiti integrati specifici
+          per applicazioni di rete ad alte prestazioni
+        </li>
+        <li>
+          <strong>FPGA-programmable</strong> - Field Programmable Gate Arrays
+          per customizzazioni specifiche
+        </li>
+        <li>
+          <strong>SmartNICs</strong> - Network Interface Cards con CPU integrate
+          per processamento avanzato
+        </li>
+        <li>
+          <strong>DPUs (Data Processing Units)</strong> - Unità dedicate al
+          processamento dati di rete
+        </li>
+      </ul>
 
-<h3>💻 Comandi di Analisi</h3>
-<p><strong>Strumenti Linux per analizzare network controllers:</strong></p>
-<ul>
-<li><code>ethtool -i eth0</code> - Informazioni driver e firmware del controller</li>
-<li><code>lspci -vv | grep Ethernet</code> - Dettagli PCI del controller hardware</li>
-<li><code>ip link show eth0</code> - Stato link e capabilities del controller</li>
-<li><code>ethtool -k eth0</code> - Elenco features offload abilitate</li>
-</ul>
+      <h3>💻 Comandi di Analisi</h3>
+      <p>
+        <strong>Strumenti Linux per analizzare network controllers:</strong>
+      </p>
+      <ul>
+        <li>
+          <code>ethtool -i eth0</code> - Informazioni driver e firmware del
+          controller
+        </li>
+        <li>
+          <code>lspci -vv | grep Ethernet</code> - Dettagli PCI del controller
+          hardware
+        </li>
+        <li>
+          <code>ip link show eth0</code> - Stato link e capabilities del
+          controller
+        </li>
+        <li>
+          <code>ethtool -k eth0</code> - Elenco features offload abilitate
+        </li>
+      </ul>
 
-<h3>🎯 Scenario Data Center</h3>
-<p>In un data center con traffico 100Gbps:</p>
-<ol>
-<li>Controller riceve pacchetti a velocità wire-rate</li>
-<li>RSS distribuisce traffico su 64 code hardware</li>
-<li>Hardware valida checksum e filtra pacchetti</li>
-<li>DMA trasferisce dati direttamente in memoria server</li>
-<li>CPU elabora solo pacchetti validi ad alta priorità</li>
-</ol>
+      <h3>🎯 Scenario Data Center</h3>
+      <p>In un data center con traffico 100Gbps:</p>
+      <ol>
+        <li>Controller riceve pacchetti a velocità wire-rate</li>
+        <li>RSS distribuisce traffico su 64 code hardware</li>
+        <li>Hardware valida checksum e filtra pacchetti</li>
+        <li>DMA trasferisce dati direttamente in memoria server</li>
+        <li>CPU elabora solo pacchetti validi ad alta priorità</li>
+      </ol>
 
-<h2>💾 Tipi di Controller</h2>
-        <ul>
-            <li><strong>Ethernet controllers</strong> - Gigabit, 10G, 25G, 100G con supporto multi-queue</li>
-            <li><strong>Converged Network Adapters</strong> - CNA per Ethernet + FCoE + iSCSI</li>
-            <li><strong>RDMA adapters</strong> - RoCE, iWARP per storage networking ad alte prestazioni</li>
-            <li><strong>SmartNICs</strong> - Con CPU integrate per processamento avanzato</li>
-            <li><strong>FPGA-based</strong> - Programmabili per applicazioni custom</li>
-        </ul>
+      <h2>💾 Tipi di Controller</h2>
+      <ul>
+        <li>
+          <strong>Ethernet controllers</strong> - Gigabit, 10G, 25G, 100G con
+          supporto multi-queue
+        </li>
+        <li>
+          <strong>Converged Network Adapters</strong> - CNA per Ethernet + FCoE
+          + iSCSI
+        </li>
+        <li>
+          <strong>RDMA adapters</strong> - RoCE, iWARP per storage networking ad
+          alte prestazioni
+        </li>
+        <li>
+          <strong>SmartNICs</strong> - Con CPU integrate per processamento
+          avanzato
+        </li>
+        <li>
+          <strong>FPGA-based</strong> - Programmabili per applicazioni custom
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche Principali</h2>
-<ul>
-<li><strong>Wire-speed processing</strong> - Elaborazione pacchetti alla velocità massima del collegamento</li>
-<li><strong>Low latency</strong> - Minimizzazione latenza attraverso ottimizzazioni hardware</li>
-<li><strong>High throughput</strong> - Supporto multi-gigabit con CPU utilization minima</li>
-<li><strong>Advanced offloads</strong> - Scarico in hardware di operazioni come checksum e segmentazione (un TCP Offload Engine completo non è supportato dal kernel Linux mainline)</li>
-</ul>
+      <h2>✨ Caratteristiche Principali</h2>
+      <ul>
+        <li>
+          <strong>Wire-speed processing</strong> - Elaborazione pacchetti alla
+          velocità massima del collegamento
+        </li>
+        <li>
+          <strong>Low latency</strong> - Minimizzazione latenza attraverso
+          ottimizzazioni hardware
+        </li>
+        <li>
+          <strong>High throughput</strong> - Supporto multi-gigabit con CPU
+          utilization minima
+        </li>
+        <li>
+          <strong>Advanced offloads</strong> - Scarico in hardware di operazioni
+          come checksum e segmentazione (un TCP Offload Engine completo non è
+          supportato dal kernel Linux mainline)
+        </li>
+      </ul>
 
-<h2>🔗 Interazioni Sistemiche</h2>
-<p><strong>I Network Controllers operano come ponte critico tra hardware e software di rete, interfacciandosi con molteplici componenti del sistema:</strong></p>
+      <h2>🔗 Interazioni Sistemiche</h2>
+      <p>
+        <strong
+          >I Network Controllers operano come ponte critico tra hardware e
+          software di rete, interfacciandosi con molteplici componenti del
+          sistema:</strong
+        >
+      </p>
 
-<h3>🌐 Network Device Drivers</h3>
-<p>• <strong>Hardware abstraction</strong> - I driver forniscono interfaccia software al controller hardware</p>
-<p>• <strong>Configuration management</strong> - Programmazione registri e parametri operativi</p>
-<p>• <strong>Interrupt handling</strong> - Gestione eventi e notifiche dal controller</p>
+      <h3>🌐 Network Device Drivers</h3>
+      <p>
+        • <strong>Hardware abstraction</strong> - I driver forniscono
+        interfaccia software al controller hardware
+      </p>
+      <p>
+        • <strong>Configuration management</strong> - Programmazione registri e
+        parametri operativi
+      </p>
+      <p>
+        • <strong>Interrupt handling</strong> - Gestione eventi e notifiche dal
+        controller
+      </p>
 
-<h3>⚡ DMA Engine</h3>
-<p>• <strong>Direct memory access</strong> - Trasferimenti zero-copy tra controller e memoria sistema</p>
-<p>• <strong>Scatter-gather</strong> - Supporto frammentazione pacchetti in memoria non contigua</p>
-<p>• <strong>IOMMU integration</strong> - Address translation per sicurezza e virtualizzazione</p>
+      <h3>⚡ DMA Engine</h3>
+      <p>
+        • <strong>Direct memory access</strong> - Trasferimenti zero-copy tra
+        controller e memoria sistema
+      </p>
+      <p>
+        • <strong>Scatter-gather</strong> - Supporto frammentazione pacchetti in
+        memoria non contigua
+      </p>
+      <p>
+        • <strong>IOMMU integration</strong> - Address translation per sicurezza
+        e virtualizzazione
+      </p>
 
-<h3>🔒 Security Framework</h3>
-<p>• <strong>Cryptographic acceleration</strong> - Offload crittografia per IPsec e TLS</p>
-<p>• <strong>Secure boot</strong> - Verifica integrità firmware controller</p>
-<p>• <strong>Trusted execution</strong> - Ambiente sicuro per chiavi crittografiche</p>
+      <h3>🔒 Security Framework</h3>
+      <p>
+        • <strong>Cryptographic acceleration</strong> - Offload crittografia per
+        IPsec e TLS
+      </p>
+      <p>
+        • <strong>Secure boot</strong> - Verifica integrità firmware controller
+      </p>
+      <p>
+        • <strong>Trusted execution</strong> - Ambiente sicuro per chiavi
+        crittografiche
+      </p>
 
-<h3>📊 System Monitoring</h3>
-<p>• <strong>Performance counters</strong> - Metriche dettagliate per troubleshooting</p>
-<p>• <strong>Health monitoring</strong> - Temperature, voltage, e link status</p>
-<p>• <strong>Diagnostic interfaces</strong> - Debug e analisi problemi di rete</p>
+      <h3>📊 System Monitoring</h3>
+      <p>
+        • <strong>Performance counters</strong> - Metriche dettagliate per
+        troubleshooting
+      </p>
+      <p>
+        • <strong>Health monitoring</strong> - Temperature, voltage, e link
+        status
+      </p>
+      <p>
+        • <strong>Diagnostic interfaces</strong> - Debug e analisi problemi di
+        rete
+      </p>
 
-<h2>🛠️ Interfacce Hardware</h2>
-        <p><strong>Queste sono le interfacce principali che i driver utilizzano per controllare i network controllers:</strong></p>
+      <h2>🛠️ Interfacce Hardware</h2>
+      <p>
+        <strong
+          >Queste sono le interfacce principali che i driver utilizzano per
+          controllare i network controllers:</strong
+        >
+      </p>
 
-        <h3>🔧 Register Access</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">ioread32()/iowrite32()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Accesso ai registri di controllo del controller attraverso MMIO.</span><br><br>
+      <h3>🔧 Register Access</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >ioread32()/iowrite32()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Accesso ai registri di controllo del controller attraverso
+          MMIO.</span
+        ><br /><br />
 
-            <code style="color: #2e7d32; font-weight: bold;">pci_read_config_word()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Lettura configurazione PCI del controller.</span><br><br>
+        <code style="color: #2e7d32; font-weight: bold"
+          >pci_read_config_word()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Lettura configurazione PCI del controller.</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">dma_map_single()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Mapping memoria per DMA con il controller.</span><br><br>
+        <code style="color: #f57c00; font-weight: bold">dma_map_single()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Mapping memoria per DMA con il controller.</span
+        ><br /><br />
 
-            <code style="color: #9c27b0; font-weight: bold;">request_irq()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Registrazione interrupt handler per eventi controller.</span>
+        <code style="color: #9c27b0; font-weight: bold">request_irq()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Registrazione interrupt handler per eventi controller.</span
+        >
+      </div>
+
+      <h3>⚙️ Configuration APIs</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >ethtool_ops.set_link_ksettings()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Configurazione velocità e duplex del collegamento.</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >ethtool_ops.set_channels()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Configurazione numero code RX/TX del controller.</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >ethtool_ops.set_coalesce()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Configurazione coalescenza interrupt per ottimizzazione.</span
+        >
+      </div>
+
+      <h3>📊 Statistics & Monitoring</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >ethtool_ops.get_stats()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Raccolta statistiche dettagliate dal controller hardware.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >ethtool_ops.get_regs()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Dump registri interni per debugging avanzato.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >devlink_health_reporter_create()</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Reporting salute e diagnostica del controller.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Avanzato</h3>
+      <p>
+        <strong>Quando configuri un server web ad alte prestazioni:</strong>
+      </p>
+      <ol>
+        <li>
+          <code>ethtool -L eth0 combined 16</code> - Configura 16 code combinate
+          per multi-core
+        </li>
+        <li>
+          <code>ethtool -C eth0 rx-usecs 20</code> - Ottimizza coalescenza
+          interrupt per bassa latenza
+        </li>
+        <li>
+          <code>ethtool -K eth0 tso on gso on gro on</code> - Abilita tutti gli
+          offload TCP/UDP
+        </li>
+      </ol>
+      <p>
+        <em
+          >Il risultato è un server che gestisce migliaia di connessioni
+          simultanee con minima CPU utilization</em
+        >
+      </p>
+
+      <h2>🗺️ Architettura dei Network Controllers</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Evoluzione dei Network Controllers
+        </h3>
+
+        <!-- Traditional NIC -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🔌 TRADITIONAL NIC
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Basic Ethernet controller<br />
+            • CPU interrupt per packet<br />
+            • Limited offload capabilities<br />
+            • 1Gbps maximum
+          </div>
         </div>
 
-        <h3>⚙️ Configuration APIs</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">ethtool_ops.set_link_ksettings()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Configurazione velocità e duplex del collegamento.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">ethtool_ops.set_channels()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Configurazione numero code RX/TX del controller.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">ethtool_ops.set_coalesce()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Configurazione coalescenza interrupt per ottimizzazione.</span>
+        <!-- Multi-Queue NIC -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            ⚡ MULTI-QUEUE CONTROLLER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Multiple RX/TX queues<br />
+            • RSS for CPU distribution<br />
+            • Advanced offloads (TSO, GSO)<br />
+            • 10Gbps+ performance
+          </div>
         </div>
 
-        <h3>📊 Statistics & Monitoring</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">ethtool_ops.get_stats()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Raccolta statistiche dettagliate dal controller hardware.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">ethtool_ops.get_regs()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Dump registri interni per debugging avanzato.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">devlink_health_reporter_create()</code><br>
-            <span style="color: #666; font-size: 0.9em;">Reporting salute e diagnostica del controller.</span>
+        <!-- SmartNIC/DPU -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🧠 SMARTNIC/DPU
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔒</div>
+              <div style="font-size: 0.8em">Security</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">💾</div>
+              <div style="font-size: 0.8em">Storage</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🌐</div>
+              <div style="font-size: 0.8em">Network</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⚡</div>
+              <div style="font-size: 0.8em">Compute</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Integrated CPU cores<br />
+            • Hardware acceleration<br />
+            • Programmable pipelines<br />
+            • 100Gbps+ throughput
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Avanzato</h3>
-        <p><strong>Quando configuri un server web ad alte prestazioni:</strong></p>
-        <ol>
-        <li><code>ethtool -L eth0 combined 16</code> - Configura 16 code combinate per multi-core</li>
-        <li><code>ethtool -C eth0 rx-usecs 20</code> - Ottimizza coalescenza interrupt per bassa latenza</li>
-        <li><code>ethtool -K eth0 tso on gso on gro on</code> - Abilita tutti gli offload TCP/UDP</li>
-        </ol>
-        <p><em>Il risultato è un server che gestisce migliaia di connessioni simultanee con minima CPU utilization</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-<h2>🗺️ Architettura dei Network Controllers</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Evoluzione dei Network Controllers</h3>
-
-            <!-- Traditional NIC -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🔌 TRADITIONAL NIC</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Basic Ethernet controller<br>
-                    • CPU interrupt per packet<br>
-                    • Limited offload capabilities<br>
-                    • 1Gbps maximum
-                </div>
+        <!-- Future Controllers -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              🚀 AI-ACCELERATED
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Multi-Queue NIC -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">⚡ MULTI-QUEUE CONTROLLER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Multiple RX/TX queues<br>
-                    • RSS for CPU distribution<br>
-                    • Advanced offloads (TSO, GSO)<br>
-                    • 10Gbps+ performance
-                </div>
+            <div style="font-size: 0.8em; color: #666">
+              ML for traffic analysis
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- SmartNIC/DPU -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🧠 SMARTNIC/DPU</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔒</div>
-                        <div style="font-size: 0.8em;">Security</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💾</div>
-                        <div style="font-size: 0.8em;">Storage</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🌐</div>
-                        <div style="font-size: 0.8em;">Network</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚡</div>
-                        <div style="font-size: 0.8em;">Compute</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Integrated CPU cores<br>
-                    • Hardware acceleration<br>
-                    • Programmable pipelines<br>
-                    • 100Gbps+ throughput
-                </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              🔮 QUANTUM-READY
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Future Controllers -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">🚀 AI-ACCELERATED</div>
-                    <div style="font-size: 0.8em; color: #666;">ML for traffic analysis</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🔮 QUANTUM-READY</div>
-                    <div style="font-size: 0.8em; color: #666;">Post-quantum crypto</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">⚡ TERABIT SCALE</div>
-                    <div style="font-size: 0.8em; color: #666;">400Gbps+ interfaces</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">🔧 SELF-HEALING</div>
-                    <div style="font-size: 0.8em; color: #666;">Autonomous optimization</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">Post-quantum crypto</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              ⚡ TERABIT SCALE
             </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • L'evoluzione mostra passaggio da NIC semplici a piattaforme computazionali complete<br>
-                • Ogni generazione aggiunge funzionalità e aumenta prestazioni<br>
-                • I controller moderni sono sistemi embedded completi<br>
-                • Tra le direzioni di ricerca ci sono analisi del traffico con machine learning e crittografia post-quantistica (ancora in evoluzione)
+            <div style="font-size: 0.8em; color: #666">400Gbps+ interfaces</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              🔧 SELF-HEALING
             </div>
+            <div style="font-size: 0.8em; color: #666">
+              Autonomous optimization
+            </div>
+          </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: High-Performance Networking</h2>
-<div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-<h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Data Center Traffic 100Gbps</h3>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • L'evoluzione mostra passaggio da NIC semplici a piattaforme
+          computazionali complete<br />
+          • Ogni generazione aggiunge funzionalità e aumenta prestazioni<br />
+          • I controller moderni sono sistemi embedded completi<br />
+          • Tra le direzioni di ricerca ci sono analisi del traffico con machine
+          learning e crittografia post-quantistica (ancora in evoluzione)
+        </div>
+      </div>
 
-<div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-<div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-<div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">🗄️ Database Server</div>
-<div style="font-family: monospace; font-size: 0.9em;">
-PostgreSQL query<br>
-<span style="color: #666;">(10GB result set)</span>
-</div>
-</div>
+      <h2>🎬 Demo Interattiva: High-Performance Networking</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Data Center Traffic 100Gbps
+        </h3>
 
-<div style="font-size: 2em; color: #f57c00;">⚡</div>
-
-<div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-<div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🌐 100G NIC</div>
-<div style="font-family: monospace; font-size: 0.9em;">
-Mellanox CX-5<br>
-<span style="color: #666;">(RDMA & RoCE)</span>
-</div>
-</div>
-</div>
-
-<div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-<strong>Pipeline ottimizzato:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">DB → zero-copy → RDMA → hardware bypass → remote memory</code>
-</div>
-
-<div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-<h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Orchestrazione ad alta velocità:</h4>
-<ol style="line-height: 1.8;">
-<li><strong>1. Query execution:</strong> Database prepara 10GB di dati in memory</li>
-<li><strong>2. RDMA setup:</strong> Controller configura RoCEv2 per trasporto lossless</li>
-<li><strong>3. Hardware offload:</strong> NIC gestisce flow control e error recovery</li>
-<li><strong>4. Direct placement:</strong> Dati arrivano direttamente in buffer destinazione</li>
-<li><strong>5. Interrupt minimization:</strong> Solo completion events, no per-packet interrupts</li>
-<li><strong>6. CPU bypass:</strong> Zero CPU involvement per byte trasferito</li>
-</ol>
-</div>
-
-<div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-<strong>🎯 Risultato:</strong> Trasferimento di 10GB in circa 0,8 secondi (a 100Gbps) con <1% CPU utilization. I network controller moderni rendono possibile il cloud computing ad alta performance!
-</div>
-</div>
-
-<h2>🧪 Laboratorio Pratico: Network Controller Analysis</h2>
-<div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-    <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Strumenti Avanzati per Network Troubleshooting</h3>
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-            <h4 style="color: #9c27b0; margin-bottom: 10px;">🔍 Deep Controller Inspection</h4>
-            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                $ ethtool -i eth0<br>
-                driver: ixgbe<br>
-                version: 5.1.0-k<br>
-                bus-info: 0000:01:00.0<br>
-                $ ethtool --show-priv-flags eth0<br>
-                $ ethtool --show-channels eth0
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              🗄️ Database Server
             </div>
-            <p style="font-size: 0.9em; color: #666;"><em>Analizza configurazione controller e canali multi-queue</em></p>
+            <div style="font-family: monospace; font-size: 0.9em">
+              PostgreSQL query<br />
+              <span style="color: #666">(10GB result set)</span>
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">⚡</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              🌐 100G NIC
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              Mellanox CX-5<br />
+              <span style="color: #666">(RDMA & RoCE)</span>
+            </div>
+          </div>
         </div>
 
-        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-            <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Advanced Statistics</h4>
-            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                $ ethtool -S eth0 | head -20<br>
-                NIC statistics:<br>
-                rx_packets: 1543672<br>
-                tx_packets: 892415<br>
-                rx_bytes: 245678901<br>
-                tx_bytes: 123456789<br>
-                $ ip -s link show eth0
-            </div>
-            <p style="font-size: 0.9em; color: #666;"><em>Statistiche dettagliate controller-specific e protocol-level</em></p>
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Pipeline ottimizzato:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >DB → zero-copy → RDMA → hardware bypass → remote memory</code
+          >
         </div>
 
-        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-            <h4 style="color: #9c27b0; margin-bottom: 10px;">⚡ Performance Benchmarking</h4>
-            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                $ iperf3 -c 10.0.0.1 -t 30 -P 4<br>
-                [SUM]   0.00-30.00  sec  8.41 GBytes  2.41 Gbits/sec<br>
-                $ netperf -H 10.0.0.1 -t TCP_RR<br>
-                $ qperf 10.0.0.1 tcp_lat<br>
-                MIGRATED TCP CONNECTIONS: 8192
-            </div>
-            <p style="font-size: 0.9em; color: #666;"><em>Benchmark throughput, latency, e connection scaling</em></p>
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Orchestrazione ad alta velocità:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. Query execution:</strong> Database prepara 10GB di dati
+              in memory
+            </li>
+            <li>
+              <strong>2. RDMA setup:</strong> Controller configura RoCEv2 per
+              trasporto lossless
+            </li>
+            <li>
+              <strong>3. Hardware offload:</strong> NIC gestisce flow control e
+              error recovery
+            </li>
+            <li>
+              <strong>4. Direct placement:</strong> Dati arrivano direttamente
+              in buffer destinazione
+            </li>
+            <li>
+              <strong>5. Interrupt minimization:</strong> Solo completion
+              events, no per-packet interrupts
+            </li>
+            <li>
+              <strong>6. CPU bypass:</strong> Zero CPU involvement per byte
+              trasferito
+            </li>
+          </ol>
         </div>
 
-        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-            <h4 style="color: #9c27b0; margin-bottom: 10px;">🔧 Advanced Tuning</h4>
-            <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                $ ethtool -L eth0 combined 16<br>
-                $ ethtool -X eth0 weight 0 1 2 3 4 5 6 7<br>
-                $ sysctl -w net.core.rmem_max=16777216<br>
-                $ sysctl -w net.core.wmem_max=16777216<br>
-                $ tc qdisc add dev eth0 root fq
-            </div>
-            <p style="font-size: 0.9em; color: #666;"><em>RSS tuning, buffer sizing, e QoS configuration</em></p>
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> Trasferimento di 10GB in circa 0,8
+          secondi (a 100Gbps) con <1% CPU utilization. I network controller
+          moderni rendono possibile il cloud computing ad alta performance!
         </div>
+      </div>
+
+      <h2>🧪 Laboratorio Pratico: Network Controller Analysis</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Strumenti Avanzati per Network Troubleshooting
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔍 Deep Controller Inspection
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ethtool -i eth0<br />
+              driver: ixgbe<br />
+              version: 5.1.0-k<br />
+              bus-info: 0000:01:00.0<br />
+              $ ethtool --show-priv-flags eth0<br />
+              $ ethtool --show-channels eth0
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Analizza configurazione controller e canali multi-queue</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📊 Advanced Statistics
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ethtool -S eth0 | head -20<br />
+              NIC statistics:<br />
+              rx_packets: 1543672<br />
+              tx_packets: 892415<br />
+              rx_bytes: 245678901<br />
+              tx_bytes: 123456789<br />
+              $ ip -s link show eth0
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em
+                >Statistiche dettagliate controller-specific e
+                protocol-level</em
+              >
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              ⚡ Performance Benchmarking
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ iperf3 -c 10.0.0.1 -t 30 -P 4<br />
+              [SUM] 0.00-30.00 sec 8.41 GBytes 2.41 Gbits/sec<br />
+              $ netperf -H 10.0.0.1 -t TCP_RR<br />
+              $ qperf 10.0.0.1 tcp_lat<br />
+              MIGRATED TCP CONNECTIONS: 8192
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Benchmark throughput, latency, e connection scaling</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔧 Advanced Tuning
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ethtool -L eth0 combined 16<br />
+              $ ethtool -X eth0 weight 0 1 2 3 4 5 6 7<br />
+              $ sysctl -w net.core.rmem_max=16777216<br />
+              $ sysctl -w net.core.wmem_max=16777216<br />
+              $ tc qdisc add dev eth0 root fq
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>RSS tuning, buffer sizing, e QoS configuration</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            ⚡
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Hardware Acceleration
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            I moderni controller offloadano operazioni complesse: TCP
+            segmentation, checksum, encryption. Questo permette di raggiungere
+            velocità wire-speed con minima CPU utilization.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔄
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Multi-Queue Architecture
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            RSS e multi-queue permettono di distribuire il carico su più CPU
+            cores. Ogni coda ha priorità e scheduling indipendenti per
+            ottimizzare QoS e performance.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🧠
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            SmartNIC Evolution
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            I controller moderni sono diventati piattaforme computazionali
+            complete con CPU integrate, accelerazione hardware, e capacità di
+            processamento avanzato oltre la rete.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🎯
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Runtime Configuration
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            ethtool permette tuning avanzato senza riavvio: coalescenza
+            interrupt, ring buffer sizing, offload features. Questo permette
+            ottimizzazione dinamica del traffico.
+          </p>
+        </div>
+      </div>
     </div>
-</div>
-
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-<div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
-<h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Hardware Acceleration</h4>
-<p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-I moderni controller offloadano operazioni complesse: TCP segmentation, checksum, encryption. Questo permette di raggiungere velocità wire-speed con minima CPU utilization.
-</p>
-</div>
-
-<div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
-<h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Multi-Queue Architecture</h4>
-<p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-RSS e multi-queue permettono di distribuire il carico su più CPU cores. Ogni coda ha priorità e scheduling indipendenti per ottimizzare QoS e performance.
-</p>
-</div>
-
-<div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🧠</div>
-<h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">SmartNIC Evolution</h4>
-<p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-I controller moderni sono diventati piattaforme computazionali complete con CPU integrate, accelerazione hardware, e capacità di processamento avanzato oltre la rete.
-</p>
-</div>
-
-<div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-<div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
-<h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Runtime Configuration</h4>
-<p style="font-size: 0.9em; text-align: center; color: #004d40;">
-ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buffer sizing, offload features. Questo permette ottimizzazione dinamica del traffico.
-</p>
-</div>
-</div>
-</div>
-<div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sul NETWORK CONTROLLERS
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz sul NETWORK CONTROLLERS
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-<script>
-    // Quiz functionality
-    const quizQuestions = [
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
         {
-            question: "Cosa sono i Network Controllers?",
-            options: ["Hardware specializzato per elaborazione pacchetti", "Driver di dispositivo", "Protocolli di comunicazione", "Software per gestire reti"],
-            correct: 0,
-            explanation: "I Network Controllers sono dispositivi hardware specializzati che gestiscono l'elaborazione e l'inoltro dei pacchetti di rete."
+          question: "Cosa sono i Network Controllers?",
+          options: [
+            "Hardware specializzato per elaborazione pacchetti",
+            "Driver di dispositivo",
+            "Protocolli di comunicazione",
+            "Software per gestire reti",
+          ],
+          correct: 0,
+          explanation:
+            "I Network Controllers sono dispositivi hardware specializzati che gestiscono l'elaborazione e l'inoltro dei pacchetti di rete.",
         },
         {
-            question: "Quale tipo di scheda di rete integra CPU o acceleratori programmabili per elaborazione avanzata del traffico?",
-            options: ["SmartNIC/DPU", "Adattatore USB Ethernet", "Scheda Wi-Fi legacy", "NIC tradizionale a coda singola"],
-            correct: 0,
-            explanation: "Le SmartNIC/DPU integrano core CPU e acceleratori programmabili, così possono eseguire sicurezza, storage e networking direttamente sulla scheda."
+          question:
+            "Quale tipo di scheda di rete integra CPU o acceleratori programmabili per elaborazione avanzata del traffico?",
+          options: [
+            "SmartNIC/DPU",
+            "Adattatore USB Ethernet",
+            "Scheda Wi-Fi legacy",
+            "NIC tradizionale a coda singola",
+          ],
+          correct: 0,
+          explanation:
+            "Le SmartNIC/DPU integrano core CPU e acceleratori programmabili, così possono eseguire sicurezza, storage e networking direttamente sulla scheda.",
         },
         {
-            question: "Cosa significa TSO nel contesto network?",
-            options: ["TCP Socket Option", "Transmission Speed Optimization", "Time Stamp Option", "TCP Segmentation Offload"],
-            correct: 3,
-            explanation: "TSO (TCP Segmentation Offload) permette all'hardware di dividere pacchetti TCP grandi, scaricando lavoro dalla CPU."
+          question: "Cosa significa TSO nel contesto network?",
+          options: [
+            "TCP Socket Option",
+            "Transmission Speed Optimization",
+            "Time Stamp Option",
+            "TCP Segmentation Offload",
+          ],
+          correct: 3,
+          explanation:
+            "TSO (TCP Segmentation Offload) permette all'hardware di dividere pacchetti TCP grandi, scaricando lavoro dalla CPU.",
         },
         {
-            question: "Quale comando mostra il driver e il firmware del controller di rete?",
-            options: ["lsusb", "df -h", "ethtool -i", "free -h"],
-            correct: 2,
-            explanation: "ethtool -i interfaccia mostra nome e versione del driver, versione del firmware e bus-info del controller."
+          question:
+            "Quale comando mostra il driver e il firmware del controller di rete?",
+          options: ["lsusb", "df -h", "ethtool -i", "free -h"],
+          correct: 2,
+          explanation:
+            "ethtool -i interfaccia mostra nome e versione del driver, versione del firmware e bus-info del controller.",
         },
         {
-            question: "Cosa fa RSS nei network controller?",
-            options: ["Aumenta velocità rete", "Riduce spazio storage", "Comprime pacchetti", "Distribuisce RX su CPU multiple"],
-            correct: 3,
-            explanation: "RSS (Receive Side Scaling) distribuisce pacchetti ricevuti su più CPU per migliorare performance in sistemi multiprocessore."
+          question: "Cosa fa RSS nei network controller?",
+          options: [
+            "Aumenta velocità rete",
+            "Riduce spazio storage",
+            "Comprime pacchetti",
+            "Distribuisce RX su CPU multiple",
+          ],
+          correct: 3,
+          explanation:
+            "RSS (Receive Side Scaling) distribuisce pacchetti ricevuti su più CPU per migliorare performance in sistemi multiprocessore.",
         },
         {
-            question: "Quale caratteristica permette a un controller di elaborare i pacchetti alla velocità massima del collegamento?",
-            options: ["Wire-speed processing", "Polling lento via software", "Uso esclusivo della CPU", "Interrupt per ogni pacchetto"],
-            correct: 0,
-            explanation: "Il wire-speed processing è l'elaborazione dei pacchetti alla velocità massima del collegamento, resa possibile da hardware dedicato e offload."
+          question:
+            "Quale caratteristica permette a un controller di elaborare i pacchetti alla velocità massima del collegamento?",
+          options: [
+            "Wire-speed processing",
+            "Polling lento via software",
+            "Uso esclusivo della CPU",
+            "Interrupt per ogni pacchetto",
+          ],
+          correct: 0,
+          explanation:
+            "Il wire-speed processing è l'elaborazione dei pacchetti alla velocità massima del collegamento, resa possibile da hardware dedicato e offload.",
         },
         {
-            question: "Cosa significa offloading hardware?",
-            options: ["Rallenta trasmissione", "Scarica CPU su hardware", "Aumenta consumo energetico", "Spegne dispositivo"],
-            correct: 1,
-            explanation: "Hardware offloading permette al controller di eseguire operazioni come checksum e segmentation, riducendo carico CPU."
+          question: "Cosa significa offloading hardware?",
+          options: [
+            "Rallenta trasmissione",
+            "Scarica CPU su hardware",
+            "Aumenta consumo energetico",
+            "Spegne dispositivo",
+          ],
+          correct: 1,
+          explanation:
+            "Hardware offloading permette al controller di eseguire operazioni come checksum e segmentation, riducendo carico CPU.",
         },
         {
-            question: "Quale comando configura code multiple?",
-            options: ["lspci", "ethtool -L", "lsusb", "ethtool -i"],
-            correct: 1,
-            explanation: "ethtool -L interfaccia combined N configura il numero di code combinate per distribuzione del carico."
+          question: "Quale comando configura code multiple?",
+          options: ["lspci", "ethtool -L", "lsusb", "ethtool -i"],
+          correct: 1,
+          explanation:
+            "ethtool -L interfaccia combined N configura il numero di code combinate per distribuzione del carico.",
         },
         {
-            question: "Cosa sono gli SmartNIC?",
-            options: ["NIC legacy", "NIC per dispositivi mobili", "NIC intelligenti con CPU", "NIC solo per Wi-Fi"],
-            correct: 2,
-            explanation: "Gli SmartNIC sono Network Interface Card con CPU integrate per processamento avanzato oltre le funzioni base di rete."
+          question: "Cosa sono gli SmartNIC?",
+          options: [
+            "NIC legacy",
+            "NIC per dispositivi mobili",
+            "NIC intelligenti con CPU",
+            "NIC solo per Wi-Fi",
+          ],
+          correct: 2,
+          explanation:
+            "Gli SmartNIC sono Network Interface Card con CPU integrate per processamento avanzato oltre le funzioni base di rete.",
         },
         {
-            question: "Quale tecnologia permette a un controller di scrivere dati direttamente nella memoria di un altro host senza coinvolgere la CPU?",
-            options: ["Promiscuous mode", "RDMA", "Interrupt coalescing", "VLAN tagging"],
-            correct: 1,
-            explanation: "RDMA (es. RoCE, iWARP) consente al controller di trasferire dati direttamente tra le memorie dei due host, senza copie intermedie né intervento della CPU."
-        }
-    ];
+          question:
+            "Quale tecnologia permette a un controller di scrivere dati direttamente nella memoria di un altro host senza coinvolgere la CPU?",
+          options: [
+            "Promiscuous mode",
+            "RDMA",
+            "Interrupt coalescing",
+            "VLAN tagging",
+          ],
+          correct: 1,
+          explanation:
+            "RDMA (es. RoCE, iWARP) consente al controller di trasferire dati direttamente tra le memorie dei due host, senza copie intermedie né intervento della CPU.",
+        },
+      ];
 
-    let currentQuestionIndex = 0;
-    let score = 0;
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -545,45 +1275,49 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -594,45 +1328,50 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione dei Network Controllers! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione dei Network Controllers! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare i Network Controllers! 👍";
-            color = "#f57c00";
+          message =
+            "Buon lavoro! Continua a studiare i Network Controllers! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! I Network Controllers è complesso ma importante! 📚";
-            color = "#d32f2f";
+          message =
+            "Continua a studiare! I Network Controllers è complesso ma importante! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -646,52 +1385,103 @@ ethtool permette tuning avanzato senza riavvio: coalescenza interrupt, ring buff
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-     const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

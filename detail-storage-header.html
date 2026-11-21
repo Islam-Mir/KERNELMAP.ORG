@@ -1,560 +1,1270 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>STORAGE HEADER - Dettagli</title>
-     
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>STORAGE HEADER</h1>
-        <p class="subtitle">Intestazioni Storage</p>
+      <h1>STORAGE HEADER</h1>
+      <p class="subtitle">Intestazioni Storage</p>
     </div>
 
     <div class="content">
-        <span class="badge">📋 INTESTAZIONI STORAGE</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>Le Storage Header gestiscono le strutture dati e i metadati che descrivono l'organizzazione fisica e logica dei dispositivi di storage nel sistema Linux.</strong></p>
+      <span class="badge">📋 INTESTAZIONI STORAGE</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >Le Storage Header gestiscono le strutture dati e i metadati che
+          descrivono l'organizzazione fisica e logica dei dispositivi di storage
+          nel sistema Linux.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come l'indice e il catalogo di una biblioteca: ogni libro ha la sua scheda con posizione, autore, titolo, ma l'indice generale permette di trovare tutto rapidamente.</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come l'indice e il catalogo di una biblioteca: ogni libro ha la sua
+        scheda con posizione, autore, titolo, ma l'indice generale permette di
+        trovare tutto rapidamente.
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>Le Storage Header sono le strutture dati fondamentali che descrivono l'organizzazione e le caratteristiche dei dispositivi di storage nel kernel Linux.</strong> Immagina un archivio digitale dove ogni cassetto, scaffale e libro ha la sua etichetta precisa con tutte le informazioni necessarie per localizzarlo e gestirlo.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >Le Storage Header sono le strutture dati fondamentali che descrivono
+          l'organizzazione e le caratteristiche dei dispositivi di storage nel
+          kernel Linux.</strong
+        >
+        Immagina un archivio digitale dove ogni cassetto, scaffale e libro ha la
+        sua etichetta precisa con tutte le informazioni necessarie per
+        localizzarlo e gestirlo.
+      </p>
 
-        <p>• <strong>Block device headers</strong> - Strutture per dischi, SSD, dispositivi a blocchi con geometria e parametri</p>
-        <p>• <strong>Partition tables</strong> - MBR, GPT per organizzare spazio disco in partizioni</p>
-        <p>• <strong>Filesystem superblocks</strong> - Metadati globali per ogni filesystem (ext4, btrfs, xfs)</p>
-        <p>• <strong>Inode tables</strong> - Tabelle degli inode con puntatori ai blocchi dati</p>
-        <p>• <strong>Directory structures</strong> - Organizzazione gerarchica directory e collegamenti</p>
-        <p>• <strong>Storage metadata</strong> - Informazioni su capacità, velocità, stato dispositivi</p>
-        <p><em>• Interazione: Forniscono al kernel tutte le informazioni necessarie per gestire storage efficiente</em></p>
+      <p>
+        • <strong>Block device headers</strong> - Strutture per dischi, SSD,
+        dispositivi a blocchi con geometria e parametri
+      </p>
+      <p>
+        • <strong>Partition tables</strong> - MBR, GPT per organizzare spazio
+        disco in partizioni
+      </p>
+      <p>
+        • <strong>Filesystem superblocks</strong> - Metadati globali per ogni
+        filesystem (ext4, btrfs, xfs)
+      </p>
+      <p>
+        • <strong>Inode tables</strong> - Tabelle degli inode con puntatori ai
+        blocchi dati
+      </p>
+      <p>
+        • <strong>Directory structures</strong> - Organizzazione gerarchica
+        directory e collegamenti
+      </p>
+      <p>
+        • <strong>Storage metadata</strong> - Informazioni su capacità,
+        velocità, stato dispositivi
+      </p>
+      <p>
+        <em
+          >• Interazione: Forniscono al kernel tutte le informazioni necessarie
+          per gestire storage efficiente</em
+        >
+      </p>
 
-        <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>Le Storage Header gestiscono quattro aspetti fondamentali dell'organizzazione storage, ciascuno essenziale per l'integrità dei dati:</strong></p>
+      <h2>⚙️ Operazioni Principali</h2>
+      <p>
+        <strong
+          >Le Storage Header gestiscono quattro aspetti fondamentali
+          dell'organizzazione storage, ciascuno essenziale per l'integrità dei
+          dati:</strong
+        >
+      </p>
 
-        <h3>💾 Block Device Management</h3>
-        <p>• <strong>register_blkdev()</strong> - Registra un nuovo dispositivo a blocchi</p>
-        <p>• <strong>blkdev_get_by_path()</strong> - Ottiene riferimento a dispositivo a blocchi</p>
-        <p>• <strong>blkdev_put()</strong> - Rilascia riferimento dispositivo</p>
-        <p>• <strong>submit_bio()</strong> - Invia richiesta I/O al dispositivo</p>
-        <p>• <strong>blk_queue_max_hw_sectors()</strong> - Configura limiti settore dispositivo</p>
+      <h3>💾 Block Device Management</h3>
+      <p>
+        • <strong>register_blkdev()</strong> - Registra un nuovo dispositivo a
+        blocchi
+      </p>
+      <p>
+        • <strong>blkdev_get_by_path()</strong> - Ottiene riferimento a
+        dispositivo a blocchi
+      </p>
+      <p>• <strong>blkdev_put()</strong> - Rilascia riferimento dispositivo</p>
+      <p>
+        • <strong>submit_bio()</strong> - Invia richiesta I/O al dispositivo
+      </p>
+      <p>
+        • <strong>blk_queue_max_hw_sectors()</strong> - Configura limiti settore
+        dispositivo
+      </p>
 
-        <h3>📊 Partition Handling</h3>
-        <p>• <strong>check_partition()</strong> - Verifica validità tabella partizioni</p>
-        <p>• <strong>bdev_add_partition()</strong> - Aggiunge partizione al sistema</p>
-        <p>• <strong>bdev_del_partition()</strong> - Rimuove partizione</p>
-        <p>• <strong>bdev_disk_changed()</strong> - Rilegge tabella partizioni</p>
-        <p>• <strong>disk_scan_partitions()</strong> - Scansiona le partizioni di un disco</p>
+      <h3>📊 Partition Handling</h3>
+      <p>
+        • <strong>check_partition()</strong> - Verifica validità tabella
+        partizioni
+      </p>
+      <p>
+        • <strong>bdev_add_partition()</strong> - Aggiunge partizione al sistema
+      </p>
+      <p>• <strong>bdev_del_partition()</strong> - Rimuove partizione</p>
+      <p>• <strong>bdev_disk_changed()</strong> - Rilegge tabella partizioni</p>
+      <p>
+        • <strong>disk_scan_partitions()</strong> - Scansiona le partizioni di
+        un disco
+      </p>
 
-        <h3>🗂️ Filesystem Metadata</h3>
-        <p>• <strong>alloc_super()</strong> - Alloca struttura superblock</p>
-        <p>• <strong>destroy_super()</strong> - Distrugge superblock</p>
-        <p>• <strong>grab_super()</strong> - Ottiene riferimento superblock</p>
-        <p>• <strong>drop_super()</strong> - Rilascia riferimento superblock</p>
-        <p>• <strong>iterate_supers()</strong> - Itera tutti i superblock attivi</p>
+      <h3>🗂️ Filesystem Metadata</h3>
+      <p>• <strong>alloc_super()</strong> - Alloca struttura superblock</p>
+      <p>• <strong>destroy_super()</strong> - Distrugge superblock</p>
+      <p>• <strong>grab_super()</strong> - Ottiene riferimento superblock</p>
+      <p>• <strong>drop_super()</strong> - Rilascia riferimento superblock</p>
+      <p>
+        • <strong>iterate_supers()</strong> - Itera tutti i superblock attivi
+      </p>
 
-        <h3>📋 Inode Management</h3>
-        <p>• <strong>alloc_inode()</strong> - Alloca nuova struttura inode</p>
-        <p>• <strong>destroy_inode()</strong> - Distrugge inode</p>
-        <p>• <strong>iget_locked()</strong> - Ottiene inode bloccato</p>
-        <p>• <strong>iput()</strong> - Rilascia riferimento inode</p>
-        <p>• <strong>write_inode_now()</strong> - Scrive inode su disco immediatamente</p>
+      <h3>📋 Inode Management</h3>
+      <p>• <strong>alloc_inode()</strong> - Alloca nuova struttura inode</p>
+      <p>• <strong>destroy_inode()</strong> - Distrugge inode</p>
+      <p>• <strong>iget_locked()</strong> - Ottiene inode bloccato</p>
+      <p>• <strong>iput()</strong> - Rilascia riferimento inode</p>
+      <p>
+        • <strong>write_inode_now()</strong> - Scrive inode su disco
+        immediatamente
+      </p>
 
-        <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando colleghi un nuovo disco al sistema, ecco cosa succede nelle storage headers:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong
+          >Quando colleghi un nuovo disco al sistema, ecco cosa succede nelle
+          storage headers:</strong
+        >
+      </p>
 
-        <h3>🔍 Rilevamento Dispositivo</h3>
-        <p>1. Il kernel rileva il nuovo dispositivo attraverso il bus (PCI, USB, SATA)</p>
-        <p>2. Crea una struttura block_device con le informazioni base del dispositivo</p>
-        <p>3. Legge la partition table (MBR o GPT) per identificare le partizioni</p>
-        <p>4. Per ogni partizione, determina il tipo di filesystem dal superblock</p>
+      <h3>🔍 Rilevamento Dispositivo</h3>
+      <p>
+        1. Il kernel rileva il nuovo dispositivo attraverso il bus (PCI, USB,
+        SATA)
+      </p>
+      <p>
+        2. Crea una struttura block_device con le informazioni base del
+        dispositivo
+      </p>
+      <p>
+        3. Legge la partition table (MBR o GPT) per identificare le partizioni
+      </p>
+      <p>
+        4. Per ogni partizione, determina il tipo di filesystem dal superblock
+      </p>
 
-        <h3>📄 Strutture Dati Chiave</h3>
-        <ul>
-            <li><strong>struct block_device</strong> - Rappresenta un dispositivo a blocchi con geometria, dimensione e parametri operativi</li>
-            <li><strong>struct block_device (partizione)</strong> - Dal kernel 5.11 anche le partizioni sono rappresentate da block_device (prima si usava hd_struct): inizio, dimensione e numero di settore</li>
-            <li><strong>struct super_block</strong> - Contiene metadati globali del filesystem: dimensione, blocchi liberi, parametri di mount</li>
-            <li><strong>struct inode</strong> - Rappresenta file e directory con metadati, permessi e puntatori ai dati</li>
-        </ul>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>struct block_device</strong> - Rappresenta un dispositivo a
+          blocchi con geometria, dimensione e parametri operativi
+        </li>
+        <li>
+          <strong>struct block_device (partizione)</strong> - Dal kernel 5.11
+          anche le partizioni sono rappresentate da block_device (prima si usava
+          hd_struct): inizio, dimensione e numero di settore
+        </li>
+        <li>
+          <strong>struct super_block</strong> - Contiene metadati globali del
+          filesystem: dimensione, blocchi liberi, parametri di mount
+        </li>
+        <li>
+          <strong>struct inode</strong> - Rappresenta file e directory con
+          metadati, permessi e puntatori ai dati
+        </li>
+      </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare le storage headers:</strong></p>
-        <ul>
-            <li><code>fdisk -l /dev/sda</code> - Mostra la partition table del disco</li>
-            <li><code>blkid /dev/sda1</code> - Visualizza informazioni sul filesystem della partizione</li>
-            <li><code>tune2fs -l /dev/sda1</code> - Mostra il superblock di un filesystem ext</li>
-            <li><code>lsblk -f</code> - Elenca dispositivi e filesystem con UUID e LABEL</li>
-            <li><code>parted /dev/sda print</code> - Mostra dettagliata tabella partizioni</li>
-        </ul>
+      <h3>💻 Nel Computer: Come Vederlo?</h3>
+      <p><strong>Comandi Linux per esplorare le storage headers:</strong></p>
+      <ul>
+        <li>
+          <code>fdisk -l /dev/sda</code> - Mostra la partition table del disco
+        </li>
+        <li>
+          <code>blkid /dev/sda1</code> - Visualizza informazioni sul filesystem
+          della partizione
+        </li>
+        <li>
+          <code>tune2fs -l /dev/sda1</code> - Mostra il superblock di un
+          filesystem ext
+        </li>
+        <li>
+          <code>lsblk -f</code> - Elenca dispositivi e filesystem con UUID e
+          LABEL
+        </li>
+        <li>
+          <code>parted /dev/sda print</code> - Mostra dettagliata tabella
+          partizioni
+        </li>
+      </ul>
 
-        <h3>🎯 Caso Reale: Montaggio Disco</h3>
-        <p>Quando fai <code>mount /dev/sdb1 /mnt</code>:</p>
-        <ol>
-            <li>Il kernel valida che /dev/sdb1 è una partizione valida</li>
-            <li>Legge il superblock per determinare il tipo di filesystem</li>
-            <li>Alloca strutture inode e dentry per la radice del filesystem</li>
-            <li>Crea il punto di mount nella directory tree del VFS</li>
-            <li>Il filesystem diventa accessibile attraverso /mnt</li>
-        </ol>
+      <h3>🎯 Caso Reale: Montaggio Disco</h3>
+      <p>Quando fai <code>mount /dev/sdb1 /mnt</code>:</p>
+      <ol>
+        <li>Il kernel valida che /dev/sdb1 è una partizione valida</li>
+        <li>Legge il superblock per determinare il tipo di filesystem</li>
+        <li>Alloca strutture inode e dentry per la radice del filesystem</li>
+        <li>Crea il punto di mount nella directory tree del VFS</li>
+        <li>Il filesystem diventa accessibile attraverso /mnt</li>
+      </ol>
 
-        <h2>💾 Formati Storage Supportati</h2>
-        <ul>
-            <li><strong>MBR (Master Boot Record)</strong> - Tabella partizioni tradizionale con limite 2TB</li>
-            <li><strong>GPT (GUID Partition Table)</strong> - Tabella partizioni moderna con UUID e limiti estesi</li>
-            <li><strong>EXT4 superblock</strong> - Metadati filesystem con journaling e extents</li>
-            <li><strong>BTRFS superblock</strong> - Filesystem moderno con copy-on-write e snapshot</li>
-            <li><strong>XFS superblock</strong> - High-performance con allocation dinamica</li>
-        </ul>
+      <h2>💾 Formati Storage Supportati</h2>
+      <ul>
+        <li>
+          <strong>MBR (Master Boot Record)</strong> - Tabella partizioni
+          tradizionale con limite 2TB
+        </li>
+        <li>
+          <strong>GPT (GUID Partition Table)</strong> - Tabella partizioni
+          moderna con UUID e limiti estesi
+        </li>
+        <li>
+          <strong>EXT4 superblock</strong> - Metadati filesystem con journaling
+          e extents
+        </li>
+        <li>
+          <strong>BTRFS superblock</strong> - Filesystem moderno con
+          copy-on-write e snapshot
+        </li>
+        <li>
+          <strong>XFS superblock</strong> - High-performance con allocation
+          dinamica
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche</h2>
-        <ul>
-            <li><strong>Metadata Integrity</strong> - Checksum e journaling per proteggere i metadati</li>
-            <li><strong>Dynamic Updates</strong> - Modifiche sicure ai metadati durante l'operazione</li>
-            <li><strong>Backup & Recovery</strong> - Superblock backup per disaster recovery</li>
-            <li><strong>Performance Optimization</strong> - Cache e prefetching per metadata</li>
-            <li><strong>Compatibility</strong> - Supporto per formati legacy e moderni</li>
-        </ul>
+      <h2>✨ Caratteristiche</h2>
+      <ul>
+        <li>
+          <strong>Metadata Integrity</strong> - Checksum e journaling per
+          proteggere i metadati
+        </li>
+        <li>
+          <strong>Dynamic Updates</strong> - Modifiche sicure ai metadati
+          durante l'operazione
+        </li>
+        <li>
+          <strong>Backup & Recovery</strong> - Superblock backup per disaster
+          recovery
+        </li>
+        <li>
+          <strong>Performance Optimization</strong> - Cache e prefetching per
+          metadata
+        </li>
+        <li>
+          <strong>Compatibility</strong> - Supporto per formati legacy e moderni
+        </li>
+      </ul>
 
-        <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>Le storage headers sono il fondamento per tutti i sottosistemi di storage del kernel Linux:</strong></p>
+      <h2>🔗 Interazioni Chiave</h2>
+      <p>
+        <strong
+          >Le storage headers sono il fondamento per tutti i sottosistemi di
+          storage del kernel Linux:</strong
+        >
+      </p>
 
-        <h3>💽 Block Device Layer</h3>
-        <p>• <strong>Device registration</strong> - Registra dispositivi con le loro caratteristiche geometriche</p>
-        <p>• <strong>Partition scanning</strong> - Identifica e valida tabelle partizioni</p>
+      <h3>💽 Block Device Layer</h3>
+      <p>
+        • <strong>Device registration</strong> - Registra dispositivi con le
+        loro caratteristiche geometriche
+      </p>
+      <p>
+        • <strong>Partition scanning</strong> - Identifica e valida tabelle
+        partizioni
+      </p>
 
-        <h3>🗂️ Filesystem Layer</h3>
-        <p>• <strong>Superblock management</strong> - Gestisce metadati globali del filesystem</p>
-        <p>• <strong>Inode allocation</strong> - Assegna e traccia inode per file e directory</p>
+      <h3>🗂️ Filesystem Layer</h3>
+      <p>
+        • <strong>Superblock management</strong> - Gestisce metadati globali del
+        filesystem
+      </p>
+      <p>
+        • <strong>Inode allocation</strong> - Assegna e traccia inode per file e
+        directory
+      </p>
 
-        <h3>🧠 Memory Management</h3>
-        <p>• <strong>Page cache coordination</strong> - Coordina caching di dati e metadati</p>
-        <p>• <strong>Buffer heads</strong> - Gestisce buffer per blocchi di metadati</p>
+      <h3>🧠 Memory Management</h3>
+      <p>
+        • <strong>Page cache coordination</strong> - Coordina caching di dati e
+        metadati
+      </p>
+      <p>
+        • <strong>Buffer heads</strong> - Gestisce buffer per blocchi di
+        metadati
+      </p>
 
-        <h3>🔐 Security Framework</h3>
-        <p>• <strong>Permission validation</strong> - Controlla accessi ai metadati</p>
-        <p>• <strong>Audit logging</strong> - Registra operazioni sui metadati critici</p>
+      <h3>🔐 Security Framework</h3>
+      <p>
+        • <strong>Permission validation</strong> - Controlla accessi ai metadati
+      </p>
+      <p>
+        • <strong>Audit logging</strong> - Registra operazioni sui metadati
+        critici
+      </p>
 
-        <h3>⚡ I/O Subsystem</h3>
-        <p>• <strong>Request queuing</strong> - Accoda richieste I/O per metadata</p>
-        <p>• <strong>Writeback coordination</strong> - Sincronizza modifiche ai metadati</p>
+      <h3>⚡ I/O Subsystem</h3>
+      <p>
+        • <strong>Request queuing</strong> - Accoda richieste I/O per metadata
+      </p>
+      <p>
+        • <strong>Writeback coordination</strong> - Sincronizza modifiche ai
+        metadati
+      </p>
 
-        <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni chiave per gestire le storage headers nel kernel Linux:</strong></p>
+      <h2>🛠️ API Principali</h2>
+      <p>
+        <strong
+          >Queste sono le funzioni chiave per gestire le storage headers nel
+          kernel Linux:</strong
+        >
+      </p>
 
-        <h3>💽 Block Device Management</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">int register_blkdev(unsigned int major, const char *name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Registra un nuovo major number per dispositivi a blocchi.</span><br><br>
+      <h3>💽 Block Device Management</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold"
+          >int register_blkdev(unsigned int major, const char *name);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Registra un nuovo major number per dispositivi a blocchi.</span
+        ><br /><br />
 
-            <code style="color: #2e7d32; font-weight: bold;">struct block_device *blkdev_get_by_path(const char *path, fmode_t mode, void *holder);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Ottiene un riferimento a un dispositivo a blocchi dal path.</span><br><br>
+        <code style="color: #2e7d32; font-weight: bold"
+          >struct block_device *blkdev_get_by_path(const char *path, fmode_t
+          mode, void *holder);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Ottiene un riferimento a un dispositivo a blocchi dal path.</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">void blkdev_put(struct block_device *bdev, fmode_t mode);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Rilascia un riferimento a un dispositivo a blocchi.</span>
+        <code style="color: #f57c00; font-weight: bold"
+          >void blkdev_put(struct block_device *bdev, fmode_t mode);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Rilascia un riferimento a un dispositivo a blocchi.</span
+        >
+      </div>
+
+      <h3>📊 Partition Management</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold"
+          >int bdev_disk_changed(struct gendisk *disk, bool invalidate);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Rilegge la tabella partizioni di un disco.</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >int bdev_add_partition(struct gendisk *disk, int partno, sector_t
+          start, sector_t length);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Aggiunge una nuova partizione al sistema.</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >int bdev_del_partition(struct gendisk *disk, int partno);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Rimuove una partizione dal sistema.</span
+        >
+      </div>
+
+      <h3>🗂️ Filesystem Metadata</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >struct super_block *alloc_super(struct file_system_type *type, int
+          flags, const char *dev_name);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Alloca una nuova struttura superblock per un filesystem.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >void destroy_super(struct super_block *s);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Distrugge una struttura superblock.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >struct inode *alloc_inode(struct super_block *sb);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Alloca un nuovo inode per il filesystem.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+      <p><strong>Quando colleghi un nuovo disco USB:</strong></p>
+      <ol>
+        <li>
+          <code>register_blkdev()</code> - Riserva il major number (il disco
+          vero e proprio si registra con add_disk())
+        </li>
+        <li>
+          <code>bdev_disk_changed()</code> - Scansiona la tabella partizioni
+        </li>
+        <li>
+          <code>alloc_super()</code> - Crea superblock per ogni partizione
+        </li>
+        <li>
+          <code>alloc_inode()</code> - Alloca inode per la radice del filesystem
+        </li>
+        <li>Il disco diventa accessibile nel sistema</li>
+      </ol>
+      <p>
+        <em
+          >Le storage headers rendono possibile l'accesso strutturato a tutti i
+          dispositivi di storage!</em
+        >
+      </p>
+
+      <h2>🗺️ Mappa Concettuale delle Storage Headers</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura delle Storage Headers
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ STRUMENTI SISTEMA
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • fdisk, parted<br />
+            • mkfs, fsck<br />
+            • mount, umount
+          </div>
         </div>
 
-        <h3>📊 Partition Management</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int bdev_disk_changed(struct gendisk *disk, bool invalidate);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Rilegge la tabella partizioni di un disco.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">int bdev_add_partition(struct gendisk *disk, int partno, sector_t start, sector_t length);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Aggiunge una nuova partizione al sistema.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">int bdev_del_partition(struct gendisk *disk, int partno);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Rimuove una partizione dal sistema.</span>
+        <!-- System Call Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔧 SYSTEM CALLS
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • ioctl() • mount()<br />
+            • open() • read()<br />
+            • Gestione dispositivi
+          </div>
         </div>
 
-        <h3>🗂️ Filesystem Metadata</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">struct super_block *alloc_super(struct file_system_type *type, int flags, const char *dev_name);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Alloca una nuova struttura superblock per un filesystem.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">void destroy_super(struct super_block *s);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Distrugge una struttura superblock.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">struct inode *alloc_inode(struct super_block *sb);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Alloca un nuovo inode per il filesystem.</span>
+        <!-- Storage Headers Core -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🌟 STORAGE HEADERS CORE
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">💽</div>
+              <div style="font-size: 0.8em">Block Device</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">📊</div>
+              <div style="font-size: 0.8em">Partition Table</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🗂️</div>
+              <div style="font-size: 0.8em">Superblock</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">📄</div>
+              <div style="font-size: 0.8em">Inode Table</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Metadata integrity<br />
+            • Dynamic updates<br />
+            • Backup & recovery
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando colleghi un nuovo disco USB:</strong></p>
-        <ol>
-            <li><code>register_blkdev()</code> - Riserva il major number (il disco vero e proprio si registra con add_disk())</li>
-            <li><code>bdev_disk_changed()</code> - Scansiona la tabella partizioni</li>
-            <li><code>alloc_super()</code> - Crea superblock per ogni partizione</li>
-            <li><code>alloc_inode()</code> - Alloca inode per la radice del filesystem</li>
-            <li>Il disco diventa accessibile nel sistema</li>
-        </ol>
-        <p><em>Le storage headers rendono possibile l'accesso strutturato a tutti i dispositivi di storage!</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-
-        <h2>🗺️ Mappa Concettuale delle Storage Headers</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura delle Storage Headers</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ STRUMENTI SISTEMA</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • fdisk, parted<br>
-                    • mkfs, fsck<br>
-                    • mount, umount
-                </div>
+        <!-- Storage Formats -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              MBR
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- System Call Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • ioctl() • mount()<br>
-                    • open() • read()<br>
-                    • Gestione dispositivi
-                </div>
+            <div style="font-size: 0.8em; color: #666">Legacy partitions</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              GPT
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Storage Headers Core -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 STORAGE HEADERS CORE</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">💽</div>
-                        <div style="font-size: 0.8em;">Block Device</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📊</div>
-                        <div style="font-size: 0.8em;">Partition Table</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🗂️</div>
-                        <div style="font-size: 0.8em;">Superblock</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📄</div>
-                        <div style="font-size: 0.8em;">Inode Table</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Metadata integrity<br>
-                    • Dynamic updates<br>
-                    • Backup & recovery
-                </div>
+            <div style="font-size: 0.8em; color: #666">Modern partitions</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              EXT4 SB
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Storage Formats -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">MBR</div>
-                    <div style="font-size: 0.8em; color: #666;">Legacy partitions</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">GPT</div>
-                    <div style="font-size: 0.8em; color: #666;">Modern partitions</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">EXT4 SB</div>
-                    <div style="font-size: 0.8em; color: #666;">Filesystem metadata</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">Inode</div>
-                    <div style="font-size: 0.8em; color: #666;">File metadata</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">Filesystem metadata</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              Inode
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Physical Storage -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">💿 STORAGE FISICO</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Hard Disk (HDD)<br>
-                    • Solid State Drive (SSD)<br>
-                    • Storage Area Network (SAN)
-                </div>
-            </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano la gerarchia delle strutture dati<br>
-                • Ogni livello aggiunge metadati e organizzazione<br>
-                • Le storage headers rendono accessibili i dati fisici<br>
-                • Backup e recovery proteggono l'integrità
-            </div>
+            <div style="font-size: 0.8em; color: #666">File metadata</div>
+          </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Come Funzionano le Storage Headers</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Montaggio di un nuovo disco</h3>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">💿 Nuovo Disco</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        /dev/sdb (2TB HDD)<br>
-                        <span style="color: #666;">(disco appena collegato)</span>
-                    </div>
-                </div>
-
-                <div style="font-size: 2em; color: #f57c00;">📋</div>
-
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">🗂️ Filesystem Montato</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        /mnt/data (ext4)<br>
-                        <span style="color: #666;">(accessibile nel sistema)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Comandi eseguiti:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">fdisk /dev/sdb</code> → <code style="background: white; padding: 2px 6px; border-radius: 3px;">mkfs.ext4 /dev/sdb1</code> → <code style="background: white; padding: 2px 6px; border-radius: 3px;">mount /dev/sdb1 /mnt/data</code>
-            </div>
-
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Cosa succede dietro le quinte:</h4>
-                <ol style="line-height: 1.8;">
-                    <li><strong>1. Rilevamento dispositivo:</strong> Il driver registra il nuovo disco con add_disk() (register_blkdev() riserva solo il major number)</li>
-                    <li><strong>2. Creazione partizione:</strong> fdisk scrive la tabella partizioni (MBR/GPT) sul disco</li>
-                    <li><strong>3. Formattazione:</strong> mkfs.ext4 crea superblock, inode table, e strutture dati ext4</li>
-                    <li><strong>4. Montaggio:</strong> mount() legge superblock, valida filesystem, crea punto di mount</li>
-                    <li><strong>5. Accessibilità:</strong> Il disco diventa parte del namespace del sistema</li>
-                </ol>
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> Da disco grezzo a filesystem montato! Le storage headers rendono possibile l'organizzazione strutturata dei dati su qualsiasi dispositivo!
-            </div>
+        <!-- Physical Storage -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            💿 STORAGE FISICO
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Hard Disk (HDD)<br />
+            • Solid State Drive (SSD)<br />
+            • Storage Area Network (SAN)
+          </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora le Storage Headers</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Le frecce mostrano la gerarchia delle strutture dati<br />
+          • Ogni livello aggiunge metadati e organizzazione<br />
+          • Le storage headers rendono accessibili i dati fisici<br />
+          • Backup e recovery proteggono l'integrità
+        </div>
+      </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">💽 Esamina dispositivi a blocchi</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ lsblk -f<br>
-                        NAME FSTYPE LABEL UUID MOUNTPOINT<br>
-                        sda<br>
-                        └─sda1 ext4 12345678-1234 /<br><br>
-                        $ blkid /dev/sda1
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi dispositivi e filesystem con UUID e label</em></p>
-                </div>
+      <h2>🎬 Demo Interattiva: Come Funzionano le Storage Headers</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Montaggio di un nuovo disco
+        </h3>
 
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Analizza tabella partizioni</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ fdisk -l /dev/sda<br>
-                        Disk /dev/sda: 465.8 GiB<br>
-                        Device Start End Sectors Size Type<br>
-                        /dev/sda1 2048 976773167 976771120 465.8G Linux filesystem<br><br>
-                        $ parted /dev/sda print
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina la struttura delle partizioni del disco</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🗂️ Ispeziona superblock</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ tune2fs -l /dev/sda1 | head -20<br>
-                        tune2fs 1.46.5<br>
-                        Filesystem volume name: &lt;none&gt;<br>
-                        Last mounted on: /<br>
-                        Filesystem UUID: 12345678-abcd<br>
-                        Filesystem magic number: 0xEF53
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Visualizza i metadati del superblock del filesystem</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📄 Esplora inode</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ls -i /etc/passwd<br>
-                        1573568 /etc/passwd<br><br>
-                        $ debugfs -R "stat <1573568>" /dev/sda1<br>
-                        Inode: 1573568 Type: regular Mode: 0644
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Analizza la struttura degli inode del filesystem</em></p>
-                </div>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              💿 Nuovo Disco
             </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              /dev/sdb (2TB HDD)<br />
+              <span style="color: #666">(disco appena collegato)</span>
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">📋</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              🗂️ Filesystem Montato
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              /mnt/data (ext4)<br />
+              <span style="color: #666">(accessibile nel sistema)</span>
+            </div>
+          </div>
         </div>
 
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Gerarchia dei Metadati</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    Block device → Partition table → Superblock → Inode table → Data blocks. Ogni livello aggiunge struttura e organizzazione.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🛡️</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Integrità Critica</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Corruption dei metadati può rendere inaccessibili tutti i dati. Backup multipli e checksum proteggono l'integrità.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔄</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Aggiornamenti Dinamici</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    Le storage headers vengono aggiornate durante l'operazione normale. Il journaling garantisce atomicità delle modifiche.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔧</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Recovery & Backup</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Superblock backup e tool di recovery permettono di ricostruire l'accesso ai dati anche dopo corruption grave.
-                </p>
-            </div>
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Comandi eseguiti:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >fdisk /dev/sdb</code
+          >
+          →
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >mkfs.ext4 /dev/sdb1</code
+          >
+          →
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >mount /dev/sdb1 /mnt/data</code
+          >
         </div>
+
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Cosa succede dietro le quinte:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. Rilevamento dispositivo:</strong> Il driver registra il
+              nuovo disco con add_disk() (register_blkdev() riserva solo il
+              major number)
+            </li>
+            <li>
+              <strong>2. Creazione partizione:</strong> fdisk scrive la tabella
+              partizioni (MBR/GPT) sul disco
+            </li>
+            <li>
+              <strong>3. Formattazione:</strong> mkfs.ext4 crea superblock,
+              inode table, e strutture dati ext4
+            </li>
+            <li>
+              <strong>4. Montaggio:</strong> mount() legge superblock, valida
+              filesystem, crea punto di mount
+            </li>
+            <li>
+              <strong>5. Accessibilità:</strong> Il disco diventa parte del
+              namespace del sistema
+            </li>
+          </ol>
+        </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> Da disco grezzo a filesystem montato!
+          Le storage headers rendono possibile l'organizzazione strutturata dei
+          dati su qualsiasi dispositivo!
+        </div>
+      </div>
+
+      <h2>🧪 Laboratorio Pratico: Esplora le Storage Headers</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              💽 Esamina dispositivi a blocchi
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ lsblk -f<br />
+              NAME FSTYPE LABEL UUID MOUNTPOINT<br />
+              sda<br />
+              └─sda1 ext4 12345678-1234 /<br /><br />
+              $ blkid /dev/sda1
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi dispositivi e filesystem con UUID e label</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📊 Analizza tabella partizioni
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ fdisk -l /dev/sda<br />
+              Disk /dev/sda: 465.8 GiB<br />
+              Device Start End Sectors Size Type<br />
+              /dev/sda1 2048 976773167 976771120 465.8G Linux filesystem<br /><br />
+              $ parted /dev/sda print
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Esamina la struttura delle partizioni del disco</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🗂️ Ispeziona superblock
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ tune2fs -l /dev/sda1 | head -20<br />
+              tune2fs 1.46.5<br />
+              Filesystem volume name: &lt;none&gt;<br />
+              Last mounted on: /<br />
+              Filesystem UUID: 12345678-abcd<br />
+              Filesystem magic number: 0xEF53
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Visualizza i metadati del superblock del filesystem</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📄 Esplora inode
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ls -i /etc/passwd<br />
+              1573568 /etc/passwd<br /><br />
+              $ debugfs -R "stat <1573568>" /dev/sda1<br />
+              Inode: 1573568 Type: regular Mode: 0644
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Analizza la struttura degli inode del filesystem</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            📋
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Gerarchia dei Metadati
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            Block device → Partition table → Superblock → Inode table → Data
+            blocks. Ogni livello aggiunge struttura e organizzazione.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🛡️
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Integrità Critica
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            Corruption dei metadati può rendere inaccessibili tutti i dati.
+            Backup multipli e checksum proteggono l'integrità.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔄
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Aggiornamenti Dinamici
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            Le storage headers vengono aggiornate durante l'operazione normale.
+            Il journaling garantisce atomicità delle modifiche.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔧
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Recovery & Backup
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Superblock backup e tool di recovery permettono di ricostruire
+            l'accesso ai dati anche dopo corruption grave.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz su Storage
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz su Storage
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
+        {
+          question:
+            "Quale è il ruolo principale del sottosistema di storage nel kernel?",
+          options: [
+            "Gestire I/O su disco e dispositivi storage",
+            "Gestire la rete",
+            "Gestire la memoria",
+            "Gestire la CPU",
+          ],
+          correct: 0,
+          explanation:
+            "Lo storage subsystem gestisce tutte le operazioni di input/output su dischi e dispositivi.",
+        },
+        {
+          question:
+            "Quale comando mostra il superblock di un filesystem ext2/3/4?",
+          options: ["tune2fs -l", "lsof", "iostat", "mkfs.ext4"],
+          correct: 0,
+          explanation:
+            "tune2fs -l legge e mostra il superblock di un filesystem ext (volume name, UUID, magic number 0xEF53, contatori di inode e blocchi).",
+        },
+        {
+          question:
+            "Quale è la differenza tra block device e character device?",
+          options: [
+            "Nessuna differenza",
+            "Block è più veloce",
+            "Character non supporta cache",
+            "Block accede a blocchi, character a byte",
+          ],
+          correct: 3,
+          explanation:
+            "Block device accede dati in blocchi, character device accede a byte individuali.",
+        },
+        {
+          question:
+            "Quale tipo di tabella delle partizioni ha il limite dei 2TB?",
+          options: ["GPT", "MBR", "ext4", "XFS"],
+          correct: 1,
+          explanation:
+            "L'MBR usa indirizzi di settore a 32 bit e quindi gestisce dischi fino a circa 2TB; il GPT supera questo limite.",
+        },
+        {
+          question:
+            "Quale struttura del kernel descrive un dispositivo a blocchi come un disco?",
+          options: [
+            "struct inode",
+            "struct super_block",
+            "struct dentry",
+            "struct block_device",
+          ],
+          correct: 3,
+          explanation:
+            "struct block_device rappresenta un dispositivo a blocchi con la sua geometria e i suoi parametri; super_block descrive invece un filesystem e inode un file.",
+        },
+        {
+          question: "Quale filesystem tra questi usa copy-on-write e snapshot?",
+          options: ["XFS", "ext4", "BTRFS", "ext2"],
+          correct: 2,
+          explanation:
+            "BTRFS è un filesystem moderno basato su copy-on-write, con snapshot e checksum dei dati e dei metadati.",
+        },
+        {
+          question: "Cosa fa il writeback subsystem nello storage?",
+          options: [
+            "Legge dati da disco",
+            "Gestisce la cache",
+            "Compatta il disco",
+            "Scrive dati modificati su disco",
+          ],
+          correct: 3,
+          explanation:
+            "Il writeback subsystem gestisce la sincronizzazione dei dati modificati su disco.",
+        },
+        {
+          question:
+            "Quale struttura rappresenta un file o una directory con metadati, permessi e puntatori ai dati?",
+          options: [
+            "struct inode",
+            "struct page",
+            "struct block_device",
+            "struct super_block",
+          ],
+          correct: 0,
+          explanation:
+            "struct inode contiene i metadati di un file o directory (permessi, proprietario, dimensioni) e i riferimenti ai dati; super_block descrive il filesystem nel suo insieme.",
+        },
+        {
+          question: "Cosa rappresenta una 'sector' nel storage?",
+          options: [
+            "Un'area di memoria",
+            "Un'operazione",
+            "Un settore del disco (512 byte tipicamente)",
+            "Un buffer cache",
+          ],
+          correct: 2,
+          explanation:
+            "Un settore è l'unità atomica di lettura/scrittura su disco (tipicamente 512 byte).",
+        },
+        {
+          question:
+            "Quale comando elenca i dispositivi a blocchi con filesystem, UUID e LABEL?",
+          options: ["ps aux", "lsblk -f", "ip addr", "free -h"],
+          correct: 1,
+          explanation:
+            "lsblk -f mostra l'albero dei dispositivi a blocchi con tipo di filesystem, label, UUID e punto di mount.",
+        },
+      ];
 
-<script>
-    // Quiz functionality
-                const quizQuestions = [
-        {
-            question: "Quale è il ruolo principale del sottosistema di storage nel kernel?",
-            options: ["Gestire I/O su disco e dispositivi storage", "Gestire la rete", "Gestire la memoria", "Gestire la CPU"],
-            correct: 0,
-            explanation: "Lo storage subsystem gestisce tutte le operazioni di input/output su dischi e dispositivi."
-        },
-        {
-            question: "Quale comando mostra il superblock di un filesystem ext2/3/4?",
-            options: ["tune2fs -l", "lsof", "iostat", "mkfs.ext4"],
-            correct: 0,
-            explanation: "tune2fs -l legge e mostra il superblock di un filesystem ext (volume name, UUID, magic number 0xEF53, contatori di inode e blocchi)."
-        },
-        {
-            question: "Quale è la differenza tra block device e character device?",
-            options: ["Nessuna differenza", "Block è più veloce", "Character non supporta cache", "Block accede a blocchi, character a byte"],
-            correct: 3,
-            explanation: "Block device accede dati in blocchi, character device accede a byte individuali."
-        },
-        {
-            question: "Quale tipo di tabella delle partizioni ha il limite dei 2TB?",
-            options: ["GPT", "MBR", "ext4", "XFS"],
-            correct: 1,
-            explanation: "L'MBR usa indirizzi di settore a 32 bit e quindi gestisce dischi fino a circa 2TB; il GPT supera questo limite."
-        },
-        {
-            question: "Quale struttura del kernel descrive un dispositivo a blocchi come un disco?",
-            options: ["struct inode", "struct super_block", "struct dentry", "struct block_device"],
-            correct: 3,
-            explanation: "struct block_device rappresenta un dispositivo a blocchi con la sua geometria e i suoi parametri; super_block descrive invece un filesystem e inode un file."
-        },
-        {
-            question: "Quale filesystem tra questi usa copy-on-write e snapshot?",
-            options: ["XFS", "ext4", "BTRFS", "ext2"],
-            correct: 2,
-            explanation: "BTRFS è un filesystem moderno basato su copy-on-write, con snapshot e checksum dei dati e dei metadati."
-        },
-        {
-            question: "Cosa fa il writeback subsystem nello storage?",
-            options: ["Legge dati da disco", "Gestisce la cache", "Compatta il disco", "Scrive dati modificati su disco"],
-            correct: 3,
-            explanation: "Il writeback subsystem gestisce la sincronizzazione dei dati modificati su disco."
-        },
-        {
-            question: "Quale struttura rappresenta un file o una directory con metadati, permessi e puntatori ai dati?",
-            options: ["struct inode", "struct page", "struct block_device", "struct super_block"],
-            correct: 0,
-            explanation: "struct inode contiene i metadati di un file o directory (permessi, proprietario, dimensioni) e i riferimenti ai dati; super_block descrive il filesystem nel suo insieme."
-        },
-        {
-            question: "Cosa rappresenta una 'sector' nel storage?",
-            options: ["Un'area di memoria", "Un'operazione", "Un settore del disco (512 byte tipicamente)", "Un buffer cache"],
-            correct: 2,
-            explanation: "Un settore è l'unità atomica di lettura/scrittura su disco (tipicamente 512 byte)."
-        },
-        {
-            question: "Quale comando elenca i dispositivi a blocchi con filesystem, UUID e LABEL?",
-            options: ["ps aux", "lsblk -f", "ip addr", "free -h"],
-            correct: 1,
-            explanation: "lsblk -f mostra l'albero dei dispositivi a blocchi con tipo di filesystem, label, UUID e punto di mount."
-        }
-    ];
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Fine del quiz: mostra i risultati
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Fine del quiz: mostra i risultati
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -563,45 +1273,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -612,45 +1326,49 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione delle storage headers! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione delle storage headers! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a esplorare le storage headers! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a esplorare le storage headers! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! Le storage headers sono fondamentali! 📚";
-            color = "#d32f2f";
+          message =
+            "Continua a studiare! Le storage headers sono fondamentali! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -664,52 +1382,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-

@@ -1,575 +1,1314 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GW3S1CKY7Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-GW3S1CKY7Q');
-</script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4240610713346131"
-     crossorigin="anonymous"></script>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PROCESSES - Dettagli</title>
-     
+
     <!--Libreria css per pagine-->
-    <link rel="stylesheet" href="style_pages.css">
-    
-</head>
-<body>
-    <button class="back-button back-button-fixed" onclick="window.location.href='index.html'">
-        ← Torna alla Kernel Map
+    <link rel="stylesheet" href="style_pages.css" />
+  </head>
+  <body>
+    <button
+      class="back-button back-button-fixed"
+      onclick="window.location.href = 'index.html'"
+    >
+      ← Torna alla Kernel Map
     </button>
-    
+
     <div class="header">
-        <h1>PROCESSES</h1>
-        <p class="subtitle">Gestione dei Processi</p>
+      <h1>PROCESSES</h1>
+      <p class="subtitle">Gestione dei Processi</p>
     </div>
 
     <div class="content">
-        <span class="badge">🔄 GESTIONE PROCESSI</span>
-        <h2>DESCRIZIONE:</h2>
-        <p><strong>La gestione dei processi coordina la creazione, esecuzione, schedulazione e terminazione di tutti i programmi in esecuzione nel sistema operativo Linux.</strong></p>
+      <span class="badge">🔄 GESTIONE PROCESSI</span>
+      <h2>DESCRIZIONE:</h2>
+      <p>
+        <strong
+          >La gestione dei processi coordina la creazione, esecuzione,
+          schedulazione e terminazione di tutti i programmi in esecuzione nel
+          sistema operativo Linux.</strong
+        >
+      </p>
 
-        <h2>CONFRONTO:</h2>
-        <p>Come un direttore d'orchestra che coordina musicisti diversi: ogni processo è uno strumento che suona la sua parte, ma il kernel decide quando e come suonare per creare l'armonia del sistema.</p>
+      <h2>CONFRONTO:</h2>
+      <p>
+        Come un direttore d'orchestra che coordina musicisti diversi: ogni
+        processo è uno strumento che suona la sua parte, ma il kernel decide
+        quando e come suonare per creare l'armonia del sistema.
+      </p>
 
-        <h2>🔍 Descrizione Tecnica</h2>
-        <p><strong>La gestione dei processi è il nucleo del multitasking in Linux, coordinando la creazione, esecuzione e terminazione di programmi attraverso strutture dati complesse e algoritmi di schedulazione.</strong> Immagina un'orchestra sinfonica dove ogni musicista (processo) ha la sua partitura (codice), strumento (risorse), e posto assegnato (CPU time), ma il direttore (scheduler) decide chi suona quando per creare la melodia perfetta.</p>
+      <h2>🔍 Descrizione Tecnica</h2>
+      <p>
+        <strong
+          >La gestione dei processi è il nucleo del multitasking in Linux,
+          coordinando la creazione, esecuzione e terminazione di programmi
+          attraverso strutture dati complesse e algoritmi di
+          schedulazione.</strong
+        >
+        Immagina un'orchestra sinfonica dove ogni musicista (processo) ha la sua
+        partitura (codice), strumento (risorse), e posto assegnato (CPU time),
+        ma il direttore (scheduler) decide chi suona quando per creare la
+        melodia perfetta.
+      </p>
 
-        <p>• <strong>Process lifecycle management</strong> - Creazione, esecuzione, sospensione, terminazione processi</p>
-        <p>• <strong>Context switching</strong> - Salvataggio e ripristino stato processi durante cambi di contesto</p>
-        <p>• <strong>Process scheduling</strong> - Classi fair (CFS/EEVDF), RT e deadline per assegnazione CPU time</p>
-        <p>• <strong>Inter-process communication</strong> - Pipe, segnali, shared memory, semafori</p>
-        <p>• <strong>Process hierarchy</strong> - Relazioni padre-figlio e gestione processi zombie</p>
-        <p>• <strong>Resource management</strong> - Allocazione CPU, memoria, I/O per processi</p>
-        <p><em>• Interazione: Coordina con scheduler, memory manager e I/O subsystem per esecuzione efficiente</em></p>
+      <p>
+        • <strong>Process lifecycle management</strong> - Creazione, esecuzione,
+        sospensione, terminazione processi
+      </p>
+      <p>
+        • <strong>Context switching</strong> - Salvataggio e ripristino stato
+        processi durante cambi di contesto
+      </p>
+      <p>
+        • <strong>Process scheduling</strong> - Classi fair (CFS/EEVDF), RT e
+        deadline per assegnazione CPU time
+      </p>
+      <p>
+        • <strong>Inter-process communication</strong> - Pipe, segnali, shared
+        memory, semafori
+      </p>
+      <p>
+        • <strong>Process hierarchy</strong> - Relazioni padre-figlio e gestione
+        processi zombie
+      </p>
+      <p>
+        • <strong>Resource management</strong> - Allocazione CPU, memoria, I/O
+        per processi
+      </p>
+      <p>
+        <em
+          >• Interazione: Coordina con scheduler, memory manager e I/O subsystem
+          per esecuzione efficiente</em
+        >
+      </p>
 
-        <h2>⚙️ Operazioni Principali</h2>
-        <p><strong>La gestione dei processi coordina quattro aspetti fondamentali del multitasking, ciascuno essenziale per l'esecuzione concorrente:</strong></p>
+      <h2>⚙️ Operazioni Principali</h2>
+      <p>
+        <strong
+          >La gestione dei processi coordina quattro aspetti fondamentali del
+          multitasking, ciascuno essenziale per l'esecuzione
+          concorrente:</strong
+        >
+      </p>
 
-        <h3>🔄 Process Lifecycle</h3>
-        <p>• <strong>fork()</strong> - Crea nuovo processo duplicando quello corrente</p>
-        <p>• <strong>execve()</strong> - Sostituisce immagine processo con programma nuovo</p>
-        <p>• <strong>exit()</strong> - Termina processo e rilascia risorse</p>
-        <p>• <strong>waitpid()</strong> - Attende terminazione processo figlio</p>
-        <p>• <strong>clone()</strong> - Crea processo con opzioni avanzate (threads)</p>
+      <h3>🔄 Process Lifecycle</h3>
+      <p>
+        • <strong>fork()</strong> - Crea nuovo processo duplicando quello
+        corrente
+      </p>
+      <p>
+        • <strong>execve()</strong> - Sostituisce immagine processo con
+        programma nuovo
+      </p>
+      <p>• <strong>exit()</strong> - Termina processo e rilascia risorse</p>
+      <p>• <strong>waitpid()</strong> - Attende terminazione processo figlio</p>
+      <p>
+        • <strong>clone()</strong> - Crea processo con opzioni avanzate
+        (threads)
+      </p>
 
-        <h3>🎯 Scheduling Operations</h3>
-        <p>• <strong>schedule()</strong> - Funzione kernel interna per cambio contesto (non system call)</p>
-        <p>• <strong>wake_up_process()</strong> - Funzione kernel per riattivare processo dormiente</p>
-        <p>• <strong>sched_yield()</strong> - System call per cedere volontariamente CPU</p>
-        <p>• <strong>nice()</strong> - System call per modificare priorità processo</p>
-        <p>• <strong>sched_setscheduler()</strong> - System call per impostare politica scheduling</p>
+      <h3>🎯 Scheduling Operations</h3>
+      <p>
+        • <strong>schedule()</strong> - Funzione kernel interna per cambio
+        contesto (non system call)
+      </p>
+      <p>
+        • <strong>wake_up_process()</strong> - Funzione kernel per riattivare
+        processo dormiente
+      </p>
+      <p>
+        • <strong>sched_yield()</strong> - System call per cedere
+        volontariamente CPU
+      </p>
+      <p>
+        • <strong>nice()</strong> - System call per modificare priorità processo
+      </p>
+      <p>
+        • <strong>sched_setscheduler()</strong> - System call per impostare
+        politica scheduling
+      </p>
 
-        <h3>💬 Inter-Process Communication</h3>
-        <p>• <strong>pipe()</strong> - Crea canale comunicazione unidirezionale</p>
-        <p>• <strong>kill()</strong> - Invia segnali ad altri processi</p>
-        <p>• <strong>shmget()</strong> - Crea segmento memoria condivisa</p>
-        <p>• <strong>semget()</strong> - Crea insieme semafori</p>
-        <p>• <strong>msgget()</strong> - Crea coda messaggi</p>
+      <h3>💬 Inter-Process Communication</h3>
+      <p>
+        • <strong>pipe()</strong> - Crea canale comunicazione unidirezionale
+      </p>
+      <p>• <strong>kill()</strong> - Invia segnali ad altri processi</p>
+      <p>• <strong>shmget()</strong> - Crea segmento memoria condivisa</p>
+      <p>• <strong>semget()</strong> - Crea insieme semafori</p>
+      <p>• <strong>msgget()</strong> - Crea coda messaggi</p>
 
-        <h3>📊 Process Monitoring</h3>
-        <p>• <strong>getpid()</strong> - System call per ottenere ID processo corrente</p>
-        <p>• <strong>getppid()</strong> - System call per ottenere ID processo padre</p>
-        <p>• <strong>gettid()</strong> - System call per ottenere thread ID (Linux-specific)</p>
-        <p>• <strong>ps</strong> - Programma utente per elencare processi attivi</p>
-        <p>• <strong>top</strong> - Programma utente per monitorare processi in tempo reale</p>
-        <p>• <strong>strace</strong> - Programma utente per tracciare system call</p>
+      <h3>📊 Process Monitoring</h3>
+      <p>
+        • <strong>getpid()</strong> - System call per ottenere ID processo
+        corrente
+      </p>
+      <p>
+        • <strong>getppid()</strong> - System call per ottenere ID processo
+        padre
+      </p>
+      <p>
+        • <strong>gettid()</strong> - System call per ottenere thread ID
+        (Linux-specific)
+      </p>
+      <p>
+        • <strong>ps</strong> - Programma utente per elencare processi attivi
+      </p>
+      <p>
+        • <strong>top</strong> - Programma utente per monitorare processi in
+        tempo reale
+      </p>
+      <p>
+        • <strong>strace</strong> - Programma utente per tracciare system call
+      </p>
 
-        <h2>📋 Esempi Pratici</h2>
-        <p><strong>Quando lanci un programma come Firefox, ecco cosa succede nella gestione dei processi:</strong></p>
+      <h2>📋 Esempi Pratici</h2>
+      <p>
+        <strong
+          >Quando lanci un programma come Firefox, ecco cosa succede nella
+          gestione dei processi:</strong
+        >
+      </p>
 
-        <h3>🔍 Avvio di un Processo</h3>
-        <p>1. La shell esegue fork() per creare un processo figlio identico</p>
-        <p>2. Il processo figlio chiama execve() per caricare l'immagine di Firefox</p>
-        <p>3. Il kernel assegna un PID e inizializza la task_struct</p>
-        <p>4. Lo scheduler fair (CFS/EEVDF) assegna tempo CPU per l'esecuzione</p>
+      <h3>🔍 Avvio di un Processo</h3>
+      <p>1. La shell esegue fork() per creare un processo figlio identico</p>
+      <p>
+        2. Il processo figlio chiama execve() per caricare l'immagine di Firefox
+      </p>
+      <p>3. Il kernel assegna un PID e inizializza la task_struct</p>
+      <p>4. Lo scheduler fair (CFS/EEVDF) assegna tempo CPU per l'esecuzione</p>
 
-        <h3>📄 Strutture Dati Chiave</h3>
-        <ul>
-            <li><strong>task_struct</strong> - Contiene tutti i dati di un processo: PID, stato, priorità, memoria, file aperti. È il "passaporto" del processo</li>
-            <li><strong>process descriptor</strong> - Puntatore alla task_struct nel kernel</li>
-            <li><strong>thread_info</strong> - Su alcune architetture, embedded nel kernel stack per accesso rapido al task_struct</li>
-            <li><strong>mm_struct</strong> - Descrittore dello spazio di memoria virtuale del processo</li>
-            <li><strong>files_struct</strong> - Lista dei file descriptor aperti dal processo</li>
-            <li><strong>sched_entity</strong> - Entità di scheduling della classe fair (CFS/EEVDF) con vruntime e load</li>
-            <li><strong>sched_class</strong> - Classe di scheduling (fair, real-time, deadline)</li>
-            <li><strong>cred</strong> - Credenziali di sicurezza (UID, GID, capabilities)</li>
-        </ul>
+      <h3>📄 Strutture Dati Chiave</h3>
+      <ul>
+        <li>
+          <strong>task_struct</strong> - Contiene tutti i dati di un processo:
+          PID, stato, priorità, memoria, file aperti. È il "passaporto" del
+          processo
+        </li>
+        <li>
+          <strong>process descriptor</strong> - Puntatore alla task_struct nel
+          kernel
+        </li>
+        <li>
+          <strong>thread_info</strong> - Su alcune architetture, embedded nel
+          kernel stack per accesso rapido al task_struct
+        </li>
+        <li>
+          <strong>mm_struct</strong> - Descrittore dello spazio di memoria
+          virtuale del processo
+        </li>
+        <li>
+          <strong>files_struct</strong> - Lista dei file descriptor aperti dal
+          processo
+        </li>
+        <li>
+          <strong>sched_entity</strong> - Entità di scheduling della classe fair
+          (CFS/EEVDF) con vruntime e load
+        </li>
+        <li>
+          <strong>sched_class</strong> - Classe di scheduling (fair, real-time,
+          deadline)
+        </li>
+        <li>
+          <strong>cred</strong> - Credenziali di sicurezza (UID, GID,
+          capabilities)
+        </li>
+      </ul>
 
-        <h3>💻 Nel Computer: Come Vederlo?</h3>
-        <p><strong>Comandi Linux per esplorare i processi:</strong></p>
-        <ul>
-            <li><code>ps aux</code> - Mostra tutti i processi attivi con dettagli</li>
-            <li><code>top</code> - Monitora processi in tempo reale</li>
-            <li><code>htop</code> - Versione avanzata di top con interfaccia testuale interattiva</li>
-            <li><code>pstree</code> - Mostra la gerarchia dei processi ad albero</li>
-            <li><code>pgrep firefox</code> - Trova PID dei processi Firefox</li>
-            <li><code>strace -p PID</code> - Traccia le system call di un processo</li>
-        </ul>
+      <h3>💻 Nel Computer: Come Vederlo?</h3>
+      <p><strong>Comandi Linux per esplorare i processi:</strong></p>
+      <ul>
+        <li>
+          <code>ps aux</code> - Mostra tutti i processi attivi con dettagli
+        </li>
+        <li><code>top</code> - Monitora processi in tempo reale</li>
+        <li>
+          <code>htop</code> - Versione avanzata di top con interfaccia testuale
+          interattiva
+        </li>
+        <li>
+          <code>pstree</code> - Mostra la gerarchia dei processi ad albero
+        </li>
+        <li><code>pgrep firefox</code> - Trova PID dei processi Firefox</li>
+        <li>
+          <code>strace -p PID</code> - Traccia le system call di un processo
+        </li>
+      </ul>
 
-        <h3>🎯 Caso Reale: Esecuzione di un Comando</h3>
-        <p>Quando fai <code>ls -l</code> nella shell:</p>
-        <ol>
-            <li>La shell fa fork() per creare processo figlio</li>
-            <li>Il figlio fa execve() per eseguire /bin/ls</li>
-            <li>ls accede ai file nella directory corrente</li>
-            <li>Output viene inviato allo stdout (terminale)</li>
-            <li>Processo termina con exit() e rilascia risorse</li>
-            <li>Il padre (shell) fa waitpid() per attendere la fine</li>
-        </ol>
+      <h3>🎯 Caso Reale: Esecuzione di un Comando</h3>
+      <p>Quando fai <code>ls -l</code> nella shell:</p>
+      <ol>
+        <li>La shell fa fork() per creare processo figlio</li>
+        <li>Il figlio fa execve() per eseguire /bin/ls</li>
+        <li>ls accede ai file nella directory corrente</li>
+        <li>Output viene inviato allo stdout (terminale)</li>
+        <li>Processo termina con exit() e rilascia risorse</li>
+        <li>Il padre (shell) fa waitpid() per attendere la fine</li>
+      </ol>
 
-        <h2>⚡ Stati dei Processi</h2>
-        <ul>
-            <li><strong>Running (R)</strong> - In esecuzione sulla CPU</li>
-            <li><strong>Interruptible Sleep (S)</strong> - In attesa di evento (I/O, segnale)</li>
-            <li><strong>Uninterruptible Sleep (D)</strong> - In attesa di I/O, non può essere interrotto</li>
-            <li><strong>Stopped (T)</strong> - Fermato da segnale (Ctrl+Z)</li>
-            <li><strong>Zombie (Z)</strong> - Processi terminati che hanno rilasciato risorse ma di cui il padre non ha ancora letto lo stato di uscita (exit status)</li>
-            <li><strong>Idle (I)</strong> - Thread del kernel inattivi (non contano nel load average)</li>
-            <li><strong>Dead (X)</strong> - Processi completamente terminati e rimossi dalla process table</li>
-        </ul>
+      <h2>⚡ Stati dei Processi</h2>
+      <ul>
+        <li><strong>Running (R)</strong> - In esecuzione sulla CPU</li>
+        <li>
+          <strong>Interruptible Sleep (S)</strong> - In attesa di evento (I/O,
+          segnale)
+        </li>
+        <li>
+          <strong>Uninterruptible Sleep (D)</strong> - In attesa di I/O, non può
+          essere interrotto
+        </li>
+        <li><strong>Stopped (T)</strong> - Fermato da segnale (Ctrl+Z)</li>
+        <li>
+          <strong>Zombie (Z)</strong> - Processi terminati che hanno rilasciato
+          risorse ma di cui il padre non ha ancora letto lo stato di uscita
+          (exit status)
+        </li>
+        <li>
+          <strong>Idle (I)</strong> - Thread del kernel inattivi (non contano
+          nel load average)
+        </li>
+        <li>
+          <strong>Dead (X)</strong> - Processi completamente terminati e rimossi
+          dalla process table
+        </li>
+      </ul>
 
-        <h2>✨ Caratteristiche</h2>
-        <ul>
-            <li><strong>Preemptive multitasking</strong> - Scheduler può interrompere processi</li>
-            <li><strong>Isolamento</strong> - Ogni processo ha il proprio spazio di indirizzamento virtuale</li>
-            <li><strong>Gerarchia</strong> - Albero padre-figlio con radice in init/systemd (PID 1)</li>
-            <li><strong>Creazione efficiente</strong> - fork() con copy-on-write: le pagine si copiano solo se modificate</li>
-            <li><strong>Controllo risorse</strong> - Limiti per processo (rlimits) e per gruppi (cgroups)</li>
-        </ul>
+      <h2>✨ Caratteristiche</h2>
+      <ul>
+        <li>
+          <strong>Preemptive multitasking</strong> - Scheduler può interrompere
+          processi
+        </li>
+        <li>
+          <strong>Isolamento</strong> - Ogni processo ha il proprio spazio di
+          indirizzamento virtuale
+        </li>
+        <li>
+          <strong>Gerarchia</strong> - Albero padre-figlio con radice in
+          init/systemd (PID 1)
+        </li>
+        <li>
+          <strong>Creazione efficiente</strong> - fork() con copy-on-write: le
+          pagine si copiano solo se modificate
+        </li>
+        <li>
+          <strong>Controllo risorse</strong> - Limiti per processo (rlimits) e
+          per gruppi (cgroups)
+        </li>
+      </ul>
 
-        <h2>🔗 Interazioni Chiave</h2>
-        <p><strong>La gestione dei processi coordina con tutti i principali sottosistemi del kernel:</strong></p>
+      <h2>🔗 Interazioni Chiave</h2>
+      <p>
+        <strong
+          >La gestione dei processi coordina con tutti i principali sottosistemi
+          del kernel:</strong
+        >
+      </p>
 
-        <h3>⚙️ Scheduler Subsystem</h3>
-        <p>• <strong>Scheduler fair (CFS/EEVDF)</strong> - Gestisce l'allocazione del tempo CPU tra processi runnable</p>
-        <p>• <strong>Real-time scheduler</strong> - Supporta processi con priorità assoluta</p>
-        <p>• <strong>Load balancer</strong> - Distribuisce processi tra CPU disponibili</p>
+      <h3>⚙️ Scheduler Subsystem</h3>
+      <p>
+        • <strong>Scheduler fair (CFS/EEVDF)</strong> - Gestisce l'allocazione
+        del tempo CPU tra processi runnable
+      </p>
+      <p>
+        • <strong>Real-time scheduler</strong> - Supporta processi con priorità
+        assoluta
+      </p>
+      <p>
+        • <strong>Load balancer</strong> - Distribuisce processi tra CPU
+        disponibili
+      </p>
 
-        <h3>🧠 Memory Management</h3>
-        <p>• <strong>Virtual memory</strong> - Gestisce spazi di indirizzamento per processi</p>
-        <p>• <strong>Page tables</strong> - Traduce indirizzi virtuali in fisici per processo</p>
-        <p>• <strong>Memory limits</strong> - Applica limiti RAM per processo (rlimits)</p>
+      <h3>🧠 Memory Management</h3>
+      <p>
+        • <strong>Virtual memory</strong> - Gestisce spazi di indirizzamento per
+        processi
+      </p>
+      <p>
+        • <strong>Page tables</strong> - Traduce indirizzi virtuali in fisici
+        per processo
+      </p>
+      <p>
+        • <strong>Memory limits</strong> - Applica limiti RAM per processo
+        (rlimits)
+      </p>
 
-        <h3>🔌 Interrupt System</h3>
-        <p>• <strong>Context switching</strong> - Salva/restaura stato durante cambi di contesto</p>
-        <p>• <strong>Preemption</strong> - Permette interruzione processi per priorità più alta</p>
-        <p>• <strong>Timer interrupts</strong> - Gestisce time slice e scheduling periodico</p>
+      <h3>🔌 Interrupt System</h3>
+      <p>
+        • <strong>Context switching</strong> - Salva/restaura stato durante
+        cambi di contesto
+      </p>
+      <p>
+        • <strong>Preemption</strong> - Permette interruzione processi per
+        priorità più alta
+      </p>
+      <p>
+        • <strong>Timer interrupts</strong> - Gestisce time slice e scheduling
+        periodico
+      </p>
 
-        <h3>🔐 Security Framework</h3>
-        <p>• <strong>Credentials</strong> - Gestisce UID, GID, capabilities per processo</p>
-        <p>• <strong>Namespaces</strong> - Isola processi in ambienti separati</p>
-        <p>• <strong>Capabilities</strong> - Permessi granulari oltre il modello root/non-root</p>
+      <h3>🔐 Security Framework</h3>
+      <p>
+        • <strong>Credentials</strong> - Gestisce UID, GID, capabilities per
+        processo
+      </p>
+      <p>• <strong>Namespaces</strong> - Isola processi in ambienti separati</p>
+      <p>
+        • <strong>Capabilities</strong> - Permessi granulari oltre il modello
+        root/non-root
+      </p>
 
-        <h3>📡 IPC Subsystem</h3>
-        <p>• <strong>Signals</strong> - Notifiche asincrone tra processi (forma limitata di IPC: non trasportano dati)</p>
-        <p>• <strong>Pipes/FIFOs</strong> - Comunicazione unidirezionale tra processi</p>
-        <p>• <strong>Shared memory</strong> - Memoria condivisa per comunicazione veloce</p>
+      <h3>📡 IPC Subsystem</h3>
+      <p>
+        • <strong>Signals</strong> - Notifiche asincrone tra processi (forma
+        limitata di IPC: non trasportano dati)
+      </p>
+      <p>
+        • <strong>Pipes/FIFOs</strong> - Comunicazione unidirezionale tra
+        processi
+      </p>
+      <p>
+        • <strong>Shared memory</strong> - Memoria condivisa per comunicazione
+        veloce
+      </p>
 
-        <h2>🛠️ API Principali</h2>
-        <p><strong>Queste sono le funzioni kernel per gestire processi e scheduling:</strong></p>
+      <h2>🛠️ API Principali</h2>
+      <p>
+        <strong
+          >Queste sono le funzioni kernel per gestire processi e
+          scheduling:</strong
+        >
+      </p>
 
-        <h3>🔄 Gestione Processi</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #d32f2f; font-weight: bold;">pid_t fork(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea un nuovo processo usando copy-on-write per ottimizzazione (non copia fisicamente tutta la memoria).</span><br><br>
+      <h3>🔄 Gestione Processi</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #d32f2f; font-weight: bold">pid_t fork(void);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea un nuovo processo usando copy-on-write per ottimizzazione (non
+          copia fisicamente tutta la memoria).</span
+        ><br /><br />
 
-            <code style="color: #2e7d32; font-weight: bold;">int execve(const char *pathname, char *const argv[], char *const envp[]);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Sostituisce l'immagine del processo corrente con un nuovo programma.</span><br><br>
+        <code style="color: #2e7d32; font-weight: bold"
+          >int execve(const char *pathname, char *const argv[], char *const
+          envp[]);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Sostituisce l'immagine del processo corrente con un nuovo
+          programma.</span
+        ><br /><br />
 
-            <code style="color: #f57c00; font-weight: bold;">pid_t waitpid(pid_t pid, int *wstatus, int options);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Attende la terminazione di un processo figlio.</span><br><br>
+        <code style="color: #f57c00; font-weight: bold"
+          >pid_t waitpid(pid_t pid, int *wstatus, int options);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Attende la terminazione di un processo figlio.</span
+        ><br /><br />
 
-            <code style="color: #9c27b0; font-weight: bold;">void exit(int status);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Termina il processo corrente e rilascia le risorse.</span><br><br>
+        <code style="color: #9c27b0; font-weight: bold"
+          >void exit(int status);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Termina il processo corrente e rilascia le risorse.</span
+        ><br /><br />
 
-            <code style="color: #0288d1; font-weight: bold;">long clone(unsigned long flags, void *child_stack, ...);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea processo/thread con opzioni avanzate (CLONE_VM crea thread, non processi separati).</span>
+        <code style="color: #0288d1; font-weight: bold"
+          >long clone(unsigned long flags, void *child_stack, ...);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea processo/thread con opzioni avanzate (CLONE_VM crea thread, non
+          processi separati).</span
+        >
+      </div>
+
+      <h3>🎯 Scheduling Operations</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #0288d1; font-weight: bold">int nice(int inc);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Modifica la priorità del processo corrente.</span
+        ><br /><br />
+
+        <code style="color: #d32f2f; font-weight: bold"
+          >int sched_setscheduler(pid_t pid, int policy, const struct
+          sched_param *param);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Imposta la politica di scheduling per un processo.</span
+        ><br /><br />
+
+        <code style="color: #2e7d32; font-weight: bold"
+          >int sched_yield(void);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Cede volontariamente la CPU ad altri processi.</span
+        >
+      </div>
+
+      <h3>📡 Inter-Process Communication</h3>
+      <div
+        style="
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 10px 0;
+        "
+      >
+        <code style="color: #f57c00; font-weight: bold"
+          >int kill(pid_t pid, int sig);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Invia un segnale a un processo specifico.</span
+        ><br /><br />
+
+        <code style="color: #9c27b0; font-weight: bold"
+          >int pipe(int pipefd[2]);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Crea una pipe per comunicazione unidirezionale tra processi.</span
+        ><br /><br />
+
+        <code style="color: #0288d1; font-weight: bold"
+          >key_t ftok(const char *pathname, int proj_id);</code
+        ><br />
+        <span style="color: #666; font-size: 0.9em"
+          >Genera una chiave unica per System V IPC.</span
+        >
+      </div>
+
+      <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
+      <p><strong>Quando lanci un comando nella shell:</strong></p>
+      <ol>
+        <li><code>fork()</code> - La shell crea un processo figlio</li>
+        <li><code>execve()</code> - Il figlio carica l'immagine del comando</li>
+        <li>
+          <code>waitpid()</code> - La shell attende che il comando finisca
+        </li>
+        <li><code>exit()</code> - Il comando termina e rilascia risorse</li>
+      </ol>
+      <p>
+        <em
+          >Ogni comando che esegui coinvolge la gestione dei processi del
+          kernel!</em
+        >
+      </p>
+
+      <h2>🗺️ Mappa Concettuale della Gestione Processi</h2>
+      <div
+        style="
+          text-align: center;
+          margin: 30px 0;
+          padding: 30px;
+          background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%);
+          border-radius: 15px;
+          border: 3px solid #4caf50;
+        "
+      >
+        <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em">
+          🏗️ Architettura della Gestione Processi
+        </h3>
+
+        <!-- User Applications Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px">
+            🖥️ APPLICAZIONI USER SPACE
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • Programmi (bash, firefox)<br />
+            • Daemons (sshd, apache)<br />
+            • System tools
+          </div>
         </div>
 
-        <h3>🎯 Scheduling Operations</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #0288d1; font-weight: bold;">int nice(int inc);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Modifica la priorità del processo corrente.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #d32f2f; font-weight: bold;">int sched_setscheduler(pid_t pid, int policy, const struct sched_param *param);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Imposta la politica di scheduling per un processo.</span><br><br>
-
-            <code style="color: #2e7d32; font-weight: bold;">int sched_yield(void);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Cede volontariamente la CPU ad altri processi.</span>
+        <!-- System Call Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px">
+            🔧 SYSTEM CALLS
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • fork() • exec() • wait()<br />
+            • getpid() • nice() • kill()<br />
+            • Context switch
+          </div>
         </div>
 
-        <h3>📡 Inter-Process Communication</h3>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
-            <code style="color: #f57c00; font-weight: bold;">int kill(pid_t pid, int sig);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Invia un segnale a un processo specifico.</span><br><br>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <code style="color: #9c27b0; font-weight: bold;">int pipe(int pipefd[2]);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Crea una pipe per comunicazione unidirezionale tra processi.</span><br><br>
-
-            <code style="color: #0288d1; font-weight: bold;">key_t ftok(const char *pathname, int proj_id);</code><br>
-            <span style="color: #666; font-size: 0.9em;">Genera una chiave unica per System V IPC.</span>
+        <!-- Process Management Core -->
+        <div
+          style="
+            display: inline-block;
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            padding: 25px;
+            border-radius: 15px;
+            border: 3px solid #2e7d32;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+          "
+        >
+          <div
+            style="
+              font-weight: bold;
+              color: white;
+              margin-bottom: 15px;
+              font-size: 1.2em;
+            "
+          >
+            🌟 PROCESS MANAGEMENT CORE
+          </div>
+          <div
+            style="display: flex; justify-content: space-around; color: white"
+          >
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">📋</div>
+              <div style="font-size: 0.8em">task_struct</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">⚙️</div>
+              <div style="font-size: 0.8em">scheduler</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🧠</div>
+              <div style="font-size: 0.8em">memory</div>
+            </div>
+            <div style="text-align: center">
+              <div style="font-size: 1.5em; margin-bottom: 5px">🔐</div>
+              <div style="font-size: 0.8em">security</div>
+            </div>
+          </div>
+          <div
+            style="
+              margin-top: 15px;
+              font-size: 0.9em;
+              text-align: center;
+              color: #e8f5e9;
+            "
+          >
+            • Process lifecycle<br />
+            • Context switching<br />
+            • Resource management
+          </div>
         </div>
 
-        <h3>🔍 Esempi di Utilizzo Quotidiano</h3>
-        <p><strong>Quando lanci un comando nella shell:</strong></p>
-        <ol>
-            <li><code>fork()</code> - La shell crea un processo figlio</li>
-            <li><code>execve()</code> - Il figlio carica l'immagine del comando</li>
-            <li><code>waitpid()</code> - La shell attende che il comando finisca</li>
-            <li><code>exit()</code> - Il comando termina e rilascia risorse</li>
-        </ol>
-        <p><em>Ogni comando che esegui coinvolge la gestione dei processi del kernel!</em></p>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-
-        <h2>🗺️ Mappa Concettuale della Gestione Processi</h2>
-        <div style="text-align: center; margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #e8f5e9 0%, #f3e5f5 100%); border-radius: 15px; border: 3px solid #4caf50;">
-            <h3 style="color: #2e7d32; margin-bottom: 25px; font-size: 1.4em;">🏗️ Architettura della Gestione Processi</h3>
-
-            <!-- User Applications Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #2196f3; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #2196f3; margin-bottom: 10px;">🖥️ APPLICAZIONI USER SPACE</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • Programmi (bash, firefox)<br>
-                    • Daemons (sshd, apache)<br>
-                    • System tools
-                </div>
+        <!-- Kernel Subsystems -->
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #9c27b0;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px">
+              ⚙️ SCHEDULER
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- System Call Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #ff9800; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #ff9800; margin-bottom: 10px;">🔧 SYSTEM CALLS</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • fork() • exec() • wait()<br>
-                    • getpid() • nice() • kill()<br>
-                    • Context switch
-                </div>
+            <div style="font-size: 0.8em; color: #666">
+              Fair (CFS/EEVDF), RT, Deadline
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Process Management Core -->
-            <div style="display: inline-block; background: linear-gradient(45deg, #4caf50, #66bb6a); padding: 25px; border-radius: 15px; border: 3px solid #2e7d32; margin-bottom: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15);">
-                <div style="font-weight: bold; color: white; margin-bottom: 15px; font-size: 1.2em;">🌟 PROCESS MANAGEMENT CORE</div>
-                <div style="display: flex; justify-content: space-around; color: white;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">📋</div>
-                        <div style="font-size: 0.8em;">task_struct</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
-                        <div style="font-size: 0.8em;">scheduler</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🧠</div>
-                        <div style="font-size: 0.8em;">memory</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5em; margin-bottom: 5px;">🔐</div>
-                        <div style="font-size: 0.8em;">security</div>
-                    </div>
-                </div>
-                <div style="margin-top: 15px; font-size: 0.9em; text-align: center; color: #e8f5e9;">
-                    • Process lifecycle<br>
-                    • Context switching<br>
-                    • Resource management
-                </div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #3f51b5;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px">
+              🧠 MEMORY
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Kernel Subsystems -->
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #9c27b0; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #9c27b0; margin-bottom: 8px;">⚙️ SCHEDULER</div>
-                    <div style="font-size: 0.8em; color: #666;">Fair (CFS/EEVDF), RT, Deadline</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #3f51b5; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #3f51b5; margin-bottom: 8px;">🧠 MEMORY</div>
-                    <div style="font-size: 0.8em; color: #666;">Virtual memory</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #009688; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #009688; margin-bottom: 8px;">🔐 SECURITY</div>
-                    <div style="font-size: 0.8em; color: #666;">Credentials, caps</div>
-                </div>
-                <div style="background: #fff; padding: 15px; border-radius: 8px; border: 2px solid #607d8b; box-shadow: 0 3px 6px rgba(0,0,0,0.1);">
-                    <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px;">📡 IPC</div>
-                    <div style="font-size: 0.8em; color: #666;">Signals, pipes, shm</div>
-                </div>
+            <div style="font-size: 0.8em; color: #666">Virtual memory</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #009688;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #009688; margin-bottom: 8px">
+              🔐 SECURITY
             </div>
-
-            <!-- Arrows -->
-            <div style="margin: 15px 0; font-size: 1.5em; color: #666;">⬇️</div>
-
-            <!-- Hardware Layer -->
-            <div style="display: inline-block; background: #fff; padding: 20px; border-radius: 10px; border: 2px solid #795548; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="font-weight: bold; color: #795548; margin-bottom: 10px;">⚡ HARDWARE LAYER</div>
-                <div style="font-size: 0.9em; color: #666;">
-                    • CPU Cores & Registers<br>
-                    • Memory Hierarchy (RAM, Cache)<br>
-                    • Interrupt Controllers
-                </div>
+            <div style="font-size: 0.8em; color: #666">Credentials, caps</div>
+          </div>
+          <div
+            style="
+              background: #fff;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #607d8b;
+              box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div style="font-weight: bold; color: #607d8b; margin-bottom: 8px">
+              📡 IPC
             </div>
-
-            <!-- Legend -->
-            <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 0.9em; color: #555;">
-                <strong>💡 Come leggere la mappa:</strong><br>
-                • Le frecce mostrano il flusso dalla user space al kernel<br>
-                • Ogni struttura dati contiene informazioni specifiche<br>
-                • La gestione processi collega tutti i sottosistemi del kernel<br>
-                • task_struct è il cuore della gestione processi
-            </div>
+            <div style="font-size: 0.8em; color: #666">Signals, pipes, shm</div>
+          </div>
         </div>
 
-        <h2>🎬 Demo Interattiva: Context Switching</h2>
-        <div style="background: #fff3e0; border: 2px solid #f57c00; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #f57c00; margin-bottom: 15px;">💻 Simulazione: Cambio di processo nel kernel</h3>
+        <!-- Arrows -->
+        <div style="margin: 15px 0; font-size: 1.5em; color: #666">⬇️</div>
 
-            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #4caf50;">
-                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px;">⚙️ Processo A (bash)</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        PID: 1234<br>
-                        Stato: RUNNING<br>
-                        <span style="color: #666;">(in esecuzione sulla CPU)</span>
-                    </div>
-                </div>
-
-                <div style="font-size: 2em; color: #f57c00;">🔄</div>
-
-                <div style="flex: 1; background: white; padding: 15px; border-radius: 8px; border: 2px solid #2196f3;">
-                    <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px;">📊 Processo B (firefox)</div>
-                    <div style="font-family: monospace; font-size: 0.9em;">
-                        PID: 5678<br>
-                        Stato: READY<br>
-                        <span style="color: #666;">(pronto per esecuzione)</span>
-                    </div>
-                </div>
-            </div>
-
-            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <strong>Evento scatenante:</strong> <code style="background: white; padding: 2px 6px; border-radius: 3px;">Timer interrupt (HZ del kernel tipicamente 250-1000Hz, 1-4ms)</code>
-            </div>
-
-            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔄 Sequenza del context switch:</h4>
-                <ol style="line-height: 1.8;">
-                    <li><strong>1. Interrupt handler:</strong> CPU salva lo stato minimo (pt_regs) sul kernel stack</li>
-                    <li><strong>2. Scheduler invocation:</strong> schedule() seleziona prossimo processo</li>
-                    <li><strong>3. Context save:</strong> Salva registri e stack pointer in task_struct</li>
-                    <li><strong>4. Memory switch:</strong> Aggiorna il registro CR3 (x86) o equivalente per puntare alle nuove page tables dello spazio di indirizzamento</li>
-                    <li><strong>5. Context restore:</strong> Carica registri e stack del nuovo processo</li>
-                    <li><strong>6. Resume execution:</strong> Nuovo processo continua dall'istruzione successiva</li>
-                </ol>
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #fff9c4; border-radius: 5px; font-size: 0.9em;">
-                <strong>🎯 Risultato:</strong> L'utente percepisce multitasking continuo, ma il kernel alterna rapidamente tra processi usando le strutture dati per salvare e ripristinare lo stato!
-            </div>
+        <!-- Hardware Layer -->
+        <div
+          style="
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #795548;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <div style="font-weight: bold; color: #795548; margin-bottom: 10px">
+            ⚡ HARDWARE LAYER
+          </div>
+          <div style="font-size: 0.9em; color: #666">
+            • CPU Cores & Registers<br />
+            • Memory Hierarchy (RAM, Cache)<br />
+            • Interrupt Controllers
+          </div>
         </div>
 
-        <h2>🧪 Laboratorio Pratico: Esplora i Processi</h2>
-        <div style="background: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px; padding: 20px; margin: 20px 0;">
-            <h3 style="color: #7b1fa2; margin-bottom: 15px;">🔬 Esperimenti da fare sul tuo Linux</h3>
+        <!-- Legend -->
+        <div
+          style="
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+          "
+        >
+          <strong>💡 Come leggere la mappa:</strong><br />
+          • Le frecce mostrano il flusso dalla user space al kernel<br />
+          • Ogni struttura dati contiene informazioni specifiche<br />
+          • La gestione processi collega tutti i sottosistemi del kernel<br />
+          • task_struct è il cuore della gestione processi
+        </div>
+      </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">📊 Esplora i processi</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ ps aux | head -5<br>
-                        USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND<br>
-                        root 1 0.0 0.1 225688 13944 ? Ss gen01 0:01 /sbin/init<br>
-                        $ cat /proc/$$/status | head -10
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi le informazioni dettagliate sui processi attivi</em></p>
-                </div>
+      <h2>🎬 Demo Interattiva: Context Switching</h2>
+      <div
+        style="
+          background: #fff3e0;
+          border: 2px solid #f57c00;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #f57c00; margin-bottom: 15px">
+          💻 Simulazione: Cambio di processo nel kernel
+        </h3>
 
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">⚙️ Analizza lo scheduling</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/$$/sched<br>
-                        $ chrt --pid $$<br>
-                        $ nice -n 10 sleep 1 &
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina i parametri di scheduling dei processi</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🧠 Monitora l'uso memoria</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ cat /proc/$$/maps | head -5<br>
-                        $ pmap $$ | head -10<br>
-                        $ ps -o pid,ppid,pgid,sid,comm $$
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Vedi la mappatura memoria e relazioni tra processi</em></p>
-                </div>
-
-                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                    <h4 style="color: #9c27b0; margin-bottom: 10px;">🔐 Controlla le credenziali</h4>
-                    <div style="font-family: monospace; font-size: 0.9em; background: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        $ id<br>
-                        $ cat /proc/$$/status | grep -E "(Uid|Gid|Cap)"<br>
-                        $ getpcaps $$
-                    </div>
-                    <p style="font-size: 0.9em; color: #666;"><em>Esamina UID, GID e capabilities dei processi</em></p>
-                </div>
+        <div
+          style="
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #4caf50;
+            "
+          >
+            <div style="font-weight: bold; color: #2e7d32; margin-bottom: 10px">
+              ⚙️ Processo A (bash)
             </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              PID: 1234<br />
+              Stato: RUNNING<br />
+              <span style="color: #666">(in esecuzione sulla CPU)</span>
+            </div>
+          </div>
+
+          <div style="font-size: 2em; color: #f57c00">🔄</div>
+
+          <div
+            style="
+              flex: 1;
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border: 2px solid #2196f3;
+            "
+          >
+            <div style="font-weight: bold; color: #0d47a1; margin-bottom: 10px">
+              📊 Processo B (firefox)
+            </div>
+            <div style="font-family: monospace; font-size: 0.9em">
+              PID: 5678<br />
+              Stato: READY<br />
+              <span style="color: #666">(pronto per esecuzione)</span>
+            </div>
+          </div>
         </div>
 
-        <h2>🎯 Concetti Chiave da Ricordare</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
-            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9); padding: 20px; border-radius: 10px; border: 2px solid #4caf50;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">📋</div>
-                <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px;">Task Struct Core</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #1b5e20;">
-                    task_struct contiene tutto ciò che il kernel deve sapere su un processo. thread_info è un'ottimizzazione architettura-dipendente per accesso rapido.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #fff3e0, #ffcc80); padding: 20px; border-radius: 10px; border: 2px solid #ff9800;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">⚡</div>
-                <h4 style="color: #e65100; text-align: center; margin-bottom: 10px;">Context Switching</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #bf360c;">
-                    Context switch costa ~1000-5000 cicli CPU (da frazioni di microsecondo ad alcuni microsecondi). Lo scheduler fair (CFS/EEVDF) usa virtual runtime, non time slice fissi. Non è l'operazione più costosa del kernel.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #f3e5f5, #ce93d8); padding: 20px; border-radius: 10px; border: 2px solid #9c27b0;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🎯</div>
-                <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px;">Scheduling Entity</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #4a148c;">
-                    sched_entity contiene vruntime e load per la classe fair (CFS/EEVDF). sched_class definisce il tipo di scheduler (fair, RT, deadline). I segnali sono una forma limitata di IPC: notifiche asincrone che non trasportano dati.
-                </p>
-            </div>
-
-            <div style="background: linear-gradient(135deg, #e0f2f1, #80cbc4); padding: 20px; border-radius: 10px; border: 2px solid #009688;">
-                <div style="font-size: 2em; text-align: center; margin-bottom: 10px;">🔐</div>
-                <h4 style="color: #00695c; text-align: center; margin-bottom: 10px;">Security Context</h4>
-                <p style="font-size: 0.9em; text-align: center; color: #004d40;">
-                    Ogni processo ha credenziali (UID/GID), capabilities, e namespace. Le strutture dati garantiscono isolamento e controllo accessi.
-                </p>
-            </div>
+        <div
+          style="
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+          "
+        >
+          <strong>Evento scatenante:</strong>
+          <code style="background: white; padding: 2px 6px; border-radius: 3px"
+            >Timer interrupt (HZ del kernel tipicamente 250-1000Hz, 1-4ms)</code
+          >
         </div>
+
+        <div
+          style="
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔄 Sequenza del context switch:
+          </h4>
+          <ol style="line-height: 1.8">
+            <li>
+              <strong>1. Interrupt handler:</strong> CPU salva lo stato minimo
+              (pt_regs) sul kernel stack
+            </li>
+            <li>
+              <strong>2. Scheduler invocation:</strong> schedule() seleziona
+              prossimo processo
+            </li>
+            <li>
+              <strong>3. Context save:</strong> Salva registri e stack pointer
+              in task_struct
+            </li>
+            <li>
+              <strong>4. Memory switch:</strong> Aggiorna il registro CR3 (x86)
+              o equivalente per puntare alle nuove page tables dello spazio di
+              indirizzamento
+            </li>
+            <li>
+              <strong>5. Context restore:</strong> Carica registri e stack del
+              nuovo processo
+            </li>
+            <li>
+              <strong>6. Resume execution:</strong> Nuovo processo continua
+              dall'istruzione successiva
+            </li>
+          </ol>
+        </div>
+
+        <div
+          style="
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff9c4;
+            border-radius: 5px;
+            font-size: 0.9em;
+          "
+        >
+          <strong>🎯 Risultato:</strong> L'utente percepisce multitasking
+          continuo, ma il kernel alterna rapidamente tra processi usando le
+          strutture dati per salvare e ripristinare lo stato!
+        </div>
+      </div>
+
+      <h2>🧪 Laboratorio Pratico: Esplora i Processi</h2>
+      <div
+        style="
+          background: #f3e5f5;
+          border: 2px solid #9c27b0;
+          border-radius: 10px;
+          padding: 20px;
+          margin: 20px 0;
+        "
+      >
+        <h3 style="color: #7b1fa2; margin-bottom: 15px">
+          🔬 Esperimenti da fare sul tuo Linux
+        </h3>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+          "
+        >
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              📊 Esplora i processi
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ ps aux | head -5<br />
+              USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND<br />
+              root 1 0.0 0.1 225688 13944 ? Ss gen01 0:01 /sbin/init<br />
+              $ cat /proc/$$/status | head -10
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi le informazioni dettagliate sui processi attivi</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              ⚙️ Analizza lo scheduling
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ cat /proc/$$/sched<br />
+              $ chrt --pid $$<br />
+              $ nice -n 10 sleep 1 &
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Esamina i parametri di scheduling dei processi</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🧠 Monitora l'uso memoria
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ cat /proc/$$/maps | head -5<br />
+              $ pmap $$ | head -10<br />
+              $ ps -o pid,ppid,pgid,sid,comm $$
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Vedi la mappatura memoria e relazioni tra processi</em>
+            </p>
+          </div>
+
+          <div
+            style="
+              background: white;
+              padding: 15px;
+              border-radius: 8px;
+              border-left: 4px solid #9c27b0;
+            "
+          >
+            <h4 style="color: #9c27b0; margin-bottom: 10px">
+              🔐 Controlla le credenziali
+            </h4>
+            <div
+              style="
+                font-family: monospace;
+                font-size: 0.9em;
+                background: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-bottom: 10px;
+              "
+            >
+              $ id<br />
+              $ cat /proc/$$/status | grep -E "(Uid|Gid|Cap)"<br />
+              $ getpcaps $$
+            </div>
+            <p style="font-size: 0.9em; color: #666">
+              <em>Esamina UID, GID e capabilities dei processi</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h2>🎯 Concetti Chiave da Ricordare</h2>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          margin: 20px 0;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            📋
+          </div>
+          <h4 style="color: #2e7d32; text-align: center; margin-bottom: 10px">
+            Task Struct Core
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #1b5e20">
+            task_struct contiene tutto ciò che il kernel deve sapere su un
+            processo. thread_info è un'ottimizzazione architettura-dipendente
+            per accesso rapido.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #fff3e0, #ffcc80);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            ⚡
+          </div>
+          <h4 style="color: #e65100; text-align: center; margin-bottom: 10px">
+            Context Switching
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #bf360c">
+            Context switch costa ~1000-5000 cicli CPU (da frazioni di
+            microsecondo ad alcuni microsecondi). Lo scheduler fair (CFS/EEVDF)
+            usa virtual runtime, non time slice fissi. Non è l'operazione più
+            costosa del kernel.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #f3e5f5, #ce93d8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #9c27b0;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🎯
+          </div>
+          <h4 style="color: #7b1fa2; text-align: center; margin-bottom: 10px">
+            Scheduling Entity
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #4a148c">
+            sched_entity contiene vruntime e load per la classe fair
+            (CFS/EEVDF). sched_class definisce il tipo di scheduler (fair, RT,
+            deadline). I segnali sono una forma limitata di IPC: notifiche
+            asincrone che non trasportano dati.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: linear-gradient(135deg, #e0f2f1, #80cbc4);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #009688;
+          "
+        >
+          <div style="font-size: 2em; text-align: center; margin-bottom: 10px">
+            🔐
+          </div>
+          <h4 style="color: #00695c; text-align: center; margin-bottom: 10px">
+            Security Context
+          </h4>
+          <p style="font-size: 0.9em; text-align: center; color: #004d40">
+            Ogni processo ha credenziali (UID/GID), capabilities, e namespace.
+            Le strutture dati garantiscono isolamento e controllo accessi.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div style="margin-top: 30px; padding: 20px; background: #e1f5fe; border-radius: 8px; border: 2px solid #0277bd;">
-        <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center;">🧠 Testa le tue conoscenze</h4>
-        <div style="text-align: center;">
-            <button onclick="toggleQuiz()" style="background: linear-gradient(135deg, #0277bd, #01579b); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);">
-                📝 Fai il Quiz sui Processi
-            </button>
-            <div id="quizContainer" style="display: none; margin-bottom: 20px;">
-                <div id="quizContent"></div>
-            </div>
+    <div
+      style="
+        margin-top: 30px;
+        padding: 20px;
+        background: #e1f5fe;
+        border-radius: 8px;
+        border: 2px solid #0277bd;
+      "
+    >
+      <h4 style="color: #0277bd; margin-bottom: 15px; text-align: center">
+        🧠 Testa le tue conoscenze
+      </h4>
+      <div style="text-align: center">
+        <button
+          onclick="toggleQuiz()"
+          style="
+            background: linear-gradient(135deg, #0277bd, #01579b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(2, 119, 189, 0.3);
+          "
+        >
+          📝 Fai il Quiz sui Processi
+        </button>
+        <div id="quizContainer" style="display: none; margin-bottom: 20px">
+          <div id="quizContent"></div>
         </div>
+      </div>
     </div>
 
+    <div
+      style="
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.7em;
+        color: #999;
+      "
+    >
+      © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
+      <div class="cookie-footer-links">
+        <a
+          href="/privacy.html"
+          class="cookie-footer-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Privacy Policy</a
+        >
+        <span class="cookie-footer-separator" aria-hidden="true">|</span>
+        <a
+          href="javascript:window.googlefc.showRevocationMessage();"
+          class="cookie-footer-link"
+        >
+          Preferenze Cookie
+        </a>
+      </div>
+    </div>
 
-    <div style="text-align: center; padding: 10px; margin-bottom: 20px; border-top: 1px solid #ddd; font-size: 0.7em; color: #999;">
-        © 2025 @ISLAM MIR & @GIUSEPPE ESPOSITO - All rights reserved.
-</div>
+    <script>
+      // Quiz functionality
+      const quizQuestions = [
+        {
+          question: "Quale system call crea un nuovo processo?",
+          options: ["exec()", "fork()", "wait()", "kill()"],
+          correct: 1,
+          explanation:
+            "fork() crea un nuovo processo duplicando quello corrente. Il nuovo processo ha un PID diverso ma è identico.",
+        },
+        {
+          question:
+            "Quale struttura dati contiene tutte le informazioni di un processo?",
+          options: ["thread_info", "task_struct", "mm_struct", "files_struct"],
+          correct: 1,
+          explanation:
+            "task_struct contiene tutti i dati del processo: PID, stato, priorità, memoria, file aperti, etc.",
+        },
+        {
+          question: "Cosa fa execve()?",
+          options: [
+            "Sostituisce l'immagine del processo",
+            "Crea un thread",
+            "Termina un processo",
+            "Cambia priorità",
+          ],
+          correct: 0,
+          explanation:
+            "execve() sostituisce completamente l'immagine del processo corrente con un nuovo programma.",
+        },
+        {
+          question:
+            "Quale stato (ps/top) indica un processo in attesa di un evento (es. input) e interrompibile da un segnale?",
+          options: ["Stopped", "Running", "Zombie", "Interruptible Sleep"],
+          correct: 3,
+          explanation:
+            "Interruptible Sleep (S) è lo stato di un processo in attesa di un evento (input, timer...) che può essere risvegliato anche da un segnale. Per l'attesa di I/O su disco si vede spesso Uninterruptible Sleep (D).",
+        },
+        {
+          question: "Cosa significa CFS nel kernel Linux?",
+          options: [
+            "Core Functionality System",
+            "Completely Fair Scheduler",
+            "Central File System",
+            "Critical Function Set",
+          ],
+          correct: 1,
+          explanation:
+            "CFS (Completely Fair Scheduler) usa virtual runtime per garantire equità, non time slice fissi. È stato lo scheduler fair di default fino al kernel 6.5; dal 6.6 è sostituito da EEVDF.",
+        },
+        {
+          question:
+            "Quale comando mostra tutti i processi del sistema con dettagli (utente, CPU, memoria)?",
+          options: ["ps aux", "free -h", "netstat", "df -h"],
+          correct: 0,
+          explanation:
+            "ps aux elenca tutti i processi con utente, %CPU, %MEM e stato; ps senza opzioni mostra solo i processi della shell corrente.",
+        },
+        {
+          question: "Cosa contiene mm_struct?",
+          options: [
+            "File aperti dal processo",
+            "Dati di scheduling",
+            "Spazio di memoria virtuale",
+            "Informazioni thread",
+          ],
+          correct: 2,
+          explanation:
+            "mm_struct descrive lo spazio di indirizzamento virtuale del processo e gestisce la memoria.",
+        },
+        {
+          question:
+            "Quale stato ha un processo terminato ma non ancora 'raccolto'?",
+          options: ["Stopped", "Running", "Zombie", "Sleep"],
+          correct: 2,
+          explanation:
+            "Zombie (Z) è lo stato di un processo terminato che aspetta che il padre legga il suo exit status.",
+        },
+        {
+          question: "Cosa fa clone() con CLONE_VM?",
+          options: [
+            "Clona la memoria fisica",
+            "Crea un nuovo namespace",
+            "Crea un processo separato",
+            "Il nuovo task condivide lo spazio di memoria del padre (come un thread)",
+          ],
+          correct: 3,
+          explanation:
+            "CLONE_VM fa condividere al nuovo task lo spazio di indirizzamento del padre: è la base dei thread (che usano anche altri flag, es. CLONE_THREAD).",
+        },
+        {
+          question: "fork() copia fisicamente tutta la memoria?",
+          options: [
+            "No, usa copy-on-write per ottimizzazione",
+            "Solo per processi piccoli",
+            "Sì, sempre",
+            "Dipende dal kernel",
+          ],
+          correct: 0,
+          explanation:
+            "fork() usa copy-on-write: inizialmente condivide le pagine di memoria, copiandole solo quando vengono modificate.",
+        },
+      ];
 
-<script>
-    // Quiz functionality
-    const quizQuestions = [
-        {
-            question: "Quale system call crea un nuovo processo?",
-            options: ["exec()", "fork()", "wait()", "kill()"],
-            correct: 1,
-            explanation: "fork() crea un nuovo processo duplicando quello corrente. Il nuovo processo ha un PID diverso ma è identico."
-        },
-        {
-            question: "Quale struttura dati contiene tutte le informazioni di un processo?",
-            options: ["thread_info", "task_struct", "mm_struct", "files_struct"],
-            correct: 1,
-            explanation: "task_struct contiene tutti i dati del processo: PID, stato, priorità, memoria, file aperti, etc."
-        },
-        {
-            question: "Cosa fa execve()?",
-            options: ["Sostituisce l'immagine del processo", "Crea un thread", "Termina un processo", "Cambia priorità"],
-            correct: 0,
-            explanation: "execve() sostituisce completamente l'immagine del processo corrente con un nuovo programma."
-        },
-        {
-            question: "Quale stato (ps/top) indica un processo in attesa di un evento (es. input) e interrompibile da un segnale?",
-            options: ["Stopped", "Running", "Zombie", "Interruptible Sleep"],
-            correct: 3,
-            explanation: "Interruptible Sleep (S) è lo stato di un processo in attesa di un evento (input, timer...) che può essere risvegliato anche da un segnale. Per l'attesa di I/O su disco si vede spesso Uninterruptible Sleep (D)."
-        },
-        {
-            question: "Cosa significa CFS nel kernel Linux?",
-            options: ["Core Functionality System", "Completely Fair Scheduler", "Central File System", "Critical Function Set"],
-            correct: 1,
-            explanation: "CFS (Completely Fair Scheduler) usa virtual runtime per garantire equità, non time slice fissi. È stato lo scheduler fair di default fino al kernel 6.5; dal 6.6 è sostituito da EEVDF."
-        },
-        {
-            question: "Quale comando mostra tutti i processi del sistema con dettagli (utente, CPU, memoria)?",
-            options: ["ps aux", "free -h", "netstat", "df -h"],
-            correct: 0,
-            explanation: "ps aux elenca tutti i processi con utente, %CPU, %MEM e stato; ps senza opzioni mostra solo i processi della shell corrente."
-        },
-        {
-            question: "Cosa contiene mm_struct?",
-            options: ["File aperti dal processo", "Dati di scheduling", "Spazio di memoria virtuale", "Informazioni thread"],
-            correct: 2,
-            explanation: "mm_struct descrive lo spazio di indirizzamento virtuale del processo e gestisce la memoria."
-        },
-        {
-            question: "Quale stato ha un processo terminato ma non ancora 'raccolto'?",
-            options: ["Stopped", "Running", "Zombie", "Sleep"],
-            correct: 2,
-            explanation: "Zombie (Z) è lo stato di un processo terminato che aspetta che il padre legga il suo exit status."
-        },
-        {
-            question: "Cosa fa clone() con CLONE_VM?",
-            options: ["Clona la memoria fisica", "Crea un nuovo namespace", "Crea un processo separato", "Il nuovo task condivide lo spazio di memoria del padre (come un thread)"],
-            correct: 3,
-            explanation: "CLONE_VM fa condividere al nuovo task lo spazio di indirizzamento del padre: è la base dei thread (che usano anche altri flag, es. CLONE_THREAD)."
-        },
-        {
-            question: "fork() copia fisicamente tutta la memoria?",
-            options: ["No, usa copy-on-write per ottimizzazione", "Solo per processi piccoli", "Sì, sempre", "Dipende dal kernel"],
-            correct: 0,
-            explanation: "fork() usa copy-on-write: inizialmente condivide le pagine di memoria, copiandole solo quando vengono modificate."
-        }
-    ];
+      let currentQuestionIndex = 0;
+      let score = 0;
 
-    let currentQuestionIndex = 0;
-    let score = 0;
-
-    function toggleQuiz() {
-        const container = document.getElementById('quizContainer');
-        if (container.style.display === 'none') {
-            container.style.display = 'block';
-            startQuiz();
+      function toggleQuiz() {
+        const container = document.getElementById("quizContainer");
+        if (container.style.display === "none") {
+          container.style.display = "block";
+          startQuiz();
         } else {
-            container.style.display = 'none';
+          container.style.display = "none";
         }
-    }
+      }
 
-    function startQuiz() {
+      function startQuiz() {
         currentQuestionIndex = 0;
         score = 0;
         showQuestion();
-    }
+      }
 
-    function showQuestion() {
-        const container = document.getElementById('quizContent');
-        if (currentQuestionIndex >= quizQuestions.length) { // Show all questions
-            showResults();
-            return;
+      function showQuestion() {
+        const container = document.getElementById("quizContent");
+        if (currentQuestionIndex >= quizQuestions.length) {
+          // Show all questions
+          showResults();
+          return;
         }
 
         const question = quizQuestions[currentQuestionIndex];
@@ -578,45 +1317,49 @@
                 <h4 style="color: #0277bd; margin-bottom: 15px;">Domanda ${currentQuestionIndex + 1}/${quizQuestions.length}</h4>
                 <p style="font-size: 1.1em; margin-bottom: 15px; font-weight: bold;">${question.question}</p>
                 <div style="display: grid; gap: 10px;">
-                    ${question.options.map((option, index) => `
+                    ${question.options
+                      .map(
+                        (option, index) => `
                         <button onclick="answerQuestion(${index})" id="option${index}"
                                 style="padding: 12px; border: 2px solid #ddd; border-radius: 5px; background: white; cursor: pointer; text-align: left; font-size: 1em; transition: all 0.3s;">
                             ${String.fromCharCode(65 + index)}) ${option}
                         </button>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
         `;
-    }
+      }
 
-    let answered = false;
+      let answered = false;
 
-    function answerQuestion(selectedIndex) {
+      function answerQuestion(selectedIndex) {
         if (answered) return; // Prevent multiple answers
         answered = true;
 
         const question = quizQuestions[currentQuestionIndex];
-        const container = document.getElementById('quizContent');
+        const container = document.getElementById("quizContent");
 
         // Disable all option buttons
         for (let i = 0; i < 4; i++) {
-            const button = document.getElementById(`option${i}`);
-            if (button) {
-                button.disabled = true;
-                button.style.opacity = '0.6';
-            }
+          const button = document.getElementById(`option${i}`);
+          if (button) {
+            button.disabled = true;
+            button.style.opacity = "0.6";
+          }
         }
 
         if (selectedIndex === question.correct) {
-            score++;
-            container.innerHTML += `
+          score++;
+          container.innerHTML += `
                 <div style="background: #e8f5e9; border: 2px solid #4caf50; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #2e7d32; font-weight: bold;">✅ Risposta Corretta!</p>
                     <p style="color: #1b5e20;">${question.explanation}</p>
                 </div>
             `;
         } else {
-            container.innerHTML += `
+          container.innerHTML += `
                 <div style="background: #ffebee; border: 2px solid #f44336; padding: 15px; border-radius: 8px; margin-top: 15px;">
                     <p style="color: #c62828; font-weight: bold;">❌ Risposta Errata</p>
                     <p style="color: #b71c1c;">Risposta corretta: ${String.fromCharCode(65 + question.correct)}) ${question.options[question.correct]}</p>
@@ -627,45 +1370,49 @@
 
         // Auto-advance to next question immediately after showing feedback
         setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= quizQuestions.length) {
-                showResults();
-            } else {
-                answered = false; // Reset for next question
-                showQuestion();
-            }
+          currentQuestionIndex++;
+          if (currentQuestionIndex >= quizQuestions.length) {
+            showResults();
+          } else {
+            answered = false; // Reset for next question
+            showQuestion();
+          }
         }, 1000); // Very fast delay to show feedback
-    }
+      }
 
-    function nextQuestion() {
+      function nextQuestion() {
         currentQuestionIndex++;
         answered = false; // Reset for next question
 
         // Hide the next button before showing new question
-        const nextButtonContainer = document.getElementById('nextButtonContainer');
-        if (nextButtonContainer) nextButtonContainer.style.display = 'none';
+        const nextButtonContainer = document.getElementById(
+          "nextButtonContainer",
+        );
+        if (nextButtonContainer) nextButtonContainer.style.display = "none";
 
         if (currentQuestionIndex >= quizQuestions.length) {
-            showResults();
+          showResults();
         } else {
-            showQuestion();
+          showQuestion();
         }
-    }
+      }
 
-    function showResults() {
-        const container = document.getElementById('quizContent');
+      function showResults() {
+        const container = document.getElementById("quizContent");
         const percentage = Math.round((score / quizQuestions.length) * 100);
 
         let message, color;
         if (percentage >= 80) {
-            message = "Eccellente! Hai una buona comprensione della gestione processi! 🎉";
-            color = "#2e7d32";
+          message =
+            "Eccellente! Hai una buona comprensione della gestione processi! 🎉";
+          color = "#2e7d32";
         } else if (percentage >= 60) {
-            message = "Buon lavoro! Continua a studiare i processi! 👍";
-            color = "#f57c00";
+          message = "Buon lavoro! Continua a studiare i processi! 👍";
+          color = "#f57c00";
         } else {
-            message = "Continua a studiare! La gestione processi è fondamentale! 📚";
-            color = "#d32f2f";
+          message =
+            "Continua a studiare! La gestione processi è fondamentale! 📚";
+          color = "#d32f2f";
         }
 
         container.innerHTML = `
@@ -679,52 +1426,103 @@
                 </button>
             </div>
         `;
-    }
-</script>
-
+      }
+    </script>
 
     <div class="nav-buttons-right">
-        <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">◀ PAGINA PRECEDENTE</button>
-        <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">PAGINA SUCCESSIVA ▶</button>
+      <button class="nav-button" onclick="navigateToPage(-1)" id="prevBtn">
+        ◀ PAGINA PRECEDENTE
+      </button>
+      <button class="nav-button" onclick="navigateToPage(1)" id="nextBtn">
+        PAGINA SUCCESSIVA ▶
+      </button>
     </div>
 
     <script>
-       const pageOrder = ["detail-functionalities.html", "detail-user-space-interfaces.html", "detail-virtual.html", "detail-subsystems-interaction.html", "detail-syscall-vfs-ops.html", "detail-device-registration.html", "detail-io-ops-irq.html", "detail-electronics.html", "detail-hi-header.html", "detail-hi-char-devices.html", "detail-security.html", "detail-debugging.html", "detail-hi-subsystems.html", "detail-abstract-devices.html", "detail-hi-hardware-interfaces.html", "detail-user-peripherals.html", "detail-system-header.html", "detail-interfaces-core.html", "detail-driver-model.html", "detail-system-run.html", "detail-generic-hw-access.html", "detail-device-access.html", "detail-io.html", "detail-processing-header.html", "detail-processes.html", "detail-threads.html", "detail-synchronization.html", "detail-scheduler.html", "detail-interrupts.html", "detail-cpu-specific.html", "detail-cpu.html", "detail-memory-header.html", "detail-memory-access.html", "detail-virtual-memory.html", "detail-memory-mapping.html", "detail-logical-memory.html", "detail-page-allocator.html", "detail-physical-memory.html", "detail-memory.html", "detail-storage-header.html", "detail-files-access.html", "detail-vfs.html", "detail-page-cache.html", "detail-swap.html", "detail-logical-filesystems.html", "detail-block-devices.html", "detail-storage-drivers.html", "detail-storage-controllers.html", "detail-network-header.html", "detail-sockets-access.html", "detail-address-families.html", "detail-network-storage.html", "detail-socket-splice.html", "detail-protocols.html", "detail-network-interfaces.html", "detail-network-drivers.html", "detail-network-controllers.html"];
+      const pageOrder = [
+        "detail-functionalities.html",
+        "detail-user-space-interfaces.html",
+        "detail-virtual.html",
+        "detail-subsystems-interaction.html",
+        "detail-syscall-vfs-ops.html",
+        "detail-device-registration.html",
+        "detail-io-ops-irq.html",
+        "detail-electronics.html",
+        "detail-hi-header.html",
+        "detail-hi-char-devices.html",
+        "detail-security.html",
+        "detail-debugging.html",
+        "detail-hi-subsystems.html",
+        "detail-abstract-devices.html",
+        "detail-hi-hardware-interfaces.html",
+        "detail-user-peripherals.html",
+        "detail-system-header.html",
+        "detail-interfaces-core.html",
+        "detail-driver-model.html",
+        "detail-system-run.html",
+        "detail-generic-hw-access.html",
+        "detail-device-access.html",
+        "detail-io.html",
+        "detail-processing-header.html",
+        "detail-processes.html",
+        "detail-threads.html",
+        "detail-synchronization.html",
+        "detail-scheduler.html",
+        "detail-interrupts.html",
+        "detail-cpu-specific.html",
+        "detail-cpu.html",
+        "detail-memory-header.html",
+        "detail-memory-access.html",
+        "detail-virtual-memory.html",
+        "detail-memory-mapping.html",
+        "detail-logical-memory.html",
+        "detail-page-allocator.html",
+        "detail-physical-memory.html",
+        "detail-memory.html",
+        "detail-storage-header.html",
+        "detail-files-access.html",
+        "detail-vfs.html",
+        "detail-page-cache.html",
+        "detail-swap.html",
+        "detail-logical-filesystems.html",
+        "detail-block-devices.html",
+        "detail-storage-drivers.html",
+        "detail-storage-controllers.html",
+        "detail-network-header.html",
+        "detail-sockets-access.html",
+        "detail-address-families.html",
+        "detail-network-storage.html",
+        "detail-socket-splice.html",
+        "detail-protocols.html",
+        "detail-network-interfaces.html",
+        "detail-network-drivers.html",
+        "detail-network-controllers.html",
+      ];
 
-        function getCurrentPageIndex() {
-            const currentPage = window.location.pathname.split('/').pop();
-            return pageOrder.indexOf(currentPage);
+      function getCurrentPageIndex() {
+        const currentPage = window.location.pathname.split("/").pop();
+        return pageOrder.indexOf(currentPage);
+      }
+
+      function navigateToPage(direction) {
+        const currentIndex = getCurrentPageIndex();
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < pageOrder.length) {
+          window.location.href = pageOrder[newIndex];
         }
+      }
 
-        function navigateToPage(direction) {
-            const currentIndex = getCurrentPageIndex();
-            const newIndex = currentIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < pageOrder.length) {
-                window.location.href = pageOrder[newIndex];
-            }
-        }
+      window.addEventListener("DOMContentLoaded", function () {
+        const currentIndex = getCurrentPageIndex();
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const currentIndex = getCurrentPageIndex();
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            if (prevBtn) prevBtn.disabled = currentIndex === 0;
-            if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
-        });
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === pageOrder.length - 1;
+      });
     </script>
 
-</body>
+    <script src="cookie-consent.js"></script>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
