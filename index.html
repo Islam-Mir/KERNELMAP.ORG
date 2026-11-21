@@ -49,6 +49,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linux Kernel Map - Interactive</title>
     <link rel="stylesheet" href="kernel-map-style.css" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   </head>
   <body>
     <!-- old slideshow commented out
@@ -857,8 +858,6 @@
         });
     </script>
 -->
-    <script src="kernel-map.js"></script>
-
     <footer
       style="
         text-align: center;
@@ -893,7 +892,7 @@
         >
         <span class="cookie-footer-separator" aria-hidden="true">|</span>
         <a
-          href="javascript:window.googlefc.showRevocationMessage();"
+          href="javascript:window.googlefc.callbackQueue.push({CONSENT_API_READY:function(){window.googlefc.showRevocationMessage();}});"
           class="cookie-footer-link"
         >
           Preferenze Cookie

@@ -72,9 +72,8 @@
           consentValues.analyticsStoragePurposeConsentStatus;
 
         const analyticsGranted =
-          analyticsStatus === consentEnum.CONSENT_MODE_PURPOSE_STATUS_GRANTED ||
-          analyticsStatus ===
-            consentEnum.CONSENT_MODE_PURPOSE_STATUS_NOT_APPLICABLE;
+          analyticsStatus === consentEnum.GRANTED ||
+          analyticsStatus === consentEnum.NOT_APPLICABLE;
 
         if (analyticsGranted) {
           loadGoogleAnalytics();

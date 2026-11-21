@@ -1050,7 +1050,7 @@
         >
         <span class="cookie-footer-separator" aria-hidden="true">|</span>
         <a
-          href="javascript:window.googlefc.showRevocationMessage();"
+          href="javascript:window.googlefc.callbackQueue.push({CONSENT_API_READY:function(){window.googlefc.showRevocationMessage();}});"
           class="cookie-footer-link"
         >
           Preferenze Cookie
