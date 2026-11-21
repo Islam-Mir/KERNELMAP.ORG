@@ -8,7 +8,7 @@
 (function () {
   "use strict";
 
-  const ADSENSE_CLIENT = "ca-pub-4240610713346131";
+  const ADSENSE_CLIENT = "ca-pub-5495773043196220";
   const GA4_ID = "G-GW3S1CKY7Q";
 
   // =====================================
